@@ -30,6 +30,7 @@ namespace TheLongNight.UI.MainMenu
         
         private void OnNewGameClicked()
         {
+            Cursor.visible = false;
             SceneManager.LoadScene("Game");
         }
 
