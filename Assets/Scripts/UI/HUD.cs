@@ -18,6 +18,7 @@ namespace TheLongNight.UI
         [SerializeField] private Image _crosshairImage;
         [SerializeField] private PlayerInteraction _playerInteraction;
         [SerializeField] private TextMeshProUGUI _itemNameText;
+        [SerializeField] private ObjectViewPanel _objectViewPanel;
         
         private float _fadeDuration = 1f;
         private float _currentAlpha;
@@ -27,12 +28,16 @@ namespace TheLongNight.UI
         {
             _playerInteraction.OnHoverEnter += OnHoverEnter;
             _playerInteraction.OnHoverExit += OnHoverExit;
+            _playerInteraction.OnClick += OnClick;
+            _playerInteraction.OnCanceled += OnCanceled;
         }
 
         private void OnDisable()
         {
             _playerInteraction.OnHoverEnter -= OnHoverEnter;
             _playerInteraction.OnHoverExit -= OnHoverExit;
+            _playerInteraction.OnClick -= OnClick;
+            _playerInteraction.OnCanceled -= OnCanceled;
         }
 
         private void OnHoverEnter(PickableItem item)
@@ -58,6 +63,17 @@ namespace TheLongNight.UI
             _currentState = isHovering ? CurrentState.Visible : CurrentState.Hidden;
             _crosshairImage.DOFade(isHovering ? 1f : 0f, _fadeDuration);
             _itemNameText.DOFade(isHovering ? 1f : 0f, _fadeDuration);
+        }
+        
+        private void OnCanceled()
+        {
+            _objectViewPanel.changeVisibility(false);
+        }
+
+        private void OnClick(PickableItem item)
+        {
+            _objectViewPanel.changeVisibility(true);
+            var data = item.GetData();
         }
     }
 }

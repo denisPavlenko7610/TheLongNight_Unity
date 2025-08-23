@@ -1,17 +1,13 @@
 ﻿using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
 namespace StarterAssets
 {
 	[RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
-#endif
-	public class Player : MonoBehaviour
+	public class PlayerMovement : MonoBehaviour
 	{
-		[Header("Player")]
+		[Header("PlayerMovement")]
 		public float MoveSpeed = 5.0f;
 		private float _sprintSpeed = 10.0f;
 		public float RotationSpeed = 2.0f;
@@ -44,11 +40,8 @@ namespace StarterAssets
 
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
-
-	
-#if ENABLE_INPUT_SYSTEM
+		
 		private PlayerInput _playerInput;
-#endif
 		private CharacterController _controller;
 		private PlayerInputs _input;
 		private GameObject _mainCamera;
@@ -79,11 +72,7 @@ namespace StarterAssets
 		{
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<PlayerInputs>();
-#if ENABLE_INPUT_SYSTEM
 			_playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
 		}
