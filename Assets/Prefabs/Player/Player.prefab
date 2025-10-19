@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 7315511415813285893}
   - component: {fileID: 8139234027984470246}
   - component: {fileID: 6904180484758668781}
+  - component: {fileID: 9010284340228579724}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -138,18 +139,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 5
-  RotationSpeed: 2
-  SpeedChangeRate: 10
+  RotationSpeed: 3
+  SpeedChangeRate: 12
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.5
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
   CinemachineCameraTarget: {fileID: 8742609627363697270}
   TopClamp: 89
   BottomClamp: -89
@@ -192,6 +188,19 @@ MonoBehaviour:
   _inputActions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _playerCamera: {fileID: 7299279883580739012}
   _playerMovementScript: {fileID: 7315511415813285893}
+--- !u!114 &9010284340228579724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352849978073610698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b624ac803f4a140903698670e84388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLongNight.Player
+  _playerInteraction: {fileID: 6904180484758668781}
 --- !u!1001 &1852307776700019233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -206,15 +215,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 13.118095
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.375
+      value: -11.836281
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 6.1757183
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalRotation.w
