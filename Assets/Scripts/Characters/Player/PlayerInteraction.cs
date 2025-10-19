@@ -3,7 +3,7 @@ using TheLongNight.Items;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TheLongNight.Player
+namespace TheLongNight
 {
     public class PlayerInteraction : MonoBehaviour
     {
