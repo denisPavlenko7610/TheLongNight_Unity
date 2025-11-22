@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using RD_Tween.Runtime;
 using TheLongNight.Items;
 using TMPro;
 using UnityEngine;
@@ -20,7 +19,7 @@ namespace TheLongNight.UI
         [SerializeField] private ObjectViewPanel _objectViewPanel;
         
         private PlayerInteraction _playerInteraction;
-        private float _fadeDuration = 1f;
+        private float _fadeDuration = 0.5f;
         private float _currentAlpha;
         private CurrentState _currentState;
 
@@ -51,8 +50,8 @@ namespace TheLongNight.UI
 		private void UpdateItemUI(bool isHovering)
         {
             _currentState = isHovering ? CurrentState.Visible : CurrentState.Hidden;
-            _crosshairImage.DOFade(isHovering ? 1f : 0f, _fadeDuration);
-            _itemNameText.DOFade(isHovering ? 1f : 0f, _fadeDuration);
+            _crosshairImage.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
+            _itemNameText.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
         }
 
 		private void OnCanceled()
