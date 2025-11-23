@@ -1,5 +1,7 @@
 ﻿using System;
+using Assign;
 using TheLongNight.Items;
+using TheLongNight.Services.Inventory;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +16,7 @@ namespace TheLongNight
 
         [SerializeField] private Camera _playerCamera;
         [SerializeField] private MonoBehaviour _playerMovementScript;
+		[SerializeField, AutoAssign(AutoAssignMode.Children)] private Inventory _inventory;
 
         public event Action<PickableItem> OnHoverEnter;
         public event Action<PickableItem> OnHoverExit;
@@ -107,11 +110,22 @@ namespace TheLongNight
                 EndView(returnBack: true);
             }
 
-            if (_isViewing && _canFinalizePickup && !_clickAction.WasPressedThisFrame())
-            {
-                _viewingTransform.GetComponent<PickableItem>()?.PickUp();
-                EndView(returnBack: false);
-            }
+			if (_isViewing && _canFinalizePickup && !_clickAction.WasPressedThisFrame())
+			{
+				PickableItem pickable = _viewingTransform.GetComponent<PickableItem>();
+				if (pickable != null && _inventory != null)
+				{
+					PickableItemData data = pickable.GetData();
+					if (data != null)
+					{
+						_inventory.Add(data.ItemType, 1);
+					}
+
+					pickable.PickUp();
+				}
+
+				EndView(returnBack: false);
+			}
         }
 
         private void StartView(PickableItem item)

@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,10 +17,10 @@ namespace Assign
 			if (!(property.serializedObject.targetObject is Component component))
 				return;
 
-			var attribute = (AutoAssignAttribute)base.attribute;
-			var requiredType = fieldInfo.FieldType;
+			AutoAssignAttribute attribute = (AutoAssignAttribute)base.attribute;
+			Type requiredType = fieldInfo.FieldType;
 
-			Object found = null;
+			UnityEngine.Object found = null;
 
 			switch (attribute.mode)
 			{
@@ -37,7 +38,7 @@ namespace Assign
 					break;
 
 				case AutoAssignMode.Scene:
-					var all = Object.FindObjectsOfType(requiredType, true);
+					UnityEngine.Object[] all = UnityEngine.Object.FindObjectsOfType(requiredType, true);
 					if (all.Length == 1)
 						found = all[0];
 					break;
