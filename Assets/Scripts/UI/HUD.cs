@@ -22,6 +22,8 @@ namespace TheLongNight.UI
         private float _fadeDuration = 0.5f;
         private float _currentAlpha;
         private CurrentState _currentState;
+		private PropertyTween<float> _crossHairFade;
+		private PropertyTween<float> _nameTextFade;
 
 		public void Init(Player player)
 		{
@@ -31,7 +33,7 @@ namespace TheLongNight.UI
 
 		private void OnHoverEnter(PickableItem item)
         {
-            _itemNameText.text = item.GetData().name;
+            _itemNameText.text = item.GetData().ItemName;
             
             if (_currentState == CurrentState.Visible)
                 return;
@@ -50,8 +52,11 @@ namespace TheLongNight.UI
 		private void UpdateItemUI(bool isHovering)
         {
             _currentState = isHovering ? CurrentState.Visible : CurrentState.Hidden;
-            _crosshairImage.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
-            _itemNameText.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
+			
+			_crossHairFade?.Kill();
+			_nameTextFade?.Kill();
+            _crossHairFade = _crosshairImage.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
+            _nameTextFade = _itemNameText.FadeTo(isHovering ? 1f : 0f, _fadeDuration);
         }
 
 		private void OnCanceled()
