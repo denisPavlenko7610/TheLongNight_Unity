@@ -1,0 +1,16 @@
+{
+    "name": "TLN.Application",
+    "rootNamespace": "",
+    "references": [
+        "GUID:49cbf21cabd7ad5468a920bb5c7777b6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
