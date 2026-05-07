@@ -30,6 +30,7 @@ namespace TLN.Application.Scenes
 				return;
 			}
 
+			_gameStateMachine.Enter(GameStateId.Loading);
 			_loadingCoroutine = _coroutineRunner.StartCoroutine(LoadSceneRoutine(SceneNames.MainMenu, GameStateId.MainMenu));
 		}
 

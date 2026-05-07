@@ -1,4 +1,7 @@
-﻿using TLN.Gameplay.Player.Input;
+﻿using TLN.Application.App;
+using TLN.Application.GameStates;
+using TLN.Application.Input;
+using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Player.Look;
 using TLN.Gameplay.Player.Movement;
 using UnityEngine;
@@ -11,6 +14,14 @@ namespace TLN.Gameplay.Player
 		[field: SerializeField] public PlayerMotor Motor { get; private set; }
 		[field: SerializeField] public PlayerLook Look { get; private set; }
 		[field: SerializeField] public Camera Camera { get; private set; }
+		[field: SerializeField] public PlayerPauseController PauseController { get; private set; }
+
+		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine)
+		{
+			Motor.Construct(inputModeService);
+			Look.Construct(inputModeService);
+			PauseController.Construct(gameStateMachine);
+		}
 
 		private void Reset()
 		{
@@ -18,6 +29,7 @@ namespace TLN.Gameplay.Player
 			Motor = GetComponent<PlayerMotor>();
 			Look = GetComponent<PlayerLook>();
 			Camera = GetComponentInChildren<Camera>();
+			PauseController = GetComponent<PlayerPauseController>();
 		}
 
 		private void OnValidate()
@@ -40,6 +52,11 @@ namespace TLN.Gameplay.Player
 			if (Camera == null)
 			{
 				Camera = GetComponentInChildren<Camera>();
+			}
+
+			if (PauseController == null)
+			{
+				PauseController = GetComponent<PlayerPauseController>();
 			}
 		}
 	}
