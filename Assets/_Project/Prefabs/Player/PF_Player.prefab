@@ -87,13 +87,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4994591775166812614}
   - component: {fileID: 5593795208483764752}
-  - component: {fileID: 2335456302481309705}
-  - component: {fileID: 7315511415813285893}
-  - component: {fileID: 8139234027984470246}
-  - component: {fileID: 6904180484758668781}
-  - component: {fileID: 9010284340228579724}
+  - component: {fileID: 3957199438328058230}
+  - component: {fileID: 1902473015745612277}
+  - component: {fileID: 3070767732760582719}
+  - component: {fileID: 1670575646728136578}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PF_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -143,7 +142,7 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
---- !u!114 &2335456302481309705
+--- !u!114 &3957199438328058230
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,28 +151,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8352849978073610698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e7f0fca287d4ce5be81eb2740f702be, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &7315511415813285893
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.PlayerRoot
+  <InputReader>k__BackingField: {fileID: 1902473015745612277}
+  <Motor>k__BackingField: {fileID: 3070767732760582719}
+  <Look>k__BackingField: {fileID: 1670575646728136578}
+  <Camera>k__BackingField: {fileID: 7299279883580739012}
+--- !u!114 &1902473015745612277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,21 +167,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8352849978073610698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55919ac34a26952479f3fc91f777b2fa, type: 3}
+  m_Script: {fileID: 11500000, guid: af182a48fb2046fdb2e0eccb38e79033, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 5
-  RotationSpeed: 3
-  SpeedChangeRate: 12
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.1
-  FallTimeout: 0.15
-  Grounded: 1
-  CinemachineCameraTarget: {fileID: 8742609627363697270}
-  TopClamp: 89
-  BottomClamp: -89
---- !u!114 &8139234027984470246
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Input.PlayerInputReader
+--- !u!114 &3070767732760582719
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,17 +179,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8352849978073610698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e087ecce43ebbff45a1b360637807d93, type: 3}
+  m_Script: {fileID: 11500000, guid: 77e03b94cd71482197c0674f2e154799, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  move: {x: 0, y: 0}
-  look: {x: 0, y: 0}
-  jump: 0
-  sprint: 0
-  analogMovement: 0
-  cursorLocked: 1
-  cursorInputForLook: 1
---- !u!114 &6904180484758668781
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Movement.PlayerMotor
+  _inputReader: {fileID: 1902473015745612277}
+  _walkSpeed: 3.5
+  _sprintSpeed: 5.5
+  _gravity: -20
+--- !u!114 &1670575646728136578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,30 +195,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8352849978073610698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cbfbd0eb00a451f9446c1ad7bbc67bc, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e973127ed5f4f0493329c69235b4ce1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _maxDistance: 3
-  _interactionMask:
-    serializedVersion: 2
-    m_Bits: 192
-  _objectViewTransform: {fileID: 5924592021428369601}
-  _inputActions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  _playerCamera: {fileID: 7299279883580739012}
-  _playerMovementScript: {fileID: 7315511415813285893}
---- !u!114 &9010284340228579724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8352849978073610698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00b624ac803f4a140903698670e84388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheLongNight.Player
-  _playerInteraction: {fileID: 6904180484758668781}
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Look.PlayerLook
+  _inputReader: {fileID: 1902473015745612277}
+  _cameraRoot: {fileID: 1178279910645467095}
+  _mouseSensitivity: 0.12
+  _gamepadSensitivity: 120
+  _minPitch: -80
+  _maxPitch: 80
 --- !u!1001 &1852307776700019233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -318,7 +274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_Name
-      value: PlayerCamera
+      value: MainCamera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -355,6 +311,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Version: 9
+  m_ObsoleteRenderingPath: 0
+  m_ObsoleteFrameSettings:
+    overrides: 0
+    enableShadow: 0
+    enableContactShadows: 0
+    enableShadowMask: 0
+    enableSSR: 0
+    enableSSAO: 0
+    enableSubsurfaceScattering: 0
+    enableTransmission: 0
+    enableAtmosphericScattering: 0
+    enableVolumetrics: 0
+    enableReprojectionForVolumetrics: 0
+    enableLightLayers: 0
+    enableExposureControl: 1
+    diffuseGlobalDimmer: 0
+    specularGlobalDimmer: 0
+    shaderLitMode: 0
+    enableDepthPrepassWithDeferredRendering: 0
+    enableTransparentPrepass: 0
+    enableMotionVectors: 0
+    enableObjectMotionVectors: 0
+    enableDecals: 0
+    enableRoughRefraction: 0
+    enableTransparentPostpass: 0
+    enableDistortion: 0
+    enablePostprocess: 0
+    enableOpaqueObjects: 0
+    enableTransparentObjects: 0
+    enableRealtimePlanarReflection: 0
+    enableMSAA: 0
+    enableAsyncCompute: 0
+    runLightListAsync: 0
+    runSSRAsync: 0
+    runSSAOAsync: 0
+    runContactShadowsAsync: 0
+    runVolumeVoxelizationAsync: 0
+    lightLoopSettings:
+      overrides: 0
+      enableDeferredTileAndCluster: 0
+      enableComputeLightEvaluation: 0
+      enableComputeLightVariants: 0
+      enableComputeMaterialVariants: 0
+      enableFptlForForwardOpaque: 0
+      enableBigTilePrepass: 0
+      isFptlEnabled: 0
   clearColorMode: 0
   backgroundColorHDR: {r: 0.025, g: 0.07, b: 0.19, a: 0}
   clearDepth: 1
@@ -435,53 +438,6 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
-  m_Version: 9
-  m_ObsoleteRenderingPath: 0
-  m_ObsoleteFrameSettings:
-    overrides: 0
-    enableShadow: 0
-    enableContactShadows: 0
-    enableShadowMask: 0
-    enableSSR: 0
-    enableSSAO: 0
-    enableSubsurfaceScattering: 0
-    enableTransmission: 0
-    enableAtmosphericScattering: 0
-    enableVolumetrics: 0
-    enableReprojectionForVolumetrics: 0
-    enableLightLayers: 0
-    enableExposureControl: 1
-    diffuseGlobalDimmer: 0
-    specularGlobalDimmer: 0
-    shaderLitMode: 0
-    enableDepthPrepassWithDeferredRendering: 0
-    enableTransparentPrepass: 0
-    enableMotionVectors: 0
-    enableObjectMotionVectors: 0
-    enableDecals: 0
-    enableRoughRefraction: 0
-    enableTransparentPostpass: 0
-    enableDistortion: 0
-    enablePostprocess: 0
-    enableOpaqueObjects: 0
-    enableTransparentObjects: 0
-    enableRealtimePlanarReflection: 0
-    enableMSAA: 0
-    enableAsyncCompute: 0
-    runLightListAsync: 0
-    runSSRAsync: 0
-    runSSAOAsync: 0
-    runContactShadowsAsync: 0
-    runVolumeVoxelizationAsync: 0
-    lightLoopSettings:
-      overrides: 0
-      enableDeferredTileAndCluster: 0
-      enableComputeLightEvaluation: 0
-      enableComputeLightVariants: 0
-      enableComputeMaterialVariants: 0
-      enableFptlForForwardOpaque: 0
-      enableBigTilePrepass: 0
-      isFptlEnabled: 0
 --- !u!1001 &4625610470991576441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -557,11 +513,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4135013735270702856, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
   m_PrefabInstance: {fileID: 4625610470991576441}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8742609627363697270 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4135013735270702863, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
-  m_PrefabInstance: {fileID: 4625610470991576441}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7621203141363471021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -572,7 +523,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8762286023885395077, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
       propertyPath: m_Name
-      value: PlayerFollowCamera
+      value: CameraRoot
       objectReference: {fileID: 0}
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
       propertyPath: m_RootOrder
