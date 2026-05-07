@@ -1,6 +1,8 @@
 ﻿using TLN.Application.GameStates;
+using TLN.Application.Input;
 using TLN.Application.Scenes;
 using TLN.Application.Services;
+using TLN.Application.Time;
 using TLN.Core.GameStates;
 using UnityEngine;
 
@@ -45,11 +47,25 @@ namespace TLN.Application.App
 
 			GameStateMachine gameStateMachine = new();
 			SceneLoaderService sceneLoaderService = new(gameStateMachine, _appRoot);
+			CursorService cursorService = new();
+			InputModeService inputModeService = new(cursorService);
+			GameTimeScaleService gameTimeScaleService = new();
+			GameStateTimeScaleController gameStateTimeScaleController = new(gameStateMachine, gameTimeScaleService);
+			GameStateInputModeController gameStateInputModeController = new(gameStateMachine, inputModeService);
+
 			GameStateDebugLogger gameStateDebugLogger = new(gameStateMachine);
+			InputModeDebugLogger inputModeDebugLogger = new(inputModeService);
 
 			services.Register<IGameStateMachine>(gameStateMachine);
+			services.Register<ICursorService>(cursorService);
+			services.Register<IInputModeService>(inputModeService);
+			services.Register<IGameTimeScaleService>(gameTimeScaleService);
+			services.Register<GameStateTimeScaleController>(gameStateTimeScaleController);
+			services.Register<GameStateInputModeController>(gameStateInputModeController);
 			services.Register<ISceneLoader>(sceneLoaderService);
+
 			services.Register<GameStateDebugLogger>(gameStateDebugLogger);
+			services.Register<InputModeDebugLogger>(inputModeDebugLogger);
 
 			return services;
 		}

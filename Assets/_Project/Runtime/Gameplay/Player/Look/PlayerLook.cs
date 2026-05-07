@@ -1,4 +1,5 @@
-﻿using TLN.Gameplay.Player.Input;
+﻿using TLN.Application.Input;
+using TLN.Gameplay.Player.Input;
 using UnityEngine;
 
 namespace TLN.Gameplay.Player.Look
@@ -16,6 +17,12 @@ namespace TLN.Gameplay.Player.Look
 		[SerializeField] private float _maxPitch = 80f;
 
 		private float _pitch;
+		private IInputModeService _inputModeService;
+
+		public void Construct(IInputModeService inputModeService)
+		{
+			_inputModeService = inputModeService;
+		}
 
 		private void Awake()
 		{
@@ -25,15 +32,11 @@ namespace TLN.Gameplay.Player.Look
 			}
 		}
 
-		private void Start()
-		{
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
-		}
-
 		private void Update()
 		{
-			Look(Time.deltaTime);
+			if (_inputModeService.CanUseLookInput) {
+				Look(Time.deltaTime);
+			}
 		}
 
 		private void Look(float deltaTime)

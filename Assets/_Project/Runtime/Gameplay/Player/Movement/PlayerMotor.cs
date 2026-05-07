@@ -1,4 +1,5 @@
-﻿using TLN.Gameplay.Player.Input;
+﻿using TLN.Application.Input;
+using TLN.Gameplay.Player.Input;
 using UnityEngine;
 
 namespace TLN.Gameplay.Player.Movement
@@ -17,6 +18,13 @@ namespace TLN.Gameplay.Player.Movement
         private CharacterController _characterController;
         private float _verticalVelocity;
 
+        private IInputModeService _inputModeService;
+
+        public void Construct(IInputModeService inputModeService)
+        {
+            _inputModeService = inputModeService;
+        }
+
         private void Awake()
         {
             _characterController = GetComponent<CharacterController>();
@@ -29,7 +37,9 @@ namespace TLN.Gameplay.Player.Movement
 
         private void Update()
         {
-            Move(Time.deltaTime);
+            if (_inputModeService.CanUseMovementInput) {
+                Move(Time.deltaTime);
+            }
         }
 
         private void Move(float deltaTime)

@@ -64,6 +64,13 @@ namespace TLN.Gameplay.Player.Input
             _inputActions.Dispose();
         }
 
+        public void ClearTransientInput()
+        {
+            Look = Vector2.zero;
+            WasInteractPressedThisFrame = false;
+            WasPausePressedThisFrame = false;
+        }
+
         private void OnMovePerformed(InputAction.CallbackContext context)
         {
             Move = context.ReadValue<Vector2>();

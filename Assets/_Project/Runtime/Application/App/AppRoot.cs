@@ -37,7 +37,7 @@ namespace TLN.Application.App
 
 		private void Update()
 		{
-			float deltaTime = Time.deltaTime;
+			float deltaTime = UnityEngine.Time.deltaTime;
 
 			for (int i = 0; i < _tickables.Count; i++)
 			{
