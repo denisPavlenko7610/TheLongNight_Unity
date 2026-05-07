@@ -1,0 +1,54 @@
+﻿using TLN.Gameplay.Player.Input;
+using UnityEngine;
+
+namespace TLN.Gameplay.Player.Look
+{
+	public sealed class PlayerLook : MonoBehaviour
+	{
+		[Header("References")]
+		[SerializeField] private PlayerInputReader _inputReader;
+		[SerializeField] private Transform _cameraRoot;
+
+		[Header("Look")]
+		[SerializeField] private float _mouseSensitivity = 0.12f;
+		[SerializeField] private float _gamepadSensitivity = 120f;
+		[SerializeField] private float _minPitch = -80f;
+		[SerializeField] private float _maxPitch = 80f;
+
+		private float _pitch;
+
+		private void Awake()
+		{
+			if (_inputReader == null)
+			{
+				_inputReader = GetComponent<PlayerInputReader>();
+			}
+		}
+
+		private void Start()
+		{
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
+
+		private void Update()
+		{
+			Look(Time.deltaTime);
+		}
+
+		private void Look(float deltaTime)
+		{
+			Vector2 lookInput = _inputReader.Look;
+
+			float yaw = lookInput.x * _mouseSensitivity;
+			float pitchDelta = lookInput.y * _mouseSensitivity;
+
+			transform.Rotate(Vector3.up * yaw);
+
+			_pitch -= pitchDelta;
+			_pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
+
+			_cameraRoot.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+		}
+	}
+}

@@ -1,4 +1,5 @@
 ﻿using TLN.Application.GameStates;
+using TLN.Application.Scenes;
 using TLN.Application.Services;
 using TLN.Core.GameStates;
 using UnityEngine;
@@ -33,6 +34,9 @@ namespace TLN.Application.App
 
 			IGameStateMachine gameStateMachine = services.Resolve<IGameStateMachine>();
 			gameStateMachine.Enter(GameStateId.Boot);
+
+			ISceneLoader sceneLoader = services.Resolve<ISceneLoader>();
+			sceneLoader.LoadMainMenu();
 		}
 
 		private ServiceRegistry CreateServices()
@@ -40,9 +44,11 @@ namespace TLN.Application.App
 			ServiceRegistry services = new();
 
 			GameStateMachine gameStateMachine = new();
+			SceneLoaderService sceneLoaderService = new(gameStateMachine, _appRoot);
 			GameStateDebugLogger gameStateDebugLogger = new(gameStateMachine);
 
 			services.Register<IGameStateMachine>(gameStateMachine);
+			services.Register<ISceneLoader>(sceneLoaderService);
 			services.Register<GameStateDebugLogger>(gameStateDebugLogger);
 
 			return services;

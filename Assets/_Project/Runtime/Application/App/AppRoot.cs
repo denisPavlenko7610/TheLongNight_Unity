@@ -10,10 +10,13 @@ namespace TLN.Application.App
 		private readonly List<ITickable> _tickables = new();
 		private ServiceRegistry _services;
 
+		public static AppRoot Instance { get; private set; }
+
 		public ServiceRegistry Services => _services;
 
 		public void Construct(ServiceRegistry services)
 		{
+			Instance = this;
 			_services = services;
 
 			IReadOnlyCollection<object> allServices = _services.GetAllServices();
@@ -47,6 +50,11 @@ namespace TLN.Application.App
 			if (_services == null)
 			{
 				return;
+			}
+
+			if (Instance == this)
+			{
+				Instance = null;
 			}
 
 			IReadOnlyCollection<object> allServices = _services.GetAllServices();
