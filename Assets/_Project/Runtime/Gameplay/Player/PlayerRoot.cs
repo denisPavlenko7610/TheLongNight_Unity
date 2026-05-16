@@ -1,6 +1,8 @@
-﻿using TLN.Application.App;
+﻿using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
+using TLN.Gameplay.Interaction;
+using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Player.Look;
 using TLN.Gameplay.Player.Movement;
@@ -10,54 +12,23 @@ namespace TLN.Gameplay.Player
 {
 	public sealed class PlayerRoot : MonoBehaviour
 	{
-		[field: SerializeField] public PlayerInputReader InputReader { get; private set; }
-		[field: SerializeField] public PlayerMotor Motor { get; private set; }
-		[field: SerializeField] public PlayerLook Look { get; private set; }
-		[field: SerializeField] public Camera Camera { get; private set; }
-		[field: SerializeField] public PlayerPauseController PauseController { get; private set; }
-
-		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine)
+		[field: SerializeField][field: Assign] public PlayerInputReader InputReader { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerMotor Motor { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerLook Look { get; private set; }
+		[field: SerializeField][field: Assign(Mode.Children)] public Camera Camera { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerPauseController PauseController { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerInteractionController InteractionController { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerInventoryController InventoryController { get; private set; }
+		[field: SerializeField][field: Assign] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
+		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine,
+			IInteractionPromptView interactionPromptView, IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView)
 		{
 			Motor.Construct(inputModeService);
 			Look.Construct(inputModeService);
 			PauseController.Construct(gameStateMachine);
-		}
-
-		private void Reset()
-		{
-			InputReader = GetComponent<PlayerInputReader>();
-			Motor = GetComponent<PlayerMotor>();
-			Look = GetComponent<PlayerLook>();
-			Camera = GetComponentInChildren<Camera>();
-			PauseController = GetComponent<PlayerPauseController>();
-		}
-
-		private void OnValidate()
-		{
-			if (InputReader == null)
-			{
-				InputReader = GetComponent<PlayerInputReader>();
-			}
-
-			if (Motor == null)
-			{
-				Motor = GetComponent<PlayerMotor>();
-			}
-
-			if (Look == null)
-			{
-				Look = GetComponent<PlayerLook>();
-			}
-
-			if (Camera == null)
-			{
-				Camera = GetComponentInChildren<Camera>();
-			}
-
-			if (PauseController == null)
-			{
-				PauseController = GetComponent<PlayerPauseController>();
-			}
+			InteractionController.Construct(inputModeService, interactionPromptView);
+			InventoryController.Construct(inventoryWindow, inputModeService, gameStateMachine);
+			TimeOverlayController.Construct(timeOverlayView);
 		}
 	}
 }

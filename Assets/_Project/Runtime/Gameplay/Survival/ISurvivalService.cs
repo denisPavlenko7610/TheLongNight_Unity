@@ -1,0 +1,28 @@
+﻿using System;
+using TLN.Core.Lifetime;
+using TLN.Gameplay.Items;
+
+namespace TLN.Gameplay.Survival
+{
+	public interface ISurvivalService : IGameService
+	{
+		SurvivalStat Hunger { get; }
+		SurvivalStat Thirst { get; }
+		SurvivalStat Fatigue { get; }
+		SurvivalStat Cold { get; }
+		SurvivalStat Condition { get; }
+
+		event Action Changed;
+
+		void Tick(float deltaTime);
+
+		void ApplyConsumable(ConsumableItemDefinition consumable);
+
+		void AddFatigue(float amount);
+		void ReduceFatigue(float amount);
+		void AddHunger(float amount);
+		void AddThirst(float amount);
+		void AddCold(float amount);
+		void RestoreCondition(float amount);
+	}
+}

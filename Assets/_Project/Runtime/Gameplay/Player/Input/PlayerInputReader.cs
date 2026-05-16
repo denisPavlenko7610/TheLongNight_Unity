@@ -9,10 +9,13 @@ namespace TLN.Gameplay.Player.Input
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
+        public bool IsLookFromPointer { get; private set; } = true;
 
         public bool IsSprintHeld { get; private set; }
         public bool WasInteractPressedThisFrame { get; private set; }
         public bool WasPausePressedThisFrame { get; private set; }
+        public bool WasInventoryPressedThisFrame { get; private set; }
+        public bool IsStatusHeld { get; private set; }
 
         private void Awake()
         {
@@ -23,32 +26,40 @@ namespace TLN.Gameplay.Player.Input
         {
             _inputActions.Enable();
 
-            _inputActions.Player.Move.performed += OnMovePerformed;
-            _inputActions.Player.Move.canceled += OnMoveCanceled;
+            _inputActions.Gameplay.Move.performed += OnMovePerformed;
+            _inputActions.Gameplay.Move.canceled += OnMoveCanceled;
 
-            _inputActions.Player.Look.performed += OnLookPerformed;
-            _inputActions.Player.Look.canceled += OnLookCanceled;
+            _inputActions.Gameplay.Look.performed += OnLookPerformed;
+            _inputActions.Gameplay.Look.canceled += OnLookCanceled;
 
-            _inputActions.Player.Sprint.performed += OnSprintPerformed;
-            _inputActions.Player.Sprint.canceled += OnSprintCanceled;
+            _inputActions.Gameplay.Sprint.performed += OnSprintPerformed;
+            _inputActions.Gameplay.Sprint.canceled += OnSprintCanceled;
 
-            _inputActions.Player.Interact.performed += OnInteractPerformed;
-            _inputActions.Player.Pause.performed += OnPausePerformed;
+            _inputActions.Gameplay.Interact.performed += OnInteractPerformed;
+            _inputActions.Gameplay.Pause.performed += OnPausePerformed;
+            _inputActions.Gameplay.Inventory.performed += OnInventoryPerformed;
+
+            _inputActions.Gameplay.Status.performed += OnStatusPerformed;
+            _inputActions.Gameplay.Status.canceled += OnStatusCanceled;
         }
 
         private void OnDisable()
         {
-            _inputActions.Player.Move.performed -= OnMovePerformed;
-            _inputActions.Player.Move.canceled -= OnMoveCanceled;
+            _inputActions.Gameplay.Move.performed -= OnMovePerformed;
+            _inputActions.Gameplay.Move.canceled -= OnMoveCanceled;
 
-            _inputActions.Player.Look.performed -= OnLookPerformed;
-            _inputActions.Player.Look.canceled -= OnLookCanceled;
+            _inputActions.Gameplay.Look.performed -= OnLookPerformed;
+            _inputActions.Gameplay.Look.canceled -= OnLookCanceled;
 
-            _inputActions.Player.Sprint.performed -= OnSprintPerformed;
-            _inputActions.Player.Sprint.canceled -= OnSprintCanceled;
+            _inputActions.Gameplay.Sprint.performed -= OnSprintPerformed;
+            _inputActions.Gameplay.Sprint.canceled -= OnSprintCanceled;
 
-            _inputActions.Player.Interact.performed -= OnInteractPerformed;
-            _inputActions.Player.Pause.performed -= OnPausePerformed;
+            _inputActions.Gameplay.Interact.performed -= OnInteractPerformed;
+            _inputActions.Gameplay.Pause.performed -= OnPausePerformed;
+            _inputActions.Gameplay.Inventory.performed -= OnInventoryPerformed;
+
+            _inputActions.Gameplay.Status.performed -= OnStatusPerformed;
+            _inputActions.Gameplay.Status.canceled -= OnStatusCanceled;
 
             _inputActions.Disable();
         }
@@ -57,6 +68,7 @@ namespace TLN.Gameplay.Player.Input
         {
             WasInteractPressedThisFrame = false;
             WasPausePressedThisFrame = false;
+            WasInventoryPressedThisFrame = false;
         }
 
         private void OnDestroy()
@@ -69,6 +81,16 @@ namespace TLN.Gameplay.Player.Input
             Look = Vector2.zero;
             WasInteractPressedThisFrame = false;
             WasPausePressedThisFrame = false;
+        }
+
+        private void OnStatusPerformed(InputAction.CallbackContext context)
+        {
+            IsStatusHeld = true;
+        }
+
+        private void OnStatusCanceled(InputAction.CallbackContext context)
+        {
+            IsStatusHeld = false;
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)
@@ -84,6 +106,12 @@ namespace TLN.Gameplay.Player.Input
         private void OnLookPerformed(InputAction.CallbackContext context)
         {
             Look = context.ReadValue<Vector2>();
+            IsLookFromPointer = context.control?.device is Pointer;
+        }
+
+        private void OnInventoryPerformed(InputAction.CallbackContext context)
+        {
+            WasInventoryPressedThisFrame = true;
         }
 
         private void OnLookCanceled(InputAction.CallbackContext context)

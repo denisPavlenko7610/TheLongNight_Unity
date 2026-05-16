@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b49ad7358649a683dee90c199f1b73, type: 3}
+  m_Name: SurvivalConfig
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Survival.SurvivalConfig
+  _initialHunger: 0
+  _initialThirst: 0
+  _initialFatigue: 0
+  _initialCold: 0
+  _initialCondition: 100
+  _hungerPerHour: 8
+  _thirstPerHour: 12
+  _fatiguePerHour: 6
+  _coldPerHour: 4
+  _gameHoursPerRealMinute: 1

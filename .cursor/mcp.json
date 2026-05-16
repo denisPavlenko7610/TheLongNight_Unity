@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "unity-mcp-gateway": {
+      "command": "C:\\_DiskE\\Projects\\Unity\\TheLongNight_Unity\\Library\\PackageCache\\com.unity.ai.assistant@667f49aff9c0\\RelayApp~\\relay_win.exe",
+      "args": [
+        "--mcp",
+        "--log-dir",
+        "C:\\_DiskE\\Projects\\Unity\\TheLongNight_Unity\\Logs"
+      ],
+      "env": {
+        "UNITY_ACP_SESSION_TOKEN": "2377bfd5e33116eb78379c92defc80621e4d21f23a32db6743d22bb32a0c3e72",
+        "UNITY_INSTANCE_ID": "26032"
+      }
+    }
+  }
+}

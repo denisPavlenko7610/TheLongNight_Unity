@@ -1,17 +1,18 @@
 {
-    "name": "TLN.UI",
-    "rootNamespace": "",
-    "references": [
-        "GUID:49cbf21cabd7ad5468a920bb5c7777b6",
-        "GUID:8f08fa4cbd82da1408aaa7c16afdc67f"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "TLN.UI",
+  "rootNamespace": "",
+  "references": [
+    "GUID:49cbf21cabd7ad5468a920bb5c7777b6",
+    "GUID:8f08fa4cbd82da1408aaa7c16afdc67f",
+    "GUID:0e3a5145647a73342b8d7a4d11bd1f60"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
