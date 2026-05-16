@@ -1,0 +1,182 @@
+﻿using System;
+using System.Collections.Generic;
+using TLN.Core.Logging;
+using TLN.Gameplay.Items;
+
+namespace TLN.Gameplay.Inventory
+{
+	public sealed class InventoryService : IInventoryService
+	{
+		private readonly InventoryConfig _config;
+		private readonly List<ItemStack> _items = new();
+
+		public IReadOnlyList<ItemStack> Items => _items;
+
+		public float CurrentWeight { get; private set; }
+		public float MaxCarryWeight => _config.MaxCarryWeight;
+
+		public event Action Changed;
+
+		public InventoryService(InventoryConfig config)
+		{
+			_config = config;
+		}
+
+		public bool CanAddItem(ItemDefinition definition, int amount, out string reason)
+		{
+			if (definition == null)
+			{
+				reason = "Invalid item.";
+				return false;
+			}
+
+			if (amount <= 0)
+			{
+				reason = "Invalid amount.";
+				return false;
+			}
+
+			float addedWeight = definition.Weight * amount;
+			float weightAfterAdd = CurrentWeight + addedWeight;
+
+			if (weightAfterAdd > MaxCarryWeight)
+			{
+				reason = "Too heavy.";
+				return false;
+			}
+
+			reason = string.Empty;
+			return true;
+		}
+
+		public InventoryAddResult AddItem(ItemDefinition definition, int amount)
+		{
+			if (!CanAddItem(definition, amount, out string reason))
+			{
+				TLNLogger.Warning($"Inventory: cannot add item. Reason: {reason}");
+				return InventoryAddResult.Failure(reason);
+			}
+
+			if (definition.IsStackable)
+			{
+				AddStackableItem(definition, amount);
+			}
+			else
+			{
+				AddNonStackableItem(definition, amount);
+			}
+
+			RecalculateWeight();
+
+			Changed?.Invoke();
+
+			TLNLogger.Info($"Inventory: added {amount} x {definition.DisplayName}. Weight: {CurrentWeight:0.##}/{MaxCarryWeight:0.##}");
+
+			return InventoryAddResult.Success();
+		}
+
+		public bool TryRemoveItemAt(int index, int amount, out string reason)
+		{
+			if (index < 0 || index >= _items.Count)
+			{
+				reason = "Invalid inventory slot.";
+				return false;
+			}
+
+			if (amount <= 0)
+			{
+				reason = "Invalid amount.";
+				return false;
+			}
+
+			ItemStack stack = _items[index];
+
+			if (amount > stack.Amount)
+			{
+				reason = "Not enough items.";
+				return false;
+			}
+
+			stack.RemoveAmount(amount);
+
+			if (stack.Amount <= 0)
+			{
+				_items.RemoveAt(index);
+			}
+			else
+			{
+				_items[index] = stack;
+			}
+
+			RecalculateWeight();
+			Changed?.Invoke();
+
+			reason = string.Empty;
+			return true;
+		}
+
+		private void AddStackableItem(ItemDefinition definition, int amount)
+		{
+			int remainingAmount = amount;
+
+			for (int i = 0; i < _items.Count; i++)
+			{
+				ItemStack stack = _items[i];
+
+				if (stack.Definition.Id != definition.Id)
+				{
+					continue;
+				}
+
+				int freeSpace = definition.MaxStackSize - stack.Amount;
+
+				if (freeSpace <= 0)
+				{
+					continue;
+				}
+
+				int amountToAdd = Math.Min(remainingAmount, freeSpace);
+
+				stack.AddAmount(amountToAdd);
+				_items[i] = stack;
+
+				remainingAmount -= amountToAdd;
+
+				if (remainingAmount <= 0)
+				{
+					return;
+				}
+			}
+
+			while (remainingAmount > 0)
+			{
+				int amountToAdd = Math.Min(remainingAmount, definition.MaxStackSize);
+
+				_items.Add(new ItemStack(definition, amountToAdd));
+
+				remainingAmount -= amountToAdd;
+			}
+		}
+
+		private void AddNonStackableItem(ItemDefinition definition, int amount)
+		{
+			for (int i = 0; i < amount; i++)
+			{
+				_items.Add(new ItemStack(definition, 1));
+			}
+		}
+
+		private void RecalculateWeight()
+		{
+			float totalWeight = 0f;
+
+			for (int i = 0; i < _items.Count; i++)
+			{
+				ItemStack stack = _items[i];
+				totalWeight += stack.Definition.Weight * stack.Amount;
+			}
+
+			CurrentWeight = totalWeight;
+		}
+	}
+}

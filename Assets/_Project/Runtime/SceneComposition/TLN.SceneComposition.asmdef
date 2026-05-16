@@ -1,0 +1,19 @@
+{
+  "name": "NewAssembly",
+  "rootNamespace": "",
+  "references": [
+    "TLN.Gameplay",
+    "TLN.UI",
+    "TLN.Application",
+    "TLN.Core"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

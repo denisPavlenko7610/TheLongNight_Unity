@@ -1,0 +1,192 @@
+.world-hud-root {
+    flex-grow: 1;
+    position: relative;
+}
+
+.time-panel {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 220px;
+}
+
+.time-day-label {
+    color: var(--tln-text-muted);
+    font-size: 13px;
+}
+
+.time-clock-label {
+    color: var(--tln-text-main);
+    font-size: 28px;
+    unity-font-style: bold;
+}
+
+.survival-panel {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    flex-direction: row;
+    background-color: rgba(7, 12, 16, 0.5);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.survival-icon-widget {
+    width: 42px;
+    height: 42px;
+    margin-right: 8px;
+    position: relative;
+}
+
+.survival-icon {
+    position: absolute;
+    left: 0;
+    width: 42px;
+    height: 42px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.icon-bg {
+    top: 0;
+    opacity: 0.22;
+    -unity-background-image-tint-color: rgb(225, 236, 240);
+}
+
+.survival-fill-mask {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 42px;
+    height: 0%;
+    overflow: hidden;
+}
+
+.icon-fill {
+    bottom: 0;
+    opacity: 1;
+    -unity-background-image-tint-color: rgb(225, 236, 240);
+}
+
+.survival-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.survival-name {
+    color: var(--tln-text-muted);
+    font-size: 14px;
+}
+
+.survival-value {
+    color: var(--tln-text-main);
+    font-size: 14px;
+    unity-font-style: bold;
+}
+
+.interaction-prompt {
+    position: absolute;
+    left: 50%;
+    top: 67%;
+    translate: -50% 0;
+    min-width: 240px;
+    background-color: rgba(7, 12, 16, 0.74);
+    border-radius: 4px;
+    padding: 10px 18px;
+    color: var(--tln-text-main);
+    font-size: 18px;
+    unity-text-align: middle-center;
+}
+
+.notification {
+    position: absolute;
+    left: 50%;
+    top: 64px;
+    translate: -50% 0;
+    min-width: 320px;
+    background-color: rgba(7, 12, 16, 0.78);
+    border-radius: 4px;
+    padding: 10px 18px;
+    color: var(--tln-warning);
+    font-size: 17px;
+    unity-text-align: middle-center;
+}
+
+.icon-thirst {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Survival/ICO_Thirst.png?fileID=2800000&guid=7fd6ba8227a55da4982c26fc46bafdec&type=3#ICO_Thirst");
+}
+
+.icon-condition {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Survival/ICO_%D0%A1ondition.png?fileID=2800000&guid=ff063f2dbee8e584980972dc4d9c9e76&type=3#ICO_Сondition");
+}
+
+.icon-cold {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Survival/ICO_%D0%A1old.png?fileID=2800000&guid=f8a325e181961f64c912df23d2cd99b4&type=3#ICO_Сold");
+}
+
+.icon-fatigue {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Survival/ICO_Fatigue.png?fileID=2800000&guid=f050dd84cb699884e90faf879b3ddb08&type=3#ICO_Fatigue");
+}
+
+.icon-hunger {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Survival/ICO_Hunger.png?fileID=2800000&guid=90b6e225c02c2d34d96c686bba07af6f&type=3#ICO_Hunger");
+}
+
+.time-overlay {
+    position: absolute;
+    left: 50%;
+    top: 32px;
+    translate: -50% 0;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out;
+}
+
+.time-overlay-visible {
+    opacity: 1;
+}
+
+.time-arc-panel {
+    width: 240px;
+    height: 204px;
+    background-color: rgba(7, 12, 16, 0.68);
+    border-radius: 6px;
+    padding: 10px;
+    align-items: center;
+}
+
+.time-period-label {
+    color: rgba(225, 236, 240, 0.75);
+    font-size: 13px;
+    unity-font-style: bold;
+    unity-text-align: middle-center;
+}
+
+.time-day-label {
+    color: rgba(225, 236, 240, 0.65);
+    font-size: 13px;
+    unity-text-align: middle-center;
+}
+
+.time-sun-moon-icon {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    -unity-background-image-tint-color: rgb(225, 236, 240);
+}
+
+.icon-sun {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Time/ICO_Sun.png?fileID=2800000&guid=7b2c14dae2d74294791c471667700010&type=3#ICO_Sun");
+}
+
+.icon-moon {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Time/ICO_Moon.png?fileID=2800000&guid=ee07ff23345b457418303382644e52f8&type=3#ICO_Moon");
+}

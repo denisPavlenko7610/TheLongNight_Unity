@@ -2,7 +2,5 @@
 
 namespace TLN.Gameplay.World
 {
-	public sealed class PlayerSpawnPoint : MonoBehaviour
-	{
-	}
+	public sealed class PlayerSpawnPoint : MonoBehaviour { }
 }

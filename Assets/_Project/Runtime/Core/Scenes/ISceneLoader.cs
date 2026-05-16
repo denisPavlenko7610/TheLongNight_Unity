@@ -8,5 +8,7 @@ namespace TLN.Application.Scenes
 
 		void LoadMainMenu();
 		void LoadWorld();
+
+		void LoadSceneForDevelopment(string scenePathOrName);
 	}
 }
