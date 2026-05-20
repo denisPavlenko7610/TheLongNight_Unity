@@ -18,6 +18,9 @@ namespace TLN.Gameplay.Items
 		[Header("UI")]
 		[SerializeField] private Sprite _icon;
 
+		[Header("Use")]
+		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
+
 		public string Id => _id;
 		public string DisplayName => _displayName;
 		public ItemCategory Category => _category;
@@ -25,5 +28,6 @@ namespace TLN.Gameplay.Items
 		public bool IsStackable => _isStackable;
 		public int MaxStackSize => _maxStackSize;
 		public Sprite Icon => _icon;
+		public ItemUseKind UseKind => _useKind;
 	}
 }

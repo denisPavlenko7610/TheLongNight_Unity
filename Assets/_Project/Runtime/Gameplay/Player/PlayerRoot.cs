@@ -20,15 +20,16 @@ namespace TLN.Gameplay.Player
 		[field: SerializeField][field: Assign] public PlayerInteractionController InteractionController { get; private set; }
 		[field: SerializeField][field: Assign] public PlayerInventoryController InventoryController { get; private set; }
 		[field: SerializeField][field: Assign] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
-		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine,
+
+		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine, IPauseMenuView pauseMenuView,
 			IInteractionPromptView interactionPromptView, IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView)
 		{
 			Motor.Construct(inputModeService);
 			Look.Construct(inputModeService);
-			PauseController.Construct(gameStateMachine);
+			PauseController.Construct(gameStateMachine, inputModeService, pauseMenuView);
 			InteractionController.Construct(inputModeService, interactionPromptView);
 			InventoryController.Construct(inventoryWindow, inputModeService, gameStateMachine);
-			TimeOverlayController.Construct(timeOverlayView);
+			TimeOverlayController.Construct(timeOverlayView, inputModeService);
 		}
 	}
 }

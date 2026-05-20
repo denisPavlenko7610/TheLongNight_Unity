@@ -5,17 +5,21 @@ namespace TLN.Gameplay.Items
 	[CreateAssetMenu(fileName = "ConsumableItemDefinition", menuName = "TLN/Items/Consumable Item Definition")]
 	public sealed class ConsumableItemDefinition : ItemDefinition
 	{
-		[Header("Survival Effects")]
-		[SerializeField] private float _hungerChange;
-		[SerializeField] private float _thirstChange;
-		[SerializeField] private float _fatigueChange;
-		[SerializeField] private float _coldChange;
-		[SerializeField] private float _conditionChange;
+		[Header("Need Restoration")]
+		[SerializeField] private float _hungerRestore;
+		[SerializeField] private float _thirstRestore;
+		[SerializeField] private float _fatigueRestore;
+		[SerializeField] private float _coldRestore;
 
-		public float HungerChange => _hungerChange;
-		public float ThirstChange => _thirstChange;
-		public float FatigueChange => _fatigueChange;
-		public float ColdChange => _coldChange;
-		public float ConditionChange => _conditionChange;
+		[Header("Condition")]
+		[SerializeField] private float _conditionRestore;
+		[SerializeField] private float _conditionDamage;
+
+		public float HungerRestore => _hungerRestore;
+		public float ThirstRestore => _thirstRestore;
+		public float FatigueRestore => _fatigueRestore;
+		public float ColdRestore => _coldRestore;
+		public float ConditionRestore => _conditionRestore;
+		public float ConditionDamage => _conditionDamage;
 	}
 }

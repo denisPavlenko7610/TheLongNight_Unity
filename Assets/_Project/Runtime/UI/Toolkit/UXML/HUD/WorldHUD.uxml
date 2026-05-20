@@ -5,7 +5,10 @@
         <ui:VisualElement name="time-overlay" class="time-overlay">
             <ui:VisualElement class="time-arc-panel">
                 <ui:Label name="time-period-label" text="MORNING" class="time-period-label"/>
-                <ui:VisualElement name="time-sun-moon-icon" class="time-sun-moon-icon icon-sun"/>
+                <ui:VisualElement name="time-arc-root" class="time-arc-root">
+                    <ui:VisualElement name="time-arc-line" class="time-arc-line"/>
+                    <ui:VisualElement name="time-sun-moon-icon" class="time-sun-moon-icon icon-sun"/>
+                </ui:VisualElement>
                 <ui:Label name="time-day-label" text="DAY 1" class="time-day-label"/>
             </ui:VisualElement>
         </ui:VisualElement>

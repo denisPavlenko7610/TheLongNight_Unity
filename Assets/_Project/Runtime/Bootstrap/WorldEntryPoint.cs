@@ -4,18 +4,15 @@ using TLN.Application.Input;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
 using TLN.Core.Logging;
-using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
+using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 using TLN.Gameplay.World;
-using TLN.UI.HUD;
-using TLN.UI.Inventory;
-using TLN.UI.Pause;
-using TLN.UI.Sleep;
+using TLN.UI.World;
 using UnityEngine;
 
 namespace TLN.Bootstrap.App
@@ -27,10 +24,7 @@ namespace TLN.Bootstrap.App
 		[SerializeField][Assign(Mode.Scene)] private PlayerSpawnPoint _spawnPoint;
 
 		[Header("UI")]
-		[SerializeField][Assign(Mode.Scene)] private PauseDebugView _pauseDebugView;
-		[SerializeField][Assign(Mode.Scene)] private InteractionPromptView _interactionPromptView;
-		[SerializeField][Assign(Mode.Scene)] private InventoryDebugView _inventoryDebugView;
-		[SerializeField][Assign(Mode.Scene)] private WorldHUDView _worldHUDView;
+		[SerializeField][Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
 
 		[Header("Survival")]
 		[SerializeField][Assign(Mode.Scene)] private SurvivalConfig _survivalConfig;
@@ -38,7 +32,6 @@ namespace TLN.Bootstrap.App
 
 		[Header("Sleep")]
 		[SerializeField][Assign(Mode.Scene)] private SleepConfig _sleepConfig;
-		[SerializeField][Assign(Mode.Scene)] private SleepDebugView _sleepDebugView;
 
 		[Header("Time")]
 		[SerializeField][Assign(Mode.Scene)] private GameTimeConfig _gameTimeConfig;
@@ -59,6 +52,7 @@ namespace TLN.Bootstrap.App
 		private ISceneLoader _sceneLoader;
 		private NotificationService _notificationConcreteService;
 		private INotificationService _notificationServiceInterface;
+		private PlacementService _placementService;
 
 		private void Awake()
 		{
@@ -68,22 +62,30 @@ namespace TLN.Bootstrap.App
 			}
 			ResolveGameplayServices();
 
-			ConstructNotificationView();
-
 			CreateGameTimeService();
 			CreateSurvivalService();
-			ConstructHUD();
-			CreateItemUseService();
 			CreateSleepService();
 
+			SpawnPlayer();
+
+			CreatePlacementService();
+			CreateItemUseService();
+			ConstructPauseMenu();
+
+			ConstructHUD();
+			ConstructInventoryWindow();
 			ConstructGameTime();
-			ConstructPauseDebugView();
-			ConstructInventoryDebugView();
 			ConstructSurvival();
 			ConstructSleep();
 			ConstructWorldItems();
+		}
 
-			SpawnPlayer();
+		private void OnDestroy()
+		{
+			if (_placementService != null)
+			{
+				_placementService.Placed -= OnPlacedObjectCreated;
+			}
 		}
 
 		private void ResolveGameplayServices()
@@ -96,18 +98,33 @@ namespace TLN.Bootstrap.App
 			_gameStateMachine = AppRoot.Instance.Services.Resolve<IGameStateMachine>();
 		}
 
-		private void ConstructPauseDebugView()
+		private void CreatePlacementService()
 		{
-			if (_pauseDebugView == null) {
-				_pauseDebugView = FindFirstObjectByType<PauseDebugView>();
-			}
+			_placementService = new PlacementService(_playerInstance);
+			_placementService.Placed += OnPlacedObjectCreated;
+		}
 
-			_pauseDebugView.Construct(_gameStateMachine, _sceneLoader);
+		private void OnPlacedObjectCreated(GameObject placedObject)
+		{
+			if (placedObject.TryGetComponent(out BedrollActor bedrollActor))
+			{
+				bedrollActor.Construct(_uiRoot.SleepWindow);
+			}
+		}
+
+		private void ConstructPauseMenu()
+		{
+			_uiRoot.PauseMenu.Construct(_gameStateMachine, _inputModeService, _sceneLoader);
 		}
 
 		private void CreateGameTimeService()
 		{
 			_gameTimeService = new GameTimeService(_gameTimeConfig);
+		}
+
+		private void ConstructInventoryWindow()
+		{
+			_uiRoot.InventoryWindow.Construct(_inventoryService, _itemUseService);
 		}
 
 		private void ConstructGameTime()
@@ -118,7 +135,7 @@ namespace TLN.Bootstrap.App
 
 		private void CreateItemUseService()
 		{
-			_itemUseService = new ItemUseService(_inventoryService, _survivalService, _notificationConcreteService);
+			_itemUseService = new ItemUseService(_inventoryService, _survivalService, _notificationServiceInterface, _placementService);
 		}
 
 		private void CreateSleepService()
@@ -128,13 +145,13 @@ namespace TLN.Bootstrap.App
 
 		private void ConstructSleep()
 		{
-			_sleepDebugView.Construct(_sleepService, _inputModeService);
+			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationConcreteService);
 
 			BedrollActor[] bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
 
 			for (int i = 0; i < bedrolls.Length; i++)
 			{
-				bedrolls[i].Construct(_sleepDebugView);
+				bedrolls[i].Construct(_uiRoot.SleepWindow);
 			}
 		}
 
@@ -146,8 +163,8 @@ namespace TLN.Bootstrap.App
 
 		private void ConstructHUD()
 		{
-			_notificationConcreteService.SetView(_worldHUDView);
-			_worldHUDView.Construct(_survivalService, _gameTimeService);
+			_notificationConcreteService.SetView(_uiRoot.HUD);
+			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
 		}
 
 		private void ConstructSurvival()
@@ -155,15 +172,10 @@ namespace TLN.Bootstrap.App
 			_survivalController.Construct(_survivalService, _survivalWarningService, _gameStateMachine);
 		}
 
-		private void ConstructNotificationView()
-		{
-			_notificationConcreteService.SetView(_worldHUDView);
-		}
-
 		private void SpawnPlayer()
 		{
 			_playerInstance = Instantiate(_playerPrefab, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
-			_playerInstance.Construct(_inputModeService, _gameStateMachine, _worldHUDView, _inventoryDebugView, _worldHUDView);
+			_playerInstance.Construct(_inputModeService, _gameStateMachine, _uiRoot.PauseMenu, _uiRoot.HUD, _uiRoot.InventoryWindow, _uiRoot.HUD);
 		}
 
 		private void ConstructWorldItems()
@@ -175,14 +187,21 @@ namespace TLN.Bootstrap.App
 			}
 		}
 
-		private void ConstructInventoryDebugView()
-		{
-			_inventoryDebugView.Construct(_inventoryService, _itemUseService);
-		}
-
 		private bool ValidateRequiredReferences()
 		{
 			bool isValid = true;
+
+			if (_uiRoot.SleepWindow == null)
+			{
+				TLNLogger.Error("SleepWindowView is required.", this);
+				isValid = false;
+			}
+
+			if (_uiRoot.InventoryWindow == null)
+			{
+				TLNLogger.Error("InventoryWindowView is required.", this);
+				isValid = false;
+			}
 
 			if (_playerPrefab == null)
 			{
@@ -196,7 +215,7 @@ namespace TLN.Bootstrap.App
 				isValid = false;
 			}
 
-			if (_worldHUDView == null)
+			if (_uiRoot.HUD == null)
 			{
 				TLNLogger.Error("WorldHUDView is required.", this);
 				isValid = false;

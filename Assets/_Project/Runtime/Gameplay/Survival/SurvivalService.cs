@@ -105,11 +105,13 @@ namespace TLN.Gameplay.Survival
                 return;
             }
 
-            Hunger = ApplyStatChange(Hunger, consumable.HungerChange);
-            Thirst = ApplyStatChange(Thirst, consumable.ThirstChange);
-            Fatigue = ApplyStatChange(Fatigue, consumable.FatigueChange);
-            Cold = ApplyStatChange(Cold, consumable.ColdChange);
-            Condition = ApplyStatChange(Condition, consumable.ConditionChange);
+            Hunger = SubtractFromStat(Hunger, consumable.HungerRestore);
+            Thirst = SubtractFromStat(Thirst, consumable.ThirstRestore);
+            Fatigue = SubtractFromStat(Fatigue, consumable.FatigueRestore);
+            Cold = SubtractFromStat(Cold, consumable.ColdRestore);
+
+            Condition = AddToStat(Condition, consumable.ConditionRestore);
+            Condition = SubtractFromStat(Condition, consumable.ConditionDamage);
 
             Changed?.Invoke();
         }

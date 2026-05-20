@@ -13,14 +13,21 @@ namespace TLN.UI.HUD
     [RequireComponent(typeof(UIDocument))]
     public sealed class WorldHUDView : MonoBehaviour, IInteractionPromptView, INotificationView, ITimeOverlayView
     {
-        private const string HiddenClassName = "hidden";
+        [SerializeField] private float _notificationDuration = 2f;
+
+        private const string HiddenClassName = "inventory-window-root-hidden";
+        private const string VisibleClassName = "inventory-window-root-visible";
 
         private const float SurvivalIconSize = 42f;
 
         private const string TimeOverlayVisibleClassName = "time-overlay-visible";
         private const float TimeOverlayVisibleSeconds = 5f;
 
-        [SerializeField] private float _notificationDuration = 2f;
+        private const float TimeArcWidth = 220f;
+        private const float TimeArcHeight = 70f;
+        private const float TimeIconSize = 34f;
+
+        private VisualElement _timeArcRoot;
 
         private UIDocument _document;
 
@@ -63,6 +70,7 @@ namespace TLN.UI.HUD
             VisualElement root = _document.rootVisualElement;
 
             _timeDayLabel = root.Q<Label>("time-day-label");
+            _timeArcRoot = root.RequiredQ<VisualElement>("time-arc-root");
 
             _hungerIcon = root.RequiredFillIcon("hunger-fill-mask", SurvivalIconSize);
             _thirstIcon = root.RequiredFillIcon("thirst-fill-mask", SurvivalIconSize);
@@ -155,18 +163,97 @@ namespace TLN.UI.HUD
             SetLabel(_timeDayLabel, $"DAY {time.Day}");
             SetLabel(_timePeriodLabel, GetTimePeriodLabel(time.Hour));
 
-            bool isNight = time.Hour is < 6 or >= 20;
+            bool isDay = IsDayTime(time.Hour);
 
-            if (isNight)
+            SetSunMoonIcon(isDay);
+            SetTimeIconPosition(time.Hour, time.Minute, isDay);
+        }
+
+        private static bool IsDayTime(int hour)
+        {
+            return hour >= 6 && hour < 20;
+        }
+
+        private void SetSunMoonIcon(bool isDay)
+        {
+            if (_timeSunMoonIcon == null)
             {
-                _timeSunMoonIcon.RemoveFromClassList("icon-sun");
-                _timeSunMoonIcon.AddToClassList("icon-moon");
+                return;
             }
-            else
+
+            if (isDay)
             {
                 _timeSunMoonIcon.RemoveFromClassList("icon-moon");
                 _timeSunMoonIcon.AddToClassList("icon-sun");
+                return;
             }
+
+            _timeSunMoonIcon.RemoveFromClassList("icon-sun");
+            _timeSunMoonIcon.AddToClassList("icon-moon");
+        }
+
+        private void SetTimeIconPosition(int hour, int minute, bool isDay)
+        {
+            if (_timeSunMoonIcon == null)
+            {
+                return;
+            }
+
+            float dayTime = hour + minute / 60f;
+
+            float progress = isDay
+                ? CalculateDayProgress(dayTime)
+                : CalculateNightProgress(dayTime);
+
+            Vector2 position = CalculateArcPosition(progress);
+
+            _timeSunMoonIcon.style.left = position.x;
+            _timeSunMoonIcon.style.top = position.y;
+        }
+
+        private static float CalculateDayProgress(float hour)
+        {
+            const float sunriseHour = 6f;
+            const float sunsetHour = 20f;
+
+            return Mathf.InverseLerp(sunriseHour, sunsetHour, hour);
+        }
+
+        private static float CalculateNightProgress(float hour)
+        {
+            const float nightStartHour = 20f;
+            const float nightEndHourNextDay = 30f;
+
+            float normalizedHour = hour;
+
+            if (normalizedHour < nightStartHour)
+            {
+                normalizedHour += 24f;
+            }
+
+            return Mathf.InverseLerp(
+                nightStartHour,
+                nightEndHourNextDay,
+                normalizedHour);
+        }
+
+        private static Vector2 CalculateArcPosition(float progress)
+        {
+            float clampedProgress = Mathf.Clamp01(progress);
+
+            float angleDegrees = Mathf.Lerp(180f, 0f, clampedProgress);
+            float angleRadians = angleDegrees * Mathf.Deg2Rad;
+
+            float radiusX = (TimeArcWidth - TimeIconSize) * 0.5f;
+            float radiusY = TimeArcHeight * 0.75f;
+
+            float centerX = (TimeArcWidth - TimeIconSize) * 0.5f;
+            float baseY = TimeArcHeight - TimeIconSize * 0.5f;
+
+            float x = centerX + Mathf.Cos(angleRadians) * radiusX;
+            float y = baseY - Mathf.Sin(angleRadians) * radiusY;
+
+            return new Vector2(x, y);
         }
 
         private static string GetTimePeriodLabel(int hour)
