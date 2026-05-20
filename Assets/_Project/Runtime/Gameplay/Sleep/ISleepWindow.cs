@@ -2,7 +2,7 @@
 {
 	public interface ISleepWindow
 	{
-		void Show();
+		void Show(BedrollActor bedrollActor);
 		void Hide();
 	}
 }

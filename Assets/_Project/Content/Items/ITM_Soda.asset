@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5660966d9b4b4efba6691798fbd1e4ca, type: 3}
   m_Name: ITM_Soda
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.ConsumableItemDefinition
-  _id: apple
-  _displayName: Apple
+  _id: soda
+  _displayName: Soda
   _category: 10
-  _weight: 0.25
+  _weight: 0.35
   _isStackable: 1
-  _maxStackSize: 10
+  _maxStackSize: 6
   _icon: {fileID: 21300000, guid: 3aaf0c17ec4c51d479270b3ee554c981, type: 3}
-  _hungerChange: -25
-  _thirstChange: 20
-  _fatigueChange: 0
-  _coldChange: 0
-  _conditionChange: 0
+  _useKind: 10
+  _hungerRestore: 5
+  _thirstRestore: 25
+  _fatigueRestore: 0
+  _coldRestore: 0
+  _conditionRestore: 0
+  _conditionDamage: 0

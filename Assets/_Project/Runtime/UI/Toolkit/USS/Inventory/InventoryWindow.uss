@@ -1,0 +1,118 @@
+﻿.inventory-window-root {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out;
+}
+
+.inventory-window-root-hidden {
+    display: none;
+}
+
+.inventory-window-root-visible {
+    display: flex;
+}
+
+.inventory-window {
+    width: 620px;
+    height: 560px;
+    background-color: rgba(7, 12, 16, 0.88);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.inventory-header {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.inventory-title {
+    color: rgb(225, 236, 240);
+    font-size: 24px;
+    unity-font-style: bold;
+}
+
+.inventory-weight-label {
+    color: rgba(225, 236, 240, 0.72);
+    font-size: 15px;
+    unity-text-align: middle-right;
+}
+
+.inventory-scroll-view {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.18);
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.inventory-footer {
+    height: 34px;
+    justify-content: center;
+}
+
+.inventory-footer-label {
+    color: rgba(225, 236, 240, 0.55);
+    font-size: 13px;
+    unity-text-align: middle-center;
+}
+
+.inventory-item-row {
+    height: 56px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.035);
+    border-radius: 4px;
+    margin-bottom: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.inventory-item-row:hover {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+.item-icon {
+    width: 38px;
+    height: 38px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    -unity-background-image-tint-color: rgb(225, 236, 240);
+}
+
+.item-info {
+    flex-grow: 1;
+}
+
+.item-name-label {
+    color: rgb(225, 236, 240);
+    font-size: 15px;
+    unity-font-style: bold;
+}
+
+.item-meta-label {
+    color: rgba(225, 236, 240, 0.58);
+    font-size: 12px;
+}
+
+.item-use-button {
+    width: 68px;
+    height: 30px;
+    color: rgb(225, 236, 240);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+}
+
+.item-use-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.item-use-button:disabled {
+    opacity: 0.35;
+}

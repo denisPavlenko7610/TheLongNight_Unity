@@ -1,0 +1,18 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="pause-menu-root" class="pause-menu-root">
+        <ui:VisualElement name="pause-background" class="pause-background" />
+        <ui:VisualElement name="pause-dark-overlay" class="pause-dark-overlay" />
+
+        <ui:VisualElement class="pause-content">
+            <ui:Label text="Pause" class="pause-title" />
+
+            <ui:VisualElement class="pause-menu-list">
+                <ui:Button name="resume-button" text="Resume" class="pause-menu-button" />
+                <ui:Button name="save-button" text="Save" class="pause-menu-button" />
+                <ui:Button name="load-button" text="Load" class="pause-menu-button" />
+                <ui:Button name="settings-button" text="Options" class="pause-menu-button" />
+                <ui:Button name="quit-button" text="Quit" class="pause-menu-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

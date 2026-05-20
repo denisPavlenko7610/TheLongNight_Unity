@@ -1,6 +1,7 @@
 .world-hud-root {
     flex-grow: 1;
     position: relative;
+    pointer-events: none;
 }
 
 .time-panel {
@@ -100,6 +101,22 @@
     unity-text-align: middle-center;
 }
 
+.interaction-prompt {
+    pointer-events: none;
+}
+
+.notification {
+    pointer-events: none;
+}
+
+.survival-panel {
+    pointer-events: none;
+}
+
+.time-overlay {
+    pointer-events: none;
+}
+
 .notification {
     position: absolute;
     left: 50%;
@@ -150,8 +167,8 @@
 }
 
 .time-arc-panel {
-    width: 240px;
-    height: 204px;
+    width: 280px;
+    height: 140px;
     background-color: rgba(7, 12, 16, 0.68);
     border-radius: 6px;
     padding: 10px;
@@ -171,12 +188,28 @@
     unity-text-align: middle-center;
 }
 
+.time-arc-root {
+    width: 220px;
+    height: 70px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.time-arc-line {
+    position: absolute;
+    left: 0;
+    top: 42px;
+    width: 220px;
+    height: 1px;
+    background-color: rgba(225, 236, 240, 0.25);
+    /*background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/Time/ICO_Arc.png?fileID=2800000&guid=7b2c14dae2d74294791c471667700010&type=3#ICO_Sun");*/
+}
+
 .time-sun-moon-icon {
-    width: 96px;
-    height: 96px;
-    flex-shrink: 0;
-    margin-top: 6px;
-    margin-bottom: 6px;
+    position: absolute;
+    width: 32px;
+    height: 32px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

@@ -1,0 +1,71 @@
+﻿.sleep-window-root {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    opacity: 0;
+}
+
+.sleep-window-root-visible {
+    display: flex;
+    opacity: 1;
+}
+
+.sleep-window {
+    width: 420px;
+    background-color: rgba(7, 12, 16, 0.9);
+    border-radius: 6px;
+    padding: 18px;
+}
+
+.sleep-title {
+    color: rgb(225, 236, 240);
+    font-size: 24px;
+    unity-font-style: bold;
+    unity-text-align: middle-center;
+    margin-bottom: 8px;
+}
+
+.sleep-description {
+    color: rgba(225, 236, 240, 0.68);
+    font-size: 14px;
+    unity-text-align: middle-center;
+    margin-bottom: 16px;
+}
+
+.sleep-button-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.sleep-button {
+    width: 185px;
+    height: 42px;
+    color: rgb(225, 236, 240);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+
+.sleep-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sleep-cancel-button {
+    height: 38px;
+    margin-top: 8px;
+    color: rgba(225, 236, 240, 0.8);
+    background-color: rgba(255, 255, 255, 0.045);
+}
+
+.sleep-pick-up-button {
+    height: 38px;
+    margin-top: 8px;
+    color: rgb(225, 236, 240);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+
+.sleep-pick-up-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}

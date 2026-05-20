@@ -36,14 +36,16 @@
     unity-font-style: bold;
 }
 
-.hidden {
+.runtime-hidden {
     display: none;
 }
 
+.ui-window-hidden {
+    display: none;
+    opacity: 0;
+}
 
-
-
-
-
-
-
+.ui-window-visible {
+    display: flex;
+    opacity: 1;
+}

@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/USS/Inventory/InventoryWindow.uss?fileID=7433441132597879392&amp;guid=29220922932a4f8c9e256d3a6da3588b&amp;type=3#InventoryWindow"/>
+    <ui:VisualElement name="inventory-item-row" class="inventory-item-row">
+        <ui:VisualElement name="item-icon" class="item-icon"/>
+        <ui:VisualElement class="item-info">
+            <ui:Label name="item-name-label" text="Item Name" class="item-name-label"/>
+            <ui:Label name="item-meta-label" text="x1 / 0.1 kg" class="item-meta-label"/>
+        </ui:VisualElement>
+        <ui:Button name="item-use-button" text="USE" class="item-use-button"/>
+    </ui:VisualElement>
+</ui:UXML>
