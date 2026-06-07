@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TLN.Gameplay.Items
 {
-	public sealed class ItemUseService
+	public sealed class ItemUseService : IItemUseService
 	{
 		private readonly IInventoryService _inventoryService;
 		private readonly ISurvivalService _survivalService;
@@ -26,7 +26,7 @@ namespace TLN.Gameplay.Items
 		{
 			if (index < 0 || index >= _inventoryService.Items.Count)
 			{
-				return ItemUseResult.Failure("Invalid inventory slot.");
+				return Fail("Invalid inventory slot.");
 			}
 
 			ItemStack stack = _inventoryService.Items[index];
@@ -35,8 +35,14 @@ namespace TLN.Gameplay.Items
 			{
 				ItemUseKind.Consumable => UseConsumableAt(index, stack),
 				ItemUseKind.Placeable => UsePlaceableAt(index, stack),
-				_ => ItemUseResult.Failure("This item cannot be used.")
+				_ => Fail("This item cannot be used.")
 			};
+		}
+
+		private ItemUseResult Fail(string message)
+		{
+			_notificationService.Show(message);
+			return ItemUseResult.Failure(message);
 		}
 
 		private ItemUseResult UseConsumableAt(int index, ItemStack stack)
@@ -70,9 +76,10 @@ namespace TLN.Gameplay.Items
 
 			bool wasPlaced = _placementService.TryPlace(placeable.PlacedPrefab, placeable.PlaceDistance, out GameObject placedObject);
 
+			string message = "";
 			if (!wasPlaced)
 			{
-				return ItemUseResult.Failure("Cannot place item here.");
+				return Fail("Cannot place item here.");
 			}
 
 			bool wasRemoved = _inventoryService.TryRemoveItemAt(index, 1, out string removeFailureReason);
@@ -83,7 +90,7 @@ namespace TLN.Gameplay.Items
 				return ItemUseResult.Failure(removeFailureReason);
 			}
 
-			string message = $"Placed {placeable.DisplayName}";
+			message = $"Placed {placeable.DisplayName}";
 			_notificationService.Show(message);
 
 			return ItemUseResult.Success(message);

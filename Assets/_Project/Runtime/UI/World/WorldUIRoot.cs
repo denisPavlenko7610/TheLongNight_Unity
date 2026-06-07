@@ -21,5 +21,13 @@ namespace TLN.UI.World
 
 		[field: SerializeField][field: Assign(Mode.Scene)]
 		public PauseMenuView PauseMenu { get; private set; }
+
+		public bool HasAllRequiredReferences()
+		{
+			return HUD != null
+				&& InventoryWindow != null
+				&& SleepWindow != null
+				&& PauseMenu != null;
+		}
 	}
 }

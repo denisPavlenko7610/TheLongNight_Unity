@@ -117,6 +117,10 @@
     pointer-events: none;
 }
 
+.world-hud-root {
+    pointer-events: none;
+}
+
 .notification {
     position: absolute;
     left: 50%;

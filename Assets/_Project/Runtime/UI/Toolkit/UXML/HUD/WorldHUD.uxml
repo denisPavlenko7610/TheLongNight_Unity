@@ -44,7 +44,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Label name="interaction-prompt-label" text="" class="interaction-prompt hidden"/>
-        <ui:Label name="notification-label" text="" class="notification hidden"/>
+        <ui:Label name="interaction-prompt-label" text="" class="interaction-prompt runtime-hidden"/>
+        <ui:Label name="notification-label" text="" class="notification runtime-hidden"/>
     </ui:VisualElement>
 </ui:UXML>

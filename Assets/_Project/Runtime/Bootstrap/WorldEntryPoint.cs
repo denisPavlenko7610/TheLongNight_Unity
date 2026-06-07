@@ -1,9 +1,8 @@
-﻿using Assign;
+using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
-using TLN.Core.Logging;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -11,105 +10,82 @@ using TLN.Gameplay.Player;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
-using TLN.Gameplay.World;
 using TLN.UI.World;
 using UnityEngine;
+using VContainer;
 
-namespace TLN.Bootstrap.App
+namespace TLN.Gameplay.World
 {
 	public sealed class WorldEntryPoint : MonoBehaviour
 	{
-		[Header("Player")]
-		[SerializeField] private PlayerRoot _playerPrefab;
-		[SerializeField][Assign(Mode.Scene)] private PlayerSpawnPoint _spawnPoint;
+		[SerializeField, Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
+		[SerializeField, Assign(Mode.Scene)] private PlayerRoot _playerPrefab;
+		[SerializeField, Assign(Mode.Scene)] private Transform _spawnPoint;
 
-		[Header("UI")]
-		[SerializeField][Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
-
-		[Header("Survival")]
-		[SerializeField][Assign(Mode.Scene)] private SurvivalConfig _survivalConfig;
-		[SerializeField][Assign(Mode.Scene)] private WorldSurvivalController _survivalController;
-
-		[Header("Sleep")]
-		[SerializeField][Assign(Mode.Scene)] private SleepConfig _sleepConfig;
-
-		[Header("Time")]
-		[SerializeField][Assign(Mode.Scene)] private GameTimeConfig _gameTimeConfig;
-		[SerializeField][Assign(Mode.Scene)] private WorldTimeController _timeController;
-
-		private IGameTimeService _gameTimeService;
-
-		private SleepService _sleepService;
-
-		private SurvivalWarningService _survivalWarningService;
-		private ISurvivalService _survivalService;
-		private IInventoryService _inventoryService;
-
-		private ItemUseService _itemUseService;
-		private PlayerRoot _playerInstance;
-		private IInputModeService _inputModeService;
 		private IGameStateMachine _gameStateMachine;
+		private IInputModeService _inputModeService;
 		private ISceneLoader _sceneLoader;
-		private NotificationService _notificationConcreteService;
-		private INotificationService _notificationServiceInterface;
-		private PlacementService _placementService;
+		private INotificationService _notificationService;
 
-		private void Awake()
+		private IInventoryService _inventoryService;
+		private IItemUseService _itemUseService;
+		private PlacementService _placementService;
+		private IGameTimeService _gameTimeService;
+		private ISurvivalService _survivalService;
+		private SleepService _sleepService;
+		private IPlayerFactory _playerFactory;
+
+		private PlayerRoot _playerInstance;
+
+		[Inject]
+		public void Construct(
+			IGameStateMachine gameStateMachine,
+			IInputModeService inputModeService,
+			ISceneLoader sceneLoader,
+			INotificationService notificationService,
+			IInventoryService inventoryService,
+			IItemUseService itemUseService,
+			PlacementService placementService,
+			IGameTimeService gameTimeService,
+			ISurvivalService survivalService,
+			SleepService sleepService,
+			IPlayerFactory playerFactory)
 		{
+			_gameStateMachine = gameStateMachine;
+			_inputModeService = inputModeService;
+			_sceneLoader = sceneLoader;
+			_notificationService = notificationService;
+
+			_inventoryService = inventoryService;
+			_itemUseService = itemUseService;
+			_placementService = placementService;
+			_gameTimeService = gameTimeService;
+			_survivalService = survivalService;
+			_sleepService = sleepService;
+			_playerFactory = playerFactory;
+		}
+
+		private void Start()
+		{
+			ResolveSceneReferences();
+
 			if (!ValidateRequiredReferences())
 			{
+				enabled = false;
 				return;
 			}
-			ResolveGameplayServices();
-
-			CreateGameTimeService();
-			CreateSurvivalService();
-			CreateSleepService();
-
-			SpawnPlayer();
-
-			CreatePlacementService();
-			CreateItemUseService();
-			ConstructPauseMenu();
 
 			ConstructHUD();
+			ConstructPauseMenu();
 			ConstructInventoryWindow();
-			ConstructGameTime();
-			ConstructSurvival();
 			ConstructSleep();
-			ConstructWorldItems();
+			SpawnPlayer();
 		}
 
-		private void OnDestroy()
+		private void ConstructHUD()
 		{
-			if (_placementService != null)
-			{
-				_placementService.Placed -= OnPlacedObjectCreated;
-			}
-		}
-
-		private void ResolveGameplayServices()
-		{
-			_notificationServiceInterface = AppRoot.Instance.Services.Resolve<INotificationService>();
-			_sceneLoader = AppRoot.Instance.Services.Resolve<ISceneLoader>();
-			_inventoryService = AppRoot.Instance.Services.Resolve<IInventoryService>();
-			_notificationConcreteService = AppRoot.Instance.Services.Resolve<NotificationService>();
-			_inputModeService = AppRoot.Instance.Services.Resolve<IInputModeService>();
-			_gameStateMachine = AppRoot.Instance.Services.Resolve<IGameStateMachine>();
-		}
-
-		private void CreatePlacementService()
-		{
-			_placementService = new PlacementService(_playerInstance);
-			_placementService.Placed += OnPlacedObjectCreated;
-		}
-
-		private void OnPlacedObjectCreated(GameObject placedObject)
-		{
-			if (placedObject.TryGetComponent(out BedrollActor bedrollActor))
-			{
-				bedrollActor.Construct(_uiRoot.SleepWindow);
-			}
+			_notificationService.SetView(_uiRoot.HUD);
+			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
 		}
 
 		private void ConstructPauseMenu()
@@ -117,129 +93,68 @@ namespace TLN.Bootstrap.App
 			_uiRoot.PauseMenu.Construct(_gameStateMachine, _inputModeService, _sceneLoader);
 		}
 
-		private void CreateGameTimeService()
-		{
-			_gameTimeService = new GameTimeService(_gameTimeConfig);
-		}
-
 		private void ConstructInventoryWindow()
 		{
 			_uiRoot.InventoryWindow.Construct(_inventoryService, _itemUseService);
 		}
 
-		private void ConstructGameTime()
-		{
-			IGameStateMachine gameStateMachine = AppRoot.Instance.Services.Resolve<IGameStateMachine>();
-			_timeController.Construct(_gameTimeService, gameStateMachine);
-		}
-
-		private void CreateItemUseService()
-		{
-			_itemUseService = new ItemUseService(_inventoryService, _survivalService, _notificationServiceInterface, _placementService);
-		}
-
-		private void CreateSleepService()
-		{
-			_sleepService = new SleepService(_sleepConfig, _survivalService, _notificationConcreteService, _gameTimeService);
-		}
-
 		private void ConstructSleep()
 		{
-			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationConcreteService);
-
-			BedrollActor[] bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
-
-			for (int i = 0; i < bedrolls.Length; i++)
+			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationService);
+			var bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
+			foreach (var bedroll in bedrolls)
 			{
-				bedrolls[i].Construct(_uiRoot.SleepWindow);
+				bedroll.Construct(_uiRoot.SleepWindow);
 			}
-		}
-
-		private void CreateSurvivalService()
-		{
-			_survivalService = new SurvivalService(_survivalConfig);
-			_survivalWarningService = new SurvivalWarningService(_survivalService, _notificationConcreteService, warningCooldownSeconds: 10f);
-		}
-
-		private void ConstructHUD()
-		{
-			_notificationConcreteService.SetView(_uiRoot.HUD);
-			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
-		}
-
-		private void ConstructSurvival()
-		{
-			_survivalController.Construct(_survivalService, _survivalWarningService, _gameStateMachine);
 		}
 
 		private void SpawnPlayer()
 		{
-			_playerInstance = Instantiate(_playerPrefab, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
-			_playerInstance.Construct(_inputModeService, _gameStateMachine, _uiRoot.PauseMenu, _uiRoot.HUD, _uiRoot.InventoryWindow, _uiRoot.HUD);
+			_playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
+			_placementService.SetPlayerRoot(_playerInstance);
 		}
 
-		private void ConstructWorldItems()
+		private void ResolveSceneReferences()
 		{
-			WorldItemActor[] worldItems = FindObjectsByType<WorldItemActor>(FindObjectsSortMode.None);
+			if (_uiRoot == null)
+			{
+				_uiRoot = FindFirstObjectByType<WorldUIRoot>();
+			}
 
-			for (int i = 0; i < worldItems.Length; i++) {
-				worldItems[i].Construct(_inventoryService, _notificationConcreteService);
+			if (_spawnPoint == null)
+			{
+				PlayerSpawnPoint spawnPoint = FindFirstObjectByType<PlayerSpawnPoint>();
+				_spawnPoint = spawnPoint != null ? spawnPoint.transform : null;
 			}
 		}
 
 		private bool ValidateRequiredReferences()
 		{
-			bool isValid = true;
-
-			if (_uiRoot.SleepWindow == null)
+			if (_uiRoot == null)
 			{
-				TLNLogger.Error("SleepWindowView is required.", this);
-				isValid = false;
+				Debug.LogError("WorldUIRoot is required.");
+				return false;
 			}
 
-			if (_uiRoot.InventoryWindow == null)
+			if (!_uiRoot.HasAllRequiredReferences())
 			{
-				TLNLogger.Error("InventoryWindowView is required.", this);
-				isValid = false;
+				Debug.LogError("Some UI references in WorldUIRoot are missing.");
+				return false;
 			}
 
 			if (_playerPrefab == null)
 			{
-				TLNLogger.Error("Player prefab is required.", this);
-				isValid = false;
+				Debug.LogError("PlayerPrefab is required.");
+				return false;
 			}
 
 			if (_spawnPoint == null)
 			{
-				TLNLogger.Error("Player spawn point is required.", this);
-				isValid = false;
+				Debug.LogError("Player spawn point is required.");
+				return false;
 			}
 
-			if (_uiRoot.HUD == null)
-			{
-				TLNLogger.Error("WorldHUDView is required.", this);
-				isValid = false;
-			}
-
-			if (_survivalConfig == null)
-			{
-				TLNLogger.Error("SurvivalConfig is required.", this);
-				isValid = false;
-			}
-
-			if (_gameTimeConfig == null)
-			{
-				TLNLogger.Error("GameTimeConfig is required.", this);
-				isValid = false;
-			}
-
-			if (_sleepConfig == null)
-			{
-				TLNLogger.Error("SleepConfig is required.", this);
-				isValid = false;
-			}
-
-			return isValid;
+			return true;
 		}
 	}
 }

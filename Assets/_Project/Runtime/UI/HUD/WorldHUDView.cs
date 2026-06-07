@@ -14,8 +14,9 @@ namespace TLN.UI.HUD
     public sealed class WorldHUDView : MonoBehaviour, IInteractionPromptView, INotificationView, ITimeOverlayView
     {
         [SerializeField] private float _notificationDuration = 2f;
+        [SerializeField] private float _refreshInterval = 0.25f;
 
-        private const string HiddenClassName = "inventory-window-root-hidden";
+        private const string HiddenClassName = "runtime-hidden";
         private const string VisibleClassName = "inventory-window-root-visible";
 
         private const float SurvivalIconSize = 42f;
@@ -47,6 +48,7 @@ namespace TLN.UI.HUD
 
         private float _notificationHideTime;
         private bool _isInitialized;
+        private float _nextRefreshTime;
 
         private VisualElement _timeOverlay;
         private VisualElement _timeSunMoonIcon;
@@ -95,7 +97,7 @@ namespace TLN.UI.HUD
         {
             EnsureInitialized();
 
-            RefreshAll();
+            RefreshIfNeeded();
             UpdateNotificationLifetime();
             UpdateTimeOverlayLifetime();
         }
@@ -108,6 +110,7 @@ namespace TLN.UI.HUD
             _gameTimeService = gameTimeService;
 
             RefreshAll();
+            _nextRefreshTime = UnityTime.unscaledTime + _refreshInterval;
         }
 
         public void ShowTimeOverlay()
@@ -149,6 +152,22 @@ namespace TLN.UI.HUD
         {
             RefreshTime();
             RefreshSurvival();
+        }
+
+        private void RefreshIfNeeded()
+        {
+            if (_survivalService == null && _gameTimeService == null)
+            {
+                return;
+            }
+
+            if (UnityTime.unscaledTime < _nextRefreshTime)
+            {
+                return;
+            }
+
+            RefreshAll();
+            _nextRefreshTime = UnityTime.unscaledTime + Mathf.Max(0.01f, _refreshInterval);
         }
 
         private void RefreshTime()

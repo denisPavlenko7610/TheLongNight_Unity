@@ -1,36 +1,53 @@
-﻿using TLN.Application.Scenes;
-using TLN.Bootstrap.App;
+using TLN.Application.Scenes;
 using TLN.UI.MainMenu;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Bootstrap.MainMenu
 {
 	public sealed class MainMenuEntryPoint : MonoBehaviour
 	{
-		[SerializeField] private MainMenuDebugView _debugView;
+		[SerializeField] private MainMenuView _menuView;
+
+		private ISceneLoader _sceneLoader;
+
+		[Inject]
+		public void Construct(ISceneLoader sceneLoader)
+		{
+			_sceneLoader = sceneLoader;
+			InitializeMenu();
+		}
 
 		private void Awake()
 		{
-			if (_debugView == null)
-			{
-				_debugView = FindFirstObjectByType<MainMenuDebugView>();
-			}
+			ResolveMenuView();
+		}
 
-			if (_debugView == null)
+		private void ResolveMenuView()
+		{
+			if (_menuView == null)
 			{
-				Debug.LogError("MainMenuDebugView was not found in MainMenu scene.");
+				_menuView = FindFirstObjectByType<MainMenuView>();
+			}
+		}
+
+		private void InitializeMenu()
+		{
+			ResolveMenuView();
+
+			if (_menuView == null)
+			{
+				Debug.LogError("MainMenuView was not found in MainMenu scene.");
 				return;
 			}
 
-			if (AppRoot.Instance == null || AppRoot.Instance.Services == null)
+			if (_sceneLoader == null)
 			{
-				Debug.LogError("AppRoot is missing. Start the game from Boot scene.");
+				Debug.LogError("Scene loader was not injected into MainMenuEntryPoint.");
 				return;
 			}
 
-			ISceneLoader sceneLoader = AppRoot.Instance.Services.Resolve<ISceneLoader>();
-
-			_debugView.Construct(sceneLoader);
+			_menuView.Construct(_sceneLoader);
 		}
 	}
 }

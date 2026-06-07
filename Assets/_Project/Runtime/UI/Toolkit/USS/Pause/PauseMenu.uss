@@ -1,10 +1,11 @@
-﻿.pause-menu-root {
+.pause-menu-root {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     display: none;
+    pointer-events: auto;
 }
 
 .pause-menu-root-visible {
@@ -20,56 +21,74 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("project://database/Assets/_Project/Art/Textures/UI/Backgrounds/BG_Pause_SnowForest.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/PauseMenu/BG_Pause_SnowForest.jpg");
+    -unity-background-image-tint-color: rgba(190, 215, 220, 0.85);
 }
 
-.pause-dark-overlay {
+.pause-overlay {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(3, 8, 12, 0.50);
+    background-color: rgba(4, 8, 12, 0.54);
+    border-left-width: 72px;
+    border-right-width: 220px;
+    border-top-width: 44px;
+    border-bottom-width: 64px;
+    border-left-color: rgba(0, 0, 0, 0.28);
+    border-right-color: rgba(0, 0, 0, 0.58);
+    border-top-color: rgba(0, 0, 0, 0.34);
+    border-bottom-color: rgba(0, 0, 0, 0.62);
 }
 
 .pause-content {
     position: absolute;
     left: 6%;
-    top: 12%;
-    width: 420px;
-    height: 76%;
+    top: 10%;
+    width: 440px;
+    height: 80%;
+    padding-left: 18px;
+    border-left-width: 3px;
+    border-left-color: rgba(230, 242, 244, 0.38);
 }
 
 .pause-title {
-    color: rgb(225, 236, 240);
+    color: rgb(235, 242, 245);
     font-size: 42px;
+    letter-spacing: 5px;
     unity-font-style: bold;
-    unity-text-align: middle-center;
-    margin-bottom: 120px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.75);
-}
-
-.pause-menu-list {
-    width: 260px;
-}
-
-.pause-menu-button {
-    height: 44px;
-    margin-bottom: 4px;
-    color: rgb(245, 250, 252);
-    background-color: rgba(0, 0, 0, 0);
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    font-size: 24px;
-    unity-font-style: bold;
+    unity-text-align: middle-left;
+    margin-bottom: 96px;
     -unity-text-outline-width: 1px;
     -unity-text-outline-color: rgba(0, 0, 0, 0.8);
 }
 
-.pause-menu-button:hover {
-    color: rgb(255, 255, 255);
+.pause-list {
+    width: 320px;
+}
+
+.pause-button {
+    height: 46px;
+    margin-bottom: 7px;
+    padding-left: 18px;
+    color: rgb(245, 250, 252);
+    background-color: rgba(2, 7, 9, 0.16);
+    border-left-width: 2px;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-color: rgba(220, 238, 240, 0.32);
+    font-size: 24px;
+    unity-font-style: bold;
+    unity-text-align: middle-left;
+    letter-spacing: 2px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
+}
+
+.pause-button:hover {
     background-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgb(255, 255, 255);
+    color: white;
 }

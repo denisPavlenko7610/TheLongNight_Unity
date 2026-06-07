@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.UI.Common;
@@ -20,16 +20,13 @@ namespace TLN.UI.Inventory
         private Label _weightLabel;
         private ScrollView _scrollView;
 
-        private IInventoryService _inventoryService;
-        private ItemUseService _itemUseService;
-
         private readonly List<InventoryItemRowView> _rowViews = new();
 
         private bool _isVisible;
 
-        public void Construct(
-            IInventoryService inventoryService,
-            ItemUseService itemUseService)
+        private IInventoryService _inventoryService;
+        private IItemUseService _itemUseService;
+        public void Construct(IInventoryService inventoryService, IItemUseService itemUseService)
         {
             _inventoryService = inventoryService;
             _itemUseService = itemUseService;
