@@ -1,6 +1,7 @@
 ﻿using TLN.Application.Input;
 using TLN.Gameplay.Player.Input;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Look
 {
@@ -19,6 +20,7 @@ namespace TLN.Gameplay.Player.Look
 		private float _pitch;
 		private IInputModeService _inputModeService;
 
+		[Inject]
 		public void Construct(IInputModeService inputModeService)
 		{
 			_inputModeService = inputModeService;

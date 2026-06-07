@@ -1,10 +1,10 @@
-﻿using TLN.Application.GameStates;
+using TLN.Application.GameStates;
 using TLN.Core.GameStates;
 using TLN.Core.Lifetime;
 
 namespace TLN.Application.Time
 {
-	public sealed class GameStateTimeScaleController : IGameService, IInitializable, IDisposableService
+	public sealed class GameStateTimeScaleController : IGameService, IInitializable, IDisposableService, VContainer.Unity.IInitializable, System.IDisposable
 	{
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly IGameTimeScaleService _timeScaleService;

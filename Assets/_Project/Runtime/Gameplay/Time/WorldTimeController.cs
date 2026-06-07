@@ -1,6 +1,7 @@
-﻿using TLN.Application.GameStates;
+using TLN.Application.GameStates;
 using TLN.Core.GameStates;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Time
 {
@@ -9,6 +10,7 @@ namespace TLN.Gameplay.Time
 		private IGameTimeService _gameTimeService;
 		private IGameStateMachine _gameStateMachine;
 
+		[Inject]
 		public void Construct(IGameTimeService gameTimeService, IGameStateMachine gameStateMachine)
 		{
 			_gameTimeService = gameTimeService;
