@@ -2,8 +2,6 @@ using System;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.World;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 
 namespace TLN.Gameplay.Placement
 {

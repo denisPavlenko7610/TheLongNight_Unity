@@ -2,6 +2,7 @@
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Inventory;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Items
 {
@@ -27,6 +28,7 @@ namespace TLN.Gameplay.Items
 			}
 		}
 
+		[Inject]
 		public void Construct(IInventoryService inventoryService, INotificationService notificationService)
 		{
 			_inventoryService = inventoryService;

@@ -575,6 +575,7 @@ GameObject:
   - component: {fileID: 840142769616838727}
   - component: {fileID: 936705373756867025}
   - component: {fileID: 2088924916554084483}
+  - component: {fileID: 6070588436189272575}
   m_Layer: 0
   m_Name: PF_Player
   m_TagString: Untagged
@@ -645,6 +646,8 @@ MonoBehaviour:
   <InteractionController>k__BackingField: {fileID: 5317564828285470877}
   <InventoryController>k__BackingField: {fileID: 936705373756867025}
   <TimeOverlayController>k__BackingField: {fileID: 2088924916554084483}
+  <BuildController>k__BackingField: {fileID: 6070588436189272575}
+  _flashlight: {fileID: 0}
 --- !u!114 &1902473015745612277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -710,6 +713,11 @@ MonoBehaviour:
   _interactableLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  _drawDebugRay: 1
+  _debugHitColor: {r: 0, g: 1, b: 0, a: 1}
+  _debugMissColor: {r: 1, g: 0, b: 0, a: 1}
+  _debugNormalColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _debugRayDuration: 0
 --- !u!114 &840142769616838727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,6 +756,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 137cfe9efe164fd883a02998fba8397c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Input.PlayerStatusOverlayController
+  _inputReader: {fileID: 1902473015745612277}
+--- !u!114 &6070588436189272575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352849978073610698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5809f37d221a44a9baa9d080539690bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Input.PlayerBuildController
   _inputReader: {fileID: 1902473015745612277}
 --- !u!1 &8742609627363697270
 GameObject:

@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Sleep/SleepWindow.uss?fileID=7433441132597879392&amp;guid=1b32d3304e0c44a3a6c86f86596cd04e&amp;type=3#SleepWindow"/>
+    <ui:VisualElement name="sleep-window-root" class="sleep-window-root">
+        <ui:VisualElement class="sleep-window tln-panel">
+            <ui:Label text="REST" class="sleep-title"/>
+            <ui:Label text="Choose how long to sleep." class="sleep-description"/>
+            <ui:VisualElement class="sleep-button-row">
+                <ui:Button name="sleep-1h-button" text="1 HOUR" class="sleep-button"/>
+                <ui:Button name="sleep-2h-button" text="2 HOURS" class="sleep-button"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="sleep-button-row">
+                <ui:Button name="sleep-4h-button" text="4 HOURS" class="sleep-button"/>
+                <ui:Button name="sleep-8h-button" text="8 HOURS" class="sleep-button"/>
+            </ui:VisualElement>
+            <ui:Button name="sleep-pick-up-button" text="PICK UP" class="sleep-pick-up-button" />
+            <ui:Button name="sleep-cancel-button" text="CANCEL" class="sleep-cancel-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

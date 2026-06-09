@@ -1,0 +1,50 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/HUD/WorldHUD.uss?fileID=7433441132597879392&amp;guid=e99ee6a6c75b4116846795f9b3ba3013&amp;type=3#WorldHUD"/>
+    <ui:VisualElement name="world-hud-root" class="world-hud-root">
+        <ui:VisualElement name="time-overlay" class="time-overlay">
+            <ui:VisualElement class="time-arc-panel">
+                <ui:Label name="time-period-label" text="MORNING" class="time-period-label"/>
+                <ui:VisualElement name="time-arc-root" class="time-arc-root">
+                    <ui:VisualElement name="time-arc-line" class="time-arc-line"/>
+                    <ui:VisualElement name="time-sun-moon-icon" class="time-sun-moon-icon icon-sun"/>
+                </ui:VisualElement>
+                <ui:Label name="time-day-label" text="DAY 1" class="time-day-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="survival-panel" class="survival-panel">
+            <ui:VisualElement class="survival-icon-widget">
+                <ui:VisualElement class="survival-icon icon-hunger icon-bg"/>
+                <ui:VisualElement name="hunger-fill-mask" class="survival-fill-mask">
+                    <ui:VisualElement class="survival-icon icon-hunger icon-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="survival-icon-widget">
+                <ui:VisualElement class="survival-icon icon-thirst icon-bg"/>
+                <ui:VisualElement name="thirst-fill-mask" class="survival-fill-mask">
+                    <ui:VisualElement class="survival-icon icon-thirst icon-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="survival-icon-widget">
+                <ui:VisualElement class="survival-icon icon-fatigue icon-bg"/>
+                <ui:VisualElement name="fatigue-fill-mask" class="survival-fill-mask">
+                    <ui:VisualElement class="survival-icon icon-fatigue icon-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="survival-icon-widget">
+                <ui:VisualElement class="survival-icon icon-cold icon-bg"/>
+                <ui:VisualElement name="cold-fill-mask" class="survival-fill-mask">
+                    <ui:VisualElement class="survival-icon icon-cold icon-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="survival-icon-widget">
+                <ui:VisualElement class="survival-icon icon-condition icon-bg"/>
+                <ui:VisualElement name="condition-fill-mask" class="survival-fill-mask">
+                    <ui:VisualElement class="survival-icon icon-condition icon-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label name="interaction-prompt-label" text="" class="interaction-prompt runtime-hidden"/>
+        <ui:Label name="notification-label" text="" class="notification runtime-hidden"/>
+    </ui:VisualElement>
+</ui:UXML>

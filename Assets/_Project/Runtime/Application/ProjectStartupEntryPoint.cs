@@ -1,5 +1,6 @@
 using TLN.Application.GameStates;
 using TLN.Core.GameStates;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace TLN.Application.App
@@ -17,8 +18,15 @@ namespace TLN.Application.App
 
 		public void Start()
 		{
+			ApplyDefaultFrameSync();
 			_gameStateMachine.Enter(GameStateId.Boot);
 			_bootStartupService.Start();
+		}
+
+		private static void ApplyDefaultFrameSync()
+		{
+			QualitySettings.vSyncCount = 1;
+			UnityEngine.Application.targetFrameRate = -1;
 		}
 	}
 }

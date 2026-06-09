@@ -201,6 +201,15 @@ namespace TLN.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Build"",
+                    ""type"": ""Button"",
+                    ""id"": ""f1c6deca-4797-4c51-bdf9-dc361bb36446"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -608,6 +617,17 @@ namespace TLN.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Status"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b96cf9d-f17b-4e82-85d0-07eb4e9a81b5"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Build"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1207,6 +1227,7 @@ namespace TLN.Input
             m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
             m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
             m_Gameplay_Status = m_Gameplay.FindAction("Status", throwIfNotFound: true);
+            m_Gameplay_Build = m_Gameplay.FindAction("Build", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1312,6 +1333,7 @@ namespace TLN.Input
         private readonly InputAction m_Gameplay_Pause;
         private readonly InputAction m_Gameplay_Inventory;
         private readonly InputAction m_Gameplay_Status;
+        private readonly InputAction m_Gameplay_Build;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -1371,6 +1393,10 @@ namespace TLN.Input
             /// Provides access to the underlying input action "Gameplay/Status".
             /// </summary>
             public InputAction @Status => m_Wrapper.m_Gameplay_Status;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/Build".
+            /// </summary>
+            public InputAction @Build => m_Wrapper.m_Gameplay_Build;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1433,6 +1459,9 @@ namespace TLN.Input
                 @Status.started += instance.OnStatus;
                 @Status.performed += instance.OnStatus;
                 @Status.canceled += instance.OnStatus;
+                @Build.started += instance.OnBuild;
+                @Build.performed += instance.OnBuild;
+                @Build.canceled += instance.OnBuild;
             }
 
             /// <summary>
@@ -1480,6 +1509,9 @@ namespace TLN.Input
                 @Status.started -= instance.OnStatus;
                 @Status.performed -= instance.OnStatus;
                 @Status.canceled -= instance.OnStatus;
+                @Build.started -= instance.OnBuild;
+                @Build.performed -= instance.OnBuild;
+                @Build.canceled -= instance.OnBuild;
             }
 
             /// <summary>
@@ -1864,6 +1896,13 @@ namespace TLN.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnStatus(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Build" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnBuild(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

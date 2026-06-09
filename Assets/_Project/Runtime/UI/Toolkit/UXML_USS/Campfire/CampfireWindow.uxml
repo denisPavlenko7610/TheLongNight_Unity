@@ -1,0 +1,18 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss" />
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Campfire/CampfireWindow.uss" />
+
+    <ui:VisualElement name="campfire-window-root" class="campfire-window-root">
+        <ui:VisualElement class="campfire-window tln-panel">
+            <ui:Label text="CAMPFIRE" class="campfire-title" />
+
+            <ui:Label name="campfire-state-label" text="State: Unlit" class="campfire-label" />
+            <ui:Label name="campfire-fuel-label" text="Fuel: 0 / 720 min" class="campfire-label" />
+
+            <ui:Button name="campfire-add-fuel-button" text="ADD FUEL" class="campfire-button" />
+            <ui:Button name="campfire-ignite-button" text="IGNITE" class="campfire-button" />
+            <ui:Button name="campfire-extinguish-button" text="EXTINGUISH" class="campfire-button" />
+            <ui:Button name="campfire-close-button" text="CLOSE" class="campfire-close-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
