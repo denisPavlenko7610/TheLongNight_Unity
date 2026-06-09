@@ -3,6 +3,7 @@ using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
+using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -79,7 +80,20 @@ namespace TLN.Gameplay.World
 			ConstructPauseMenu();
 			ConstructInventoryWindow();
 			ConstructSleep();
+			ConstructCampfires();
 			SpawnPlayer();
+		}
+
+		private void ConstructCampfires()
+		{
+			_uiRoot.CampfireWindow.Construct(_inventoryService, _inputModeService, _notificationService);
+
+			CampfireActor[] campfires = FindObjectsByType<CampfireActor>(FindObjectsSortMode.None);
+
+			foreach (CampfireActor campfire in campfires)
+			{
+				campfire.Construct(_uiRoot.CampfireWindow, _gameTimeService);
+			}
 		}
 
 		private void ConstructHUD()
@@ -101,8 +115,8 @@ namespace TLN.Gameplay.World
 		private void ConstructSleep()
 		{
 			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationService);
-			var bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
-			foreach (var bedroll in bedrolls)
+			BedrollActor[] bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
+			foreach (BedrollActor bedroll in bedrolls)
 			{
 				bedroll.Construct(_uiRoot.SleepWindow);
 			}

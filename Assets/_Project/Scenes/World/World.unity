@@ -484,6 +484,7 @@ MonoBehaviour:
   <InventoryWindow>k__BackingField: {fileID: 870944978}
   <SleepWindow>k__BackingField: {fileID: 2114576466}
   <PauseMenu>k__BackingField: {fileID: 1984469432}
+  <CampfireWindow>k__BackingField: {fileID: 943244356}
 --- !u!4 &212741485
 Transform:
   m_ObjectHideFlags: 0
@@ -501,6 +502,7 @@ Transform:
   - {fileID: 1984469435}
   - {fileID: 2114576468}
   - {fileID: 870944977}
+  - {fileID: 943244355}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &236363750
@@ -1415,7 +1417,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2675777121608924696, guid: 59fec7885e2a22445bcf331f26aed222, type: 3}
   m_PrefabInstance: {fileID: 888213099}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &988413294
+--- !u!1 &943244354
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1423,238 +1425,81 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 988413295}
-  - component: {fileID: 988413297}
-  - component: {fileID: 988413296}
-  m_Layer: 7
-  m_Name: Point Light
+  - component: {fileID: 943244355}
+  - component: {fileID: 943244358}
+  - component: {fileID: 943244357}
+  - component: {fileID: 943244356}
+  m_Layer: 0
+  m_Name: CampfireWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &988413295
+--- !u!4 &943244355
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988413294}
+  m_GameObject: {fileID: 943244354}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.301, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 529837608253935857}
+  m_Father: {fileID: 212741485}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &988413296
+--- !u!114 &943244356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988413294}
+  m_GameObject: {fileID: 943244354}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
+  m_Script: {fileID: 11500000, guid: d2b2e2b11be24ff3bb291742c1d0a47f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.HDAdditionalLightData
-  m_PointlightHDType: 0
-  m_SpotLightShape: 0
-  m_AreaLightShape: 0
-  m_EnableSpotReflector: 1
-  m_LightUnit: 0
-  m_LuxAtDistance: 1
-  m_Intensity: 0
-  m_InnerSpotPercent: -1
-  m_ShapeWidth: -1
-  m_ShapeHeight: -1
-  m_AspectRatio: -1
-  m_Version: 14
-  m_ObsoleteShadowResolutionTier: 1
-  m_ObsoleteUseShadowQualitySettings: 0
-  m_ObsoleteCustomShadowResolution: 512
-  m_ObsoleteContactShadows: 0
-  m_SpotIESCutoffPercent: 100
-  m_LightDimmer: 1
-  m_VolumetricDimmer: 1
-  m_FadeDistance: 10000
-  m_VolumetricFadeDistance: 10000
-  m_AffectDiffuse: 1
-  m_AffectSpecular: 1
-  m_NonLightmappedOnly: 0
-  m_ShapeRadius: 0.025
-  m_SoftnessScale: 1
-  m_UseCustomSpotLightShadowCone: 0
-  m_CustomSpotLightShadowCone: 30
-  m_MaxSmoothness: 0.99
-  m_ApplyRangeAttenuation: 1
-  m_DisplayAreaLightEmissiveMesh: 0
-  m_AreaLightCookie: {fileID: 0}
-  m_IESPoint: {fileID: 0}
-  m_IESSpot: {fileID: 0}
-  m_IncludeForRayTracing: 1
-  m_IncludeForPathTracing: 1
-  m_AreaLightShadowCone: 120
-  m_UseScreenSpaceShadows: 0
-  m_InteractsWithSky: 1
-  m_AngularDiameter: 0.5
-  diameterMultiplerMode: 0
-  diameterMultiplier: 1
-  diameterOverride: 0.5
-  celestialBodyShadingSource: 1
-  sunLightOverride: {fileID: 0}
-  sunColor: {r: 1, g: 1, b: 1, a: 1}
-  sunIntensity: 130000
-  moonPhase: 0.2
-  moonPhaseRotation: 0
-  earthshine: 1
-  flareSize: 2
-  flareTint: {r: 1, g: 1, b: 1, a: 1}
-  flareFalloff: 4
-  flareMultiplier: 1
-  surfaceTexture: {fileID: 0}
-  surfaceTint: {r: 1, g: 1, b: 1, a: 1}
-  m_Distance: 1.5e+11
-  m_UseRayTracedShadows: 0
-  m_NumRayTracingSamples: 4
-  m_FilterTracedShadow: 1
-  m_FilterSizeTraced: 16
-  m_SunLightConeAngle: 0.5
-  m_LightShadowRadius: 0.5
-  m_SemiTransparentShadow: 0
-  m_ColorShadow: 1
-  m_DistanceBasedFiltering: 0
-  m_EvsmExponent: 15
-  m_EvsmLightLeakBias: 0
-  m_EvsmVarianceBias: 0.00001
-  m_EvsmBlurPasses: 0
-  m_LightlayersMask: 1
-  m_LinkShadowLayers: 1
-  m_ShadowNearPlane: 0.1
-  m_BlockerSampleCount: 24
-  m_FilterSampleCount: 16
-  m_MinFilterSize: 0.1
-  m_DirLightPCSSBlockerSampleCount: 24
-  m_DirLightPCSSFilterSampleCount: 16
-  m_DirLightPCSSMaxPenumbraSize: 0.56
-  m_DirLightPCSSMaxSamplingDistance: 0.5
-  m_DirLightPCSSMinFilterSizeTexels: 1.5
-  m_DirLightPCSSMinFilterMaxAngularDiameter: 10
-  m_DirLightPCSSBlockerSearchAngularDiameter: 12
-  m_DirLightPCSSBlockerSamplingClumpExponent: 2
-  m_KernelSize: 5
-  m_LightAngle: 1
-  m_MaxDepthBias: 0.001
-  m_ShadowResolution:
-    m_Override: 512
-    m_UseOverride: 1
-    m_Level: 0
-  m_ShadowDimmer: 1
-  m_VolumetricShadowDimmer: 1
-  m_ShadowFadeDistance: 10000
-  m_UseContactShadow:
-    m_Override: 0
-    m_UseOverride: 1
-    m_Level: 0
-  m_RayTracedContactShadow: 0
-  m_ShadowTint: {r: 0, g: 0, b: 0, a: 1}
-  m_PenumbraTint: 0
-  m_NormalBias: 0.75
-  m_SlopeBias: 0.5
-  m_ShadowUpdateMode: 0
-  m_AlwaysDrawDynamicShadows: 0
-  m_UpdateShadowOnLightMovement: 0
-  m_CachedShadowTranslationThreshold: 0.01
-  m_CachedShadowAngularThreshold: 0.5
-  m_BarnDoorAngle: 90
-  m_BarnDoorLength: 0.05
-  m_preserveCachedShadow: 0
-  m_OnDemandShadowRenderOnPlacement: 1
-  m_ShadowCascadeRatios:
-  - 0.05
-  - 0.2
-  - 0.3
-  m_ShadowCascadeBorders:
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  m_ShadowAlgorithm: 0
-  m_ShadowVariant: 0
-  m_ShadowPrecision: 0
-  useOldInspector: 0
-  useVolumetric: 1
-  featuresFoldout: 1
-  m_AreaLightEmissiveMeshShadowCastingMode: 0
-  m_AreaLightEmissiveMeshMotionVectorGenerationMode: 0
-  m_AreaLightEmissiveMeshLayer: -1
---- !u!108 &988413297
-Light:
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.Campfire.CampfireWindowView
+--- !u!114 &943244357
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988413294}
+  m_GameObject: {fileID: 943244354}
   m_Enabled: 1
-  serializedVersion: 12
-  m_Type: 2
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 3183.0989
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
-  m_CookieSize2D: {x: 0.5, y: 0.5}
-  m_Shadows:
-    m_Type: 0
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-    m_CullingMatrixOverride:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
-    m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 4
-  m_LightShadowCasterMode: 2
-  m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 2
-  m_ColorTemperature: 1607
-  m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_UseBoundingSphereOverride: 0
-  m_UseViewFrustumForShadowCasterCull: 1
-  m_ForceVisible: 0
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
-  m_LightUnit: 0
-  m_LuxAtDistance: 1
-  m_EnableSpotReflector: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb115eb0e44b93b24292f7e880bdee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.Common.UIDocumentOrder
+  _layer: 200
+  _offset: 20
+--- !u!114 &943244358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943244354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 518a65bfc5837d54e9be589c8619a5c5, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: b7063c5b3612439a9857bbc7841fb126, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!114 &994916778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1996,6 +1841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TLN.UI::TLN.UI.HUD.WorldHUDView
   _notificationDuration: 2
+  _refreshInterval: 0.25
 --- !u!114 &1560037668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2188,7 +2034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TLN.Bootstrap::WorldLifetimeScope
   parentReference:
-    TypeName: 
+    TypeName: ProjectLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
   _uiRoot: {fileID: 212741484}
@@ -2386,7 +2232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: TLN.UI::TLN.UI.Common.UIDocumentOrder
   _layer: 100
   _offset: 0
---- !u!1001 &529837608253935855
+--- !u!1001 &2146575069
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -2396,15 +2242,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3832346466748127405, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.26394
+      value: 7.68191
       objectReference: {fileID: 0}
     - target: {fileID: 3832346466748127405, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.047
+      value: 0.061
       objectReference: {fileID: 0}
     - target: {fileID: 3832346466748127405, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.87
+      value: 12.279049
       objectReference: {fileID: 0}
     - target: {fileID: 3832346466748127405, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2436,55 +2282,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_Name
-      value: PF_WorldItem_Base
+      value: PF_Campfire_Base
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 3401114324659135635, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 988413295}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8922167791714928864}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
---- !u!1 &529837608253935856 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4394655783405288508, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
-  m_PrefabInstance: {fileID: 529837608253935855}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &529837608253935857 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3401114324659135635, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
-  m_PrefabInstance: {fileID: 529837608253935855}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6153766151931490690 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
-  m_PrefabInstance: {fileID: 529837608253935855}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8922167791714928864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6153766151931490690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34355a05f96f4aeaa7efd33db211d31b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Campfire.CampfireActor
-  _startBurnSeconds: 0
-  _maxBurnSeconds: 7200
-  _burnSecondsPerRealSecond: 1
-  _minimumBurnSecondsToIgnite: 10
-  _warmthBonus: 20
-  _burningRoot: {fileID: 529837608253935856}
-  _fireLight: {fileID: 0}
-  _fireParticles: {fileID: 0}
-  _fireLoopAudio: {fileID: 0}
 --- !u!4 &8993312926649404530 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1950549010571319563, guid: 9cc4be2578556c543be24ceebf608650, type: 3}
@@ -2560,4 +2364,4 @@ SceneRoots:
   - {fileID: 577968085}
   - {fileID: 212741485}
   - {fileID: 1987331344}
-  - {fileID: 529837608253935855}
+  - {fileID: 2146575069}

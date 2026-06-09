@@ -9,13 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9b8d9c505d844f2887b989e6e1e9eab, type: 3}
+  m_Script: {fileID: 11500000, guid: cb54d2f8df164a0e9baff89bd732195f, type: 3}
   m_Name: ITM_Stick
-  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.ItemDefinition
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Campfire.FuelItemDefinition
   _id: stick
   _displayName: Stick
   _category: 70
   _weight: 0.15
   _isStackable: 1
   _maxStackSize: 20
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 9181a935da648094e849a74b55181dbe, type: 3}
+  _useKind: 0
+  _burnMinutes: 10

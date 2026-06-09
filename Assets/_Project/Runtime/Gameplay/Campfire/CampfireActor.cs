@@ -1,15 +1,20 @@
 ﻿using System;
+using TLN.Core.Logging;
+using TLN.Gameplay.Interaction;
+using TLN.Gameplay.Time;
 using UnityEngine;
 
 namespace TLN.Gameplay.Campfire
 {
-    public sealed class CampfireActor : MonoBehaviour, IWarmthProvider
+    public sealed class CampfireActor : MonoBehaviour, IInteractable
     {
+        [Header("Interaction")]
+        [SerializeField] private string _interactionText = "Use campfire";
+
         [Header("Burning")]
-        [SerializeField] private float _startBurnSeconds;
-        [SerializeField] private float _maxBurnSeconds = 7200f; //120m
-        [SerializeField] private float _burnSecondsPerRealSecond = 1f;
-        [SerializeField] private float _minimumBurnSecondsToIgnite = 10f;
+        [SerializeField] private int _startBurnMinutes;
+        [SerializeField] private int _maxBurnMinutes = 720;
+        [SerializeField] private int _minimumBurnMinutesToIgnite = 1;
 
         [Header("Warmth")]
         [SerializeField] private float _warmthBonus = 20f;
@@ -20,39 +25,52 @@ namespace TLN.Gameplay.Campfire
         [SerializeField] private ParticleSystem _fireParticles;
         [SerializeField] private AudioSource _fireLoopAudio;
 
-        private float _remainingBurnSeconds;
-        private int _lastNotifiedRemainingBurnSeconds = -1;
+        private ICampfireWindow _campfireWindow;
+        private IGameTimeService _gameTimeService;
+        private int _lastKnownTotalMinutes;
+        private int _remainingBurnMinutes;
         private CampfireState _state = CampfireState.Unlit;
 
+        public string InteractionText => _interactionText;
         public CampfireState State => _state;
         public bool IsBurning => _state == CampfireState.Burning;
-        public bool IsWarmthActive => IsBurning;
+        public int RemainingBurnMinutes => _remainingBurnMinutes;
+        public int MaxBurnMinutes => _maxBurnMinutes;
         public float WarmthBonus => IsBurning ? _warmthBonus : 0f;
-        public Vector3 Position => transform.position;
-
-        public float RemainingBurnSeconds => _remainingBurnSeconds;
 
         public float FuelNormalized
         {
             get
             {
-                if (_maxBurnSeconds <= 0f)
+                if (_maxBurnMinutes <= 0)
                 {
                     return 0f;
                 }
 
-                return Mathf.Clamp01(_remainingBurnSeconds / _maxBurnSeconds);
+                return Mathf.Clamp01((float)_remainingBurnMinutes / _maxBurnMinutes);
             }
         }
 
         public event Action Changed;
         public event Action BurnedOut;
 
+        public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService)
+        {
+            _campfireWindow = campfireWindow;
+            _gameTimeService = gameTimeService;
+
+            if (_gameTimeService != null)
+            {
+                _lastKnownTotalMinutes = _gameTimeService.TotalMinutes;
+                _gameTimeService.Changed += OnGameTimeChanged;
+            }
+        }
+
         private void Awake()
         {
-            _remainingBurnSeconds = Mathf.Clamp(_startBurnSeconds, 0f, _maxBurnSeconds);
+            _remainingBurnMinutes = Mathf.Clamp(_startBurnMinutes, 0, _maxBurnMinutes);
 
-            if (_remainingBurnSeconds <= 0f)
+            if (_remainingBurnMinutes <= 0)
             {
                 _state = CampfireState.Unlit;
             }
@@ -60,31 +78,35 @@ namespace TLN.Gameplay.Campfire
             ApplyVisualState();
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            if (!IsBurning)
+            if (_gameTimeService != null)
             {
-                return;
+                _gameTimeService.Changed -= OnGameTimeChanged;
             }
-
-            float burnAmount = _burnSecondsPerRealSecond * UnityEngine.Time.deltaTime;
-            _remainingBurnSeconds = Mathf.Max(0f, _remainingBurnSeconds - burnAmount);
-
-            if (_remainingBurnSeconds <= 0f)
-            {
-                SetState(CampfireState.BurnedOut);
-                BurnedOut?.Invoke();
-                return;
-            }
-
-            NotifyChangedIfBurnSecondsChanged();
         }
 
-        public bool AddFuel(CampfireFuelDefinition fuelDefinition, int amount, out string failureReason)
+        public bool CanInteract(InteractionContext context)
+        {
+            return true;
+        }
+
+        public void Interact(InteractionContext context)
+        {
+            if (_campfireWindow == null)
+            {
+                TLNLogger.Warning("Cannot open campfire window because CampfireActor was not constructed.", this);
+                return;
+            }
+
+            _campfireWindow.Show(this);
+        }
+
+        public bool CanAddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
         {
             if (fuelDefinition == null)
             {
-                failureReason = "Fuel definition is missing.";
+                failureReason = "Fuel item is missing.";
                 return false;
             }
 
@@ -94,13 +116,36 @@ namespace TLN.Gameplay.Campfire
                 return false;
             }
 
-            float addedBurnSeconds = fuelDefinition.BurnSeconds * amount;
-            _remainingBurnSeconds = Mathf.Clamp(
-                _remainingBurnSeconds + addedBurnSeconds,
-                0f,
-                _maxBurnSeconds);
+            if (fuelDefinition.BurnMinutes <= 0)
+            {
+                failureReason = "This item cannot burn.";
+                return false;
+            }
 
-            if (_state == CampfireState.BurnedOut && _remainingBurnSeconds > 0f)
+            if (_remainingBurnMinutes >= _maxBurnMinutes)
+            {
+                failureReason = "Campfire cannot accept more fuel.";
+                return false;
+            }
+
+            failureReason = string.Empty;
+            return true;
+        }
+
+        public bool AddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
+        {
+            if (!CanAddFuel(fuelDefinition, amount, out failureReason))
+            {
+                return false;
+            }
+
+            int addedMinutes = fuelDefinition.BurnMinutes * amount;
+            _remainingBurnMinutes = Mathf.Clamp(
+                _remainingBurnMinutes + addedMinutes,
+                0,
+                _maxBurnMinutes);
+
+            if (_state == CampfireState.BurnedOut && _remainingBurnMinutes > 0)
             {
                 SetState(CampfireState.Unlit);
             }
@@ -109,7 +154,6 @@ namespace TLN.Gameplay.Campfire
                 Changed?.Invoke();
             }
 
-            failureReason = string.Empty;
             return true;
         }
 
@@ -121,7 +165,7 @@ namespace TLN.Gameplay.Campfire
                 return false;
             }
 
-            if (_remainingBurnSeconds < _minimumBurnSecondsToIgnite)
+            if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
             {
                 failureReason = "Not enough fuel to start a fire.";
                 return false;
@@ -133,14 +177,56 @@ namespace TLN.Gameplay.Campfire
             return true;
         }
 
-        public void Extinguish()
+        public bool Extinguish(out string failureReason)
         {
+            if (!IsBurning)
+            {
+                failureReason = "Campfire is not burning.";
+                return false;
+            }
+
+            SetState(CampfireState.Unlit);
+
+            failureReason = string.Empty;
+            return true;
+        }
+
+        private void OnGameTimeChanged()
+        {
+            if (_gameTimeService == null)
+            {
+                return;
+            }
+
+            int currentTotalMinutes = _gameTimeService.TotalMinutes;
+            int elapsedMinutes = currentTotalMinutes - _lastKnownTotalMinutes;
+            _lastKnownTotalMinutes = currentTotalMinutes;
+
+            if (elapsedMinutes <= 0)
+            {
+                return;
+            }
+
             if (!IsBurning)
             {
                 return;
             }
 
-            SetState(CampfireState.Unlit);
+            Burn(elapsedMinutes);
+        }
+
+        private void Burn(int minutes)
+        {
+            _remainingBurnMinutes = Mathf.Max(0, _remainingBurnMinutes - minutes);
+
+            if (_remainingBurnMinutes <= 0)
+            {
+                SetState(CampfireState.BurnedOut);
+                BurnedOut?.Invoke();
+                return;
+            }
+
+            Changed?.Invoke();
         }
 
         private void SetState(CampfireState state)
@@ -153,7 +239,6 @@ namespace TLN.Gameplay.Campfire
             _state = state;
             ApplyVisualState();
             Changed?.Invoke();
-            _lastNotifiedRemainingBurnSeconds = Mathf.CeilToInt(_remainingBurnSeconds);
         }
 
         private void ApplyVisualState()
@@ -172,11 +257,11 @@ namespace TLN.Gameplay.Campfire
 
             if (_fireParticles != null)
             {
-                if (isBurning && !_fireParticles.isPlaying)
+                if (isBurning)
                 {
                     _fireParticles.Play();
                 }
-                else if (!isBurning && _fireParticles.isPlaying)
+                else
                 {
                     _fireParticles.Stop();
                 }
@@ -193,19 +278,6 @@ namespace TLN.Gameplay.Campfire
                     _fireLoopAudio.Stop();
                 }
             }
-        }
-
-        private void NotifyChangedIfBurnSecondsChanged()
-        {
-            int remainingWholeSeconds = Mathf.CeilToInt(_remainingBurnSeconds);
-
-            if (remainingWholeSeconds == _lastNotifiedRemainingBurnSeconds)
-            {
-                return;
-            }
-
-            _lastNotifiedRemainingBurnSeconds = remainingWholeSeconds;
-            Changed?.Invoke();
         }
     }
 }
