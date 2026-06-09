@@ -16,6 +16,13 @@ namespace TLN.Gameplay.Interaction
         [SerializeField] private float _maxDistance = 3f;
         [SerializeField] private LayerMask _interactableLayerMask;
 
+        [Header("Debug")]
+        [SerializeField] private bool _drawDebugRay = true;
+        [SerializeField] private Color _debugHitColor = Color.green;
+        [SerializeField] private Color _debugMissColor = Color.red;
+        [SerializeField] private Color _debugNormalColor = Color.yellow;
+        [SerializeField] private float _debugRayDuration;
+
         private IInputModeService _inputModeService;
         private IInteractionPromptView _promptView;
         private PlayerInteractionRaycaster _raycaster;
@@ -62,7 +69,11 @@ namespace TLN.Gameplay.Interaction
 
         private void UpdateCurrentTarget()
         {
-            if (_raycaster.TryRaycast(out InteractionHit hit))
+            bool hasHit = _raycaster.TryRaycast(out InteractionHit hit);
+
+            DrawDebugRay(hasHit, hit);
+
+            if (hasHit)
             {
                 InteractionContext context = CreateContext();
 
@@ -75,6 +86,27 @@ namespace TLN.Gameplay.Interaction
             }
 
             ClearCurrentTarget();
+        }
+
+        private void DrawDebugRay(bool hasHit, InteractionHit hit)
+        {
+            if (!_drawDebugRay || _camera == null)
+            {
+                return;
+            }
+
+            Vector3 origin = _camera.transform.position;
+            Vector3 direction = _camera.transform.forward;
+
+            if (hasHit)
+            {
+                Debug.DrawRay(origin, direction * hit.Distance, _debugHitColor, _debugRayDuration);
+                Debug.DrawRay(hit.Point, hit.Normal * 0.35f, _debugNormalColor, _debugRayDuration);
+
+                return;
+            }
+
+            Debug.DrawRay(origin, direction * _maxDistance, _debugMissColor, _debugRayDuration);
         }
 
         private void TryInteract()

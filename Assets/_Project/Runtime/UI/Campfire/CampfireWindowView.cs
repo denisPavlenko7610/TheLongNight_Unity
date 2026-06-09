@@ -6,6 +6,7 @@ using TLN.Gameplay.Items;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace TLN.UI.Campfire
 {
@@ -27,10 +28,8 @@ namespace TLN.UI.Campfire
         private IInputModeService _inputModeService;
         private INotificationService _notificationService;
 
-        public void Construct(
-            IInventoryService inventoryService,
-            IInputModeService inputModeService,
-            INotificationService notificationService)
+        [Inject]
+        public void Construct(IInventoryService inventoryService, IInputModeService inputModeService, INotificationService notificationService)
         {
             _inventoryService = inventoryService;
             _inputModeService = inputModeService;

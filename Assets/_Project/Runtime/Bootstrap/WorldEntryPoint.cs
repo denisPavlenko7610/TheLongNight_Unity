@@ -3,7 +3,6 @@ using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
-using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -68,8 +67,6 @@ namespace TLN.Gameplay.World
 
 		private void Start()
 		{
-			ResolveSceneReferences();
-
 			if (!ValidateRequiredReferences())
 			{
 				enabled = false;
@@ -79,21 +76,8 @@ namespace TLN.Gameplay.World
 			ConstructHUD();
 			ConstructPauseMenu();
 			ConstructInventoryWindow();
-			ConstructSleep();
-			ConstructCampfires();
+			ConstructSleepWindow();
 			SpawnPlayer();
-		}
-
-		private void ConstructCampfires()
-		{
-			_uiRoot.CampfireWindow.Construct(_inventoryService, _inputModeService, _notificationService);
-
-			CampfireActor[] campfires = FindObjectsByType<CampfireActor>(FindObjectsSortMode.None);
-
-			foreach (CampfireActor campfire in campfires)
-			{
-				campfire.Construct(_uiRoot.CampfireWindow, _gameTimeService);
-			}
 		}
 
 		private void ConstructHUD()
@@ -112,34 +96,15 @@ namespace TLN.Gameplay.World
 			_uiRoot.InventoryWindow.Construct(_inventoryService, _itemUseService);
 		}
 
-		private void ConstructSleep()
+		private void ConstructSleepWindow()
 		{
 			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationService);
-			BedrollActor[] bedrolls = FindObjectsByType<BedrollActor>(FindObjectsSortMode.None);
-			foreach (BedrollActor bedroll in bedrolls)
-			{
-				bedroll.Construct(_uiRoot.SleepWindow);
-			}
 		}
 
 		private void SpawnPlayer()
 		{
 			_playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
 			_placementService.SetPlayerRoot(_playerInstance);
-		}
-
-		private void ResolveSceneReferences()
-		{
-			if (_uiRoot == null)
-			{
-				_uiRoot = FindFirstObjectByType<WorldUIRoot>();
-			}
-
-			if (_spawnPoint == null)
-			{
-				PlayerSpawnPoint spawnPoint = FindFirstObjectByType<PlayerSpawnPoint>();
-				_spawnPoint = spawnPoint != null ? spawnPoint.transform : null;
-			}
 		}
 
 		private bool ValidateRequiredReferences()

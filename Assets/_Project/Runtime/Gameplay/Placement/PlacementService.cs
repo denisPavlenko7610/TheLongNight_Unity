@@ -1,6 +1,9 @@
 using System;
 using TLN.Gameplay.Player;
+using TLN.Gameplay.World;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace TLN.Gameplay.Placement
 {
@@ -9,6 +12,12 @@ namespace TLN.Gameplay.Placement
 		private PlayerRoot _playerRoot;
 
 		public event Action<GameObject> Placed;
+		private readonly IWorldObjectFactory _worldObjectFactory;
+
+		public PlacementService(IWorldObjectFactory worldObjectFactory)
+		{
+			_worldObjectFactory = worldObjectFactory;
+		}
 
 		public void SetPlayerRoot(PlayerRoot playerRoot)
 		{
@@ -43,8 +52,7 @@ namespace TLN.Gameplay.Placement
 				cameraTransform.eulerAngles.y,
 				0f);
 
-			instance = UnityEngine.Object.Instantiate(prefab, groundPosition, rotation);
-
+			instance = _worldObjectFactory.Create(prefab, groundPosition, rotation);
 			Placed?.Invoke(instance);
 
 			return true;

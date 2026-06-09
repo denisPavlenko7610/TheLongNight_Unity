@@ -3,6 +3,7 @@ using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Time;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Campfire
 {
@@ -54,6 +55,7 @@ namespace TLN.Gameplay.Campfire
         public event Action Changed;
         public event Action BurnedOut;
 
+        [Inject]
         public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService)
         {
             _campfireWindow = campfireWindow;
