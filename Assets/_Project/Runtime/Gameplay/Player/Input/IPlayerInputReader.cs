@@ -12,6 +12,7 @@ namespace TLN.Gameplay.Player.Input
 		bool WasInteractPressedThisFrame { get; }
 		bool WasPausePressedThisFrame { get; }
 		bool WasInventoryPressedThisFrame { get; }
+		bool WasBuildPressedThisFrame { get; }
 
 		bool IsStatusHeld { get; }
 	}

@@ -1,6 +1,7 @@
 ﻿using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
+using TLN.Gameplay.Building;
 using TLN.Gameplay.Flashlight;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Inventory;
@@ -22,6 +23,7 @@ namespace TLN.Gameplay.Player
 		[field: SerializeField][field: Assign] public PlayerInteractionController InteractionController { get; private set; }
 		[field: SerializeField][field: Assign] public PlayerInventoryController InventoryController { get; private set; }
 		[field: SerializeField][field: Assign] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
+		[field: SerializeField] [field: Assign] public PlayerBuildController BuildController { get; private set; }
 
 		[Header("Equipment")]
 		[SerializeField] private FlashlightController _flashlight;
@@ -32,10 +34,11 @@ namespace TLN.Gameplay.Player
 		private IInventoryWindow _inventoryWindow;
 		private ITimeOverlayView _timeOverlayView;
 		private IInteractionPromptView _interactionPromptView;
+		private IBuildWindow _buildWindow;
 
 		[Inject]
 		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine, IPauseMenuView pauseMenuView,
-			IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView, IInteractionPromptView interactionPromptView)
+			IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView, IInteractionPromptView interactionPromptView, IBuildWindow buildWindow)
 		{
 			_inputModeService = inputModeService;
 			_gameStateMachine = gameStateMachine;
@@ -43,6 +46,7 @@ namespace TLN.Gameplay.Player
 			_inventoryWindow = inventoryWindow;
 			_timeOverlayView = timeOverlayView;
 			_interactionPromptView = interactionPromptView;
+			_buildWindow = buildWindow;
 
 			Motor.Construct(_inputModeService);
 			Look.Construct(_inputModeService);
@@ -50,6 +54,7 @@ namespace TLN.Gameplay.Player
 			InteractionController.Construct(_inputModeService, _interactionPromptView);
 			InventoryController.Construct(_inventoryWindow, _inputModeService, _gameStateMachine);
 			TimeOverlayController.Construct(_timeOverlayView, _inputModeService);
+			BuildController.Construct(_buildWindow, _gameStateMachine);
 		}
 
 		public void ToggleFlashlight()

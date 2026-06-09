@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Pause/PauseMenu.uss?fileID=7433441132597879392&amp;guid=c5c43587e7cf403eaaf77ab270d2c8f7&amp;type=3#PauseMenu"/>
+    <ui:VisualElement name="pause-menu-root" class="pause-menu-root">
+        <ui:VisualElement name="pause-background" class="pause-background" />
+        <ui:VisualElement name="pause-overlay" class="pause-overlay" />
+
+        <ui:VisualElement class="pause-content">
+            <ui:Label text="PAUSE" class="pause-title" />
+
+            <ui:VisualElement class="pause-list">
+                <ui:Button name="resume-button" text="RESUME" class="pause-button" />
+                <ui:Button name="save-button" text="SAVE" class="pause-button" />
+                <ui:Button name="load-button" text="LOAD" class="pause-button" />
+                <ui:Button name="settings-button" text="OPTIONS" class="pause-button" />
+                <ui:Button name="quit-button" text="QUIT" class="pause-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

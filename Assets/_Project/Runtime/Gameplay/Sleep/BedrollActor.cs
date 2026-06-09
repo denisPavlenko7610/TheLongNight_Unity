@@ -2,6 +2,7 @@
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Items;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Sleep
 {
@@ -23,6 +24,7 @@ namespace TLN.Gameplay.Sleep
 		public ItemDefinition PackedItemDefinition => _packedItemDefinition;
 		public int PackedAmount => _packedAmount;
 
+		[Inject]
 		public void Construct(ISleepWindow sleepWindow)
 		{
 			_sleepWindow = sleepWindow;

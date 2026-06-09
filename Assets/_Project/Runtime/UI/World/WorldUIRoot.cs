@@ -1,4 +1,5 @@
 ﻿using Assign;
+using TLN.UI.Building;
 using TLN.UI.Campfire;
 using TLN.UI.HUD;
 using TLN.UI.Inventory;
@@ -26,12 +27,16 @@ namespace TLN.UI.World
 		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public CampfireWindowView CampfireWindow { get; private set; }
 
+		[field: SerializeField] [field: Assign(Mode.Scene)]
+		public BuildWindowView BuildWindow { get; private set; }
+
 		public bool HasAllRequiredReferences()
 		{
 			return HUD != null
 				&& InventoryWindow != null
 				&& CampfireWindow != null
 				&& SleepWindow != null
+				&& BuildWindow != null
 				&& PauseMenu != null;
 		}
 	}

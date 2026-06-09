@@ -15,6 +15,7 @@ namespace TLN.Gameplay.Player.Input
         public bool WasInteractPressedThisFrame { get; private set; }
         public bool WasPausePressedThisFrame { get; private set; }
         public bool WasInventoryPressedThisFrame { get; private set; }
+        public bool WasBuildPressedThisFrame { get; private set; }
         public bool IsStatusHeld { get; private set; }
 
         private void Awake()
@@ -25,6 +26,8 @@ namespace TLN.Gameplay.Player.Input
         private void OnEnable()
         {
             _inputActions.Enable();
+
+            _inputActions.Gameplay.Build.performed += OnBuildPerformed;
 
             _inputActions.Gameplay.Move.performed += OnMovePerformed;
             _inputActions.Gameplay.Move.canceled += OnMoveCanceled;
@@ -45,6 +48,8 @@ namespace TLN.Gameplay.Player.Input
 
         private void OnDisable()
         {
+            _inputActions.Gameplay.Build.performed -= OnBuildPerformed;
+
             _inputActions.Gameplay.Move.performed -= OnMovePerformed;
             _inputActions.Gameplay.Move.canceled -= OnMoveCanceled;
 
@@ -66,6 +71,7 @@ namespace TLN.Gameplay.Player.Input
 
         private void LateUpdate()
         {
+            WasBuildPressedThisFrame = false;
             WasInteractPressedThisFrame = false;
             WasPausePressedThisFrame = false;
             WasInventoryPressedThisFrame = false;
@@ -81,6 +87,12 @@ namespace TLN.Gameplay.Player.Input
             Look = Vector2.zero;
             WasInteractPressedThisFrame = false;
             WasPausePressedThisFrame = false;
+            WasBuildPressedThisFrame = false;
+        }
+
+        private void OnBuildPerformed(InputAction.CallbackContext context)
+        {
+            WasBuildPressedThisFrame = true;
         }
 
         private void OnStatusPerformed(InputAction.CallbackContext context)
