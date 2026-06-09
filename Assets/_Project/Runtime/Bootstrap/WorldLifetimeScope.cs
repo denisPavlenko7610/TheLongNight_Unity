@@ -1,4 +1,6 @@
+using System;
 using TLN.Application.Notifications;
+using TLN.Gameplay.Building;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -23,50 +25,64 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	protected override void Configure(IContainerBuilder builder)
 	{
-		ResolveSceneReferences();
+		ValidateReferences();
 
 		builder.RegisterInstance(_inventoryConfig);
 		builder.RegisterInstance(_gameTimeConfig);
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
 
-		builder.Register<GameTimeService>(Lifetime.Scoped)
-			.AsSelf()
-			.As<IGameTimeService>();
-		builder.Register<SurvivalService>(Lifetime.Scoped)
-			.AsSelf()
-			.As<ISurvivalService>();
+		builder.Register<GameTimeService>(Lifetime.Scoped).AsSelf().As<IGameTimeService>();
+		builder.Register<SurvivalService>(Lifetime.Scoped).AsSelf().As<ISurvivalService>();
 		builder.Register<SleepService>(Lifetime.Scoped);
 
-		builder.Register<InventoryService>(Lifetime.Scoped)
-			.AsSelf()
-			.As<IInventoryService>();
-		builder.Register<ItemUseService>(Lifetime.Scoped)
-			.AsSelf()
-			.As<IItemUseService>();
+		builder.Register<InventoryService>(Lifetime.Scoped).AsSelf().As<IInventoryService>(); builder.Register<ItemUseService>(Lifetime.Scoped)
+			.AsSelf().As<IItemUseService>();
+		builder.Register<IWorldObjectFactory, VContainerWorldObjectFactory>(Lifetime.Scoped);
 		builder.Register<PlacementService>(Lifetime.Scoped);
 		builder.Register(container => new SurvivalWarningService(
-			container.Resolve<ISurvivalService>(),
-			container.Resolve<INotificationService>(),
+			container.Resolve<ISurvivalService>(), container.Resolve<INotificationService>(),
 			_survivalWarningCooldownSeconds), Lifetime.Scoped);
 
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
+		builder.Register<BuildService>(Lifetime.Scoped).AsSelf().As<IBuildService>();
 
 		builder.RegisterComponent(_uiRoot);
 		builder.RegisterComponent(_uiRoot.HUD).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.InventoryWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.SleepWindow).AsImplementedInterfaces();
+		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.PauseMenu).AsImplementedInterfaces();
 		builder.RegisterComponentInHierarchy<WorldEntryPoint>();
 		builder.RegisterComponentInHierarchy<WorldTimeController>();
 		builder.RegisterComponentInHierarchy<WorldSurvivalController>();
 	}
 
-	private void ResolveSceneReferences()
+	private void ValidateReferences()
 	{
 		if (_uiRoot == null)
 		{
-			_uiRoot = FindFirstObjectByType<WorldUIRoot>();
+			throw new InvalidOperationException("WorldUIRoot is not assigned in WorldLifetimeScope.");
+		}
+
+		if (_inventoryConfig == null)
+		{
+			throw new InvalidOperationException("InventoryConfig is not assigned in WorldLifetimeScope.");
+		}
+
+		if (_gameTimeConfig == null)
+		{
+			throw new InvalidOperationException("GameTimeConfig is not assigned in WorldLifetimeScope.");
+		}
+
+		if (_survivalConfig == null)
+		{
+			throw new InvalidOperationException("SurvivalConfig is not assigned in WorldLifetimeScope.");
+		}
+
+		if (_sleepConfig == null)
+		{
+			throw new InvalidOperationException("SleepConfig is not assigned in WorldLifetimeScope.");
 		}
 	}
 }
