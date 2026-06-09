@@ -43,23 +43,23 @@ namespace TLN.Gameplay.Player.Movement
 
 		private void Move(float deltaTime)
 		{
-			var moveInput = _inputReader.Move;
+			Vector2 moveInput = _inputReader.Move;
 
-			var localMoveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+			Vector3 localMoveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
 
 			localMoveDirection = Vector3.ClampMagnitude(localMoveDirection, 1f);
 
-			var worldMoveDirection = transform.TransformDirection(localMoveDirection);
+			Vector3 worldMoveDirection = transform.TransformDirection(localMoveDirection);
 
 			float speed = _inputReader.IsSprintHeld
 				? _sprintSpeed
 				: _walkSpeed;
 
-			var horizontalVelocity = worldMoveDirection * speed;
+			Vector3 horizontalVelocity = worldMoveDirection * speed;
 
 			ApplyGravity(deltaTime);
 
-			var velocity = horizontalVelocity;
+			Vector3 velocity = horizontalVelocity;
 			velocity.y = _verticalVelocity;
 
 			_characterController.Move(velocity * deltaTime);

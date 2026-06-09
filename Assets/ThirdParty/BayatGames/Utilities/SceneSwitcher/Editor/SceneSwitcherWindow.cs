@@ -32,7 +32,7 @@ namespace BayatGames.Utilities.Editor
         [MenuItem("Tools/Scene Switcher")]
         public static void Init()
         {
-            var window = EditorWindow.GetWindow<SceneSwitcherWindow>("Scene Switcher");
+            SceneSwitcherWindow window = EditorWindow.GetWindow<SceneSwitcherWindow>("Scene Switcher");
             window.minSize = new Vector2(250f, 200f);
             window.Show();
         }

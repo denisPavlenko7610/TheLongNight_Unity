@@ -50,10 +50,10 @@ namespace TLN.Editor.Utilities
 
 			ClearPreviousDumpFiles();
 
-			var createdFiles = new List<string>();
+			List<string> createdFiles = new List<string>();
 			int partIndex = 1;
 			int filesInCurrentPart = 0;
-			var builder = CreatePartBuilder(partIndex, files.Length);
+			StringBuilder builder = CreatePartBuilder(partIndex, files.Length);
 			int currentEstimatedTokens = EstimateTokenCount(builder.ToString());
 
 			foreach (string file in files)
@@ -98,7 +98,7 @@ namespace TLN.Editor.Utilities
 
 		private static StringBuilder CreatePartBuilder(int partIndex, int totalFiles)
 		{
-			var builder = new StringBuilder();
+			StringBuilder builder = new StringBuilder();
 			builder.AppendLine($"// Source folder: {SourceFolder}");
 			builder.AppendLine($"// Supported extensions: {string.Join(", ", SupportedExtensions)}");
 			builder.AppendLine($"// Part: {partIndex}");
@@ -113,7 +113,7 @@ namespace TLN.Editor.Utilities
 
 		private static string BuildFileBlock(string assetPath, string content)
 		{
-			var builder = new StringBuilder();
+			StringBuilder builder = new StringBuilder();
 			builder.AppendLine("// ============================================================================");
 			builder.AppendLine($"// File: {assetPath}");
 			builder.AppendLine("// ============================================================================");
@@ -125,9 +125,9 @@ namespace TLN.Editor.Utilities
 
 		private static string CompactContent(string content)
 		{
-			var builder = new StringBuilder(content.Length);
+			StringBuilder builder = new StringBuilder(content.Length);
 
-			using var reader = new StringReader(content);
+			using StringReader reader = new StringReader(content);
 			while (reader.ReadLine() is { } line)
 			{
 				string trimmedLine = line.Trim();

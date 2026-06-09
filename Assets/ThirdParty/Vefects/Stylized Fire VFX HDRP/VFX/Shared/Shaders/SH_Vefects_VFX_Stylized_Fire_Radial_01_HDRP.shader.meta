@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 8d8bf0810c20deb4f9d070a4c8f71f29
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _LUT: {fileID: 2800000, guid: e561bead12b97374ab56577fcb4b14c7, type: 3}
+  - _MasksTexture: {fileID: 2800000, guid: d7c607b86d2feaf489cc0f4870583d9e, type: 3}
+  - _NoisesTexture: {fileID: 2800000, guid: 450de62c8d369e3459c2dfe0a483fe2e, type: 3}
+  - _NoisesTextureTertiary: {fileID: 2800000, guid: 4a70ea1a536acfb46bbcac2460fbbf8a,
+      type: 3}
+  - _NoisesTextureSecondary: {fileID: 2800000, guid: d3916979a6f6c144fa51bfbd29afce12,
+      type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 355836
+  packageName: Stylized Fire - HDRP
+  packageVersion: 1.0.0
+  assetPath: Assets/Vefects/Stylized Fire VFX HDRP/VFX/Shared/Shaders/SH_Vefects_VFX_Stylized_Fire_Radial_01_HDRP.shader
+  uploadId: 851816
