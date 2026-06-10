@@ -82,33 +82,25 @@ namespace TLN.UI.Inventory
                 return;
             }
 
-            if (definition.IconReference == null ||
-                !definition.IconReference.RuntimeKeyIsValid())
+            if (definition.IconReference == null || !definition.IconReference.RuntimeKeyIsValid())
             {
                 return;
             }
 
-            if (_addressableAssetService == null)
+            _addressableAssetService?.LoadSprite(definition.IconReference, sprite =>
             {
-                return;
-            }
-
-            _addressableAssetService.LoadSprite(
-                definition.IconReference,
-                sprite =>
+                if (_isDisposed)
                 {
-                    if (_isDisposed)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    if (requestVersion != _iconRequestVersion)
-                    {
-                        return;
-                    }
+                if (requestVersion != _iconRequestVersion)
+                {
+                    return;
+                }
 
-                    SetDirectIcon(sprite);
-                });
+                SetDirectIcon(sprite);
+            });
         }
 
         private void SetDirectIcon(Sprite sprite)

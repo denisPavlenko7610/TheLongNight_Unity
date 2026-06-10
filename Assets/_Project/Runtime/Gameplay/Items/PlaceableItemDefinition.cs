@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace TLN.Gameplay.Items
 {
@@ -6,10 +7,10 @@ namespace TLN.Gameplay.Items
 	public sealed class PlaceableItemDefinition : ItemDefinition
 	{
 		[Header("Placement")]
-		[SerializeField] private GameObject _placedPrefab;
+		[SerializeField] private AssetReferenceGameObject _placedPrefabReference;
 		[SerializeField] private float _placeDistance = 1.6f;
 
-		public GameObject PlacedPrefab => _placedPrefab;
+		public AssetReferenceGameObject PlacedPrefabReference => _placedPrefabReference;
 		public float PlaceDistance => _placeDistance;
 	}
 }

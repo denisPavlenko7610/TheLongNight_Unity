@@ -17,5 +17,6 @@ namespace TLN.Gameplay.Inventory
 		InventoryAddResult AddItem(ItemDefinition definition, int amount);
 		bool CanAddItem(ItemDefinition definition, int amount, out string reason);
 		bool TryRemoveItemAt(int index, int amount, out string reason);
+		bool TryRemoveItem(ItemDefinition definition, int amount, out string reason);
 	}
 }

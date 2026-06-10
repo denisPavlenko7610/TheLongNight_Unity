@@ -1,4 +1,5 @@
-﻿using TLN.Application.Notifications;
+﻿using TLN.Application.Assets;
+using TLN.Application.Notifications;
 using TLN.Core.Results;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
@@ -15,15 +16,17 @@ namespace TLN.Gameplay.Items
 		private readonly INotificationService _notificationService;
 		private readonly PlacementService _placementService;
 		private readonly IPlayerEquipmentService _equipmentService;
+		private readonly IAddressableAssetService _addressableAssetService;
 
-		public ItemUseService(IInventoryService inventoryService, ISurvivalService survivalService, INotificationService notificationService
-		, PlacementService placementService, IPlayerEquipmentService equipmentService)
+		public ItemUseService(IInventoryService inventoryService, ISurvivalService survivalService, INotificationService notificationService,
+			PlacementService placementService, IPlayerEquipmentService equipmentService, IAddressableAssetService addressableAssetService)
 		{
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
 			_placementService = placementService;
 			_equipmentService = equipmentService;
+			_addressableAssetService = addressableAssetService;
 		}
 
 		public ItemUseResult UseItemAt(int index)
@@ -76,29 +79,70 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not PlaceableItemDefinition placeable)
 			{
-				return ItemUseResult.Failure("This item cannot be placed.");
+				return Fail("This item cannot be placed.");
 			}
 
-			bool wasPlaced = _placementService.TryPlace(placeable.PlacedPrefab, placeable.PlaceDistance, out GameObject placedObject);
+			if (_addressableAssetService == null)
+			{
+				return Fail("Addressable asset service is missing.");
+			}
 
-			string message = "";
+			if (placeable.PlacedPrefabReference == null ||
+				!placeable.PlacedPrefabReference.RuntimeKeyIsValid())
+			{
+				return Fail($"Placed prefab reference is missing for {placeable.DisplayName}.");
+			}
+
+			_addressableAssetService.LoadPrefab(
+				placeable.PlacedPrefabReference,
+				prefab =>
+				{
+					OnPlaceablePrefabLoaded(placeable, prefab);
+				});
+
+			return ItemUseResult.Success($"Placing {placeable.DisplayName}...");
+		}
+
+		private void OnPlaceablePrefabLoaded(
+			PlaceableItemDefinition placeable,
+			GameObject prefab)
+		{
+			if (placeable == null)
+			{
+				return;
+			}
+
+			if (prefab == null)
+			{
+				Fail($"Cannot load placed prefab for {placeable.DisplayName}.");
+				return;
+			}
+
+			bool wasPlaced = _placementService.TryPlace(
+				prefab,
+				placeable.PlaceDistance,
+				out GameObject placedObject);
+
 			if (!wasPlaced)
 			{
-				return Fail("Cannot place item here.");
+				Fail("Cannot place item here.");
+				return;
 			}
 
-			bool wasRemoved = _inventoryService.TryRemoveItemAt(index, 1, out string removeFailureReason);
+			bool wasRemoved = _inventoryService.TryRemoveItem(
+				placeable,
+				1,
+				out string removeFailureReason);
 
 			if (!wasRemoved)
 			{
 				Object.Destroy(placedObject);
-				return ItemUseResult.Failure(removeFailureReason);
+				Fail(removeFailureReason);
+				return;
 			}
 
-			message = $"Placed {placeable.DisplayName}";
+			string message = $"Placed {placeable.DisplayName}";
 			_notificationService.Show(message);
-
-			return ItemUseResult.Success(message);
 		}
 
 		private ItemUseResult UseClothing(ItemStack stack)
