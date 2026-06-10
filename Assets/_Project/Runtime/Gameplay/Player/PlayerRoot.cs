@@ -3,12 +3,15 @@ using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
+using TLN.Gameplay.Campfire;
+using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Flashlight;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Player.Look;
 using TLN.Gameplay.Player.Movement;
+using TLN.Gameplay.Survival;
 using UnityEngine;
 using VContainer;
 
@@ -25,9 +28,10 @@ namespace TLN.Gameplay.Player
 		[field: SerializeField, Assign, Required] public PlayerInventoryController InventoryController { get; private set; }
 		[field: SerializeField, Assign, Required] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
 		[field: SerializeField, Assign, Required] public PlayerBuildController BuildController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerWarmthController WarmthController { get; private set; }
 
 		[Header("Equipment")]
-		//[SerializeField] private FlashlightController _flashlight;
+		[SerializeField] private FlashlightController _flashlight;
 
 		private IInputModeService _inputModeService;
 		private IGameStateMachine _gameStateMachine;
@@ -39,7 +43,9 @@ namespace TLN.Gameplay.Player
 
 		[Inject]
 		public void Construct(IInputModeService inputModeService, IGameStateMachine gameStateMachine, IPauseMenuView pauseMenuView,
-			IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView, IInteractionPromptView interactionPromptView, IBuildWindow buildWindow)
+			IInventoryWindow inventoryWindow, ITimeOverlayView timeOverlayView, IInteractionPromptView interactionPromptView,
+			IBuildWindow buildWindow, IWarmthService warmthService, ISurvivalService survivalService, SurvivalConfig survivalConfig,
+			IPlayerEquipmentService equipmentService)
 		{
 			_inputModeService = inputModeService;
 			_gameStateMachine = gameStateMachine;
@@ -56,14 +62,15 @@ namespace TLN.Gameplay.Player
 			InventoryController.Construct(_inventoryWindow, _inputModeService, _gameStateMachine);
 			TimeOverlayController.Construct(_timeOverlayView, _inputModeService);
 			BuildController.Construct(_buildWindow, _gameStateMachine);
+			WarmthController.Construct(warmthService, equipmentService, survivalService, survivalConfig, _gameStateMachine);
 		}
 
-		// public void ToggleFlashlight()
-		// {
-		// 	if (_flashlight != null)
-		// 	{
-		// 		_flashlight.Toggle();
-		// 	}
-		// }
+		public void ToggleFlashlight()
+		{
+			if (_flashlight != null)
+			{
+				_flashlight.Toggle();
+			}
+		}
 	}
 }

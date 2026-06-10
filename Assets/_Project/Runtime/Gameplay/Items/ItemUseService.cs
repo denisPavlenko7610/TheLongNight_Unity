@@ -1,4 +1,6 @@
 ﻿using TLN.Application.Notifications;
+using TLN.Core.Results;
+using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Survival;
@@ -12,14 +14,16 @@ namespace TLN.Gameplay.Items
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
 		private readonly PlacementService _placementService;
+		private readonly IPlayerEquipmentService _equipmentService;
 
 		public ItemUseService(IInventoryService inventoryService, ISurvivalService survivalService, INotificationService notificationService
-		, PlacementService placementService)
+		, PlacementService placementService, IPlayerEquipmentService equipmentService)
 		{
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
 			_placementService = placementService;
+			_equipmentService = equipmentService;
 		}
 
 		public ItemUseResult UseItemAt(int index)
@@ -35,6 +39,7 @@ namespace TLN.Gameplay.Items
 			{
 				ItemUseKind.Consumable => UseConsumableAt(index, stack),
 				ItemUseKind.Placeable => UsePlaceableAt(index, stack),
+				ItemUseKind.Clothing => UseClothing(stack),
 				_ => Fail("This item cannot be used.")
 			};
 		}
@@ -94,6 +99,24 @@ namespace TLN.Gameplay.Items
 			_notificationService.Show(message);
 
 			return ItemUseResult.Success(message);
+		}
+
+		private ItemUseResult UseClothing(ItemStack stack)
+		{
+			if (stack.Definition is not ClothingItemDefinition clothing)
+			{
+				return Fail("This item cannot be equipped.");
+			}
+
+			if (_equipmentService == null)
+			{
+				return Fail("Equipment service is missing.");
+			}
+
+			OperationResult result = _equipmentService.ToggleEquip(clothing);
+			_notificationService.Show(result.Message);
+
+			return !result.IsSuccess ? ItemUseResult.Failure(result.Message) : ItemUseResult.Success(result.Message);
 		}
 	}
 }

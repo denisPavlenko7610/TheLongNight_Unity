@@ -4,6 +4,7 @@
 	{
 		None = 0,
 		Consumable = 10,
-		Placeable = 20
+		Placeable = 20,
+		Clothing = 30
 	}
 }

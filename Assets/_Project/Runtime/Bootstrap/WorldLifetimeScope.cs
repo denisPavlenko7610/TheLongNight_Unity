@@ -2,6 +2,8 @@ using TLN.Application.Notifications;
 using TLN.Bootstrap;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
+using TLN.Gameplay.Campfire;
+using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -34,13 +36,13 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
 
-		builder.Register<GameTimeService>(Lifetime.Scoped).AsSelf().As<IGameTimeService>();
-		builder.Register<SurvivalService>(Lifetime.Scoped).AsSelf().As<ISurvivalService>();
+		builder.Register<GameTimeService>(Lifetime.Scoped).As<IGameTimeService>();
+		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();
 		builder.Register<SleepService>(Lifetime.Scoped);
 
-		builder.Register<InventoryService>(Lifetime.Scoped).AsSelf().As<IInventoryService>();
-		builder.Register<ItemUseService>(Lifetime.Scoped)
-			.AsSelf().As<IItemUseService>();
+		builder.Register<InventoryService>(Lifetime.Scoped).As<IInventoryService>();
+		builder.Register<PlayerEquipmentService>(Lifetime.Scoped).As<IPlayerEquipmentService>();
+		builder.Register<ItemUseService>(Lifetime.Scoped).As<IItemUseService>();
 		builder.Register<IWorldObjectFactory, VContainerWorldObjectFactory>(Lifetime.Scoped);
 		builder.Register<PlacementService>(Lifetime.Scoped);
 		builder.Register(container => new SurvivalWarningService(
@@ -49,6 +51,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
 		builder.Register<IBuildService, BuildService>(Lifetime.Scoped);
+		builder.Register<WarmthService>(Lifetime.Scoped).As<IWarmthService>();
 
 		builder.RegisterComponentInHierarchy<WorldEntryPoint>();
 		builder.RegisterComponentInHierarchy<WorldTimeController>();
@@ -68,7 +71,10 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	private void InjectSceneInjectables(IObjectResolver resolver)
 	{
-		SceneInjectable[] injectables = FindObjectsByType<SceneInjectable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+		SceneInjectable[] injectables = FindObjectsByType<SceneInjectable>(
+			FindObjectsInactive.Include,
+			FindObjectsSortMode.None);
+
 		foreach (SceneInjectable injectable in injectables)
 		{
 			if (injectable == null)
@@ -76,7 +82,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 				continue;
 			}
 
-			if (HasParentInjectable(injectable))
+			if (injectable.HasParentInjectable)
 			{
 				continue;
 			}
@@ -88,25 +94,8 @@ public sealed class WorldLifetimeScope : LifetimeScope
 				continue;
 			}
 
-			resolver.InjectGameObject(target);
+			injectable.InjectHierarchy(resolver);
 		}
-	}
-
-	private static bool HasParentInjectable(SceneInjectable injectable)
-	{
-		Transform parent = injectable.transform.parent;
-
-		while (parent != null)
-		{
-			if (parent.TryGetComponent(out SceneInjectable _))
-			{
-				return true;
-			}
-
-			parent = parent.parent;
-		}
-
-		return false;
 	}
 
 }

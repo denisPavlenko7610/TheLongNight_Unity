@@ -38,7 +38,6 @@ namespace TLN.Gameplay.Survival
             Hunger.Add(_config.HungerPerHour * gameHours);
             Thirst.Add(_config.ThirstPerHour * gameHours);
             Fatigue.Add(_config.FatiguePerHour * gameHours);
-            Cold.Add(_config.ColdPerHour * gameHours);
 
             ApplyConditionDamage(gameHours);
 

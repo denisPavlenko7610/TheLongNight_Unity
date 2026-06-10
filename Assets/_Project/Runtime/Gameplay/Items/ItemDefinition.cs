@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace TLN.Gameplay.Items
 {
@@ -17,6 +18,7 @@ namespace TLN.Gameplay.Items
 
 		[Header("UI")]
 		[SerializeField] private Sprite _icon;
+		[SerializeField] private AssetReferenceT<Sprite> _iconReference;
 
 		[Header("Use")]
 		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
@@ -28,6 +30,7 @@ namespace TLN.Gameplay.Items
 		public bool IsStackable => _isStackable;
 		public int MaxStackSize => _maxStackSize;
 		public Sprite Icon => _icon;
+		public AssetReferenceT<Sprite> IconReference => _iconReference;
 		public ItemUseKind UseKind => _useKind;
 	}
 }

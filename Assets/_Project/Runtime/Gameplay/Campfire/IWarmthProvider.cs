@@ -6,6 +6,7 @@ namespace TLN.Gameplay.Campfire
 	{
 		bool IsWarmthActive { get; }
 		float WarmthBonus { get; }
+		float WarmthRadius { get; }
 		Vector3 Position { get; }
 	}
 }

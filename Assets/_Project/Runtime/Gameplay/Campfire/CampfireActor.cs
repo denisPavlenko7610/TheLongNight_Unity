@@ -7,7 +7,7 @@ using VContainer;
 
 namespace TLN.Gameplay.Campfire
 {
-    public sealed class CampfireActor : MonoBehaviour, IInteractable
+    public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider
     {
         [Header("Interaction")]
         [SerializeField] private string _interactionText = "Use campfire";
@@ -19,6 +19,7 @@ namespace TLN.Gameplay.Campfire
 
         [Header("Warmth")]
         [SerializeField] private float _warmthBonus = 20f;
+        [SerializeField] private float _warmthRadius = 4f;
 
         [Header("Visuals")]
         [SerializeField] private GameObject _burningRoot;
@@ -30,6 +31,7 @@ namespace TLN.Gameplay.Campfire
         private IGameTimeService _gameTimeService;
         private int _lastKnownTotalMinutes;
         private int _remainingBurnMinutes;
+        private IWarmthService _warmthService;
         private CampfireState _state = CampfireState.Unlit;
 
         public string InteractionText => _interactionText;
@@ -38,28 +40,23 @@ namespace TLN.Gameplay.Campfire
         public int RemainingBurnMinutes => _remainingBurnMinutes;
         public int MaxBurnMinutes => _maxBurnMinutes;
         public float WarmthBonus => IsBurning ? _warmthBonus : 0f;
+        public bool IsWarmthActive => IsBurning;
+        public float WarmthRadius => _warmthRadius;
+        public Vector3 Position => transform.position;
 
-        public float FuelNormalized
-        {
-            get
-            {
-                if (_maxBurnMinutes <= 0)
-                {
-                    return 0f;
-                }
-
-                return Mathf.Clamp01((float)_remainingBurnMinutes / _maxBurnMinutes);
-            }
-        }
+        public float FuelNormalized => _maxBurnMinutes <= 0 ? 0f : Mathf.Clamp01((float)_remainingBurnMinutes / _maxBurnMinutes);
 
         public event Action Changed;
         public event Action BurnedOut;
 
         [Inject]
-        public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService)
+        public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService)
         {
             _campfireWindow = campfireWindow;
             _gameTimeService = gameTimeService;
+            _warmthService = warmthService;
+
+            _warmthService?.Register(this);
 
             if (_gameTimeService != null)
             {
@@ -86,7 +83,16 @@ namespace TLN.Gameplay.Campfire
             {
                 _gameTimeService.Changed -= OnGameTimeChanged;
             }
+
+            _warmthService?.Unregister(this);
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawWireSphere(transform.position, _warmthRadius);
+        }
+#endif
 
         public bool CanInteract(InteractionContext context)
         {
