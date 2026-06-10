@@ -17,6 +17,7 @@ namespace TLN.Gameplay.Survival
 		void Tick(float deltaTime);
 
 		void ApplyConsumable(ConsumableItemDefinition consumable);
+		void ReduceCold(float amount);
 
 		void AddFatigue(float amount);
 		void ReduceFatigue(float amount);

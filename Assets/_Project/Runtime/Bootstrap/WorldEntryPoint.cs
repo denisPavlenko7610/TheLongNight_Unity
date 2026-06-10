@@ -78,7 +78,6 @@ namespace TLN.Gameplay.World
 			ConstructPauseMenu();
 			ConstructInventoryWindow();
 			ConstructSleepWindow();
-			ConstructSceneWorldItems();
 			SpawnPlayer();
 			EnsureGameplayState();
 		}
@@ -102,25 +101,6 @@ namespace TLN.Gameplay.World
 		private void ConstructSleepWindow()
 		{
 			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationService);
-		}
-
-		private void ConstructSceneWorldItems()
-		{
-			WorldItemActor[] itemActors = FindObjectsByType<WorldItemActor>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None);
-
-			for (int i = 0; i < itemActors.Length; i++)
-			{
-				WorldItemActor itemActor = itemActors[i];
-
-				if (itemActor == null)
-				{
-					continue;
-				}
-
-				itemActor.Construct(_inventoryService, _notificationService);
-			}
 		}
 
 		private void SpawnPlayer()

@@ -576,6 +576,7 @@ GameObject:
   - component: {fileID: 936705373756867025}
   - component: {fileID: 2088924916554084483}
   - component: {fileID: 6070588436189272575}
+  - component: {fileID: 4729064103163924821}
   m_Layer: 0
   m_Name: PF_Player
   m_TagString: Untagged
@@ -647,7 +648,20 @@ MonoBehaviour:
   <InventoryController>k__BackingField: {fileID: 936705373756867025}
   <TimeOverlayController>k__BackingField: {fileID: 2088924916554084483}
   <BuildController>k__BackingField: {fileID: 6070588436189272575}
+  <WarmthController>k__BackingField: {fileID: 4729064103163924821}
   _flashlight: {fileID: 0}
+--- !u!114 &4729064103163924821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352849978073610698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e728e05de8dd4d95a25d9e1f431db7ad, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.PlayerWarmthController
 --- !u!114 &1902473015745612277
 MonoBehaviour:
   m_ObjectHideFlags: 0
