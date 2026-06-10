@@ -37,8 +37,9 @@ namespace TLN.Gameplay.Placement
 			}
 
 			Transform cameraTransform = _playerRoot.Camera.transform;
+			Vector3 placementForward = GetPlacementForward(cameraTransform);
 
-			Vector3 forwardPoint = cameraTransform.position + cameraTransform.forward * distance;
+			Vector3 forwardPoint = cameraTransform.position + placementForward * distance;
 
 			if (!TryFindGroundPosition(forwardPoint, out Vector3 groundPosition))
 			{
@@ -56,10 +57,31 @@ namespace TLN.Gameplay.Placement
 			return true;
 		}
 
+		private Vector3 GetPlacementForward(Transform cameraTransform)
+		{
+			Vector3 forward = cameraTransform.forward;
+			forward.y = 0f;
+
+			if (forward.sqrMagnitude > 0.0001f)
+			{
+				return forward.normalized;
+			}
+
+			forward = _playerRoot.transform.forward;
+			forward.y = 0f;
+
+			if (forward.sqrMagnitude > 0.0001f)
+			{
+				return forward.normalized;
+			}
+
+			return Vector3.forward;
+		}
+
 		private static bool TryFindGroundPosition(Vector3 origin, out Vector3 groundPosition)
 		{
-			const float rayStartHeight = 2f;
-			const float rayDistance = 5f;
+			const float rayStartHeight = 5f;
+			const float rayDistance = 12f;
 
 			Vector3 rayOrigin = origin + Vector3.up * rayStartHeight;
 

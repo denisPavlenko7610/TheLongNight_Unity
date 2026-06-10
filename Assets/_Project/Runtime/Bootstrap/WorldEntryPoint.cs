@@ -3,6 +3,7 @@ using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
+using TLN.Core.GameStates;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
@@ -77,7 +78,9 @@ namespace TLN.Gameplay.World
 			ConstructPauseMenu();
 			ConstructInventoryWindow();
 			ConstructSleepWindow();
+			ConstructSceneWorldItems();
 			SpawnPlayer();
+			EnsureGameplayState();
 		}
 
 		private void ConstructHUD()
@@ -101,10 +104,39 @@ namespace TLN.Gameplay.World
 			_uiRoot.SleepWindow.Construct(_sleepService, _inputModeService, _inventoryService, _notificationService);
 		}
 
+		private void ConstructSceneWorldItems()
+		{
+			WorldItemActor[] itemActors = FindObjectsByType<WorldItemActor>(
+				FindObjectsInactive.Include,
+				FindObjectsSortMode.None);
+
+			for (int i = 0; i < itemActors.Length; i++)
+			{
+				WorldItemActor itemActor = itemActors[i];
+
+				if (itemActor == null)
+				{
+					continue;
+				}
+
+				itemActor.Construct(_inventoryService, _notificationService);
+			}
+		}
+
 		private void SpawnPlayer()
 		{
 			_playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
 			_placementService.SetPlayerRoot(_playerInstance);
+		}
+
+		private void EnsureGameplayState()
+		{
+			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
+			{
+				_gameStateMachine.Enter(GameStateId.Playing);
+			}
+
+			_inputModeService?.SetGameplayMode();
 		}
 
 		private bool ValidateRequiredReferences()
