@@ -18,6 +18,11 @@ namespace TLN.Application.Input
 		public void Initialize()
 		{
 			_gameStateMachine.StateChanged += OnGameStateChanged;
+
+			if (_gameStateMachine.CurrentState != GameStateId.None)
+			{
+				OnGameStateChanged(GameStateId.None, _gameStateMachine.CurrentState);
+			}
 		}
 
 		public void Dispose()

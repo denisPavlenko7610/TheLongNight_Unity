@@ -1,6 +1,6 @@
-using System;
 using TLN.Application.Notifications;
 using TLN.Bootstrap;
+using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
@@ -17,18 +17,17 @@ using VContainer.Unity;
 
 public sealed class WorldLifetimeScope : LifetimeScope
 {
-	[SerializeField] private WorldUIRoot _uiRoot;
-	[SerializeField] private InventoryConfig _inventoryConfig;
-	[SerializeField] private GameTimeConfig _gameTimeConfig;
-	[SerializeField] private SurvivalConfig _survivalConfig;
-	[SerializeField] private SleepConfig _sleepConfig;
-	[SerializeField] private BuildRecipeCatalog _buildRecipeCatalog;
+	[SerializeField, Required] private WorldUIRoot _uiRoot;
+	[SerializeField, Required] private InventoryConfig _inventoryConfig;
+	[SerializeField, Required] private GameTimeConfig _gameTimeConfig;
+	[SerializeField, Required] private SurvivalConfig _survivalConfig;
+	[SerializeField, Required] private SleepConfig _sleepConfig;
+	[SerializeField, Required] private BuildRecipeCatalog _buildRecipeCatalog;
 
 	[SerializeField] private float _survivalWarningCooldownSeconds = 30f;
 
 	protected override void Configure(IContainerBuilder builder)
 	{
-		ValidateReferences();
 
 		builder.RegisterInstance(_inventoryConfig);
 		builder.RegisterInstance(_gameTimeConfig);
@@ -67,55 +66,17 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterBuildCallback(InjectSceneInjectables);
 	}
 
-	private void ValidateReferences()
-	{
-		if (_uiRoot == null)
-		{
-			throw new InvalidOperationException("WorldUIRoot is not assigned in WorldLifetimeScope.");
-		}
-
-		if (_inventoryConfig == null)
-		{
-			throw new InvalidOperationException("InventoryConfig is not assigned in WorldLifetimeScope.");
-		}
-
-		if (_buildRecipeCatalog == null)
-		{
-			throw new InvalidOperationException("BuildRecipeCatalog is not assigned in WorldLifetimeScope.");
-		}
-
-		if (_gameTimeConfig == null)
-		{
-			throw new InvalidOperationException("GameTimeConfig is not assigned in WorldLifetimeScope.");
-		}
-
-		if (_survivalConfig == null)
-		{
-			throw new InvalidOperationException("SurvivalConfig is not assigned in WorldLifetimeScope.");
-		}
-
-		if (_sleepConfig == null)
-		{
-			throw new InvalidOperationException("SleepConfig is not assigned in WorldLifetimeScope.");
-		}
-	}
-
 	private void InjectSceneInjectables(IObjectResolver resolver)
 	{
-		SceneInjectable[] injectables = FindObjectsByType<SceneInjectable>(
-			FindObjectsInactive.Include,
-			FindObjectsSortMode.None);
-
-		for (int i = 0; i < injectables.Length; i++)
+		SceneInjectable[] injectables = FindObjectsByType<SceneInjectable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+		foreach (SceneInjectable injectable in injectables)
 		{
-			SceneInjectable injectable = injectables[i];
-
 			if (injectable == null)
 			{
 				continue;
 			}
 
-			if (IsCoveredByParentInjectable(injectable))
+			if (HasParentInjectable(injectable))
 			{
 				continue;
 			}
@@ -127,23 +88,17 @@ public sealed class WorldLifetimeScope : LifetimeScope
 				continue;
 			}
 
-			if (injectable.InjectChildren)
-			{
-				resolver.InjectGameObject(target);
-				continue;
-			}
-
-			InjectSingleGameObject(resolver, target);
+			resolver.InjectGameObject(target);
 		}
 	}
 
-	private static bool IsCoveredByParentInjectable(SceneInjectable injectable)
+	private static bool HasParentInjectable(SceneInjectable injectable)
 	{
 		Transform parent = injectable.transform.parent;
 
 		while (parent != null)
 		{
-			if (parent.TryGetComponent(out SceneInjectable parentInjectable) && parentInjectable.InjectChildren)
+			if (parent.TryGetComponent(out SceneInjectable _))
 			{
 				return true;
 			}
@@ -154,20 +109,4 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		return false;
 	}
 
-	private static void InjectSingleGameObject(IObjectResolver resolver, GameObject target)
-	{
-		MonoBehaviour[] components = target.GetComponents<MonoBehaviour>();
-
-		for (int i = 0; i < components.Length; i++)
-		{
-			MonoBehaviour component = components[i];
-
-			if (component == null)
-			{
-				continue;
-			}
-
-			resolver.Inject(component);
-		}
-	}
 }

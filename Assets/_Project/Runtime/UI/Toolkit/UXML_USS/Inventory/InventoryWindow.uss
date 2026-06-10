@@ -3,18 +3,16 @@
     left: 50%;
     top: 50%;
     translate: -50% -50%;
+    display: none;
     opacity: 0;
     transition-property: opacity;
     transition-duration: 180ms;
     transition-timing-function: ease-out;
 }
 
-.inventory-window-root-hidden {
-    display: none;
-}
-
 .inventory-window-root-visible {
     display: flex;
+    opacity: 1;
 }
 
 .inventory-window {

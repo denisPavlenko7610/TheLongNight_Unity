@@ -1,4 +1,5 @@
 ﻿using TLN.Application.Notifications;
+using TLN.Core.Validation;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Inventory;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace TLN.Gameplay.Items
 	public sealed class WorldItemActor : MonoBehaviour, IInteractable
 	{
 		[Header("Item")]
-		[SerializeField] private ItemDefinition _definition;
+		[SerializeField, Required] private ItemDefinition _definition;
 		[SerializeField] private int _amount = 1;
 
 		private INotificationService _notificationService;
@@ -19,12 +20,7 @@ namespace TLN.Gameplay.Items
 		{
 			get
 			{
-				if (_definition == null)
-				{
-					return "Pick up item";
-				}
-
-				return $"Pick up {_definition.DisplayName}";
+				return _definition == null ? "Pick up item" : $"Pick up {_definition.DisplayName}";
 			}
 		}
 

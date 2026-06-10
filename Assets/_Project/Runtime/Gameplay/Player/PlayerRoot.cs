@@ -1,6 +1,7 @@
 ﻿using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
+using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Flashlight;
 using TLN.Gameplay.Interaction;
@@ -15,18 +16,18 @@ namespace TLN.Gameplay.Player
 {
 	public sealed class PlayerRoot : MonoBehaviour
 	{
-		[field: SerializeField][field: Assign] public PlayerInputReader InputReader { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerMotor Motor { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerLook Look { get; private set; }
-		[field: SerializeField][field: Assign(Mode.Children)] public Camera Camera { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerPauseController PauseController { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerInteractionController InteractionController { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerInventoryController InventoryController { get; private set; }
-		[field: SerializeField][field: Assign] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
-		[field: SerializeField] [field: Assign] public PlayerBuildController BuildController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerInputReader InputReader { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerMotor Motor { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerLook Look { get; private set; }
+		[field: SerializeField, Assign(Mode.Children), Required] public Camera Camera { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerPauseController PauseController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerInteractionController InteractionController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerInventoryController InventoryController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerTimeOverlayController TimeOverlayController { get; private set; }
+		[field: SerializeField, Assign, Required] public PlayerBuildController BuildController { get; private set; }
 
 		[Header("Equipment")]
-		[SerializeField] private FlashlightController _flashlight;
+		//[SerializeField] private FlashlightController _flashlight;
 
 		private IInputModeService _inputModeService;
 		private IGameStateMachine _gameStateMachine;
@@ -57,12 +58,12 @@ namespace TLN.Gameplay.Player
 			BuildController.Construct(_buildWindow, _gameStateMachine);
 		}
 
-		public void ToggleFlashlight()
-		{
-			if (_flashlight != null)
-			{
-				_flashlight.Toggle();
-			}
-		}
+		// public void ToggleFlashlight()
+		// {
+		// 	if (_flashlight != null)
+		// 	{
+		// 		_flashlight.Toggle();
+		// 	}
+		// }
 	}
 }

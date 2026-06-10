@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Building.BuildRecipeDefinition
   _id: campfire
   _displayName: Campfire
-  _placedPrefab: {fileID: 0}
+  _placedPrefab: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
   _placeDistance: 2
   _ingredients:
   - _item: {fileID: 11400000, guid: 16c53ef6bc870264bab1578287670829, type: 2}
