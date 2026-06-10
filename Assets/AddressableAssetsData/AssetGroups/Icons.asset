@@ -16,12 +16,12 @@ MonoBehaviour:
   m_GUID: d7aa286623b4aa846b437e05c1c094cd
   m_SerializeEntries:
   - m_GUID: 1f58e20348912514a8b3ed06830f509b
-    m_Address: Soda
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Soda.jpg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3aaf0c17ec4c51d479270b3ee554c981
-    m_Address: apple
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/apple.jpg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
