@@ -1,10 +1,9 @@
 ﻿using System;
+using TLN.Application.Assets;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Items;
 using TLN.UI.Common;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 
 namespace TLN.UI.Inventory
@@ -16,19 +15,20 @@ namespace TLN.UI.Inventory
         private readonly Label _nameLabel;
         private readonly Label _metaLabel;
         private readonly Button _useButton;
+        private readonly IAddressableAssetService _addressableAssetService;
 
         private int _itemIndex;
-        private Action<int> _useClicked;
-
-        private AsyncOperationHandle<Sprite> _iconLoadHandle;
-        private bool _hasIconLoadHandle;
+        private int _iconRequestVersion;
         private bool _isDisposed;
+        private Action<int> _useClicked;
 
         public VisualElement Root => _root;
 
-        public InventoryItemRowView(VisualElement root)
+        public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
         {
             _root = root;
+            _addressableAssetService = addressableAssetService;
+
             _icon = root.RequiredQ<VisualElement>("item-icon");
             _nameLabel = root.RequiredQ<Label>("item-name-label");
             _metaLabel = root.RequiredQ<Label>("item-meta-label");
@@ -39,8 +39,6 @@ namespace TLN.UI.Inventory
 
         public void Bind(int itemIndex, ItemStack stack, Action<int> useClicked)
         {
-            ReleaseIconHandle();
-
             _itemIndex = itemIndex;
             _useClicked = useClicked;
             _isDisposed = false;
@@ -55,8 +53,9 @@ namespace TLN.UI.Inventory
         public void Dispose()
         {
             _isDisposed = true;
+            _iconRequestVersion++;
+
             _useButton.clicked -= OnUseClicked;
-            ReleaseIconHandle();
         }
 
         private static string CreateMetaText(ItemStack stack)
@@ -73,6 +72,9 @@ namespace TLN.UI.Inventory
 
         private void SetIcon(ItemDefinition definition)
         {
+            _iconRequestVersion++;
+            int requestVersion = _iconRequestVersion;
+
             _icon.style.backgroundImage = StyleKeyword.None;
 
             if (definition == null)
@@ -80,37 +82,33 @@ namespace TLN.UI.Inventory
                 return;
             }
 
-            AssetReferenceT<Sprite> iconReference = definition.IconReference;
-
-            if (iconReference != null && iconReference.RuntimeKeyIsValid())
-            {
-                LoadAddressableIcon(iconReference);
-                return;
-            }
-
-            SetDirectIcon(definition.Icon);
-        }
-
-        private void LoadAddressableIcon(AssetReferenceT<Sprite> iconReference)
-        {
-            _iconLoadHandle = iconReference.LoadAssetAsync<Sprite>();
-            _hasIconLoadHandle = true;
-            _iconLoadHandle.Completed += OnIconLoaded;
-        }
-
-        private void OnIconLoaded(AsyncOperationHandle<Sprite> handle)
-        {
-            if (_isDisposed)
+            if (definition.IconReference == null ||
+                !definition.IconReference.RuntimeKeyIsValid())
             {
                 return;
             }
 
-            if (handle.Status != AsyncOperationStatus.Succeeded)
+            if (_addressableAssetService == null)
             {
                 return;
             }
 
-            SetDirectIcon(handle.Result);
+            _addressableAssetService.LoadSprite(
+                definition.IconReference,
+                sprite =>
+                {
+                    if (_isDisposed)
+                    {
+                        return;
+                    }
+
+                    if (requestVersion != _iconRequestVersion)
+                    {
+                        return;
+                    }
+
+                    SetDirectIcon(sprite);
+                });
         }
 
         private void SetDirectIcon(Sprite sprite)
@@ -122,23 +120,6 @@ namespace TLN.UI.Inventory
             }
 
             _icon.style.backgroundImage = new StyleBackground(sprite);
-        }
-
-        private void ReleaseIconHandle()
-        {
-            if (!_hasIconLoadHandle)
-            {
-                return;
-            }
-
-            if (_iconLoadHandle.IsValid())
-            {
-                _iconLoadHandle.Completed -= OnIconLoaded;
-                Addressables.Release(_iconLoadHandle);
-            }
-
-            _hasIconLoadHandle = false;
-            _iconLoadHandle = default;
         }
 
         private void OnUseClicked()

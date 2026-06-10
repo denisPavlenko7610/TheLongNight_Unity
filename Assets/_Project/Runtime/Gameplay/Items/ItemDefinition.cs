@@ -17,8 +17,7 @@ namespace TLN.Gameplay.Items
 		[SerializeField] private int _maxStackSize = 1;
 
 		[Header("UI")]
-		[SerializeField] private Sprite _icon;
-		[SerializeField] private AssetReferenceT<Sprite> _iconReference;
+		[SerializeField] private AssetReferenceSprite _iconReference;
 
 		[Header("Use")]
 		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
@@ -29,8 +28,7 @@ namespace TLN.Gameplay.Items
 		public float Weight => _weight;
 		public bool IsStackable => _isStackable;
 		public int MaxStackSize => _maxStackSize;
-		public Sprite Icon => _icon;
-		public AssetReferenceT<Sprite> IconReference => _iconReference;
+		public AssetReferenceSprite IconReference => _iconReference;
 		public ItemUseKind UseKind => _useKind;
 	}
 }

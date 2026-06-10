@@ -18,7 +18,13 @@ MonoBehaviour:
   _weight: 0.2
   _isStackable: 1
   _maxStackSize: 10
-  _icon: {fileID: 21300000, guid: 3aaf0c17ec4c51d479270b3ee554c981, type: 3}
+  _iconReference:
+    m_AssetGUID: 3aaf0c17ec4c51d479270b3ee554c981
+    m_SubObjectName: apple
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
   _useKind: 10
   _hungerRestore: 15
   _thirstRestore: 3

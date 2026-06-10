@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TLN.Application.Assets;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.UI.Common;
@@ -23,13 +24,16 @@ namespace TLN.UI.Inventory
         private readonly List<InventoryItemRowView> _rowViews = new();
 
         private bool _isVisible;
+        private IAddressableAssetService _addressableAssetService;
 
         private IInventoryService _inventoryService;
         private IItemUseService _itemUseService;
-        public void Construct(IInventoryService inventoryService, IItemUseService itemUseService)
+        public void Construct(IInventoryService inventoryService, IItemUseService itemUseService,
+            IAddressableAssetService addressableAssetService)
         {
             _inventoryService = inventoryService;
             _itemUseService = itemUseService;
+            _addressableAssetService = addressableAssetService;
 
             _inventoryService.Changed += Refresh;
 
@@ -127,7 +131,7 @@ namespace TLN.UI.Inventory
                 return;
             }
 
-            InventoryItemRowView rowView = new InventoryItemRowView(rowRoot);
+            InventoryItemRowView rowView = new InventoryItemRowView(rowRoot, _addressableAssetService);
             rowView.Bind(index, stack, OnUseClicked);
 
             _rowViews.Add(rowView);
