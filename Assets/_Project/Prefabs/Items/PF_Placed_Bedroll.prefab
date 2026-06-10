@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2449650109437670412, guid: 89281e817bfa32e48ac1ad1bb9d26fc2, type: 3}
       propertyPath: m_Name
-      value: PF_Placed_Bedroll_Unrolled Variant
+      value: PF_Placed_Bedroll
       objectReference: {fileID: 0}
     - target: {fileID: 3744872592613563825, guid: 89281e817bfa32e48ac1ad1bb9d26fc2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -52,7 +52,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8778362464706669415, guid: 89281e817bfa32e48ac1ad1bb9d26fc2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -20,6 +20,11 @@ namespace TLN.Application.Assets
             LoadAsset(spriteReference, completed);
         }
 
+        public void LoadPrefab(AssetReferenceGameObject prefabReference, Action<GameObject> completed)
+        {
+            LoadAsset(prefabReference, completed);
+        }
+
         public void LoadAsset<TAsset>(
             AssetReference assetReference,
             Action<TAsset> completed)

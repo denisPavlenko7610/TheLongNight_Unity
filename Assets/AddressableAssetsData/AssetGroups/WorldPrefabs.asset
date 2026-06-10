@@ -10,28 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Icons
+  m_Name: WorldPrefabs
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
-  m_GroupName: Icons
-  m_GUID: d7aa286623b4aa846b437e05c1c094cd
+  m_GroupName: WorldPrefabs
+  m_GUID: 668e18e64a3bc1041aec650a505ce9c6
   m_SerializeEntries:
-  - m_GUID: 1f58e20348912514a8b3ed06830f509b
-    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Soda.jpg
+  - m_GUID: 89281e817bfa32e48ac1ad1bb9d26fc2
+    m_Address: Assets/_Project/Prefabs/World/Interactables/PF_Placed_Bedroll_Unrolled.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
-    - icons
-    - item_icons
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3aaf0c17ec4c51d479270b3ee554c981
-    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/apple.jpg
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - icons
-    - item_icons
+    - placeable_prefabs
+    - world_prefabs
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a6759f906fd3ba44c9dda44ff7e6ed60, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 92b93c0954536c9429f22fd252c503e1, type: 2}
-    - {fileID: 11400000, guid: 293cceaa56d35064081e81882f1b6e66, type: 2}
+    - {fileID: 11400000, guid: 272003b4ff6ef094d9d7ee42a455dbad, type: 2}
+    - {fileID: 11400000, guid: f7db2abd3a48aa54e8d22d24992de877, type: 2}

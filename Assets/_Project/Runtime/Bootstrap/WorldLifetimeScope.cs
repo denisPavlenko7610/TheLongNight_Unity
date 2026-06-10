@@ -65,37 +65,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.PauseMenu).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.BuildWindow).AsImplementedInterfaces();
-
-		builder.RegisterBuildCallback(InjectSceneInjectables);
-	}
-
-	private void InjectSceneInjectables(IObjectResolver resolver)
-	{
-		SceneInjectable[] injectables = FindObjectsByType<SceneInjectable>(
-			FindObjectsInactive.Include,
-			FindObjectsSortMode.None);
-
-		foreach (SceneInjectable injectable in injectables)
-		{
-			if (injectable == null)
-			{
-				continue;
-			}
-
-			if (injectable.HasParentInjectable)
-			{
-				continue;
-			}
-
-			GameObject target = injectable.gameObject;
-
-			if (!target.scene.IsValid() || !target.scene.isLoaded)
-			{
-				continue;
-			}
-
-			injectable.InjectHierarchy(resolver);
-		}
 	}
 
 }

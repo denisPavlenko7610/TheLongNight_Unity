@@ -2311,7 +2311,8 @@ MonoBehaviour:
   parentReference:
     TypeName: ProjectLifetimeScope
   autoRun: 1
-  autoInjectGameObjects: []
+  autoInjectGameObjects:
+  - {fileID: 8496636}
   _uiRoot: {fileID: 212741484}
   _inventoryConfig: {fileID: 11400000, guid: bd6ecfd7686980d48a9bafb1d4818afe, type: 2}
   _gameTimeConfig: {fileID: 11400000, guid: 60b0f87575b09ba40aa740437e355e5a, type: 2}

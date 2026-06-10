@@ -9,6 +9,7 @@ namespace TLN.Application.Assets
 	{
 		void LoadAsset<TAsset>(AssetReference assetReference, Action<TAsset> completed) where TAsset : UnityEngine.Object;
 		void LoadSprite(AssetReferenceSprite spriteReference, Action<Sprite> completed);
+		void LoadPrefab(AssetReferenceGameObject prefabReference, Action<GameObject> completed);
 		void ReleaseAll();
 	}
 }

@@ -115,6 +115,89 @@ namespace TLN.Gameplay.Inventory
 			return true;
 		}
 
+		public bool TryRemoveItem(ItemDefinition definition, int amount, out string reason)
+		{
+			if (definition == null)
+			{
+				reason = "Invalid item.";
+				return false;
+			}
+
+			if (amount <= 0)
+			{
+				reason = "Invalid amount.";
+				return false;
+			}
+
+			int availableAmount = CountItems(definition);
+
+			if (availableAmount < amount)
+			{
+				reason = $"Not enough {definition.DisplayName}.";
+				return false;
+			}
+
+			int remainingAmount = amount;
+
+			for (int i = _items.Count - 1; i >= 0; i--)
+			{
+				if (remainingAmount <= 0)
+				{
+					break;
+				}
+
+				ItemStack stack = _items[i];
+
+				if (stack.Definition.Id != definition.Id)
+				{
+					continue;
+				}
+
+				int amountToRemove = Math.Min(remainingAmount, stack.Amount);
+
+				stack.RemoveAmount(amountToRemove);
+
+				if (stack.Amount <= 0)
+				{
+					_items.RemoveAt(i);
+				}
+				else
+				{
+					_items[i] = stack;
+				}
+
+				remainingAmount -= amountToRemove;
+			}
+
+			RecalculateWeight();
+			Changed?.Invoke();
+
+			reason = string.Empty;
+			return true;
+		}
+
+		private int CountItems(ItemDefinition definition)
+		{
+			if (definition == null)
+			{
+				return 0;
+			}
+
+			int amount = 0;
+
+			for (int i = 0; i < _items.Count; i++)
+			{
+				ItemStack stack = _items[i];
+
+				if (stack.Definition.Id == definition.Id)
+				{
+					amount += stack.Amount;
+				}
+			}
+
+			return amount;
+		}
+
 		private void AddStackableItem(ItemDefinition definition, int amount)
 		{
 			int remainingAmount = amount;

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5560414482050531315}
   - component: {fileID: 2695528187752430520}
   - component: {fileID: 7513953081195308760}
-  - component: {fileID: 8970558559164419402}
   m_Layer: 7
   m_Name: PF_WorldItem_Base
   m_TagString: Untagged
@@ -70,19 +69,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.15
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8970558559164419402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855412870696026853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9c7b56934c24a349f188abc09336fbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: TLN.Bootstrap::TLN.Bootstrap.SceneInjectable
-  _injectChildren: 1
 --- !u!1 &9105131413069421357
 GameObject:
   m_ObjectHideFlags: 0
