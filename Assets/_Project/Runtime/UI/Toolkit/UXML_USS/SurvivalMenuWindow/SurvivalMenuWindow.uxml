@@ -1,0 +1,63 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/SurvivalMenuWindow/SurvivalMenuWindow.uss?fileID=7433441132597879392&amp;guid=1744bb8bedf34184b5cf118a36be9c4e&amp;type=3#SurvivalMenuWindow"/>
+
+    <ui:VisualElement name="survival-menu-root" class="survival-menu-root">
+        <ui:VisualElement class="survival-menu-vignette" />
+
+        <ui:VisualElement class="survival-menu-frame">
+
+            <ui:VisualElement class="survival-menu-header">
+                <ui:VisualElement>
+                    <ui:Label name="survival-header-title-label" text="BACKPACK" class="survival-menu-title" />
+                    <ui:VisualElement class="survival-title-underline" />
+                    <ui:Label name="survival-weight-label" text="0.00 / 0.00 KG" class="survival-menu-weight" />
+                </ui:VisualElement>
+
+                <ui:Button name="survival-close-button" text="BACK" class="survival-close-button" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="survival-menu-content">
+
+                <ui:VisualElement class="survival-category-column">
+                    <ui:Button name="survival-inventory-tab-button" text="ALL" class="survival-category-button" />
+                    <ui:Button text="FOOD" class="survival-category-button survival-category-button-disabled" />
+                    <ui:Button text="WATER" class="survival-category-button survival-category-button-disabled" />
+                    <ui:Button text="MEDS" class="survival-category-button survival-category-button-disabled" />
+                    <ui:Button text="TOOLS" class="survival-category-button survival-category-button-disabled" />
+                    <ui:Button text="CLOTHES" class="survival-category-button survival-category-button-disabled" />
+                    <ui:Button name="survival-crafting-tab-button" text="CRAFT" class="survival-category-button" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="survival-list-panel">
+                    <ui:VisualElement class="survival-list-header">
+                        <ui:Label text="ITEMS" class="survival-section-title" />
+                        <ui:Label text="SORT: A-Z" class="survival-sort-label" />
+                    </ui:VisualElement>
+
+                    <ui:ListView name="survival-list-view" class="survival-list-view" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="survival-details-panel">
+                    <ui:Label name="survival-details-title-label" text="ITEM" class="survival-details-title" />
+
+                    <ui:Label
+                        name="survival-details-description-label"
+                        text="Select an item."
+                        class="survival-details-description" />
+
+                    <ui:VisualElement class="survival-details-icon-frame">
+                        <ui:VisualElement name="survival-details-icon" class="survival-details-icon" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="survival-details-meta-panel">
+                        <ui:Label name="survival-details-meta-label" text="-" class="survival-details-meta" />
+                    </ui:VisualElement>
+
+                    <ui:Button name="survival-action-button" text="USE" class="survival-action-button" />
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

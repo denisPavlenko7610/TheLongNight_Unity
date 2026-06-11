@@ -485,11 +485,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TLN.UI::TLN.UI.World.WorldUIRoot
   <HUD>k__BackingField: {fileID: 1560037667}
-  <InventoryWindow>k__BackingField: {fileID: 870944978}
+  <SurvivalMenu>k__BackingField: {fileID: 863057037}
   <SleepWindow>k__BackingField: {fileID: 2114576466}
   <PauseMenu>k__BackingField: {fileID: 1984469432}
   <CampfireWindow>k__BackingField: {fileID: 943244356}
-  <BuildWindow>k__BackingField: {fileID: 1920900948}
 --- !u!4 &212741485
 Transform:
   m_ObjectHideFlags: 0
@@ -509,6 +508,7 @@ Transform:
   - {fileID: 870944977}
   - {fileID: 943244355}
   - {fileID: 1920900947}
+  - {fileID: 863057034}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &236363750
@@ -1186,6 +1186,89 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4619902406909973507, guid: 6af49e91d4aa3d849a160ebd3d2d5edb, type: 3}
   m_PrefabInstance: {fileID: 655754815}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &863057033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 863057034}
+  - component: {fileID: 863057036}
+  - component: {fileID: 863057035}
+  - component: {fileID: 863057037}
+  m_Layer: 0
+  m_Name: SurvivalMenuWindow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &863057034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863057033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 212741485}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &863057035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863057033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb115eb0e44b93b24292f7e880bdee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.Common.UIDocumentOrder
+  _layer: 100
+  _offset: 0
+--- !u!114 &863057036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863057033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 518a65bfc5837d54e9be589c8619a5c5, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: e9abb84e25514c079eaa53eeaf0c699a, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &863057037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863057033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ca2924dd14c4f8aa3a61d7cc9de6ec0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.SurvivalMenu.SurvivalMenuWindowView
 --- !u!1 &863185210
 GameObject:
   m_ObjectHideFlags: 0

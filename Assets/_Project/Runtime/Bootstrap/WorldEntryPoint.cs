@@ -30,13 +30,11 @@ namespace TLN.Gameplay.World
 		private INotificationService _notificationService;
 
 		private IInventoryService _inventoryService;
-		private IItemUseService _itemUseService;
 		private PlacementService _placementService;
 		private IGameTimeService _gameTimeService;
 		private ISurvivalService _survivalService;
 		private SleepService _sleepService;
 		private IPlayerFactory _playerFactory;
-		private IAddressableAssetService _addressableAssetService;
 
 		private PlayerRoot _playerInstance;
 
@@ -47,13 +45,11 @@ namespace TLN.Gameplay.World
 			ISceneLoader sceneLoader,
 			INotificationService notificationService,
 			IInventoryService inventoryService,
-			IItemUseService itemUseService,
 			PlacementService placementService,
 			IGameTimeService gameTimeService,
 			ISurvivalService survivalService,
 			SleepService sleepService,
-			IPlayerFactory playerFactory,
-			IAddressableAssetService addressableAssetService)
+			IPlayerFactory playerFactory)
 		{
 			_gameStateMachine = gameStateMachine;
 			_inputModeService = inputModeService;
@@ -61,13 +57,11 @@ namespace TLN.Gameplay.World
 			_notificationService = notificationService;
 
 			_inventoryService = inventoryService;
-			_itemUseService = itemUseService;
 			_placementService = placementService;
 			_gameTimeService = gameTimeService;
 			_survivalService = survivalService;
 			_sleepService = sleepService;
 			_playerFactory = playerFactory;
-			_addressableAssetService = addressableAssetService;
 		}
 
 		private void Start()
@@ -80,7 +74,6 @@ namespace TLN.Gameplay.World
 
 			ConstructHUD();
 			ConstructPauseMenu();
-			ConstructInventoryWindow();
 			ConstructSleepWindow();
 			SpawnPlayer();
 			EnsureGameplayState();
@@ -95,11 +88,6 @@ namespace TLN.Gameplay.World
 		private void ConstructPauseMenu()
 		{
 			_uiRoot.PauseMenu.Construct(_gameStateMachine, _inputModeService, _sceneLoader);
-		}
-
-		private void ConstructInventoryWindow()
-		{
-			_uiRoot.InventoryWindow.Construct(_inventoryService, _itemUseService, _addressableAssetService);
 		}
 
 		private void ConstructSleepWindow()

@@ -35,6 +35,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterInstance(_gameTimeConfig);
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
+		builder.RegisterInstance(_buildRecipeCatalog);
 
 		builder.Register<GameTimeService>(Lifetime.Scoped).As<IGameTimeService>();
 		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();
@@ -57,14 +58,12 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponentInHierarchy<WorldTimeController>();
 		builder.RegisterComponentInHierarchy<WorldSurvivalController>();
 
-		builder.RegisterInstance(_buildRecipeCatalog);
 		builder.RegisterComponent(_uiRoot);
 		builder.RegisterComponent(_uiRoot.HUD).AsImplementedInterfaces();
-		builder.RegisterComponent(_uiRoot.InventoryWindow).AsImplementedInterfaces();
+		builder.RegisterComponent(_uiRoot.SurvivalMenu).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.SleepWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.PauseMenu).AsImplementedInterfaces();
-		builder.RegisterComponent(_uiRoot.BuildWindow).AsImplementedInterfaces();
 	}
 
 }

@@ -90,10 +90,6 @@ namespace TLN.Editor.Utilities
 			AssetDatabase.Refresh();
 
 			Debug.Log($"Created runtime code dump: {createdFiles.Count} file(s), {files.Length} source file(s)");
-			EditorUtility.DisplayDialog(
-				"Create Code File",
-				$"Created dump files: {createdFiles.Count}\nSource files copied: {files.Length}\nToken limit per file: {MaxEstimatedTokensPerFile}",
-				"OK");
 		}
 
 		private static StringBuilder CreatePartBuilder(int partIndex, int totalFiles)
