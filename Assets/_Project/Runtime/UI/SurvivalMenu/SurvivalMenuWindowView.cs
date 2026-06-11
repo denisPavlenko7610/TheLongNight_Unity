@@ -25,6 +25,11 @@ namespace TLN.UI.SurvivalMenu
         private VisualElement _root;
         private Button _inventoryTabButton;
         private Button _craftingTabButton;
+        private Button _foodCategoryButton;
+        private Button _medicineCategoryButton;
+        private Button _toolsCategoryButton;
+        private Button _clothesCategoryButton;
+        private Button _fireCategoryButton;
         private Button _closeButton;
         private ListView _listView;
         private VisualElement _detailsIcon;
@@ -48,6 +53,7 @@ namespace TLN.UI.SurvivalMenu
         private SurvivalMenuTabId _currentTab = SurvivalMenuTabId.Inventory;
         private object _selectedItem;
         private int _iconRequestVersion;
+        private ItemCategory? _currentInventoryCategoryFilter;
 
         [Inject]
         public void Construct(
@@ -112,6 +118,31 @@ namespace TLN.UI.SurvivalMenu
             if (_listView != null)
             {
                 _listView.selectionChanged -= OnSelectionChanged;
+            }
+
+            if (_foodCategoryButton != null)
+            {
+                _foodCategoryButton.clicked -= OnFoodCategoryClicked;
+            }
+
+            if (_medicineCategoryButton != null)
+            {
+                _medicineCategoryButton.clicked -= OnMedicineCategoryClicked;
+            }
+
+            if (_fireCategoryButton != null)
+            {
+                _fireCategoryButton.clicked -= OnFireCategoryClicked;
+            }
+
+            if (_toolsCategoryButton != null)
+            {
+                _toolsCategoryButton.clicked -= OnToolsCategoryClicked;
+            }
+
+            if (_clothesCategoryButton != null)
+            {
+                _clothesCategoryButton.clicked -= OnClothesCategoryClicked;
             }
         }
 
@@ -186,6 +217,10 @@ namespace TLN.UI.SurvivalMenu
             _headerTitleLabel = documentRoot.Q<Label>("survival-header-title-label");
             _weightLabel = documentRoot.Q<Label>("survival-weight-label");
             _inventoryTabButton = documentRoot.RequiredQ<Button>("survival-inventory-tab-button");
+            _foodCategoryButton = documentRoot.RequiredQ<Button>("survival-food-category-button");
+            _medicineCategoryButton = documentRoot.RequiredQ<Button>("survival-medicine-category-button");
+            _toolsCategoryButton = documentRoot.RequiredQ<Button>("survival-tools-category-button");
+            _clothesCategoryButton = documentRoot.RequiredQ<Button>("survival-clothes-category-button");
             _craftingTabButton = documentRoot.RequiredQ<Button>("survival-crafting-tab-button");
             _closeButton = documentRoot.RequiredQ<Button>("survival-close-button");
             _listView = documentRoot.RequiredQ<ListView>("survival-list-view");
@@ -194,8 +229,14 @@ namespace TLN.UI.SurvivalMenu
             _detailsMetaLabel = documentRoot.RequiredQ<Label>("survival-details-meta-label");
             _detailsDescriptionLabel = documentRoot.RequiredQ<Label>("survival-details-description-label");
             _actionButton = documentRoot.RequiredQ<Button>("survival-action-button");
+            _fireCategoryButton = documentRoot.RequiredQ<Button>("survival-fire-category-button");
 
             _inventoryTabButton.clicked += OnInventoryTabClicked;
+            _foodCategoryButton.clicked += OnFoodCategoryClicked;
+            _fireCategoryButton.clicked += OnFireCategoryClicked;
+            _medicineCategoryButton.clicked += OnMedicineCategoryClicked;
+            _toolsCategoryButton.clicked += OnToolsCategoryClicked;
+            _clothesCategoryButton.clicked += OnClothesCategoryClicked;
             _craftingTabButton.clicked += OnCraftingTabClicked;
             _closeButton.clicked += Hide;
             _actionButton.clicked += OnActionClicked;
@@ -370,12 +411,44 @@ namespace TLN.UI.SurvivalMenu
 
         private void OnInventoryTabClicked()
         {
-            Show(SurvivalMenuTabId.Inventory);
+            ShowInventoryCategory(null);
+        }
+
+        private void OnFoodCategoryClicked()
+        {
+            ShowInventoryCategory(ItemCategory.Food);
+        }
+
+        private void OnFireCategoryClicked()
+        {
+            ShowInventoryCategory(ItemCategory.Fuel);
+        }
+
+        private void OnMedicineCategoryClicked()
+        {
+            ShowInventoryCategory(ItemCategory.Medicine);
+        }
+
+        private void OnToolsCategoryClicked()
+        {
+            ShowInventoryCategory(ItemCategory.Tool);
+        }
+
+        private void OnClothesCategoryClicked()
+        {
+            ShowInventoryCategory(ItemCategory.Clothing);
         }
 
         private void OnCraftingTabClicked()
         {
+            _currentInventoryCategoryFilter = null;
             Show(SurvivalMenuTabId.Crafting);
+        }
+
+        private void ShowInventoryCategory(ItemCategory? categoryFilter)
+        {
+            _currentInventoryCategoryFilter = categoryFilter;
+            Show(SurvivalMenuTabId.Inventory);
         }
 
         private void OnInventoryChanged()
@@ -403,7 +476,7 @@ namespace TLN.UI.SurvivalMenu
             if (_headerTitleLabel != null)
             {
                 _headerTitleLabel.text = _currentTab == SurvivalMenuTabId.Inventory
-                    ? "BACKPACK"
+                    ? GetInventoryHeaderTitle()
                     : "CRAFTING";
             }
 
@@ -415,10 +488,55 @@ namespace TLN.UI.SurvivalMenu
             _weightLabel.text = $"{_inventoryService.CurrentWeight:0.00} / {_inventoryService.MaxCarryWeight:0.00} KG";
         }
 
+        private string GetInventoryHeaderTitle()
+        {
+            if (!_currentInventoryCategoryFilter.HasValue)
+            {
+                return "BACKPACK";
+            }
+
+            return _currentInventoryCategoryFilter.Value switch
+            {
+                ItemCategory.Food => "FOOD",
+                ItemCategory.Water => "WATER",
+                ItemCategory.Medicine => "MEDICINE",
+                ItemCategory.Tool => "TOOLS",
+                ItemCategory.Clothing => "CLOTHING",
+                _ => _currentInventoryCategoryFilter.Value.ToString().ToUpperInvariant()
+            };
+        }
+
         private void ApplyTabVisualState()
         {
-            SetTabSelected(_inventoryTabButton, _currentTab == SurvivalMenuTabId.Inventory);
-            SetTabSelected(_craftingTabButton, _currentTab == SurvivalMenuTabId.Crafting);
+            bool isInventoryTab = _currentTab == SurvivalMenuTabId.Inventory;
+
+            SetTabSelected(
+                _inventoryTabButton,
+                isInventoryTab && !_currentInventoryCategoryFilter.HasValue);
+
+            SetTabSelected(
+                _foodCategoryButton,
+                isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Food);
+
+            SetTabSelected(
+                _fireCategoryButton,
+                isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Fuel);
+
+            SetTabSelected(
+                _medicineCategoryButton,
+                isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Medicine);
+
+            SetTabSelected(
+                _toolsCategoryButton,
+                isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Tool);
+
+            SetTabSelected(
+                _clothesCategoryButton,
+                isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Clothing);
+
+            SetTabSelected(
+                _craftingTabButton,
+                _currentTab == SurvivalMenuTabId.Crafting);
         }
 
         private static void SetTabSelected(Button button, bool isSelected)
@@ -461,16 +579,40 @@ namespace TLN.UI.SurvivalMenu
             }
 
             IReadOnlyList<ItemStack> items = _inventoryService.Items;
-
             for (int i = 0; i < items.Count; i++)
             {
                 ItemStack stack = items[i];
 
-                _listItems.Add(new InventoryRowData(
-                    i,
-                    stack.Definition,
-                    stack.Amount));
+                if (!ShouldShowInventoryStack(stack))
+                {
+                    continue;
+                }
+
+                _listItems.Add(new InventoryRowData(i, stack.Definition, stack.Amount));
             }
+        }
+
+        private bool ShouldShowInventoryStack(ItemStack stack)
+        {
+            if (!_currentInventoryCategoryFilter.HasValue)
+            {
+                return true;
+            }
+
+            if (stack.Definition == null)
+            {
+                return false;
+            }
+
+            ItemCategory selectedCategory = _currentInventoryCategoryFilter.Value;
+            ItemCategory itemCategory = stack.Definition.Category;
+
+            return selectedCategory switch
+            {
+                ItemCategory.Food => itemCategory is ItemCategory.Food or ItemCategory.Water,
+                ItemCategory.Fuel => itemCategory == ItemCategory.Fuel,
+                _ => itemCategory == selectedCategory
+            };
         }
 
         private void AddRecipeItems()
@@ -594,12 +736,19 @@ namespace TLN.UI.SurvivalMenu
 
         private void ShowEmptyDetails()
         {
-            _detailsTitleLabel.text = _currentTab == SurvivalMenuTabId.Inventory
-                ? "Inventory"
-                : "Crafting";
+            if (_currentTab == SurvivalMenuTabId.Inventory)
+            {
+                _detailsTitleLabel.text = GetInventoryHeaderTitle();
+                _detailsMetaLabel.text = "Nothing selected.";
+                _detailsDescriptionLabel.text = _currentInventoryCategoryFilter.HasValue
+                    ? "No items in this category."
+                    : "Your backpack is empty.";
+                return;
+            }
 
+            _detailsTitleLabel.text = "Crafting";
             _detailsMetaLabel.text = "Nothing selected.";
-            _detailsDescriptionLabel.text = string.Empty;
+            _detailsDescriptionLabel.text = "No recipe selected.";
         }
 
         private static string CreateInventoryMetaText(InventoryRowData item)
