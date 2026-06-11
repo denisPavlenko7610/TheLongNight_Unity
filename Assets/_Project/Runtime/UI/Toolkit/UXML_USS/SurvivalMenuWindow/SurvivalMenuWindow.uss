@@ -89,9 +89,15 @@
 }
 
 .survival-category-button {
-    height: 56px;
+    width: 64px;
+    height: 58px;
     margin-bottom: 8px;
-    color: rgba(225, 235, 235, 0.74);
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    align-items: center;
+    justify-content: center;
     background-color: rgba(18, 28, 30, 0.72);
     border-left-width: 1px;
     border-right-width: 1px;
@@ -101,17 +107,58 @@
     border-right-color: rgba(220, 235, 235, 0.16);
     border-top-color: rgba(220, 235, 235, 0.16);
     border-bottom-color: rgba(220, 235, 235, 0.16);
-    unity-font-style: bold;
-    font-size: 11px;
+}
+
+.survival-category-button:hover {
+    background-color: rgba(72, 86, 86, 0.72);
+}
+
+.survival-category-icon {
+    width: 30px;
+    height: 30px;
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgba(225, 235, 235, 0.72);
+}
+
+.survival-category-button:hover .survival-category-icon {
+    -unity-background-image-tint-color: rgb(245, 248, 248);
+}
+
+.survival-menu-tab-selected .survival-category-icon {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.survival-category-icon-all {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_all.png");
+}
+
+.survival-category-icon-food {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_food.png");
+}
+
+.survival-category-icon-water {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/ICO_Thirst.png");
+}
+
+.survival-category-icon-medicine {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_medicine.png");
+}
+
+.survival-category-icon-tools {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_tools.png");
+}
+
+.survival-category-icon-clothing {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_clothing.png");
+}
+
+.survival-category-icon-craft {
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_craft.png");
 }
 
 .survival-category-button:hover {
     color: rgb(245, 248, 248);
     background-color: rgba(72, 86, 86, 0.72);
-}
-
-.survival-category-button-disabled {
-    opacity: 0.28;
 }
 
 .survival-menu-tab-selected {

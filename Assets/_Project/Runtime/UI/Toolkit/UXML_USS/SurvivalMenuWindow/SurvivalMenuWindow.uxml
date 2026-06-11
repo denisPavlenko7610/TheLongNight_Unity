@@ -20,13 +20,33 @@
             <ui:VisualElement class="survival-menu-content">
 
                 <ui:VisualElement class="survival-category-column">
-                    <ui:Button name="survival-inventory-tab-button" text="ALL" class="survival-category-button" />
-                    <ui:Button text="FOOD" class="survival-category-button survival-category-button-disabled" />
-                    <ui:Button text="WATER" class="survival-category-button survival-category-button-disabled" />
-                    <ui:Button text="MEDS" class="survival-category-button survival-category-button-disabled" />
-                    <ui:Button text="TOOLS" class="survival-category-button survival-category-button-disabled" />
-                    <ui:Button text="CLOTHES" class="survival-category-button survival-category-button-disabled" />
-                    <ui:Button name="survival-crafting-tab-button" text="CRAFT" class="survival-category-button" />
+                    <ui:Button name="survival-inventory-tab-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-all" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-food-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-food" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-medicine-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-medicine" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-clothes-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-clothing" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-tools-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-tools" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-fire-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-fire" />
+                    </ui:Button>
+
+                    <ui:Button name="survival-crafting-tab-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-craft" />
+                    </ui:Button>
                 </ui:VisualElement>
 
                 <ui:VisualElement class="survival-list-panel">
