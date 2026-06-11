@@ -1,10 +1,9 @@
 ﻿using Assign;
-using TLN.UI.Building;
 using TLN.UI.Campfire;
 using TLN.UI.HUD;
-using TLN.UI.Inventory;
 using TLN.UI.Pause;
 using TLN.UI.Sleep;
+using TLN.UI.SurvivalMenu;
 using UnityEngine;
 
 namespace TLN.UI.World
@@ -16,7 +15,7 @@ namespace TLN.UI.World
 		public WorldHUDView HUD { get; private set; }
 
 		[field: SerializeField][field: Assign(Mode.Scene)]
-		public InventoryWindowView InventoryWindow { get; private set; }
+		public SurvivalMenuWindowView SurvivalMenu { get; private set; }
 
 		[field: SerializeField][field: Assign(Mode.Scene)]
 		public SleepWindowView SleepWindow { get; private set; }
@@ -24,19 +23,15 @@ namespace TLN.UI.World
 		[field: SerializeField][field: Assign(Mode.Scene)]
 		public PauseMenuView PauseMenu { get; private set; }
 
-		[field: SerializeField] [field: Assign(Mode.Scene)]
+		[field: SerializeField][field: Assign(Mode.Scene)]
 		public CampfireWindowView CampfireWindow { get; private set; }
-
-		[field: SerializeField] [field: Assign(Mode.Scene)]
-		public BuildWindowView BuildWindow { get; private set; }
 
 		public bool HasAllRequiredReferences()
 		{
 			return HUD != null
-				&& InventoryWindow != null
+				&& SurvivalMenu != null
 				&& CampfireWindow != null
 				&& SleepWindow != null
-				&& BuildWindow != null
 				&& PauseMenu != null;
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss" />
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Campfire/CampfireWindow.uss" />
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
+    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Campfire/CampfireWindow.uss?fileID=7433441132597879392&amp;guid=f70a24eeca5443848ee6d57fed585570&amp;type=3#CampfireWindow"/>
 
     <ui:VisualElement name="campfire-window-root" class="campfire-window-root">
         <ui:VisualElement class="campfire-window tln-panel">

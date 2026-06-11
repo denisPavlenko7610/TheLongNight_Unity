@@ -1,0 +1,363 @@
+﻿.survival-menu-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.88);
+}
+
+.survival-menu-root-visible {
+    display: flex;
+}
+
+.survival-menu-vignette {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(4, 8, 10, 0.55);
+}
+
+.survival-menu-frame {
+    flex-grow: 1;
+    padding-left: 58px;
+    padding-right: 58px;
+    padding-top: 42px;
+    padding-bottom: 40px;
+}
+
+.survival-menu-header {
+    height: 92px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.survival-menu-title {
+    color: rgb(238, 242, 240);
+    font-size: 31px;
+    letter-spacing: 3px;
+    unity-font-style: bold;
+}
+
+.survival-title-underline {
+    width: 150px;
+    height: 7px;
+    margin-top: 7px;
+    background-color: rgba(238, 242, 240, 0.95);
+}
+
+.survival-menu-weight {
+    margin-top: 8px;
+    color: rgba(190, 205, 205, 0.86);
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+.survival-close-button {
+    width: 116px;
+    height: 38px;
+    margin-top: 8px;
+    color: rgba(230, 235, 235, 0.85);
+    background-color: rgba(255, 255, 255, 0.055);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(220, 230, 230, 0.18);
+    border-right-color: rgba(220, 230, 230, 0.18);
+    border-top-color: rgba(220, 230, 230, 0.18);
+    border-bottom-color: rgba(220, 230, 230, 0.18);
+}
+
+.survival-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.survival-menu-content {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.survival-category-column {
+    width: 82px;
+    margin-right: 18px;
+    padding-top: 54px;
+}
+
+.survival-category-button {
+    height: 56px;
+    margin-bottom: 8px;
+    color: rgba(225, 235, 235, 0.74);
+    background-color: rgba(18, 28, 30, 0.72);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(220, 235, 235, 0.16);
+    border-right-color: rgba(220, 235, 235, 0.16);
+    border-top-color: rgba(220, 235, 235, 0.16);
+    border-bottom-color: rgba(220, 235, 235, 0.16);
+    unity-font-style: bold;
+    font-size: 11px;
+}
+
+.survival-category-button:hover {
+    color: rgb(245, 248, 248);
+    background-color: rgba(72, 86, 86, 0.72);
+}
+
+.survival-category-button-disabled {
+    opacity: 0.28;
+}
+
+.survival-menu-tab-selected {
+    color: rgb(255, 255, 255);
+    background-color: rgba(130, 148, 148, 0.42);
+    border-left-color: rgba(255, 255, 255, 0.45);
+    border-right-color: rgba(255, 255, 255, 0.45);
+    border-top-color: rgba(255, 255, 255, 0.45);
+    border-bottom-color: rgba(255, 255, 255, 0.45);
+}
+
+.survival-list-panel {
+    width: 48%;
+    min-width: 470px;
+    margin-right: 44px;
+}
+
+.survival-list-header {
+    height: 48px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.survival-section-title {
+    color: rgb(238, 242, 240);
+    font-size: 21px;
+    letter-spacing: 2px;
+    unity-font-style: bold;
+}
+
+.survival-sort-label {
+    color: rgba(210, 220, 220, 0.58);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.survival-list-view {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.26);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 230, 230, 0.12);
+    border-right-color: rgba(210, 230, 230, 0.12);
+    border-top-color: rgba(210, 230, 230, 0.12);
+    border-bottom-color: rgba(210, 230, 230, 0.12);
+    padding: 8px;
+}
+
+.survival-list-view .unity-scroll-view {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.survival-list-view .unity-scroll-view__content-container {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.survival-list-view .unity-collection-view__content {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.survival-list-view .unity-list-view__item,
+.survival-list-view .unity-collection-view__item {
+    height: 62px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.survival-list-view .unity-list-view__item:hover,
+.survival-list-view .unity-collection-view__item:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.survival-list-view .unity-list-view__item--selected,
+.survival-list-view .unity-collection-view__item--selected {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.survival-list-view .unity-list-view__item--selected .survival-menu-list-item,
+.survival-list-view .unity-collection-view__item--selected .survival-menu-list-item {
+    background-color: rgba(130, 148, 148, 0.28);
+    border-left-color: rgba(255, 255, 255, 0.42);
+    border-right-color: rgba(255, 255, 255, 0.24);
+    border-top-color: rgba(255, 255, 255, 0.24);
+    border-bottom-color: rgba(255, 255, 255, 0.24);
+}
+
+.survival-menu-list-item {
+    height: 54px;
+    padding-left: 8px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.045);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(220, 235, 235, 0.08);
+    border-right-color: rgba(220, 235, 235, 0.08);
+    border-top-color: rgba(220, 235, 235, 0.08);
+    border-bottom-color: rgba(220, 235, 235, 0.08);
+}
+
+.survival-menu-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-left-color: rgba(255, 255, 255, 0.22);
+    border-right-color: rgba(255, 255, 255, 0.22);
+    border-top-color: rgba(255, 255, 255, 0.22);
+    border-bottom-color: rgba(255, 255, 255, 0.22);
+}
+
+.survival-menu-list-item-icon-frame {
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.32);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.survival-menu-list-item-icon {
+    width: 34px;
+    height: 34px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.survival-menu-list-item-text-column {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.survival-menu-list-item-title {
+    color: rgba(238, 244, 244, 0.92);
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.survival-menu-list-item-meta {
+    margin-top: 2px;
+    color: rgba(190, 205, 205, 0.68);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.survival-menu-list-item:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.survival-details-panel {
+    flex-grow: 1;
+    min-width: 420px;
+    padding-top: 48px;
+    align-items: center;
+}
+
+.survival-details-title {
+    color: rgb(238, 242, 240);
+    font-size: 25px;
+    letter-spacing: 2px;
+    unity-font-style: bold;
+    unity-text-align: middle-center;
+    margin-bottom: 14px;
+}
+
+.survival-details-description {
+    width: 520px;
+    min-height: 64px;
+    color: rgba(230, 235, 235, 0.76);
+    font-size: 15px;
+    unity-text-align: upper-center;
+    white-space: normal;
+    margin-bottom: 30px;
+}
+
+.survival-details-icon-frame {
+    width: 270px;
+    height: 270px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.survival-details-icon {
+    width: 210px;
+    height: 210px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.survival-details-meta-panel {
+    width: 460px;
+    min-height: 58px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(18, 28, 30, 0.78);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(220, 235, 235, 0.13);
+    border-right-color: rgba(220, 235, 235, 0.13);
+    border-top-color: rgba(220, 235, 235, 0.13);
+    border-bottom-color: rgba(220, 235, 235, 0.13);
+    margin-bottom: 18px;
+}
+
+.survival-details-meta {
+    color: rgba(230, 238, 238, 0.88);
+    font-size: 15px;
+    unity-text-align: middle-center;
+}
+
+.survival-action-button {
+    width: 180px;
+    height: 42px;
+    color: rgba(235, 240, 240, 0.88);
+    background-color: rgba(255, 255, 255, 0.06);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.18);
+    border-right-color: rgba(255, 255, 255, 0.18);
+    border-top-color: rgba(255, 255, 255, 0.18);
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+    unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+.survival-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}

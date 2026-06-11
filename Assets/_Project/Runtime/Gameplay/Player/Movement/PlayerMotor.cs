@@ -31,7 +31,7 @@ namespace TLN.Gameplay.Player.Movement
 
 		private void Update()
 		{
-			if (_inputModeService.CanUseMovementInput) {
+			if (_inputModeService != null && _inputModeService.CanUseMovementInput) {
 				Move(UnityEngine.Time.deltaTime);
 			}
 		}
