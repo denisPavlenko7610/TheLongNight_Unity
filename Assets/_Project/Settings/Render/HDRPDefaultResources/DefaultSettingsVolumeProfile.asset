@@ -90,7 +90,7 @@ MonoBehaviour:
   active: 1
   mode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   useFullACES:
     m_OverrideState: 1
     m_Value: 0
@@ -670,10 +670,10 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -1
   multiplier:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.5
   upperHemisphereLuxValue:
     m_OverrideState: 1
     m_Value: 1
@@ -682,7 +682,7 @@ MonoBehaviour:
     m_Value: {x: 0, y: 0, z: 0}
   desiredLuxValue:
     m_OverrideState: 1
-    m_Value: 20000
+    m_Value: 5000
   updateMode:
     m_OverrideState: 1
     m_Value: 0
@@ -1475,7 +1475,7 @@ MonoBehaviour:
   m_Version: 1
   skyType:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   cloudType:
     m_OverrideState: 1
     m_Value: 0
@@ -1750,6 +1750,7 @@ MonoBehaviour:
   - {fileID: 664527747032946105}
   - {fileID: 6429463783226089117}
   - {fileID: -3989167962657979258}
+  - {fileID: -4176484926438500839}
   - {fileID: 819641238730242250}
   - {fileID: -2418079176205076500}
   - {fileID: 4388827263268466342}
@@ -1802,19 +1803,19 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 11
+    m_Value: -1
   multiplier:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.5
   upperHemisphereLuxValue:
     m_OverrideState: 1
-    m_Value: 0.4660715
+    m_Value: 1
   upperHemisphereLuxColor:
     m_OverrideState: 1
-    m_Value: {x: 0.18750614, y: 0.29181972, z: 0.5}
+    m_Value: {x: 0, y: 0, z: 0}
   desiredLuxValue:
     m_OverrideState: 1
-    m_Value: 20000
+    m_Value: 5000
   updateMode:
     m_OverrideState: 1
     m_Value: 0
@@ -1923,7 +1924,7 @@ MonoBehaviour:
   active: 1
   opacity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.4
   upperHemisphereOnly:
     m_OverrideState: 1
     m_Value: 1
@@ -2596,10 +2597,10 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.9
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.15
   scatter:
     m_OverrideState: 1
     m_Value: 0.7
@@ -3088,7 +3089,7 @@ MonoBehaviour:
   active: 1
   mode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   meteringMode:
     m_OverrideState: 1
     m_Value: 2
@@ -3097,16 +3098,16 @@ MonoBehaviour:
     m_Value: 1
   fixedExposure:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 8
   compensation:
     m_OverrideState: 1
     m_Value: 0
   limitMin:
     m_OverrideState: 1
-    m_Value: -1
+    m_Value: -4
   limitMax:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: 6
   curveMap:
     m_OverrideState: 1
     m_Value:
@@ -3546,10 +3547,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88178bb13f64a54f90d6cd6ef7aa9a1, type: 3}
   m_Name: CloudLayer
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.CloudLayer
-  active: 1
+  active: 0
   opacity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.4
   upperHemisphereOnly:
     m_OverrideState: 1
     m_Value: 1
@@ -3561,7 +3562,7 @@ MonoBehaviour:
     m_Value: 1024
   shadowMultiplier:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   shadowTint:
     m_OverrideState: 1
     m_Value: {r: 0, g: 0, b: 0, a: 1}
@@ -3595,7 +3596,7 @@ MonoBehaviour:
       m_Value: 0
     tint:
       m_OverrideState: 1
-      m_Value: {r: 1, g: 1, b: 1, a: 1}
+      m_Value: {r: 0.65, g: 0.68, b: 0.75, a: 1}
     exposure:
       m_OverrideState: 1
       m_Value: 0
@@ -4430,13 +4431,13 @@ MonoBehaviour:
     m_Value: 0
   compensation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -0.5
   limitMin:
     m_OverrideState: 1
-    m_Value: -1
+    m_Value: -3
   limitMax:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: 8
   curveMap:
     m_OverrideState: 1
     m_Value:
@@ -4694,7 +4695,7 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.9
   intensity:
     m_OverrideState: 1
     m_Value: 0

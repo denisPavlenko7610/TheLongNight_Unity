@@ -82,11 +82,17 @@ namespace TLN.Gameplay.Player.Input
             _inputActions.Dispose();
         }
 
-        public void ClearTransientInput()
+        public void ClearGameplayInput()
         {
+            Move = Vector2.zero;
             Look = Vector2.zero;
+
+            IsSprintHeld = false;
+            IsStatusHeld = false;
+
             WasInteractPressedThisFrame = false;
             WasPausePressedThisFrame = false;
+            WasInventoryPressedThisFrame = false;
             WasBuildPressedThisFrame = false;
         }
 

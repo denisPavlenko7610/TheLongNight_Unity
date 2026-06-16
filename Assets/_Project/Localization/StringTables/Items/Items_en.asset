@@ -17,7 +17,63 @@ MonoBehaviour:
   m_SharedData: {fileID: 11400000, guid: 2416266bd80875740a2140f13ef9f520, type: 2}
   m_Metadata:
     m_Items: []
-  m_TableData: []
+  m_TableData:
+  - m_Id: 96248265834496
+    m_Localized: Stick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96349184983040
+    m_Localized: A dry stick. Useful as fuel and kindling.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96411101298688
+    m_Localized: Water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96454633979904
+    m_Localized: Clean drinking water.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96505867403264
+    m_Localized: Cloth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96557855801344
+    m_Localized: A piece of cloth used for crafting and repair.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96888685723648
+    m_Localized: Firewood
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96944335749120
+    m_Localized: Dry firewood that burns for a long time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96990896717824
+    m_Localized: Bedroll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 97036908232704
+    m_Localized: Allows you to sleep away from shelters.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119064843386880
+    m_Localized: Apple
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119162105102336
+    m_Localized: It allows you to feel less hungry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119567434252288
+    m_Localized: Soda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119648891830272
+    m_Localized: It allows you to feel less thursty
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace TLN.Gameplay.Time
 {
@@ -20,11 +21,17 @@ namespace TLN.Gameplay.Time
 		{
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
-			TotalMinutes = ConvertStartTimeToTotalMinutes(
-				_config.StartDay,
-				_config.StartHour,
-				_config.StartMinute
-			);
+			int startDay = _config.StartDay;
+			int startHour = _config.StartHour;
+			int startMinute = _config.StartMinute;
+
+			if (_config.RandomStartTime)
+			{
+				startHour = UnityEngine.Random.Range(_config.MinRandomHour, _config.MaxRandomHour);
+				startMinute = UnityEngine.Random.Range(0, 59);
+			}
+
+			TotalMinutes = ConvertStartTimeToTotalMinutes(startDay, startHour, startMinute);
 		}
 
 		public void Tick(float deltaTime)

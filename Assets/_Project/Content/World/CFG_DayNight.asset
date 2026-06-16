@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7325ca05b0717614fac72410f9d7c26e, type: 3}
+  m_Name: CFG_DayNight
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.DayNightConfig
+  _sunriseHour: 6
+  _sunsetHour: 20
+  _sunElevationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.2
+      outSlope: 2.2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.15
+      value: 12
+      inSlope: 1.8
+      outSlope: 1.8
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.3
+      value: 22
+      inSlope: 0.8
+      outSlope: 0.8
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 32
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7
+      value: 22
+      inSlope: -0.8
+      outSlope: -0.8
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.85
+      value: 12
+      inSlope: -1.8
+      outSlope: -1.8
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.2
+      outSlope: -2.2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _northAngle: 0
+  _dawn:
+    StartHour: 4
+    SunColor: {r: 1, g: 0.6, b: 0.35, a: 1}
+    SunIntensity: 3000
+    SunShadowStrength: 0.5
+    SkyTint: {r: 0.6, g: 0.55, b: 0.65, a: 1}
+    GroundTint: {r: 0.7, g: 0.55, b: 0.5, a: 1}
+    FogColor: {r: 0.75, g: 0.65, b: 0.6, a: 1}
+    FogDensity: 0.00015
+    Exposure: -1
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: -1.5
+    StarVisibility: 0.3
+  _morning:
+    StartHour: 7
+    SunColor: {r: 1, g: 0.88, b: 0.75, a: 1}
+    SunIntensity: 6000
+    SunShadowStrength: 0.75
+    SkyTint: {r: 0.5, g: 0.58, b: 0.75, a: 1}
+    GroundTint: {r: 0.85, g: 0.85, b: 0.9, a: 1}
+    FogColor: {r: 0.6, g: 0.65, b: 0.75, a: 1}
+    FogDensity: 0.00008
+    Exposure: -0.5
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: -0.5
+    StarVisibility: 0
+  _day:
+    StartHour: 11
+    SunColor: {r: 0.95, g: 0.95, b: 1, a: 1}
+    SunIntensity: 8000
+    SunShadowStrength: 0.8
+    SkyTint: {r: 0.4, g: 0.5, b: 0.7, a: 1}
+    GroundTint: {r: 0.9, g: 0.9, b: 0.95, a: 1}
+    FogColor: {r: 0.55, g: 0.6, b: 0.7, a: 1}
+    FogDensity: 0.00006
+    Exposure: -1
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: 0
+    StarVisibility: 0
+  _afternoon:
+    StartHour: 16
+    SunColor: {r: 1, g: 0.88, b: 0.7, a: 1}
+    SunIntensity: 6000
+    SunShadowStrength: 0.7
+    SkyTint: {r: 0.5, g: 0.58, b: 0.72, a: 1}
+    GroundTint: {r: 0.88, g: 0.85, b: 0.9, a: 1}
+    FogColor: {r: 0.6, g: 0.62, b: 0.68, a: 1}
+    FogDensity: 0.00008
+    Exposure: -0.5
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: -0.3
+    StarVisibility: 0
+  _dusk:
+    StartHour: 19
+    SunColor: {r: 1, g: 0.45, b: 0.2, a: 1}
+    SunIntensity: 4000
+    SunShadowStrength: 0.3
+    SkyTint: {r: 0.6, g: 0.4, b: 0.5, a: 1}
+    GroundTint: {r: 0.6, g: 0.4, b: 0.35, a: 1}
+    FogColor: {r: 0.6, g: 0.45, b: 0.4, a: 1}
+    FogDensity: 0.0002
+    Exposure: -1
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: -2
+    StarVisibility: 0.7
+  _night:
+    StartHour: 22
+    SunColor: {r: 0.35, g: 0.4, b: 0.65, a: 1}
+    SunIntensity: 2000
+    SunShadowStrength: 0.15
+    SkyTint: {r: 0.08, g: 0.1, b: 0.2, a: 1}
+    GroundTint: {r: 0.04, g: 0.05, b: 0.1, a: 1}
+    FogColor: {r: 0.06, g: 0.07, b: 0.15, a: 1}
+    FogDensity: 0.00015
+    Exposure: -1.5
+    ColorFilter: {r: 1, g: 1, b: 1, a: 1}
+    TemperatureModifier: -3.5
+    StarVisibility: 1

@@ -14,7 +14,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
   m_TableCollectionName: Items
   m_TableCollectionNameGuidString: 2416266bd80875740a2140f13ef9f520
-  m_Entries: []
+  m_Entries:
+  - m_Id: 96248265834496
+    m_Key: item.stick.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96349184983040
+    m_Key: item.stick.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96411101298688
+    m_Key: item.water.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96454633979904
+    m_Key: item.water.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96505867403264
+    m_Key: item.cloth.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96557855801344
+    m_Key: item.cloth.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96888685723648
+    m_Key: item.firewood.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96944335749120
+    m_Key: item.firewood.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96990896717824
+    m_Key: item.bedroll.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 97036908232704
+    m_Key: item.bedroll.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119064843386880
+    m_Key: item.apple.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119162105102336
+    m_Key: item.apple.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119567434252288
+    m_Key: item.soda.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 119648891830272
+    m_Key: item.soda.description
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: ITM_Stick
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Campfire.FuelItemDefinition
   _id: stick
-  _displayName: Stick
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 96248265834496
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 96349184983040
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _category: 70
   _weight: 0.15
   _isStackable: 1
@@ -27,3 +44,6 @@ MonoBehaviour:
     m_EditorAssetChanged: 1
   _useKind: 0
   _burnMinutes: 10
+  references:
+    version: 2
+    RefIds: []

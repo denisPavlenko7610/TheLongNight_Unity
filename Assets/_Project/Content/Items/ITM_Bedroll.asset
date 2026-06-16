@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: ITM_Bedroll
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.PlaceableItemDefinition
   _id: bedroll
-  _displayName: Bedroll
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 96990896717824
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 97036908232704
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _category: 40
   _weight: 1
   _isStackable: 1
@@ -33,3 +50,6 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   _placeDistance: 1.6
+  references:
+    version: 2
+    RefIds: []

@@ -244,7 +244,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 130000
+  m_Intensity: 7
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 0
@@ -287,7 +287,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 1
-  m_ColorTemperature: 8224
+  m_ColorTemperature: 20000
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -331,7 +331,7 @@ MonoBehaviour:
   m_EnableSpotReflector: 0
   m_LightUnit: 2
   m_LuxAtDistance: 1
-  m_Intensity: 130000
+  m_Intensity: 8000
   m_InnerSpotPercent: -1
   m_ShapeWidth: -1
   m_ShapeHeight: -1
@@ -371,7 +371,7 @@ MonoBehaviour:
   celestialBodyShadingSource: 1
   sunLightOverride: {fileID: 0}
   sunColor: {r: 1, g: 1, b: 1, a: 1}
-  sunIntensity: 130000
+  sunIntensity: 50000
   moonPhase: 0.2
   moonPhaseRotation: 0
   earthshine: 1
@@ -413,10 +413,10 @@ MonoBehaviour:
   m_LightAngle: 1
   m_MaxDepthBias: 0.001
   m_ShadowResolution:
-    m_Override: 512
+    m_Override: 2048
     m_UseOverride: 1
     m_Level: 0
-  m_ShadowDimmer: 1
+  m_ShadowDimmer: 0.8
   m_VolumetricShadowDimmer: 1
   m_ShadowFadeDistance: 10000
   m_UseContactShadow:
@@ -1032,7 +1032,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 8ba92e2dd7f884a0f88b98fa2d235fe7, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 602de62e834b8604ca7b3d3707810196, type: 2}
 --- !u!4 &432432461
 Transform:
   m_ObjectHideFlags: 0
@@ -1067,6 +1067,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   m_ActionId: 24908448-c609-4bc3-a128-ea258674378a
+--- !u!1 &565384055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 565384058}
+  - component: {fileID: 565384057}
+  - component: {fileID: 565384056}
+  m_Layer: 0
+  m_Name: DayNightController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &565384056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565384055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65be215d39f68f94b8229e20c0157911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.StarFieldGenerator
+  _cubeFaceResolution: 512
+  _starCount: 2800
+  _minStarBrightness: 0.3
+  _maxStarBrightness: 1
+  _starSizeSoftness: 0.6
+--- !u!114 &565384057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565384055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd683c1b46bcd7e44b1930efc301cea3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.DayNightController
+  _sunLight: {fileID: 157207113}
+  _skyVolume: {fileID: 432432460}
+  _starFieldGenerator: {fileID: 565384056}
+--- !u!4 &565384058
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565384055}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &577968083
 GameObject:
   m_ObjectHideFlags: 0
@@ -2450,6 +2515,7 @@ MonoBehaviour:
   _uiRoot: {fileID: 212741484}
   _inventoryConfig: {fileID: 11400000, guid: bd6ecfd7686980d48a9bafb1d4818afe, type: 2}
   _gameTimeConfig: {fileID: 11400000, guid: 60b0f87575b09ba40aa740437e355e5a, type: 2}
+  _dayNightConfig: {fileID: 11400000, guid: 7b7c5a31e33ee4e438eb3f9925fdff4d, type: 2}
   _survivalConfig: {fileID: 11400000, guid: e75e1c68ce6d7f2478261c579ef67def, type: 2}
   _sleepConfig: {fileID: 11400000, guid: 01e992ef9797941489bde255b0c6baf1, type: 2}
   _buildRecipeCatalog: {fileID: 11400000, guid: cf9a9eb367dbb1548873eeed83dbbfba, type: 2}
@@ -2784,3 +2850,4 @@ SceneRoots:
   - {fileID: 577968085}
   - {fileID: 212741485}
   - {fileID: 1987331344}
+  - {fileID: 565384058}

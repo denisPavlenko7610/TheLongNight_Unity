@@ -45,10 +45,12 @@ namespace TLN.Gameplay.Player.Input
             switch (_gameStateMachine.CurrentState)
             {
                 case GameStateId.Playing:
+                    _inputReader.ClearGameplayInput();
                     _gameStateMachine.Enter(GameStateId.Paused);
                     break;
 
                 case GameStateId.Paused:
+                    _inputReader.ClearGameplayInput();
                     _gameStateMachine.Enter(GameStateId.Playing);
                     break;
             }

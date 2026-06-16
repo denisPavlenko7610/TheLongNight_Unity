@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization;
 
 namespace TLN.Gameplay.Items
 {
@@ -8,7 +9,8 @@ namespace TLN.Gameplay.Items
 	{
 		[Header("Identity")]
 		[SerializeField] private string _id;
-		[SerializeField] private string _displayName;
+		[SerializeField] private LocalizedString _displayName;
+		[SerializeField] private LocalizedString _description;
 
 		[Header("Gameplay")]
 		[SerializeField] private ItemCategory _category = ItemCategory.Misc;
@@ -23,7 +25,8 @@ namespace TLN.Gameplay.Items
 		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
 
 		public string Id => _id;
-		public string DisplayName => _displayName;
+		public string DisplayName => _displayName?.GetLocalizedString() ?? Id;
+		public string Description => _description?.GetLocalizedString() ?? string.Empty;
 		public ItemCategory Category => _category;
 		public float Weight => _weight;
 		public bool IsStackable => _isStackable;

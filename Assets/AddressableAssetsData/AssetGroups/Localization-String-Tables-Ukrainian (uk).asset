@@ -32,6 +32,7 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-uk
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: de59f0b7201eed34ea4aa002cde4c1e3
     m_Address: UI_uk

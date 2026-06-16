@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace TLN.Gameplay.Building
 {
@@ -8,7 +9,8 @@ namespace TLN.Gameplay.Building
 	{
 		[Header("Identity")]
 		[SerializeField] private string _id;
-		[SerializeField] private string _displayName;
+		[SerializeField] private LocalizedString _displayName;
+		[SerializeField] private LocalizedString _description;
 
 		[Header("Placement")]
 		[SerializeField] private GameObject _placedPrefab;
@@ -18,7 +20,8 @@ namespace TLN.Gameplay.Building
 		[SerializeField] private BuildRecipeIngredient[] _ingredients;
 
 		public string Id => _id;
-		public string DisplayName => _displayName;
+		public string DisplayName => _displayName?.GetLocalizedString() ?? Id;
+		public string Description => _description?.GetLocalizedString() ?? string.Empty;
 		public GameObject PlacedPrefab => _placedPrefab;
 		public float PlaceDistance => _placeDistance;
 		public IReadOnlyList<BuildRecipeIngredient> Ingredients => _ingredients;

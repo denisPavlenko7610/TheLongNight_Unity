@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: ITM_Soda
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.ConsumableItemDefinition
   _id: soda
-  _displayName: Soda
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 119567434252288
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 119648891830272
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _category: 10
   _weight: 0.35
   _isStackable: 1
@@ -32,3 +49,6 @@ MonoBehaviour:
   _coldRestore: 0
   _conditionRestore: 0
   _conditionDamage: 0
+  references:
+    version: 2
+    RefIds: []

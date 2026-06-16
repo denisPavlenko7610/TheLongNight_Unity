@@ -2,6 +2,7 @@ using TLN.Application.Notifications;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Campfire;
+using TLN.Gameplay.DayNight;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
@@ -21,6 +22,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField, Required] private WorldUIRoot _uiRoot;
 	[SerializeField, Required] private InventoryConfig _inventoryConfig;
 	[SerializeField, Required] private GameTimeConfig _gameTimeConfig;
+	[SerializeField, Required] private DayNightConfig _dayNightConfig;
 	[SerializeField, Required] private SurvivalConfig _survivalConfig;
 	[SerializeField, Required] private SleepConfig _sleepConfig;
 	[SerializeField, Required] private BuildRecipeCatalog _buildRecipeCatalog;
@@ -31,11 +33,13 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	{
 		builder.RegisterInstance(_inventoryConfig);
 		builder.RegisterInstance(_gameTimeConfig);
+		builder.RegisterInstance(_dayNightConfig);
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
 		builder.RegisterInstance(_buildRecipeCatalog);
 
 		builder.Register<GameTimeService>(Lifetime.Scoped).As<IGameTimeService>();
+		builder.Register<DayNightService>(Lifetime.Scoped).As<IDayNightService>();
 		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();
 		builder.Register<SleepService>(Lifetime.Scoped);
 
@@ -54,6 +58,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.RegisterComponentInHierarchy<WorldEntryPoint>();
 		builder.RegisterComponentInHierarchy<WorldTimeController>();
+		builder.RegisterComponentInHierarchy<DayNightController>();
 		builder.RegisterComponentInHierarchy<WorldSurvivalController>();
 
 		builder.RegisterComponent(_uiRoot);

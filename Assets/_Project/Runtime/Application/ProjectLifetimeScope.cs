@@ -27,7 +27,7 @@ public sealed class ProjectLifetimeScope : LifetimeScope
 		builder.Register<BootStartupService>(Lifetime.Singleton);
 
 		builder.RegisterEntryPoint<GameStateInputModeController>();
-		builder.RegisterEntryPoint<GameStateTimeScaleController>();
+		builder.RegisterEntryPoint<GameStatePauseController>();
 		builder.RegisterEntryPoint<ProjectStartupEntryPoint>();
 	}
 }

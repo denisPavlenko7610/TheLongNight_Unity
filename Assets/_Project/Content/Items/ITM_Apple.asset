@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: ITM_Apple
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.ConsumableItemDefinition
   _id: apple
-  _displayName: Apple
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 119064843386880
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 119162105102336
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _category: 10
   _weight: 0.2
   _isStackable: 1
@@ -32,3 +49,6 @@ MonoBehaviour:
   _coldRestore: 0
   _conditionRestore: 0
   _conditionDamage: 0
+  references:
+    version: 2
+    RefIds: []
