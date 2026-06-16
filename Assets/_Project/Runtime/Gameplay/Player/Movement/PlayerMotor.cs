@@ -1,6 +1,7 @@
 ﻿using TLN.Application.Input;
 using TLN.Gameplay.Player.Input;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Movement
 {
@@ -36,6 +37,7 @@ namespace TLN.Gameplay.Player.Movement
 			}
 		}
 
+		[Inject]
 		public void Construct(IInputModeService inputModeService)
 		{
 			_inputModeService = inputModeService;

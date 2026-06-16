@@ -15,7 +15,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-image: url("project://database/Assets/_Project/Art/UI/MainMenu/MainMenuBack.jpg");
+    background-image: url("project://database/Assets/_Project/Art/UI/MainMenu/MainMenuBack.jpg?fileID=21300000&guid=032a6b2921328054b8e0068ee9561686&type=3#MainMenuBack");
     background-size: cover;
     -unity-background-scale-mode: scale-and-crop;
     background-position: center;
@@ -50,7 +50,7 @@
     font-size: 14px;
     letter-spacing: 4px;
     -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.75);
+    -unity-text-outline-color: rgba(220, 220, 220, 0.75);
 }
 
 .main-menu-rule {
@@ -91,4 +91,52 @@
 
 .main-menu-button-disabled {
     opacity: 0.46;
+}
+
+.main-menu-settings-panel {
+    /* Base styles inherited from .tln-settings-panel */
+}
+
+.main-menu-settings-title {
+    /* Base styles inherited from .tln-settings-title */
+}
+
+.main-menu-setting-block {
+    /* Base styles inherited from .tln-settings-block */
+}
+
+.main-menu-setting-label {
+    /* Base styles inherited from .tln-settings-label */
+}
+
+.main-menu-language-dropdown {
+    /* Base styles inherited from .tln-settings-dropdown */
+}
+
+.main-menu-language-dropdown .unity-base-field__input {
+    min-height: 44px;
+    padding-left: 14px;
+    padding-right: 12px;
+    color: rgb(241, 248, 249);
+    background-color: rgba(4, 9, 11, 0.68);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(223, 238, 240, 0.45);
+    border-right-color: rgba(223, 238, 240, 0.14);
+    border-top-color: rgba(223, 238, 240, 0.14);
+    border-bottom-color: rgba(223, 238, 240, 0.14);
+}
+
+.main-menu-language-dropdown .unity-base-popup-field__text {
+    color: rgb(241, 248, 249);
+    font-size: 17px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.main-menu-settings-back-button {
+    width: 330px;
+    margin-top: 8px;
 }

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: 50d7abaf6da819149a14689049e8c043
+  m_SerializeEntries:
+  - m_GUID: 2416266bd80875740a2140f13ef9f520
+    m_Address: Assets/_Project/Localization/StringTables/Items/Items Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37fc28fc516039c4aa469640f9c1e2a1
+    m_Address: Assets/_Project/Localization/StringTables/UI/UI Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 398425b04f8438449bf4de53e525cd6a
+    m_Address: Assets/_Project/Localization/StringTables/Recipes/Recipes Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ab874e6499004d4094055bee73367e7
+    m_Address: Assets/_Project/Localization/StringTables/Gameplay/Gameplay Shared
+      Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: a6759f906fd3ba44c9dda44ff7e6ed60, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4d6f769597419d343aac8940e1dbbfc6, type: 2}
+    - {fileID: 11400000, guid: ba0a85dcf551f4745b88ffd08a9a2ab5, type: 2}

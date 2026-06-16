@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 46a98e57cacdbbb4db50099822b669e3
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: c9663b446abf40a05f06af347ff19eba
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -61,9 +61,14 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: b77bd2b621ba26e41b129de33d96a170, type: 2}
   - {fileID: 11400000, guid: afd0120163374b3488fd49bbdac57c21, type: 2}
+  - {fileID: 11400000, guid: 98f97fd900e9dd847bef1b2ec3b60914, type: 2}
   - {fileID: 11400000, guid: 4b256418e4ec7e248a1ca8ab36145222, type: 2}
+  - {fileID: 11400000, guid: ba359a83b57a1b7429ae13ef82f2fefc, type: 2}
+  - {fileID: 11400000, guid: 5326831260139d14893c7242cd7710af, type: 2}
   - {fileID: 11400000, guid: cb359fe5e4c23ec4ea6aef58cd781007, type: 2}
+  - {fileID: 11400000, guid: b6d9a9be7f5c51e4b9aa2a54550cd9be, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
@@ -107,6 +112,11 @@ MonoBehaviour:
     - survival_icons
     - world_prefabs
     - placeable_prefabs
+    - Locale
+    - Locale-en
+    - Locale-ru
+    - Locale-uk
+    - Preload
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03263252dba94034e996af7fbb3f1faa, type: 2}

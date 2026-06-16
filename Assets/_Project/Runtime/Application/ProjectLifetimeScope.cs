@@ -2,6 +2,7 @@ using TLN.Application.App;
 using TLN.Application.Assets;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Scenes;
 using TLN.Application.Time;
@@ -22,8 +23,9 @@ public sealed class ProjectLifetimeScope : LifetimeScope
 
 		builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 		builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
-
+		builder.Register<UnityLocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
 		builder.Register<BootStartupService>(Lifetime.Singleton);
+
 		builder.RegisterEntryPoint<GameStateInputModeController>();
 		builder.RegisterEntryPoint<GameStateTimeScaleController>();
 		builder.RegisterEntryPoint<ProjectStartupEntryPoint>();

@@ -2,6 +2,7 @@
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Player.Input;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Interaction
 {
@@ -29,6 +30,7 @@ namespace TLN.Gameplay.Interaction
 
         private InteractionHit? _currentHit;
 
+        [Inject]
         public void Construct(IInputModeService inputModeService, IInteractionPromptView promptView)
         {
             _inputModeService = inputModeService;

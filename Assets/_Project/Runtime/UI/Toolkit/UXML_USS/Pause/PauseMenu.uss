@@ -92,3 +92,39 @@
     border-left-color: rgb(255, 255, 255);
     color: white;
 }
+
+.pause-settings-panel {
+    /* Base styles from .tln-settings-panel */
+    margin-top: 20px;
+}
+
+.pause-settings-title {
+    /* Base styles from .tln-settings-title */
+}
+
+.pause-language-dropdown {
+    /* Base styles from .tln-settings-dropdown */
+}
+
+.pause-language-dropdown .unity-base-field__input {
+    min-height: 44px;
+    padding-left: 14px;
+    padding-right: 12px;
+    color: rgb(241, 248, 249);
+    background-color: rgba(4, 9, 11, 0.68);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(223, 238, 240, 0.45);
+    border-right-color: rgba(223, 238, 240, 0.14);
+    border-top-color: rgba(223, 238, 240, 0.14);
+    border-bottom-color: rgba(223, 238, 240, 0.14);
+}
+
+.pause-language-dropdown .unity-base-popup-field__text {
+    color: rgb(241, 248, 249);
+    font-size: 17px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
+}

@@ -1,65 +1,57 @@
 ﻿using TLN.Application.GameStates;
-using TLN.Application.Input;
 using TLN.Core.GameStates;
-using TLN.Gameplay.Player.Input;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
-	public sealed class PlayerPauseController : MonoBehaviour
-	{
-		[SerializeField] private PlayerInputReader _inputReader;
+    public sealed class PlayerPauseController : MonoBehaviour
+    {
+        [SerializeField] private PlayerInputReader _inputReader;
 
-		private IGameStateMachine _gameStateMachine;
-		private IInputModeService _inputModeService;
-		private IPauseMenuView _pauseMenuView;
+        private IGameStateMachine _gameStateMachine;
 
-		public void Construct(IGameStateMachine gameStateMachine, IInputModeService inputModeService, IPauseMenuView pauseMenuView)
-		{
-			_gameStateMachine = gameStateMachine;
-			_inputModeService = inputModeService;
-			_pauseMenuView = pauseMenuView;
-		}
+        [Inject]
+        public void Construct(IGameStateMachine gameStateMachine)
+        {
+            _gameStateMachine = gameStateMachine;
+        }
 
-		private void Awake()
-		{
-			if (_inputReader == null)
-			{
-				_inputReader = GetComponent<PlayerInputReader>();
-			}
-		}
+        private void Awake()
+        {
+            if (_inputReader == null)
+            {
+                _inputReader = GetComponent<PlayerInputReader>();
+            }
+        }
 
-		private void Update()
-		{
-			if (_gameStateMachine == null)
-			{
-				return;
-			}
+        private void Update()
+        {
+            if (_gameStateMachine == null)
+            {
+                return;
+            }
 
-			if (!_inputReader.WasPausePressedThisFrame)
-			{
-				return;
-			}
+            if (!_inputReader.WasPausePressedThisFrame)
+            {
+                return;
+            }
 
-			TogglePause();
-		}
+            TogglePause();
+        }
 
-		private void TogglePause()
-		{
-			if (_gameStateMachine.CurrentState == GameStateId.Playing)
-			{
-				_gameStateMachine.Enter(GameStateId.Paused);
-				_inputModeService.SetUIMode();
-				_pauseMenuView.Show();
-				return;
-			}
+        private void TogglePause()
+        {
+            switch (_gameStateMachine.CurrentState)
+            {
+                case GameStateId.Playing:
+                    _gameStateMachine.Enter(GameStateId.Paused);
+                    break;
 
-			if (_gameStateMachine.CurrentState == GameStateId.Paused)
-			{
-				_gameStateMachine.Enter(GameStateId.Playing);
-				_inputModeService.SetGameplayMode();
-				_pauseMenuView.Hide();
-			}
-		}
-	}
+                case GameStateId.Paused:
+                    _gameStateMachine.Enter(GameStateId.Playing);
+                    break;
+            }
+        }
+    }
 }

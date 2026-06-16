@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: UI
+  m_TableCollectionNameGuidString: 37fc28fc516039c4aa469640f9c1e2a1
+  m_Entries:
+  - m_Id: 2449644584960
+    m_Key: common.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2523640496128
+    m_Key: common.use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2587184201728
+    m_Key: common.build
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2645493415936
+    m_Key: survival.header.backpack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2712216403968
+    m_Key: survival.header.crafting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2767648325632
+    m_Key: survival.header.food_water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2829480755200
+    m_Key: survival.header.medicine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2888674967552
+    m_Key: survival.header.tools
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2945545535488
+    m_Key: survival.header.clothing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3010662105088
+    m_Key: survival.header.fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3066928693248
+    m_Key: survival.section.items
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3120536092672
+    m_Key: survival.sort.alphabetically
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3176265809920
+    m_Key: survival.category.all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3237288738816
+    m_Key: survival.category.food_water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3298844344320
+    m_Key: survival.category.medicine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3354532118528
+    m_Key: survival.category.tools
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3409808850944
+    m_Key: survival.category.clothing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3468822708224
+    m_Key: survival.category.fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3529677864960
+    m_Key: survival.category.crafting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3597050970112
+    m_Key: survival.empty.backpack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3657172123648
+    m_Key: survival.empty.category
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3726038401024
+    m_Key: survival.empty.nothing_selected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3936265306112
+    m_Key: survival.empty.no_recipe_selected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4030481956864
+    m_Key: survival.description.consumable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4099088187392
+    m_Key: survival.description.placeable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4162107604992
+    m_Key: survival.description.clothing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4227589079040
+    m_Key: survival.description.no_action
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4289580892160
+    m_Key: survival.build.ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4341804171264
+    m_Key: survival.build.service_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4392173568000
+    m_Key: survival.recipe.requirements_none
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4440651333632
+    m_Key: survival.recipe.requirements_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4491259805696
+    m_Key: survival.weight.format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16570758856704
+    m_Key: main_menu.subtitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16620834652160
+    m_Key: main_menu.new_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16675578707968
+    m_Key: main_menu.load_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16725834858496
+    m_Key: main_menu.options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16781396803584
+    m_Key: main_menu.quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16837533368320
+    m_Key: settings.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16904361213952
+    m_Key: settings.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30215479885824
+    m_Key: pause.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30280164442112
+    m_Key: pause.resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30338385575936
+    m_Key: common.save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30396115976192
+    m_Key: common.load
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30454492299264
+    m_Key: common.options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510939242496
+    m_Key: pause.quit_to_menu
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 846414318321271111
+  references:
+    version: 2
+    RefIds:
+    - rid: 846414318321271111
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1781603928679

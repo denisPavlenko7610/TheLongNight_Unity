@@ -6,6 +6,7 @@ using TLN.Gameplay.Sleep;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace TLN.UI.Sleep
 {
@@ -35,6 +36,7 @@ namespace TLN.UI.Sleep
 
         private bool _isVisible;
 
+        [Inject]
         public void Construct(SleepService sleepService, IInputModeService inputModeService, IInventoryService inventoryService,
             INotificationService notificationService)
         {

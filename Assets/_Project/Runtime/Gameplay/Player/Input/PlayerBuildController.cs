@@ -3,6 +3,7 @@ using TLN.Application.GameStates;
 using TLN.Core.GameStates;
 using TLN.Gameplay.Building;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
@@ -13,6 +14,7 @@ namespace TLN.Gameplay.Player.Input
 		private IBuildWindow _buildWindow;
 		private IGameStateMachine _gameStateMachine;
 
+		[Inject]
 		public void Construct(
 			IBuildWindow buildWindow,
 			IGameStateMachine gameStateMachine)

@@ -1,5 +1,4 @@
 using TLN.Application.Notifications;
-using TLN.Bootstrap;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Campfire;
@@ -30,7 +29,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	protected override void Configure(IContainerBuilder builder)
 	{
-
 		builder.RegisterInstance(_inventoryConfig);
 		builder.RegisterInstance(_gameTimeConfig);
 		builder.RegisterInstance(_survivalConfig);
@@ -63,7 +61,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.SurvivalMenu).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.SleepWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
-		builder.RegisterComponent(_uiRoot.PauseMenu).AsImplementedInterfaces();
+		builder.RegisterComponent(_uiRoot.PauseMenu);
 	}
-
 }

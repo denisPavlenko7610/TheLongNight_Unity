@@ -51,8 +51,15 @@
 
                 <ui:VisualElement class="survival-list-panel">
                     <ui:VisualElement class="survival-list-header">
-                        <ui:Label text="ITEMS" class="survival-section-title" />
-                        <ui:Label text="SORT: A-Z" class="survival-sort-label" />
+                        <ui:Label
+                            name="survival-items-label"
+                            text="ITEMS"
+                            class="survival-section-title" />
+
+                        <ui:Label
+                            name="survival-sort-label"
+                            text="SORT: A-Z"
+                            class="survival-sort-label" />
                     </ui:VisualElement>
 
                     <ui:ListView name="survival-list-view" class="survival-list-view" />

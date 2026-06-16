@@ -5,6 +5,7 @@ using TLN.Gameplay.Items;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace TLN.UI.Inventory
 {
@@ -28,6 +29,8 @@ namespace TLN.UI.Inventory
 
         private IInventoryService _inventoryService;
         private IItemUseService _itemUseService;
+
+        [Inject]
         public void Construct(IInventoryService inventoryService, IItemUseService itemUseService,
             IAddressableAssetService addressableAssetService)
         {

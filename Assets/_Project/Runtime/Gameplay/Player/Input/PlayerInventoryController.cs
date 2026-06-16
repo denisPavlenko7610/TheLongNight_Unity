@@ -2,6 +2,7 @@
 using TLN.Core.GameStates;
 using TLN.Gameplay.Inventory;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
@@ -40,9 +41,9 @@ namespace TLN.Gameplay.Player.Input
 			_inventoryWindow.Toggle();
 		}
 
+		[Inject]
 		public void Construct(
 			IInventoryWindow inventoryWindow,
-			TLN.Application.Input.IInputModeService inputModeService,
 			IGameStateMachine gameStateMachine)
 		{
 			_inventoryWindow = inventoryWindow;

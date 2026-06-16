@@ -4,6 +4,7 @@ using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Survival;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player
 {
@@ -15,6 +16,7 @@ namespace TLN.Gameplay.Player
         private SurvivalConfig _survivalConfig;
         private IGameStateMachine _gameStateMachine;
 
+        [Inject]
         public void Construct(IWarmthService warmthService, IPlayerEquipmentService equipmentService, ISurvivalService survivalService,
             SurvivalConfig survivalConfig, IGameStateMachine gameStateMachine)
         {

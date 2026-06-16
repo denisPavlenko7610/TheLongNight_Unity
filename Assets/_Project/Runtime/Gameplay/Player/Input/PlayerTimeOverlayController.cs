@@ -1,6 +1,7 @@
 ﻿using Assign;
 using TLN.Application.Input;
 using UnityEngine;
+using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
@@ -12,6 +13,7 @@ namespace TLN.Gameplay.Player.Input
 		private bool _wasStatusHeldPreviousFrame;
 		private IInputModeService _inputModeService;
 
+		[Inject]
 		public void Construct(ITimeOverlayView timeOverlayView, IInputModeService inputModeService)
 		{
 			_timeOverlayView = timeOverlayView;
