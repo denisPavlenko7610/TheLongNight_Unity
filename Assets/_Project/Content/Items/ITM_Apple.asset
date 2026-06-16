@@ -19,8 +19,8 @@ MonoBehaviour:
   _isStackable: 1
   _maxStackSize: 10
   _iconReference:
-    m_AssetGUID: 3aaf0c17ec4c51d479270b3ee554c981
-    m_SubObjectName: apple
+    m_AssetGUID: cf5807a80d325124bb76729628c43c51
+    m_SubObjectName: Apple
     m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_SubObjectGUID: 

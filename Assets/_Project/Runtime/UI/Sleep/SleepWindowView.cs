@@ -44,8 +44,6 @@ namespace TLN.UI.Sleep
             _inputModeService = inputModeService;
             _inventoryService = inventoryService;
             _notificationService = notificationService;
-
-            Hide();
         }
 
         private void Awake()
@@ -54,6 +52,7 @@ namespace TLN.UI.Sleep
             VisualElement documentRoot = _document.rootVisualElement;
 
             _root = documentRoot.RequiredQ<VisualElement>("sleep-window-root");
+            _root.SetVisible(false);
 
             _pickUpButton = documentRoot.RequiredQ<Button>("sleep-pick-up-button");
             _pickUpButton.clicked += OnPickUpClicked;
@@ -87,6 +86,7 @@ namespace TLN.UI.Sleep
             _currentBedroll = bedrollActor;
 
             _isVisible = true;
+            _root.SetVisible(true);
             _root.AddToClassList(VisibleClassName);
 
             RefreshPickUpButton();
@@ -101,6 +101,7 @@ namespace TLN.UI.Sleep
 
             if (_root != null)
             {
+                _root.SetVisible(false);
                 _root.RemoveFromClassList(VisibleClassName);
             }
 

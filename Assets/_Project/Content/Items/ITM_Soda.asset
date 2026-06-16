@@ -19,7 +19,7 @@ MonoBehaviour:
   _isStackable: 1
   _maxStackSize: 6
   _iconReference:
-    m_AssetGUID: 1f58e20348912514a8b3ed06830f509b
+    m_AssetGUID: acc26019857f492418d4ef5753344c0f
     m_SubObjectName: Soda
     m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null

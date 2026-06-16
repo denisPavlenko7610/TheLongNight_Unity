@@ -15,7 +15,7 @@ public sealed class ProjectLifetimeScope : LifetimeScope
 	{
 		builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
 		builder.Register<ISceneLoader>(
-			container => new SceneLoaderService(container.Resolve<IGameStateMachine>(), this),
+			container => new SceneLoaderService(container.Resolve<IGameStateMachine>()),
 			Lifetime.Singleton);
 		builder.Register<ICursorService, CursorService>(Lifetime.Singleton);
 		builder.Register<IInputModeService, InputModeService>(Lifetime.Singleton);

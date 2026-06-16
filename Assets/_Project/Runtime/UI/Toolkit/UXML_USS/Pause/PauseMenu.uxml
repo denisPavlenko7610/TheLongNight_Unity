@@ -1,12 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="../Common/TLNTheme.uss"/>
-    <Style src="../Common/TLNSettings.uss"/>
+    <Style src="../Common/TLNTheme.uss" />
+    <Style src="../Common/TLNMenu.uss" />
+    <Style src="../Common/TLNSettings.uss" />
     <Style src="PauseMenu.uss"/>
     <ui:VisualElement name="pause-menu-root" class="pause-menu-root">
         <ui:VisualElement name="pause-background" class="pause-background"/>
         <ui:VisualElement name="pause-overlay" class="pause-overlay"/>
         <ui:VisualElement class="pause-content">
-            <ui:Label text="PAUSE" class="pause-title"/>
+            <ui:Label
+                name="pause-title-label"
+                text="PAUSE"
+                class="pause-title" />
             <ui:VisualElement name="pause-navigation-panel" class="pause-list">
                 <ui:Button name="resume-button" text="RESUME" class="pause-button">
                     <Bindings>

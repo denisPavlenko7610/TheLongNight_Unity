@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="../Common/TLNTheme.uss"/>
-    <Style src="../Common/TLNSettings.uss"/>
+    <Style src="../Common/TLNTheme.uss" />
+    <Style src="../Common/TLNMenu.uss" />
+    <Style src="../Common/TLNSettings.uss" />
     <Style src="MainMenu.uss"/>
     <ui:VisualElement name="main-menu-root" class="main-menu-root">
         <ui:VisualElement class="main-menu-background"/>

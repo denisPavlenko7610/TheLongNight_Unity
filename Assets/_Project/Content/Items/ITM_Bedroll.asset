@@ -19,11 +19,12 @@ MonoBehaviour:
   _isStackable: 1
   _maxStackSize: 1
   _iconReference:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectType: 
+    m_AssetGUID: ac09d942fa032eb40a8705f8f5035d55
+    m_SubObjectName: Bedroll
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
+    m_EditorAssetChanged: 1
   _useKind: 20
   _placedPrefabReference:
     m_AssetGUID: 89281e817bfa32e48ac1ad1bb9d26fc2

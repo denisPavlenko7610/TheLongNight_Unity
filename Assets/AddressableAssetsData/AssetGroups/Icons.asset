@@ -15,19 +15,35 @@ MonoBehaviour:
   m_GroupName: Icons
   m_GUID: d7aa286623b4aa846b437e05c1c094cd
   m_SerializeEntries:
-  - m_GUID: 1f58e20348912514a8b3ed06830f509b
-    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Soda.jpg
+  - m_GUID: 3bfdaae619091944fbbe0348797a0b66
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Stick.png
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - icons
-    - item_icons
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3aaf0c17ec4c51d479270b3ee554c981
-    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/apple.jpg
+  - m_GUID: 666731ae69b977241a69db5b67b25cb7
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bedroll_roll.png
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - icons
-    - item_icons
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b50c55b4320a8543bef534b140432de
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac09d942fa032eb40a8705f8f5035d55
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bedroll.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc26019857f492418d4ef5753344c0f
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Soda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf5807a80d325124bb76729628c43c51
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/apple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a6759f906fd3ba44c9dda44ff7e6ed60, type: 2}
