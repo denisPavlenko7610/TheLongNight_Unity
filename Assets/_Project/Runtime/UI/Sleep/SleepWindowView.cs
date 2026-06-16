@@ -34,8 +34,6 @@ namespace TLN.UI.Sleep
         private SleepService _sleepService;
         private IInputModeService _inputModeService;
 
-        private bool _isVisible;
-
         [Inject]
         public void Construct(SleepService sleepService, IInputModeService inputModeService, IInventoryService inventoryService,
             INotificationService notificationService)
@@ -85,7 +83,6 @@ namespace TLN.UI.Sleep
         {
             _currentBedroll = bedrollActor;
 
-            _isVisible = true;
             _root.SetVisible(true);
             _root.AddToClassList(VisibleClassName);
 
@@ -96,7 +93,6 @@ namespace TLN.UI.Sleep
 
         public void Hide()
         {
-            _isVisible = false;
             _currentBedroll = null;
 
             if (_root != null)

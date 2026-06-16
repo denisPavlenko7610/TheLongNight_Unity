@@ -6,6 +6,7 @@
     height: 100%;
     display: none;
     pointer-events: auto;
+    background-color: rgb(3, 7, 9);
 }
 
 .pause-menu-root-visible {
@@ -22,24 +23,11 @@
     background-position: center;
     background-repeat: no-repeat;
     background-image: url("project://database/Assets/_Project/Art/UI/PauseMenu/BG_Pause_SnowForest.jpg");
-    -unity-background-image-tint-color: rgba(190, 215, 220, 0.85);
+    -unity-background-image-tint-color: rgba(195, 220, 225, 0.82);
 }
 
 .pause-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(4, 8, 12, 0.54);
-    border-left-width: 72px;
-    border-right-width: 220px;
-    border-top-width: 44px;
-    border-bottom-width: 64px;
-    border-left-color: rgba(0, 0, 0, 0.28);
-    border-right-color: rgba(0, 0, 0, 0.58);
-    border-top-color: rgba(0, 0, 0, 0.34);
-    border-bottom-color: rgba(0, 0, 0, 0.62);
+    display: none;
 }
 
 .pause-content {

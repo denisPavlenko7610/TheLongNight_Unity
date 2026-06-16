@@ -1,0 +1,81 @@
+#pragma kernel CSMain
+
+struct SnowParticle
+{
+	float3 position;
+	float seed;
+	float3 velocity;
+	float size;
+};
+
+RWStructuredBuffer<SnowParticle> _SnowParticles;
+
+float3 _VolumeCenter;
+float3 _VolumeHalfExtents;
+float3 _Wind;
+float _Gravity;
+float _Turbulence;
+float _DeltaTime;
+uint _ParticleCount;
+float _Time;
+
+float Hash(float s) { return frac(sin(s) * 43758.5453); }
+
+float Turbulence3D(float3 pos, float seed, float strength)
+{
+	float3 a = pos * 0.4 + float3(seed * 10, 0, seed * 7);
+	float3 b = pos * 0.9 + float3(0, seed * 3, seed * 5);
+	float3 c = pos * 2.1 + float3(seed * 2, seed * 8, 0);
+
+	float n = 0;
+	n += (frac(sin(dot(a, float3(127.1, 311.7, 74.7))) * 43758.5453)) * 1.0;
+	n += (frac(sin(dot(b, float3(269.5, 183.3, 421.1))) * 43758.5453)) * 0.66;
+	n += (frac(sin(dot(c, float3(53.2, 197.8, 312.6))) * 43758.5453)) * 0.43;
+	return (n / 2.09 - 0.5) * 2.0 * strength;
+}
+
+void RespawnParticle(inout SnowParticle p, float seed)
+{
+	float3 he = _VolumeHalfExtents;
+	float3 ct = _VolumeCenter;
+
+	p.position = ct + float3(
+		(Hash(seed) - 0.5) * he.x * 2.0,
+		(Hash(seed + 0.13) - 0.5) * he.y * 2.0,
+		(Hash(seed + 0.27) - 0.5) * he.z * 2.0);
+
+	p.velocity = float3(
+		Hash(seed + 0.4) * 0.8 - 0.4,
+		-Hash(seed + 0.5) * 2.2 - 0.3,
+		Hash(seed + 0.6) * 0.8 - 0.4);
+
+	p.size = 0.01 + Hash(seed + 0.7) * 0.06;
+	p.seed = seed;
+}
+
+[numthreads(64, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	uint index = id.x;
+	if (index >= _ParticleCount) return;
+
+	SnowParticle p = _SnowParticles[index];
+
+	float3 turb = float3(
+		Turbulence3D(p.position, p.seed, _Turbulence),
+		Turbulence3D(p.position + float3(43, 17, 0), p.seed + 1, _Turbulence * 0.5),
+		Turbulence3D(p.position + float3(0, 29, 61), p.seed + 2, _Turbulence));
+
+	p.velocity += (float3(0, -_Gravity, 0) + _Wind + turb) * _DeltaTime;
+
+	float spd = length(p.velocity);
+	if (spd > 5.0) p.velocity = (p.velocity / spd) * 5.0;
+
+	p.position += p.velocity * _DeltaTime;
+
+	float3 rel = p.position - _VolumeCenter;
+	if (rel.y < -_VolumeHalfExtents.y)
+		RespawnParticle(p, Hash(p.seed + _Time * 73.7 + index * 0.13));
+
+	_SnowParticles[index] = p;
+}
