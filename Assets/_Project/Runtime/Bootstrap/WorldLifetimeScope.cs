@@ -1,4 +1,5 @@
 using TLN.Application.Notifications;
+using TLN.Application.Saves;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Campfire;
@@ -8,6 +9,7 @@ using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
+using TLN.Gameplay.Saves;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
@@ -26,6 +28,8 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField, Required] private SurvivalConfig _survivalConfig;
 	[SerializeField, Required] private SleepConfig _sleepConfig;
 	[SerializeField, Required] private BuildRecipeCatalog _buildRecipeCatalog;
+	[SerializeField, Required] private ItemCatalog _itemCatalog;
+	[SerializeField, Required] private WorldPrefabCatalog _worldPrefabCatalog;
 
 	[SerializeField] private float _survivalWarningCooldownSeconds = 30f;
 
@@ -37,7 +41,11 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
 		builder.RegisterInstance(_buildRecipeCatalog);
+		builder.RegisterInstance(_itemCatalog);
+		builder.RegisterInstance(_worldPrefabCatalog);
 
+		builder.Register<WorldSaveRegistry>(Lifetime.Scoped);
+		builder.Register<GameSaveService>(Lifetime.Scoped).As<IGameSaveService>();
 		builder.Register<GameTimeService>(Lifetime.Scoped).As<IGameTimeService>();
 		builder.Register<DayNightService>(Lifetime.Scoped).As<IDayNightService>();
 		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();

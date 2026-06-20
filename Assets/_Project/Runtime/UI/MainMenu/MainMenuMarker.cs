@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TLN.Core.Logging;
+using UnityEngine;
 
 namespace TLN.UI.MainMenu
 {
@@ -6,7 +7,7 @@ namespace TLN.UI.MainMenu
 	{
 		private void Start()
 		{
-			Debug.Log("MainMenu scene loaded.");
+			TLNLogger.Log("MainMenu scene loaded.");
 		}
 	}
 }

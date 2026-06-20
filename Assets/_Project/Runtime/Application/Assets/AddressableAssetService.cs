@@ -37,14 +37,14 @@ namespace TLN.Application.Assets
 
             if (assetReference == null)
             {
-                TLNLogger.Warning($"Addressables: cannot load {typeof(TAsset).Name}. AssetReference is null.");
+                TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. AssetReference is null.");
                 completed.Invoke(null);
                 return;
             }
 
             if (!assetReference.RuntimeKeyIsValid())
             {
-                TLNLogger.Warning($"Addressables: cannot load {typeof(TAsset).Name}. Runtime key is invalid.");
+                TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. Runtime key is invalid.");
                 completed.Invoke(null);
                 return;
             }
@@ -115,7 +115,7 @@ namespace TLN.Application.Assets
                     ? "No exception message."
                     : handle.OperationException.Message;
 
-                TLNLogger.Warning(
+                TLNLogger.LogWarning(
                     $"Addressables: failed to load asset. Key: {key}. Status: {handle.Status}. Error: {exceptionMessage}");
             }
 

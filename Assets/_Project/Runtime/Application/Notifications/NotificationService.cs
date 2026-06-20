@@ -19,7 +19,7 @@ namespace TLN.Application.Notifications
 				return;
 			}
 
-			TLNLogger.Info($"Notification: {message}");
+			TLNLogger.Log($"Notification: {message}");
 
 			_view?.Show(message);
 		}

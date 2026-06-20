@@ -14,5 +14,6 @@ namespace TLN.Gameplay.Time
 		void Tick(float deltaTime);
 		void AdvanceMinutes(int minutes);
 		void AdvanceHours(int hours);
+		void SetTotalMinutes(int totalMinutes);
 	}
 }

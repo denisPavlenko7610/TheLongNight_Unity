@@ -49,11 +49,39 @@ namespace TLN.Gameplay.Inventory
 			return true;
 		}
 
+		public void ReplaceItems(IReadOnlyList<ItemStack> items)
+		{
+			_items.Clear();
+
+			if (items != null)
+			{
+				for (int i = 0; i < items.Count; i++)
+				{
+					ItemStack stack = items[i];
+
+					if (stack.Definition == null)
+					{
+						continue;
+					}
+
+					if (stack.Amount <= 0)
+					{
+						continue;
+					}
+
+					_items.Add(stack);
+				}
+			}
+
+			RecalculateWeight();
+			Changed?.Invoke();
+		}
+
 		public InventoryAddResult AddItem(ItemDefinition definition, int amount)
 		{
 			if (!CanAddItem(definition, amount, out string reason))
 			{
-				TLNLogger.Warning($"Inventory: cannot add item. Reason: {reason}");
+				TLNLogger.LogWarning($"Inventory: cannot add item. Reason: {reason}");
 				return InventoryAddResult.Failure(reason);
 			}
 
@@ -70,7 +98,7 @@ namespace TLN.Gameplay.Inventory
 
 			Changed?.Invoke();
 
-			TLNLogger.Info($"Inventory: added {amount} x {definition.DisplayName}. Weight: {CurrentWeight:0.##}/{MaxCarryWeight:0.##}");
+			TLNLogger.Log($"Inventory: added {amount} x {definition.DisplayName}. Weight: {CurrentWeight:0.##}/{MaxCarryWeight:0.##}");
 
 			return InventoryAddResult.Success();
 		}

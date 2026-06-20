@@ -1,7 +1,10 @@
 using System;
 using TLN.Application.Localization;
+using TLN.Application.Saves;
 using TLN.Application.Scenes;
+using TLN.Core.Logging;
 using TLN.UI.Common;
+using TLN.UI.Saves;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -17,6 +20,7 @@ namespace TLN.UI.MainMenu
     {
         private const string DisabledClassName = "main-menu-button-disabled";
 
+        private VisualElement _root;
         private VisualElement _navigationPanel;
         private VisualElement _settingsPanel;
 
@@ -30,11 +34,20 @@ namespace TLN.UI.MainMenu
 
         private ISceneLoader _sceneLoader;
         private ILocalizationService _localizationService;
+        private ISaveRepository _saveRepository;
+        private SaveSessionService _saveSessionService;
+        private SaveSlotsPanel _saveSlotsPanel;
 
         [Inject]
-        public void Construct(ISceneLoader sceneLoader, ILocalizationService localizationService)
+        public void Construct(
+            ISceneLoader sceneLoader,
+            ILocalizationService localizationService,
+            ISaveRepository saveRepository,
+            SaveSessionService saveSessionService)
         {
             _sceneLoader = sceneLoader;
+            _saveRepository = saveRepository;
+            _saveSessionService = saveSessionService;
 
             if (_localizationService != null)
             {
@@ -49,27 +62,30 @@ namespace TLN.UI.MainMenu
             }
 
             SyncLanguageDropdown();
+            InitializeSaveSlotsPanel();
+            RefreshLoadGameButton();
         }
 
         private void Awake()
         {
-            VisualElement root = GetComponent<UIDocument>()
+            _root = GetComponent<UIDocument>()
                 .rootVisualElement;
 
-            _navigationPanel = root.RequiredQ<VisualElement>("main-menu-navigation-panel");
-            _settingsPanel = root.RequiredQ<VisualElement>("main-menu-settings-panel");
-            _newGameButton = root.RequiredQ<Button>("new-game-button");
-            _loadGameButton = root.RequiredQ<Button>("load-game-button");
-            _optionsButton = root.RequiredQ<Button>("options-button");
-            _quitButton = root.RequiredQ<Button>("quit-button");
-            _settingsBackButton = root.RequiredQ<Button>("settings-back-button");
-            _languageDropdown = root.RequiredQ<DropdownField>("language-dropdown");
+            _navigationPanel = _root.RequiredQ<VisualElement>("main-menu-navigation-panel");
+            _settingsPanel = _root.RequiredQ<VisualElement>("main-menu-settings-panel");
+            _newGameButton = _root.RequiredQ<Button>("new-game-button");
+            _loadGameButton = _root.RequiredQ<Button>("load-game-button");
+            _optionsButton = _root.RequiredQ<Button>("options-button");
+            _quitButton = _root.RequiredQ<Button>("quit-button");
+            _settingsBackButton = _root.RequiredQ<Button>("settings-back-button");
+            _languageDropdown = _root.RequiredQ<DropdownField>("language-dropdown");
 
             SettingsMenuHelper.ConfigureLanguageDropdown(_languageDropdown);
             SyncLanguageDropdown();
+            InitializeSaveSlotsPanel();
             SubscribeToUI();
 
-            SetComingSoon(_loadGameButton);
+            RefreshLoadGameButton();
 
             ShowNavigationPanel();
         }
@@ -78,10 +94,41 @@ namespace TLN.UI.MainMenu
         {
             UnsubscribeFromUI();
 
+            _saveSlotsPanel?.Dispose();
+
             if (_localizationService != null)
             {
                 _localizationService.LocaleChanged -= OnLocaleChanged;
             }
+        }
+
+        private void InitializeSaveSlotsPanel()
+        {
+            if (_root == null || _saveSlotsPanel != null || _saveRepository == null)
+            {
+                return;
+            }
+
+            _saveSlotsPanel = new SaveSlotsPanel(
+                _root,
+                _saveRepository,
+                OnNewGameSlotSelected,
+                OnLoadGameSlotSelected,
+                ShowNavigationPanel);
+        }
+
+        private bool TryEnsureSaveSlotsPanel()
+        {
+            InitializeSaveSlotsPanel();
+
+            if (_saveSlotsPanel != null)
+            {
+                return true;
+            }
+
+            TLNLogger.LogError("Cannot show save slots because save repository is missing.");
+            ShowNavigationPanel();
+            return false;
         }
 
         private void SubscribeToUI()
@@ -128,6 +175,28 @@ namespace TLN.UI.MainMenu
             }
         }
 
+        private void RefreshLoadGameButton()
+        {
+            if (_loadGameButton == null)
+            {
+                return;
+            }
+
+            bool hasSave =
+                _saveRepository != null &&
+                _saveRepository.TryGetMostRecentSlot(out _);
+
+            _loadGameButton.SetEnabled(hasSave);
+
+            if (hasSave)
+            {
+                _loadGameButton.RemoveFromClassList(DisabledClassName);
+                return;
+            }
+
+            _loadGameButton.AddToClassList(DisabledClassName);
+        }
+
         private static void SetComingSoon(Button button)
         {
             button.SetEnabled(false);
@@ -138,6 +207,7 @@ namespace TLN.UI.MainMenu
         {
             _navigationPanel.SetVisible(true);
             _settingsPanel.SetVisible(false);
+            _saveSlotsPanel?.Hide();
         }
 
         private void ShowSettingsPanel()
@@ -195,26 +265,82 @@ namespace TLN.UI.MainMenu
 
         private void OnNewGameClicked()
         {
+            ShowSaveSlotsForNewGame();
+        }
+
+        private void OnLoadGameClicked()
+        {
+            ShowSaveSlotsForLoadGame();
+        }
+
+        private void ShowSaveSlotsForNewGame()
+        {
+            if (!TryEnsureSaveSlotsPanel())
+            {
+                return;
+            }
+
+            _navigationPanel.SetVisible(false);
+            _settingsPanel.SetVisible(false);
+            _saveSlotsPanel.ShowNewGame();
+        }
+
+        private void ShowSaveSlotsForLoadGame()
+        {
+            if (!TryEnsureSaveSlotsPanel())
+            {
+                return;
+            }
+
+            _navigationPanel.SetVisible(false);
+            _settingsPanel.SetVisible(false);
+            _saveSlotsPanel.ShowLoadGame();
+        }
+
+        private void OnNewGameSlotSelected(int slotId)
+        {
             UnityEngine.Cursor.visible = false;
 
             if (_sceneLoader == null)
             {
-                Debug.LogError("Cannot start a new game because " +
-                    "scene loader is not available. " +
-                    "Start the game through Boot scene.");
+                TLNLogger.LogError(
+                    "Cannot start a new game because scene loader is missing.");
 
                 return;
             }
 
+            if (_saveSessionService == null)
+            {
+                TLNLogger.LogError(
+                    "Cannot start a new game because save session service is missing.");
+
+                return;
+            }
+
+            _saveRepository?.Delete(slotId);
+            _saveSessionService.StartNewGame(slotId);
             _sceneLoader.LoadWorld();
         }
 
-        private static void OnLoadGameClicked()
+        private void OnLoadGameSlotSelected(int slotId)
         {
-            Debug.Log("Load Game is not implemented yet.");
+            if (_sceneLoader == null)
+            {
+                TLNLogger.LogError("Cannot load game because scene loader is missing.");
+                return;
+            }
+
+            if (_saveSessionService == null)
+            {
+                TLNLogger.LogError("Cannot load game because save session service is missing.");
+                return;
+            }
+
+            _saveSessionService.RequestLoadGame(slotId);
+            _sceneLoader.LoadWorld();
         }
 
-        private static void OnQuitClicked()
+        private void OnQuitClicked()
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TLN.Core.Logging;
+using UnityEngine;
 
 namespace TLN.Gameplay.Interaction
 {
@@ -6,12 +7,12 @@ namespace TLN.Gameplay.Interaction
 	{
 		public void Show(string text)
 		{
-			Debug.Log($"[InteractionPrompt] Show: {text}");
+			TLNLogger.Log($"[InteractionPrompt] Show: {text}");
 		}
 
 		public void Hide()
 		{
-			Debug.Log("[InteractionPrompt] Hide");
+			TLNLogger.Log("[InteractionPrompt] Hide");
 		}
 	}
 }

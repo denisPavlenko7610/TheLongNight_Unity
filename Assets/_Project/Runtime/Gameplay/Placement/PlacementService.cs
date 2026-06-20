@@ -8,7 +8,7 @@ namespace TLN.Gameplay.Placement
 	public sealed class PlacementService
 	{
 		private PlayerRoot _playerRoot;
-
+		public PlayerRoot PlayerRoot => _playerRoot;
 		public event Action<GameObject> Placed;
 		private readonly IWorldObjectFactory _worldObjectFactory;
 

@@ -1,7 +1,9 @@
 using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Notifications;
+using TLN.Application.Saves;
 using TLN.Core.GameStates;
+using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
@@ -29,6 +31,7 @@ namespace TLN.Gameplay.World
         private IGameTimeService _gameTimeService;
         private ISurvivalService _survivalService;
         private IPlayerFactory _playerFactory;
+        private IGameSaveService _gameSaveService;
 
         private PlayerRoot _playerInstance;
 
@@ -39,7 +42,9 @@ namespace TLN.Gameplay.World
             PlacementService placementService,
             IGameTimeService gameTimeService,
             ISurvivalService survivalService,
-            IPlayerFactory playerFactory)
+            IPlayerFactory playerFactory,
+            IGameSaveService gameSaveService
+            )
         {
             _gameStateMachine = gameStateMachine;
             _notificationService = notificationService;
@@ -47,6 +52,7 @@ namespace TLN.Gameplay.World
             _gameTimeService = gameTimeService;
             _survivalService = survivalService;
             _playerFactory = playerFactory;
+            _gameSaveService = gameSaveService;
         }
 
         private void Start()
@@ -59,6 +65,7 @@ namespace TLN.Gameplay.World
 
             ConstructHUD();
             SpawnPlayer();
+            LoadRequestedSaveIfNeeded();
             EnsureGameplayState();
         }
 
@@ -69,6 +76,11 @@ namespace TLN.Gameplay.World
             _uiRoot.HUD.Construct(
                 _survivalService,
                 _gameTimeService);
+        }
+
+        private void LoadRequestedSaveIfNeeded()
+        {
+            _gameSaveService?.LoadActiveSlotIfRequested();
         }
 
         private void SpawnPlayer()
@@ -99,13 +111,13 @@ namespace TLN.Gameplay.World
         {
             if (_uiRoot == null)
             {
-                Debug.LogError("WorldUIRoot is required.");
+                TLNLogger.LogError("WorldUIRoot is required.");
                 return false;
             }
 
             if (!_uiRoot.HasAllRequiredReferences())
             {
-                Debug.LogError(
+                TLNLogger.LogError(
                     "Some UI references in WorldUIRoot are missing.");
 
                 return false;
@@ -113,13 +125,13 @@ namespace TLN.Gameplay.World
 
             if (_playerPrefab == null)
             {
-                Debug.LogError("PlayerPrefab is required.");
+                TLNLogger.LogError("PlayerPrefab is required.");
                 return false;
             }
 
             if (_spawnPoint == null)
             {
-                Debug.LogError("Player spawn point is required.");
+                TLNLogger.LogError("Player spawn point is required.");
                 return false;
             }
 

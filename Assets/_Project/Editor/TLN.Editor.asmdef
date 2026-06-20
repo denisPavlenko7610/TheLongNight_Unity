@@ -2,7 +2,8 @@
     "name": "TLN.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:49cbf21cabd7ad5468a920bb5c7777b6"
+        "GUID:49cbf21cabd7ad5468a920bb5c7777b6",
+        "GUID:0e3a5145647a73342b8d7a4d11bd1f60"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -39,7 +39,7 @@ namespace TLN.Gameplay.Sleep
 		{
 			if (_sleepWindow == null)
 			{
-				TLNLogger.Warning("Cannot open sleep window because BedrollActor was not constructed.", this);
+				TLNLogger.LogWarning("Cannot open sleep window because BedrollActor was not constructed.", this);
 				return;
 			}
 

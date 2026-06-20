@@ -1,5 +1,7 @@
+using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 
 namespace TLN.Editor.PlayFromBoot
 {
@@ -7,11 +9,169 @@ namespace TLN.Editor.PlayFromBoot
 	public static class PlayFromBoot
 	{
 		private const string BootScenePath = "Assets/_Project/Scenes/Boot.unity";
+		private const string InspectorRestoreSessionKey =
+			"TLN.Editor.PlayFromBoot.RestoreInspectorWindow";
+
+		private static bool _preparedForPendingPlayMode;
 
 		static PlayFromBoot()
 		{
 			EditorSceneManager.playModeStartScene =
 				AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
+
+			EditorApplication.update -= OnEditorUpdate;
+			EditorApplication.update += OnEditorUpdate;
+
+			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
+			AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+			AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+
+			EditorApplication.delayCall -= ClearEditorSelection;
+			EditorApplication.delayCall += ClearEditorSelection;
+
+			if (SessionState.GetBool(InspectorRestoreSessionKey, false))
+			{
+				EditorApplication.delayCall -= RestoreInspectorWindow;
+				EditorApplication.delayCall += RestoreInspectorWindow;
+			}
+
+			if (EditorApplication.isPlaying ||
+			    EditorApplication.isPlayingOrWillChangePlaymode)
+			{
+				PrepareForPlayModeTransition();
+			}
+		}
+
+		private static void OnEditorUpdate()
+		{
+			if (EditorApplication.isPlaying)
+			{
+				return;
+			}
+
+			if (!EditorApplication.isPlayingOrWillChangePlaymode)
+			{
+				_preparedForPendingPlayMode = false;
+				RestoreInspectorWindow();
+				return;
+			}
+
+			if (_preparedForPendingPlayMode)
+			{
+				return;
+			}
+
+			PrepareForPlayModeTransition();
+			_preparedForPendingPlayMode = true;
+		}
+
+		private static void OnPlayModeStateChanged(PlayModeStateChange state)
+		{
+			switch (state)
+			{
+				case PlayModeStateChange.ExitingEditMode:
+				case PlayModeStateChange.ExitingPlayMode:
+					PrepareForPlayModeTransition();
+					break;
+
+				case PlayModeStateChange.EnteredEditMode:
+				case PlayModeStateChange.EnteredPlayMode:
+					_preparedForPendingPlayMode = false;
+					EditorApplication.delayCall -= ClearEditorSelection;
+					EditorApplication.delayCall += ClearEditorSelection;
+					EditorApplication.delayCall -= RestoreInspectorWindow;
+					EditorApplication.delayCall += RestoreInspectorWindow;
+					break;
+			}
+		}
+
+		private static void OnBeforeAssemblyReload()
+		{
+			if (!EditorApplication.isPlaying &&
+			    !EditorApplication.isPlayingOrWillChangePlaymode)
+			{
+				return;
+			}
+
+			PrepareForPlayModeTransition();
+		}
+
+		private static void PrepareForPlayModeTransition()
+		{
+			SelectStableEditorTarget();
+			CloseInspectorWindows();
+		}
+
+		private static void SelectStableEditorTarget()
+		{
+			SceneAsset bootScene =
+				AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
+
+			if (bootScene == null)
+			{
+				ClearEditorSelection();
+				return;
+			}
+
+			Selection.objects = new UnityEngine.Object[] { bootScene };
+			Selection.activeObject = bootScene;
+		}
+
+		private static void CloseInspectorWindows()
+		{
+			Type inspectorWindowType =
+				typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+
+			if (inspectorWindowType == null)
+			{
+				return;
+			}
+
+			UnityEngine.Object[] inspectorWindows =
+				Resources.FindObjectsOfTypeAll(inspectorWindowType);
+
+			if (inspectorWindows.Length == 0)
+			{
+				return;
+			}
+
+			SessionState.SetBool(InspectorRestoreSessionKey, true);
+
+			foreach (UnityEngine.Object inspectorWindow in inspectorWindows)
+			{
+				if (inspectorWindow is EditorWindow editorWindow)
+				{
+					editorWindow.Close();
+				}
+			}
+		}
+
+		private static void RestoreInspectorWindow()
+		{
+			if (!SessionState.GetBool(InspectorRestoreSessionKey, false))
+			{
+				return;
+			}
+
+			SessionState.SetBool(InspectorRestoreSessionKey, false);
+
+			Type inspectorWindowType =
+				typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+
+			if (inspectorWindowType == null)
+			{
+				return;
+			}
+
+			EditorWindow.GetWindow(inspectorWindowType);
+		}
+
+		private static void ClearEditorSelection()
+		{
+			Selection.objects = new UnityEngine.Object[0];
+			Selection.activeObject = null;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using TLN.Core.Logging;
 using TLN.Core.Validation;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace TLN.Editor.Validation
                 return;
             }
 
-            Debug.LogError($"[Required] Found {errorCount} missing required reference(s). See detailed errors above.");
+            TLNLogger.LogError($"[Required] Found {errorCount} missing required reference(s). See detailed errors above.");
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
@@ -48,7 +49,7 @@ namespace TLN.Editor.Validation
                 return;
             }
 
-            Debug.LogError($"[Required] Found {errorCount} missing required scene reference(s). See detailed errors above.");
+            TLNLogger.LogError($"[Required] Found {errorCount} missing required scene reference(s). See detailed errors above.");
 
             if (BlockPlayModeOnError)
             {
@@ -205,7 +206,7 @@ namespace TLN.Editor.Validation
                 string fieldName = GetCleanFieldName(field.Name);
                 string resolvedAssetPath = GetBestAssetPath(behaviour, assetPath);
 
-                Debug.LogError(
+                TLNLogger.LogError(
                     $"[Required] Missing reference.\n" +
                     $"Source: {source}\n" +
                     $"Asset: {resolvedAssetPath}\n" +

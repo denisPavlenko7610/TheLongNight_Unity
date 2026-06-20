@@ -2,6 +2,7 @@
     <Style src="../Common/TLNTheme.uss" />
     <Style src="../Common/TLNMenu.uss" />
     <Style src="../Common/TLNSettings.uss" />
+    <Style src="../Common/TLNSaveSlots.uss" />
     <Style src="MainMenu.uss"/>
     <ui:VisualElement name="main-menu-root" class="main-menu-root">
         <ui:VisualElement class="main-menu-background"/>
@@ -15,6 +16,26 @@
                 </ui:Label>
             </ui:VisualElement>
             <ui:VisualElement class="main-menu-rule"/>
+            <ui:VisualElement name="save-slots-panel" class="tln-settings-panel save-slots-panel">
+                <ui:Label name="save-slots-title-label" class="tln-settings-title" text="SAVE SLOTS" />
+                <ui:Label name="save-slots-description-label" class="tln-settings-label" text="Choose a slot." />
+
+                <ui:VisualElement class="save-slots-list">
+                    <ui:Button name="save-slot-1-button" class="tln-menu-button save-slot-button" text="SLOT 1" />
+                    <ui:Button name="save-slot-2-button" class="tln-menu-button save-slot-button" text="SLOT 2" />
+                    <ui:Button name="save-slot-3-button" class="tln-menu-button save-slot-button" text="SLOT 3" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="save-overwrite-panel" class="save-overwrite-panel">
+                    <ui:Label name="save-overwrite-label" class="save-overwrite-label" text="Overwrite save?" />
+                    <ui:VisualElement class="save-overwrite-buttons">
+                        <ui:Button name="save-overwrite-confirm-button" class="tln-menu-button" text="OVERWRITE" />
+                        <ui:Button name="save-overwrite-cancel-button" class="tln-menu-button" text="CANCEL" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:Button name="save-slots-back-button" class="tln-menu-button tln-settings-back-button" text="BACK" />
+            </ui:VisualElement>
             <ui:VisualElement name="main-menu-navigation-panel" class="main-menu-list">
                 <ui:Button name="new-game-button" text="NEW GAME" class="main-menu-button tln-menu-button">
                     <Bindings>

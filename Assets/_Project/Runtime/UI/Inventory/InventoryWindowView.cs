@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TLN.Application.Assets;
+using TLN.Core.Logging;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.UI.Common;
@@ -121,7 +122,7 @@ namespace TLN.UI.Inventory
         {
             if (_itemRowTemplate == null)
             {
-                Debug.LogError("Inventory item row template is not assigned.", this);
+                TLNLogger.LogError("Inventory item row template is not assigned.", this);
                 return;
             }
 
@@ -130,7 +131,7 @@ namespace TLN.UI.Inventory
 
             if (rowRoot == null)
             {
-                Debug.LogError("Inventory item row root was not found in template.", this);
+                TLNLogger.LogError("Inventory item row root was not found in template.", this);
                 return;
             }
 

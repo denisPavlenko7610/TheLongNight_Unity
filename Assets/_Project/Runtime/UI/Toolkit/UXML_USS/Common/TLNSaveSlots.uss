@@ -1,0 +1,114 @@
+.save-slots-panel {
+    display: none;
+    width: 440px;
+    padding-left: 26px;
+    padding-right: 26px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    background-color: rgba(3, 8, 10, 0.66);
+    border-left-width: 3px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(230, 242, 244, 0.82);
+    border-right-color: rgba(220, 235, 238, 0.2);
+    border-top-color: rgba(220, 235, 238, 0.18);
+    border-bottom-color: rgba(220, 235, 238, 0.18);
+}
+
+.save-slots-list {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.save-slot-button {
+    height: 72px;
+    margin-bottom: 9px;
+    padding-left: 20px;
+    padding-right: 18px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    color: rgb(240, 247, 248);
+    background-color: rgba(3, 9, 12, 0.54);
+    border-left-width: 4px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 240, 242, 0.52);
+    border-right-color: rgba(226, 240, 242, 0.12);
+    border-top-color: rgba(226, 240, 242, 0.12);
+    border-bottom-color: rgba(226, 240, 242, 0.12);
+    font-size: 18px;
+    unity-font-style: bold;
+    unity-text-align: middle-left;
+    letter-spacing: 0;
+    white-space: normal;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.78);
+}
+
+.save-slot-button:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgba(226, 240, 242, 0.14);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgba(255, 255, 255, 0.3);
+    border-top-color: rgba(255, 255, 255, 0.25);
+    border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+
+.save-slot-button-empty {
+    color: rgba(232, 241, 243, 0.72);
+    border-left-color: rgba(226, 240, 242, 0.34);
+}
+
+.save-slot-button-occupied {
+    background-color: rgba(7, 18, 22, 0.72);
+    border-left-color: rgb(204, 232, 236);
+}
+
+.save-slot-button:disabled {
+    opacity: 0.42;
+    background-color: rgba(3, 8, 10, 0.32);
+    border-left-color: rgba(226, 240, 242, 0.18);
+}
+
+.save-overwrite-panel {
+    display: none;
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 10px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    background-color: rgba(8, 12, 16, 0.82);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgb(202, 220, 224);
+    border-right-color: rgba(202, 220, 224, 0.2);
+    border-top-color: rgba(202, 220, 224, 0.2);
+    border-bottom-color: rgba(202, 220, 224, 0.2);
+}
+
+.save-overwrite-label {
+    color: rgb(225, 230, 235);
+    font-size: 16px;
+    margin-bottom: 14px;
+}
+
+.save-overwrite-buttons {
+    flex-direction: row;
+}
+
+.save-overwrite-buttons Button {
+    width: 188px;
+    margin-right: 10px;
+}
+
+.save-slots-panel .tln-settings-back-button {
+    width: 100%;
+    margin-top: 6px;
+}

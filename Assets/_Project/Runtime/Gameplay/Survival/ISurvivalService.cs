@@ -15,6 +15,7 @@ namespace TLN.Gameplay.Survival
 		event Action Changed;
 
 		void Tick(float deltaTime);
+		void SetValues(float hunger, float thirst, float fatigue, float cold, float condition);
 
 		void ApplyConsumable(ConsumableItemDefinition consumable);
 		void ReduceCold(float amount);

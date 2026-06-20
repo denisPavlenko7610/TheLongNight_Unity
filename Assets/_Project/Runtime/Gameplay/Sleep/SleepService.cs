@@ -1,4 +1,5 @@
 ﻿using TLN.Application.Notifications;
+using TLN.Application.Saves;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 
@@ -10,13 +11,20 @@ namespace TLN.Gameplay.Sleep
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
 		private readonly IGameTimeService _gameTimeService;
+		private readonly IGameSaveService _gameSaveService;
 
-		public SleepService(SleepConfig config, ISurvivalService survivalService, INotificationService notificationService, IGameTimeService gameTimeService)
+		public SleepService(SleepConfig config,
+			ISurvivalService survivalService,
+			INotificationService notificationService,
+			IGameTimeService gameTimeService,
+			IGameSaveService gameSaveService
+			)
 		{
 			_config = config;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
 			_gameTimeService = gameTimeService;
+			_gameSaveService = gameSaveService;
 		}
 
 		public SleepResult Sleep(int hours)
@@ -36,6 +44,8 @@ namespace TLN.Gameplay.Sleep
 
 			string message = $"You slept for {hours} hour(s).";
 			_notificationService.Show(message);
+
+			_gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);
 
 			return SleepResult.Success(message);
 		}

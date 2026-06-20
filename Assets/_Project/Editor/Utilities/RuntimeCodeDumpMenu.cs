@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TLN.Core.Logging;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,14 +33,14 @@ namespace TLN.Editor.Utilities
 			string projectRoot = GetProjectRoot();
 			if (string.IsNullOrEmpty(projectRoot))
 			{
-				Debug.LogError("Cannot resolve Unity project root.");
+				TLNLogger.LogError("Cannot resolve Unity project root.");
 				return;
 			}
 
 			string sourcePath = Path.Combine(projectRoot, SourceFolder);
 			if (!Directory.Exists(sourcePath))
 			{
-				Debug.LogError($"Runtime source folder was not found: {SourceFolder}");
+				TLNLogger.LogError($"Runtime source folder was not found: {SourceFolder}");
 				return;
 			}
 

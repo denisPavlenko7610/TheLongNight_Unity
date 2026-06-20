@@ -53,6 +53,13 @@ namespace TLN.Gameplay.Time
 			AdvanceMinutes(wholeMinutes);
 		}
 
+		public void SetTotalMinutes(int totalMinutes)
+		{
+			TotalMinutes = Math.Max(0, totalMinutes);
+			_accumulatedGameMinutes = 0f;
+			Changed?.Invoke();
+		}
+
 		public void AdvanceHours(int hours)
 		{
 			if (hours <= 0) {

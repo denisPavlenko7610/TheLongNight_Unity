@@ -1,13 +1,16 @@
 ﻿using System;
+using Newtonsoft.Json;
 using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
+using TLN.Gameplay.Saves;
 using TLN.Gameplay.Time;
 using UnityEngine;
 using VContainer;
 
 namespace TLN.Gameplay.Campfire
 {
-    public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider
+    [RequireComponent(typeof(PersistentWorldEntity))]
+    public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider, IWorldSaveable
     {
         [Header("Interaction")]
         [SerializeField] private string _interactionText = "Use campfire";
@@ -103,7 +106,7 @@ namespace TLN.Gameplay.Campfire
         {
             if (_campfireWindow == null)
             {
-                TLNLogger.Warning("Cannot open campfire window because CampfireActor was not constructed.", this);
+                TLNLogger.LogWarning("Cannot open campfire window because CampfireActor was not constructed.", this);
                 return;
             }
 
@@ -286,6 +289,63 @@ namespace TLN.Gameplay.Campfire
                     _fireLoopAudio.Stop();
                 }
             }
+        }
+
+        public string SaveTypeId => "campfire";
+
+        public string CaptureStateJson()
+        {
+            CampfireSaveData data = new CampfireSaveData
+            {
+                state = _state.ToString(),
+                remainingBurnMinutes = _remainingBurnMinutes,
+                lastKnownTotalMinutes = _lastKnownTotalMinutes
+            };
+
+            return JsonConvert.SerializeObject(data);
+        }
+
+        public void RestoreStateJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return;
+            }
+
+            CampfireSaveData data = JsonConvert.DeserializeObject<CampfireSaveData>(json);
+
+            if (data == null)
+            {
+                return;
+            }
+
+            _remainingBurnMinutes = Mathf.Clamp(
+                data.remainingBurnMinutes,
+                0,
+                _maxBurnMinutes);
+
+            _lastKnownTotalMinutes = data.lastKnownTotalMinutes;
+
+            if (!System.Enum.TryParse(
+                data.state,
+                out CampfireState restoredState))
+            {
+                restoredState = _remainingBurnMinutes > 0
+                    ? CampfireState.Unlit
+                    : CampfireState.BurnedOut;
+            }
+
+            _state = restoredState;
+
+            ApplyVisualState();
+            Changed?.Invoke();
+        }
+
+        private sealed class CampfireSaveData
+        {
+            public string state;
+            public int remainingBurnMinutes;
+            public int lastKnownTotalMinutes;
         }
     }
 }

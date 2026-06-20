@@ -1,5 +1,6 @@
 ﻿using TLN.Application.Input;
 using TLN.Application.Notifications;
+using TLN.Application.Saves;
 using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
@@ -27,13 +28,19 @@ namespace TLN.UI.Campfire
         private IInventoryService _inventoryService;
         private IInputModeService _inputModeService;
         private INotificationService _notificationService;
+        private IGameSaveService _gameSaveService;
 
         [Inject]
-        public void Construct(IInventoryService inventoryService, IInputModeService inputModeService, INotificationService notificationService)
+        public void Construct(IInventoryService inventoryService,
+            IInputModeService inputModeService,
+            INotificationService notificationService,
+            IGameSaveService gameSaveService
+            )
         {
             _inventoryService = inventoryService;
             _inputModeService = inputModeService;
             _notificationService = notificationService;
+            _gameSaveService = gameSaveService;
 
             Hide();
         }
@@ -172,6 +179,9 @@ namespace TLN.UI.Campfire
             }
 
             _notificationService?.Show("Fire started.");
+
+            _gameSaveService?.SaveCheckpoint(SaveTrigger.CampfireIgnited);
+
             Refresh();
         }
 

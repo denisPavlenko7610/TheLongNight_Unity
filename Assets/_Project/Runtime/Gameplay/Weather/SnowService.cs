@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using TLN.Core.Logging;
 using TLN.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -93,7 +94,7 @@ namespace TLN.Gameplay.Weather
 			Shader shader = Shader.Find("TLN/VFX/SnowParticle");
 			if (!_computeShader || !shader)
 			{
-				Debug.LogError("[Snow] Shaders not found");
+				TLNLogger.LogError("[Snow] Shaders not found");
 				return;
 			}
 

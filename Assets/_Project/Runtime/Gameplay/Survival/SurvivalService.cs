@@ -44,6 +44,23 @@ namespace TLN.Gameplay.Survival
             Changed?.Invoke();
         }
 
+        public void SetValues(float hunger, float thirst, float fatigue, float cold, float condition)
+        {
+            Hunger = SetStatValue(Hunger, hunger);
+            Thirst = SetStatValue(Thirst, thirst);
+            Fatigue = SetStatValue(Fatigue, fatigue);
+            Cold = SetStatValue(Cold, cold);
+            Condition = SetStatValue(Condition, condition);
+
+            Changed?.Invoke();
+        }
+
+        private static SurvivalStat SetStatValue(SurvivalStat stat, float value)
+        {
+            stat.Set(value);
+            return stat;
+        }
+
         private float ConvertRealDeltaTimeToGameHours(float deltaTime)
         {
             float realMinutes = deltaTime / 60f;

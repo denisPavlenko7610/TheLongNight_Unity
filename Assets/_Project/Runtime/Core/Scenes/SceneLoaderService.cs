@@ -1,5 +1,6 @@
 ﻿using TLN.Application.GameStates;
 using TLN.Core.GameStates;
+using TLN.Core.Logging;
 using TLN.Core.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,7 +23,7 @@ namespace TLN.Application.Scenes
 		{
 			if (_isLoading)
 			{
-				Debug.LogWarning("Cannot load MainMenu because another scene is already loading.");
+				TLNLogger.LogWarning("Cannot load MainMenu because another scene is already loading.");
 				return;
 			}
 
@@ -35,7 +36,7 @@ namespace TLN.Application.Scenes
 		{
 			if (_isLoading)
 			{
-				Debug.LogWarning("Cannot load World because another scene is already loading.");
+				TLNLogger.LogWarning("Cannot load World because another scene is already loading.");
 				return;
 			}
 

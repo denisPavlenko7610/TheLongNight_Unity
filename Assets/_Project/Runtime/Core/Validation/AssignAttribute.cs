@@ -2,8 +2,6 @@
 
 namespace Assign
 {
-	using UnityEngine;
-
 	public class AssignAttribute : PropertyAttribute
 	{
 		public readonly Mode mode;
@@ -13,5 +11,4 @@ namespace Assign
 			this.mode = mode;
 		}
 	}
-
 }
