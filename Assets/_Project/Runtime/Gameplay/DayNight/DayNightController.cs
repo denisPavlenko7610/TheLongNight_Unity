@@ -18,6 +18,7 @@ namespace TLN.Gameplay.DayNight
 		private IGameStateMachine _gameStateMachine;
 
 		private PhysicallyBasedSky _physicallyBasedSky;
+		private VisualEnvironment _visualEnvironment;
 		private Fog _fog;
 		private Exposure _exposure;
 		private ColorAdjustments _colorAdjustments;
@@ -53,6 +54,12 @@ namespace TLN.Gameplay.DayNight
 			{
 				VolumeProfile profile = _skyVolume.profile;
 
+				if (!profile.TryGet(out _visualEnvironment))
+				{
+					_visualEnvironment = profile.Add<VisualEnvironment>(true);
+				}
+				ConfigureVisualEnvironment();
+
 				if (profile.TryGet(out PhysicallyBasedSky sky))
 				{
 					_physicallyBasedSky = sky;
@@ -71,6 +78,19 @@ namespace TLN.Gameplay.DayNight
 			_isInitialized = true;
 		}
 
+		private void ConfigureVisualEnvironment()
+		{
+			if (_visualEnvironment == null)
+				return;
+
+			_visualEnvironment.skyType.overrideState = true;
+			_visualEnvironment.skyType.value = SkySettings.GetUniqueID<PhysicallyBasedSky>();
+			_visualEnvironment.cloudType.overrideState = true;
+			_visualEnvironment.cloudType.value = 0;
+			_visualEnvironment.skyAmbientMode.overrideState = true;
+			_visualEnvironment.skyAmbientMode.value = SkyAmbientMode.Dynamic;
+		}
+
 		private void Update()
 		{
 			if (!_isInitialized)
@@ -82,6 +102,7 @@ namespace TLN.Gameplay.DayNight
 			if (_dayNightService == null)
 				return;
 
+			_dayNightService.Refresh();
 			ApplyDayNightSettings();
 		}
 
@@ -89,7 +110,7 @@ namespace TLN.Gameplay.DayNight
 		{
 			PhaseSettings currentPhase = GetCurrentPhaseSettings();
 			PhaseSettings nextPhase = GetNextPhaseSettings();
-			float t = _dayNightService.PhaseProgress01;
+			float t = _dayNightService.PhaseBlend01;
 
 			Color sunColor = Color.Lerp(currentPhase.SunColor, nextPhase.SunColor, t);
 			float sunIntensity = Mathf.Lerp(currentPhase.SunIntensity, nextPhase.SunIntensity, t);
@@ -135,11 +156,22 @@ namespace TLN.Gameplay.DayNight
 			if (_physicallyBasedSky == null)
 				return;
 
+			_physicallyBasedSky.zenithTint.overrideState = true;
 			_physicallyBasedSky.zenithTint.value = skyTint;
+			_physicallyBasedSky.groundTint.overrideState = true;
 			_physicallyBasedSky.groundTint.value = groundTint;
 
 			float starVisibility = _dayNightService.StarVisibility;
-			_physicallyBasedSky.spaceEmissionMultiplier.value = Mathf.Lerp(0f, 3f, starVisibility);
+			float nightAmount = Mathf.SmoothStep(0f, 1f, starVisibility);
+
+			_physicallyBasedSky.skyIntensityMode.overrideState = true;
+			_physicallyBasedSky.skyIntensityMode.value = SkyIntensityMode.Exposure;
+			_physicallyBasedSky.exposure.overrideState = true;
+			_physicallyBasedSky.exposure.value = Mathf.Lerp(0f, -2.4f, nightAmount);
+			_physicallyBasedSky.spaceEmissionMultiplier.overrideState = true;
+			_physicallyBasedSky.spaceEmissionMultiplier.value = Mathf.Lerp(0f, 10f, nightAmount);
+			_physicallyBasedSky.colorSaturation.overrideState = true;
+			_physicallyBasedSky.colorSaturation.value = Mathf.Lerp(1f, 0.85f, nightAmount);
 		}
 
 		private void ApplyFog(Color color, float density)
@@ -147,9 +179,13 @@ namespace TLN.Gameplay.DayNight
 			if (_fog == null)
 				return;
 
+			_fog.color.overrideState = true;
 			_fog.color.value = color;
+			_fog.meanFreePath.overrideState = true;
 			_fog.meanFreePath.value = density > 0.000001f ? 1f / density : 10000f;
+			_fog.maximumHeight.overrideState = true;
 			_fog.maximumHeight.value = Mathf.Lerp(200f, 50f, density * 4000f);
+			_fog.enabled.overrideState = true;
 			_fog.enabled.value = density > 0.000001f;
 		}
 
@@ -158,8 +194,10 @@ namespace TLN.Gameplay.DayNight
 			if (_exposure == null)
 				return;
 
+			_exposure.mode.overrideState = true;
 			_exposure.mode.value = ExposureMode.Fixed;
-			_exposure.fixedExposure.value = 8f - exposureValue;
+			_exposure.fixedExposure.overrideState = true;
+			_exposure.fixedExposure.value = exposureValue;
 		}
 
 		private void ApplyColorFilter(Color colorFilter)
@@ -170,6 +208,7 @@ namespace TLN.Gameplay.DayNight
 			if (colorFilter == Color.clear)
 				colorFilter = Color.white;
 
+			_colorAdjustments.colorFilter.overrideState = true;
 			_colorAdjustments.colorFilter.value = colorFilter;
 		}
 

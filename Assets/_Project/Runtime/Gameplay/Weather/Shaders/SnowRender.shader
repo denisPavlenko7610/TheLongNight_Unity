@@ -7,6 +7,7 @@ Shader "TLN/VFX/SnowParticle"
 		_SparkleIntensity("Sparkle", Range(0, 1)) = 0.3
 		_SparkleFrequency("Sparkle Frequency", Range(1, 10)) = 3
 		_DepthFade("Depth Fade", Range(0, 1)) = 0.4
+		_FadeDistance("Fade Distance", Range(10, 120)) = 45
 	}
 
 	SubShader
@@ -34,7 +35,7 @@ Shader "TLN/VFX/SnowParticle"
 			StructuredBuffer<Particle> _SnowParticles;
 
 			float4 _Color;
-			float _Softness, _SparkleIntensity, _SparkleFrequency, _DepthFade, _TimeGlobal;
+			float _Softness, _SparkleIntensity, _SparkleFrequency, _DepthFade, _FadeDistance, _TimeGlobal;
 
 			float Random(float s) { return frac(sin(s) * 43758.5453); }
 			float RandomRange(float s, float minVal, float maxVal) { return minVal + Random(s) * (maxVal - minVal); }
@@ -82,25 +83,25 @@ Shader "TLN/VFX/SnowParticle"
 				if (id < 0xFFFFFFFF) particle = _SnowParticles[id];
 				else particle = (Particle)0;
 
-				float3 cameraPos = GetAbsolutePositionWS(float3(0, 0, 0));
-				float3 toCamera = cameraPos - particle.position;
-				float distanceSqr = dot(toCamera, toCamera);
+				float3 particleRWS = GetCameraRelativePositionWS(particle.position);
+				float3 toCamera = _WorldSpaceCameraPos.xyz - particle.position;
+				float distanceSqr = max(dot(toCamera, toCamera), 0.0001);
 
-				float3 look = normalize(toCamera);
-				float3 up = float3(0, 1, 0);
-				float3 right = normalize(cross(up, look));
-				up = cross(look, right);
+				float4x4 viewMatrix = GetWorldToViewMatrix();
+				float3 right = normalize(viewMatrix[0].xyz);
+				float3 up = normalize(viewMatrix[1].xyz);
 
 				float halfSize = particle.size * 0.5;
-				float3 worldPos = particle.position + right * input.vertex.x * halfSize + up * input.vertex.y * halfSize;
+				float3 worldPos = particleRWS + right * input.vertex.x * halfSize + up * input.vertex.y * halfSize;
 
 				output.positionCS = TransformWorldToHClip(worldPos);
 				output.uv = input.uv;
 				output.seed = particle.seed;
 
-				float distFade = saturate(1.0 - distanceSqr / 2500.0);
+				float distanceToCamera = sqrt(distanceSqr);
+				float distFade = saturate(1.0 - distanceToCamera / max(_FadeDistance, 1.0));
 				output.alpha = saturate(distFade * (0.6 + Random(particle.seed) * 0.4));
-				output.depth = length(toCamera);
+				output.depth = distanceToCamera;
 
 				return output;
 			}
@@ -135,7 +136,7 @@ Shader "TLN/VFX/SnowParticle"
 				float blueShift = Random(input.seed + 2) * 0.12;
 				color += float3(-blueShift * 0.25, -blueShift * 0.1, blueShift);
 
-				float depthFade = saturate(1.0 - input.depth / 80.0);
+				float depthFade = saturate(1.0 - input.depth / max(_FadeDistance * 1.6, 1.0));
 				alpha *= lerp(1.0, depthFade, _DepthFade);
 
 				return float4(color, saturate(alpha));

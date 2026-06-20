@@ -243,8 +243,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 7
+  m_Color: {r: 0.78, g: 0.88, b: 1, a: 1}
+  m_Intensity: 2865.1304
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 0
@@ -287,7 +287,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 1
-  m_ColorTemperature: 20000
+  m_ColorTemperature: 9000
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -331,7 +331,7 @@ MonoBehaviour:
   m_EnableSpotReflector: 0
   m_LightUnit: 2
   m_LuxAtDistance: 1
-  m_Intensity: 8000
+  m_Intensity: 6500
   m_InnerSpotPercent: -1
   m_ShapeWidth: -1
   m_ShapeHeight: -1
@@ -1098,10 +1098,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.StarFieldGenerator
   _cubeFaceResolution: 512
-  _starCount: 2800
-  _minStarBrightness: 0.3
-  _maxStarBrightness: 1
-  _starSizeSoftness: 0.6
+  _starCount: 4200
+  _minStarBrightness: 0.35
+  _maxStarBrightness: 4
+  _starSizeSoftness: 0.65
+  _seed: 42
 --- !u!114 &565384057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1855,7 +1856,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Weather.SnowService
   _config: {fileID: 11400000, guid: 0e5bc1eb19f7b3440966a202f30cd4be, type: 2}
   _followTarget: {fileID: 0}
-  _intensity: 0.5
+  _autoFollowPlayerCamera: 1
+  _intensity: 0.65
   _windDirection: {x: 0.5, y: 0, z: 0.3}
   _windStrength: 0.5
   _active: 1

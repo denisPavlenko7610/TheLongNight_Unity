@@ -15,32 +15,32 @@ namespace TLN.Gameplay.DayNight
 		[SerializeField] private PhaseSettings _dawn = new PhaseSettings
 		{
 			StartHour = 4f,
-			SunColor = new Color(1f, 0.75f, 0.55f),
-			SunIntensity = 8000f,
+			SunColor = new Color(0.78f, 0.86f, 1f),
+			SunIntensity = 2500f,
 			SunShadowStrength = 0.5f,
-			SkyTint = new Color(0.55f, 0.55f, 0.7f),
-			GroundTint = new Color(0.7f, 0.7f, 0.8f),
-			FogColor = new Color(0.8f, 0.75f, 0.7f),
+			SkyTint = new Color(0.32f, 0.42f, 0.66f),
+			GroundTint = new Color(0.58f, 0.68f, 0.82f),
+			FogColor = new Color(0.5f, 0.62f, 0.78f),
 			FogDensity = 0.00012f,
-			Exposure = 0f,
-			ColorFilter = Color.white,
+			Exposure = 8.2f,
+			ColorFilter = new Color(0.86f, 0.93f, 1f),
 			TemperatureModifier = -1.5f,
-			StarVisibility = 0.3f
+			StarVisibility = 0.45f
 		};
 
 		[Header("Morning (7:00-11:00)")]
 		[SerializeField] private PhaseSettings _morning = new PhaseSettings
 		{
 			StartHour = 7f,
-			SunColor = new Color(1f, 0.92f, 0.85f),
-			SunIntensity = 60000f,
+			SunColor = new Color(0.82f, 0.9f, 1f),
+			SunIntensity = 5500f,
 			SunShadowStrength = 0.75f,
-			SkyTint = new Color(0.5f, 0.55f, 0.75f),
-			GroundTint = new Color(0.92f, 0.92f, 0.95f),
-			FogColor = new Color(0.65f, 0.68f, 0.78f),
+			SkyTint = new Color(0.42f, 0.56f, 0.82f),
+			GroundTint = new Color(0.78f, 0.86f, 0.96f),
+			FogColor = new Color(0.55f, 0.68f, 0.86f),
 			FogDensity = 0.00006f,
-			Exposure = 0f,
-			ColorFilter = Color.white,
+			Exposure = 8.1f,
+			ColorFilter = new Color(0.9f, 0.96f, 1f),
 			TemperatureModifier = -0.5f,
 			StarVisibility = 0f
 		};
@@ -49,15 +49,15 @@ namespace TLN.Gameplay.DayNight
 		[SerializeField] private PhaseSettings _day = new PhaseSettings
 		{
 			StartHour = 11f,
-			SunColor = new Color(0.95f, 0.95f, 1f),
-			SunIntensity = 130000f,
+			SunColor = new Color(0.78f, 0.88f, 1f),
+			SunIntensity = 8000f,
 			SunShadowStrength = 0.7f,
-			SkyTint = new Color(0.45f, 0.5f, 0.7f),
-			GroundTint = new Color(0.95f, 0.95f, 1f),
-			FogColor = new Color(0.6f, 0.63f, 0.75f),
+			SkyTint = new Color(0.36f, 0.5f, 0.78f),
+			GroundTint = new Color(0.82f, 0.9f, 1f),
+			FogColor = new Color(0.5f, 0.64f, 0.84f),
 			FogDensity = 0.00004f,
-			Exposure = 0f,
-			ColorFilter = Color.white,
+			Exposure = 8.6f,
+			ColorFilter = new Color(0.9f, 0.96f, 1f),
 			TemperatureModifier = 0f,
 			StarVisibility = 0f
 		};
@@ -66,15 +66,15 @@ namespace TLN.Gameplay.DayNight
 		[SerializeField] private PhaseSettings _afternoon = new PhaseSettings
 		{
 			StartHour = 16f,
-			SunColor = new Color(1f, 0.88f, 0.8f),
-			SunIntensity = 60000f,
+			SunColor = new Color(0.74f, 0.84f, 1f),
+			SunIntensity = 5500f,
 			SunShadowStrength = 0.75f,
-			SkyTint = new Color(0.5f, 0.55f, 0.75f),
-			GroundTint = new Color(0.9f, 0.9f, 0.95f),
-			FogColor = new Color(0.65f, 0.65f, 0.72f),
+			SkyTint = new Color(0.38f, 0.5f, 0.76f),
+			GroundTint = new Color(0.78f, 0.86f, 0.97f),
+			FogColor = new Color(0.52f, 0.62f, 0.8f),
 			FogDensity = 0.00006f,
-			Exposure = 0f,
-			ColorFilter = Color.white,
+			Exposure = 8.2f,
+			ColorFilter = new Color(0.88f, 0.94f, 1f),
 			TemperatureModifier = -0.3f,
 			StarVisibility = 0f
 		};
@@ -83,32 +83,32 @@ namespace TLN.Gameplay.DayNight
 		[SerializeField] private PhaseSettings _dusk = new PhaseSettings
 		{
 			StartHour = 19f,
-			SunColor = new Color(1f, 0.65f, 0.4f),
-			SunIntensity = 8000f,
+			SunColor = new Color(0.58f, 0.66f, 0.95f),
+			SunIntensity = 2800f,
 			SunShadowStrength = 0.3f,
-			SkyTint = new Color(0.55f, 0.45f, 0.55f),
-			GroundTint = new Color(0.6f, 0.55f, 0.65f),
-			FogColor = new Color(0.65f, 0.55f, 0.6f),
+			SkyTint = new Color(0.24f, 0.3f, 0.54f),
+			GroundTint = new Color(0.36f, 0.42f, 0.62f),
+			FogColor = new Color(0.28f, 0.34f, 0.56f),
 			FogDensity = 0.00015f,
-			Exposure = 0f,
-			ColorFilter = Color.white,
+			Exposure = 8f,
+			ColorFilter = new Color(0.78f, 0.86f, 1f),
 			TemperatureModifier = -2f,
-			StarVisibility = 0.7f
+			StarVisibility = 0.45f
 		};
 
 		[Header("Night (22:00-4:00)")]
 		[SerializeField] private PhaseSettings _night = new PhaseSettings
 		{
 			StartHour = 22f,
-			SunColor = new Color(0.2f, 0.22f, 0.5f),
-			SunIntensity = 300f,
-			SunShadowStrength = 0.05f,
-			SkyTint = new Color(0.06f, 0.08f, 0.2f),
-			GroundTint = new Color(0.15f, 0.17f, 0.3f),
-			FogColor = new Color(0.08f, 0.1f, 0.25f),
-			FogDensity = 0.0002f,
-			Exposure = 1.5f,
-			ColorFilter = Color.white,
+			SunColor = new Color(0.2f, 0.28f, 0.55f),
+			SunIntensity = 0.35f,
+			SunShadowStrength = 0f,
+			SkyTint = new Color(0.015f, 0.025f, 0.075f),
+			GroundTint = new Color(0.018f, 0.025f, 0.055f),
+			FogColor = new Color(0.018f, 0.026f, 0.06f),
+			FogDensity = 0.000035f,
+			Exposure = 6.8f,
+			ColorFilter = new Color(0.72f, 0.82f, 1f),
 			TemperatureModifier = -3.5f,
 			StarVisibility = 1f
 		};
@@ -226,8 +226,9 @@ namespace TLN.Gameplay.DayNight
 		[Range(0f, 0.001f)]
 		public float FogDensity = 0.0001f;
 
-		[Range(-5f, 5f)]
-		public float Exposure = 0f;
+		[Tooltip("HDRP fixed camera exposure in EV100. Higher values darken the camera exposure.")]
+		[Range(0f, 14f)]
+		public float Exposure = 8f;
 
 		[ColorUsage(true, true)]
 		public Color ColorFilter = Color.white;

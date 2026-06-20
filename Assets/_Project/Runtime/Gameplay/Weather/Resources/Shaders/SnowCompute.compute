@@ -18,8 +18,22 @@ float _Turbulence;
 float _DeltaTime;
 uint _ParticleCount;
 float _Time;
+float _SeedOffset;
+float _MinSize;
+float _MaxSize;
 
 float Hash(float s) { return frac(sin(s) * 43758.5453); }
+
+float SnowflakeSizeT(float seed)
+{
+	float sizeT = pow(Hash(seed + 0.7), 1.35);
+	float largeFlake = step(0.92, Hash(seed + 1.17));
+	float tinyFlake = 1.0 - step(0.18, Hash(seed + 1.53));
+
+	sizeT = lerp(sizeT, lerp(sizeT, 1.0, 0.65), largeFlake);
+	sizeT = lerp(sizeT, sizeT * 0.35, tinyFlake);
+	return saturate(sizeT);
+}
 
 float Turbulence3D(float3 pos, float seed, float strength)
 {
@@ -34,23 +48,28 @@ float Turbulence3D(float3 pos, float seed, float strength)
 	return (n / 2.09 - 0.5) * 2.0 * strength;
 }
 
-void RespawnParticle(inout SnowParticle p, float seed)
+void RespawnParticle(inout SnowParticle p, float seed, bool topSpawn)
 {
 	float3 he = _VolumeHalfExtents;
 	float3 ct = _VolumeCenter;
 
+	float verticalPosition = topSpawn
+		? he.y - Hash(seed + 0.13) * min(4.0, he.y * 0.25)
+		: (Hash(seed + 0.13) - 0.5) * he.y * 2.0;
+
 	p.position = ct + float3(
 		(Hash(seed) - 0.5) * he.x * 2.0,
-		(Hash(seed + 0.13) - 0.5) * he.y * 2.0,
+		verticalPosition,
 		(Hash(seed + 0.27) - 0.5) * he.z * 2.0);
 
 	p.velocity = float3(
-		Hash(seed + 0.4) * 0.8 - 0.4,
-		-Hash(seed + 0.5) * 2.2 - 0.3,
-		Hash(seed + 0.6) * 0.8 - 0.4);
+		Hash(seed + 0.4) * 0.7 - 0.35,
+		-Hash(seed + 0.5) * 1.8 - 0.45,
+		Hash(seed + 0.6) * 0.7 - 0.35);
 
-	p.size = 0.01 + Hash(seed + 0.7) * 0.06;
-	p.seed = seed;
+	float sizeT = SnowflakeSizeT(seed);
+	p.size = lerp(_MinSize, _MaxSize, sizeT);
+	p.seed = seed + _SeedOffset;
 }
 
 [numthreads(64, 1, 1)]
@@ -74,8 +93,17 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 	p.position += p.velocity * _DeltaTime;
 
 	float3 rel = p.position - _VolumeCenter;
-	if (rel.y < -_VolumeHalfExtents.y)
-		RespawnParticle(p, Hash(p.seed + _Time * 73.7 + index * 0.13));
+	bool outsideVolume =
+		abs(rel.x) > _VolumeHalfExtents.x ||
+		abs(rel.z) > _VolumeHalfExtents.z ||
+		rel.y < -_VolumeHalfExtents.y ||
+		rel.y > _VolumeHalfExtents.y;
+
+	if (outsideVolume)
+	{
+		float seed = p.seed + _Time * 73.7 + index * 0.137 + _SeedOffset;
+		RespawnParticle(p, seed, true);
+	}
 
 	_SnowParticles[index] = p;
 }

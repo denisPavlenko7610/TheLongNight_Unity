@@ -6,6 +6,7 @@ namespace TLN.Gameplay.Time
 	public interface IGameTimeService : IGameService
 	{
 		int TotalMinutes { get; }
+		float TotalMinutesExact { get; }
 		GameTime CurrentTime { get; }
 
 		event Action Changed;

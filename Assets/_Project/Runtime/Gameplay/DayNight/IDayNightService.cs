@@ -10,6 +10,7 @@ namespace TLN.Gameplay.DayNight
 		float DayProgress01 { get; }
 
 		float PhaseProgress01 { get; }
+		float PhaseBlend01 { get; }
 
 		float SunAzimuth { get; }
 		float SunElevation { get; }
@@ -18,5 +19,7 @@ namespace TLN.Gameplay.DayNight
 		float TemperatureModifier { get; }
 
 		event Action PhaseChanged;
+
+		void Refresh();
 	}
 }

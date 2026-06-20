@@ -7,10 +7,11 @@ namespace TLN.Gameplay.DayNight
 	public sealed class StarFieldGenerator : MonoBehaviour
 	{
 		[SerializeField] private int _cubeFaceResolution = 512;
-		[SerializeField] private int _starCount = 2800;
-		[SerializeField] private float _minStarBrightness = 0.3f;
-		[SerializeField] private float _maxStarBrightness = 1f;
-		[SerializeField] private float _starSizeSoftness = 0.6f;
+		[SerializeField] private int _starCount = 4200;
+		[SerializeField] private float _minStarBrightness = 0.35f;
+		[SerializeField] private float _maxStarBrightness = 4f;
+		[SerializeField, Range(0f, 1f)] private float _starSizeSoftness = 0.65f;
+		[SerializeField] private int _seed = 42;
 
 		private Cubemap _starCubemap;
 		private bool _isGenerated;
@@ -44,6 +45,7 @@ namespace TLN.Gameplay.DayNight
 			if (sky == null)
 				return;
 
+			sky.spaceEmissionTexture.overrideState = true;
 			sky.spaceEmissionTexture.value = StarCubemap;
 		}
 
@@ -68,17 +70,19 @@ namespace TLN.Gameplay.DayNight
 		private StarData[] GenerateStarData()
 		{
 			StarData[] stars = new StarData[_starCount];
-			System.Random rng = new System.Random(42);
+			System.Random rng = new System.Random(_seed);
 
 			for (int i = 0; i < _starCount; i++)
 			{
 				Vector3 dir = RandomOnSphere(rng);
+				float brightnessRoll = Mathf.Pow((float)rng.NextDouble(), 2.4f);
+				float sizeRoll = Mathf.Pow((float)rng.NextDouble(), 3f);
 
 				stars[i] = new StarData
 				{
 					direction = dir,
-					brightness = Mathf.Lerp(_minStarBrightness, _maxStarBrightness, (float)rng.NextDouble()),
-					starSize = Mathf.Lerp(0.4f, 1f, (float)rng.NextDouble()),
+					brightness = Mathf.Lerp(_minStarBrightness, _maxStarBrightness, brightnessRoll),
+					starSize = Mathf.Lerp(0.35f, 1.6f, sizeRoll),
 					color = GenerateStarColor(rng)
 				};
 			}
@@ -116,12 +120,11 @@ namespace TLN.Gameplay.DayNight
 		private void RenderStarsToCubemap(StarData[] stars)
 		{
 			int res = _cubeFaceResolution;
-			Color[] clearColors = new Color[res * res];
+			Color[] pixels = new Color[res * res];
 
 			for (int face = 0; face < 6; face++)
 			{
-				System.Array.Fill(clearColors, Color.clear);
-				_starCubemap.SetPixels(clearColors, (CubemapFace)face);
+				System.Array.Clear(pixels, 0, pixels.Length);
 
 				for (int i = 0; i < stars.Length; i++)
 				{
@@ -134,7 +137,7 @@ namespace TLN.Gameplay.DayNight
 					if (weight <= 0.001f)
 						continue;
 
-					float pixelStarRadius = stars[i].starSize * weight * (res * 0.004f);
+					float pixelStarRadius = stars[i].starSize * weight * (res * 0.0035f);
 					int radius = Mathf.Max(1, Mathf.RoundToInt(pixelStarRadius));
 					float falloffPow = Mathf.Lerp(2.5f, 1.5f, _starSizeSoftness);
 
@@ -160,17 +163,20 @@ namespace TLN.Gameplay.DayNight
 							float falloff = 1f - Mathf.Pow(normalizedDist, falloffPow);
 							float contribution = stars[i].brightness * falloff * weight;
 
-							Color existing = _starCubemap.GetPixel((CubemapFace)face, px, py);
-							Color blended = Color.Lerp(existing, stars[i].color, contribution);
+							int pixelIndex = py * res + px;
+							Color existing = pixels[pixelIndex];
+							Color blended = existing + stars[i].color * contribution;
 
-							float maxComponent = Mathf.Max(existing.r, existing.g, existing.b);
-							float newMax = Mathf.Max(blended.r, blended.g, blended.b);
-
-							if (newMax > maxComponent)
-								_starCubemap.SetPixel((CubemapFace)face, px, py, blended);
+							pixels[pixelIndex] = new Color(
+								Mathf.Min(blended.r, _maxStarBrightness),
+								Mathf.Min(blended.g, _maxStarBrightness),
+								Mathf.Min(blended.b, _maxStarBrightness),
+								1f);
 						}
 					}
 				}
+
+				_starCubemap.SetPixels(pixels, (CubemapFace)face);
 			}
 		}
 
@@ -187,33 +193,33 @@ namespace TLN.Gameplay.DayNight
 			switch (faceIndex)
 			{
 				case 0:
+					if (dir.x <= 0f || absX < absY || absX < absZ) return false;
 					ma = absX;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(-dir.z / ma, -dir.y / ma);
 					break;
 				case 1:
+					if (dir.x >= 0f || absX < absY || absX < absZ) return false;
 					ma = absX;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(dir.z / ma, -dir.y / ma);
 					break;
 				case 2:
+					if (dir.y <= 0f || absY < absX || absY < absZ) return false;
 					ma = absY;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(dir.x / ma, dir.z / ma);
 					break;
 				case 3:
+					if (dir.y >= 0f || absY < absX || absY < absZ) return false;
 					ma = absY;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(dir.x / ma, -dir.z / ma);
 					break;
 				case 4:
+					if (dir.z <= 0f || absZ < absX || absZ < absY) return false;
 					ma = absZ;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(dir.x / ma, -dir.y / ma);
 					break;
 				case 5:
+					if (dir.z >= 0f || absZ < absX || absZ < absY) return false;
 					ma = absZ;
-					if (Mathf.Approximately(ma, 0f)) return false;
 					uv = new Vector2(-dir.x / ma, -dir.y / ma);
 					break;
 				default:

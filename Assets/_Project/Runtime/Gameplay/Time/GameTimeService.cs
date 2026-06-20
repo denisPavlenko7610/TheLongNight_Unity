@@ -13,6 +13,7 @@ namespace TLN.Gameplay.Time
 		private float _accumulatedGameMinutes;
 
 		public int TotalMinutes { get; private set; }
+		public float TotalMinutesExact => TotalMinutes + _accumulatedGameMinutes;
 		public GameTime CurrentTime => ConvertTotalMinutesToGameTime(TotalMinutes);
 
 		public event Action Changed;

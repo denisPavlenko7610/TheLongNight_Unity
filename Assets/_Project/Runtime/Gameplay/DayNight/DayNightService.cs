@@ -14,6 +14,7 @@ namespace TLN.Gameplay.DayNight
 
 		public float DayProgress01 { get; private set; }
 		public float PhaseProgress01 { get; private set; }
+		public float PhaseBlend01 { get; private set; }
 
 		public float SunAzimuth { get; private set; }
 		public float SunElevation { get; private set; }
@@ -30,10 +31,15 @@ namespace TLN.Gameplay.DayNight
 
 			_gameTimeService.Changed += OnGameTimeChanged;
 
-			RecalculateFromCurrentTime();
+			Refresh();
 		}
 
 		private void OnGameTimeChanged()
+		{
+			Refresh();
+		}
+
+		public void Refresh()
 		{
 			DayNightPhase previous = CurrentPhase;
 			RecalculateFromCurrentTime();
@@ -47,14 +53,12 @@ namespace TLN.Gameplay.DayNight
 
 		private void RecalculateFromCurrentTime()
 		{
-			GameTime time = _gameTimeService.CurrentTime;
-
-			float hour = time.Hour + time.Minute / 60f;
-			float totalHours = hour;
+			float minutesInDay = Mathf.Repeat(_gameTimeService.TotalMinutesExact, 24f * 60f);
+			float hour = minutesInDay / 60f;
 
 			CurrentPhase = _config.GetPhaseForHour(hour);
 
-			DayProgress01 = totalHours / 24f;
+			DayProgress01 = minutesInDay / (24f * 60f);
 
 			float phaseStart = _config.GetPhaseStartHour(CurrentPhase);
 			float phaseEnd = _config.GetPhaseEndHour(CurrentPhase);
@@ -69,14 +73,22 @@ namespace TLN.Gameplay.DayNight
 			PhaseProgress01 = Mathf.Approximately(phaseEnd, phaseStart)
 				? 0f
 				: Mathf.Clamp01((normalizedHour - phaseStart) / (phaseEnd - phaseStart));
+			PhaseBlend01 = CalculatePhaseBlend(PhaseProgress01);
 
 			CalculateSunPosition(hour);
 
 			PhaseSettings currentSettings = _config.GetPhaseSettings(CurrentPhase);
 			PhaseSettings nextSettings = _config.GetPhaseSettings(_config.GetNextPhase(CurrentPhase));
 
-			StarVisibility = Mathf.Lerp(currentSettings.StarVisibility, nextSettings.StarVisibility, PhaseProgress01);
-			TemperatureModifier = Mathf.Lerp(currentSettings.TemperatureModifier, nextSettings.TemperatureModifier, PhaseProgress01);
+			StarVisibility = Mathf.Lerp(currentSettings.StarVisibility, nextSettings.StarVisibility, PhaseBlend01);
+			TemperatureModifier = Mathf.Lerp(currentSettings.TemperatureModifier, nextSettings.TemperatureModifier, PhaseBlend01);
+		}
+
+		private static float CalculatePhaseBlend(float phaseProgress)
+		{
+			const float transitionStart = 0.65f;
+			float t = Mathf.InverseLerp(transitionStart, 1f, phaseProgress);
+			return t * t * (3f - 2f * t);
 		}
 
 		private void CalculateSunPosition(float hour)
@@ -99,7 +111,7 @@ namespace TLN.Gameplay.DayNight
 
 				float nightProgress = (nightHour - sunsetHour) / nightDuration;
 				SunAzimuth = Mathf.Lerp(180f, 360f, nightProgress) + _config.NorthAngle;
-				SunElevation = Mathf.Sin(nightProgress * Mathf.PI) * 25f;
+				SunElevation = -2f - Mathf.Sin(nightProgress * Mathf.PI) * 33f;
 			}
 		}
 	}
