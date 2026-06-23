@@ -1,3 +1,4 @@
+using Assign;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Core.Validation;
@@ -13,7 +14,9 @@ using TLN.Gameplay.Saves;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
+using TLN.Gameplay.Wildlife;
 using TLN.Gameplay.World;
+using TLN.Infrastructure.World;
 using TLN.UI.World;
 using UnityEngine;
 using VContainer;
@@ -21,15 +24,21 @@ using VContainer.Unity;
 
 public sealed class WorldLifetimeScope : LifetimeScope
 {
-	[SerializeField] [Required] private WorldUIRoot _uiRoot;
-	[SerializeField] [Required] private InventoryConfig _inventoryConfig;
-	[SerializeField] [Required] private GameTimeConfig _gameTimeConfig;
-	[SerializeField] [Required] private DayNightConfig _dayNightConfig;
-	[SerializeField] [Required] private SurvivalConfig _survivalConfig;
-	[SerializeField] [Required] private SleepConfig _sleepConfig;
-	[SerializeField] [Required] private BuildRecipeCatalog _buildRecipeCatalog;
-	[SerializeField] [Required] private ItemCatalog _itemCatalog;
-	[SerializeField] [Required] private WorldPrefabCatalog _worldPrefabCatalog;
+	[SerializeField][Required] private WorldUIRoot _uiRoot;
+	[SerializeField][Required] private InventoryConfig _inventoryConfig;
+	[SerializeField][Required] private GameTimeConfig _gameTimeConfig;
+	[SerializeField][Required] private DayNightConfig _dayNightConfig;
+	[SerializeField][Required] private SurvivalConfig _survivalConfig;
+	[SerializeField][Required] private SleepConfig _sleepConfig;
+	[SerializeField][Required] private BuildRecipeCatalog _buildRecipeCatalog;
+	[SerializeField][Required] private ItemCatalog _itemCatalog;
+	[SerializeField][Required] private WorldPrefabCatalog _worldPrefabCatalog;
+
+	[SerializeField][Assign(Mode.Scene)][Required] private WorldEntryPoint _worldEntryPoint;
+	[SerializeField][Assign(Mode.Scene)][Required] private WorldTimeController _worldTimeController;
+	[SerializeField][Assign(Mode.Scene)][Required] private DayNightController _dayNightController;
+	[SerializeField][Assign(Mode.Scene)][Required] private WorldSurvivalController _worldSurvivalController;
+	[SerializeField][Assign(Mode.Scene)] private RandomWorldSpawner[] _randomWorldSpawners;
 
 	[SerializeField] private float _survivalWarningCooldownSeconds = 30f;
 
@@ -67,11 +76,14 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
 		builder.Register<IBuildService, BuildService>(Lifetime.Scoped);
 		builder.Register<WarmthService>(Lifetime.Scoped).As<IWarmthService>();
+		builder.RegisterInstance(new RandomWorldSpawnerSet(_randomWorldSpawners));
+		builder.Register<WildlifeTargetService>(Lifetime.Scoped);
 
-		builder.RegisterComponentInHierarchy<WorldEntryPoint>();
-		builder.RegisterComponentInHierarchy<WorldTimeController>();
-		builder.RegisterComponentInHierarchy<DayNightController>();
-		builder.RegisterComponentInHierarchy<WorldSurvivalController>();
+		builder.RegisterComponent(_worldEntryPoint);
+		builder.RegisterComponent(_worldTimeController);
+		builder.RegisterComponent(_dayNightController);
+		builder.RegisterComponent(_worldSurvivalController);
+		RegisterRandomWorldSpawners(builder);
 
 		builder.RegisterComponent(_uiRoot);
 		builder.RegisterComponent(_uiRoot.HUD).AsImplementedInterfaces();
@@ -79,5 +91,25 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.SleepWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.PauseMenu);
+	}
+
+	private void RegisterRandomWorldSpawners(IContainerBuilder builder)
+	{
+		if (_randomWorldSpawners == null)
+		{
+			return;
+		}
+
+		for (int i = 0; i < _randomWorldSpawners.Length; i++)
+		{
+			RandomWorldSpawner spawner = _randomWorldSpawners[i];
+
+			if (spawner == null)
+			{
+				continue;
+			}
+
+			builder.RegisterComponent(spawner);
+		}
 	}
 }

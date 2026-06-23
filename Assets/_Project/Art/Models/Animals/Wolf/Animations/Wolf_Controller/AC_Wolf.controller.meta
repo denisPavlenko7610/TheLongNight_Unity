@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b10a654061f0c894281eac17211f9546
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 311465
+  packageName: Realistic Furry Wolf
+  packageVersion: 1.0
+  assetPath: Assets/Wolf/Animations/Wolf_Controller/WolfAnimations.controller
+  uploadId: 733725

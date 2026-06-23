@@ -2,12 +2,12 @@ using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
-using TLN.Core.GameStates;
 using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
+using TLN.Gameplay.Wildlife;
 using TLN.UI.World;
 using UnityEngine;
 using VContainer;
@@ -16,14 +16,9 @@ namespace TLN.Gameplay.World
 {
 	public sealed class WorldEntryPoint : MonoBehaviour
 	{
-		[SerializeField] [Assign(Mode.Scene)]
-		private WorldUIRoot _uiRoot;
-
-		[SerializeField] [Assign(Mode.Scene)]
-		private PlayerRoot _playerPrefab;
-
-		[SerializeField] [Assign(Mode.Scene)]
-		private Transform _spawnPoint;
+		[SerializeField] [Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
+		[SerializeField] [Assign(Mode.Scene)] private PlayerRoot _playerPrefab;
+		[SerializeField] [Assign(Mode.Scene)] private Transform _spawnPoint;
 
 		private IGameStateMachine _gameStateMachine;
 		private INotificationService _notificationService;
@@ -32,6 +27,8 @@ namespace TLN.Gameplay.World
 		private ISurvivalService _survivalService;
 		private IPlayerFactory _playerFactory;
 		private IGameSaveService _gameSaveService;
+		private WildlifeTargetService _wildlifeTargetService;
+		private RandomWorldSpawnerSet _randomWorldSpawnerSet;
 
 		private PlayerRoot _playerInstance;
 
@@ -43,7 +40,9 @@ namespace TLN.Gameplay.World
 			IGameTimeService gameTimeService,
 			ISurvivalService survivalService,
 			IPlayerFactory playerFactory,
-			IGameSaveService gameSaveService
+			IGameSaveService gameSaveService,
+			WildlifeTargetService wildlifeTargetService,
+			RandomWorldSpawnerSet randomWorldSpawnerSet
 		)
 		{
 			_gameStateMachine = gameStateMachine;
@@ -53,6 +52,8 @@ namespace TLN.Gameplay.World
 			_survivalService = survivalService;
 			_playerFactory = playerFactory;
 			_gameSaveService = gameSaveService;
+			_wildlifeTargetService = wildlifeTargetService;
+			_randomWorldSpawnerSet = randomWorldSpawnerSet;
 		}
 
 		private void Start()
@@ -65,7 +66,8 @@ namespace TLN.Gameplay.World
 
 			ConstructHUD();
 			SpawnPlayer();
-			LoadRequestedSaveIfNeeded();
+			bool wasSaveLoaded = LoadRequestedSaveIfNeeded();
+			SpawnRandomWorldObjects(wasSaveLoaded);
 			EnsureGameplayState();
 		}
 
@@ -76,9 +78,14 @@ namespace TLN.Gameplay.World
 			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
 		}
 
-		private void LoadRequestedSaveIfNeeded()
+		private bool LoadRequestedSaveIfNeeded()
 		{
-			_gameSaveService?.LoadActiveSlotIfRequested();
+			return _gameSaveService != null && _gameSaveService.LoadActiveSlotIfRequested();
+		}
+
+		private void SpawnRandomWorldObjects(bool wasSaveLoaded)
+		{
+			_randomWorldSpawnerSet?.TrySpawnForWorldStart(wasSaveLoaded);
 		}
 
 		private void SpawnPlayer()
@@ -86,6 +93,7 @@ namespace TLN.Gameplay.World
 			_playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
 
 			_placementService.SetPlayerRoot(_playerInstance);
+			_wildlifeTargetService.SetPlayerRoot(_playerInstance);
 		}
 
 		private void EnsureGameplayState()

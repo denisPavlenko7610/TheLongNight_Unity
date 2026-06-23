@@ -26,5 +26,6 @@ namespace TLN.Gameplay.Survival
 		void AddThirst(float amount);
 		void AddCold(float amount);
 		void RestoreCondition(float amount);
+		void DamageCondition(float amount);
 	}
 }

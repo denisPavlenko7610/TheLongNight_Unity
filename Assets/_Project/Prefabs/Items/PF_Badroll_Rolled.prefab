@@ -134,7 +134,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 855412870696026853, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
       propertyPath: m_Name
-      value: PF_WorldItem_Bedroll
+      value: PF_Badroll_Rolled
+      objectReference: {fileID: 0}
+    - target: {fileID: 1444054733713550285, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
+      propertyPath: _prefabId
+      value: ef8b67afedcf8eb448e1f981aefe89ac
       objectReference: {fileID: 0}
     - target: {fileID: 2695528187752430520, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
       propertyPath: _definition
@@ -195,6 +199,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 855412870696026853, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1670936656167848017}
+    - targetCorrespondingSourceObject: {fileID: 855412870696026853, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5842939676305668129}
   m_SourcePrefab: {fileID: 100100000, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
 --- !u!1 &2932041338315092396 stripped
 GameObject:
@@ -224,6 +231,22 @@ CapsuleCollider:
   m_Height: 1.4
   m_Direction: 0
   m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!208 &-5842939676305668129
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932041338315092396}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.25, z: 0.225}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.35, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!4 &6232842257794003678 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8435308536349622679, guid: fb34099346a811f428a907e1e3470f7a, type: 3}

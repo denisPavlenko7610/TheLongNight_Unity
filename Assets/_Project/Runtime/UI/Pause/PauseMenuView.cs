@@ -2,7 +2,6 @@
 using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
-using TLN.Core.GameStates;
 using TLN.UI.Common;
 using TLN.UI.Saves;
 using UnityEngine;

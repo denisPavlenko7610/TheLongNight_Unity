@@ -199,25 +199,7 @@ MonoBehaviour:
       - rid: 5163169332931067904
       - rid: 5163169332931067905
     m_RuntimeSettings:
-      m_List:
-      - rid: 8556427327610290176
-      - rid: 8556427327610290180
-      - rid: 5651530769614503936
-      - rid: 5651530769614503937
-      - rid: 5651530769614503938
-      - rid: 5651530769614503939
-      - rid: 5651530769614503941
-      - rid: 5651530769614503942
-      - rid: 5651530769614503943
-      - rid: 5651530769614503946
-      - rid: 5651530769614503947
-      - rid: 5651530769614503948
-      - rid: 5651530769614503950
-      - rid: 5651530769614503953
-      - rid: 5651530769614503956
-      - rid: 5651530769614503959
-      - rid: 1143070318379925505
-      - rid: 1143070318379925506
+      m_List: []
   renderingLayerNames:
   - Light Layer default
   - Light Layer 1
@@ -452,7 +434,7 @@ MonoBehaviour:
       type: {class: HDRPDefaultVolumeProfileSettings, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:
         m_Version: 0
-        m_VolumeProfile: {fileID: 11400000, guid: 14b392ee213d25a48b1feddbd9f5a9be, type: 2}
+        m_VolumeProfile: {fileID: 11400000, guid: e9649d8dcd635d34b9a41ed707e14d3e, type: 2}
     - rid: 5651530769614503949
       type: {class: WaterSystemRuntimeResources, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:

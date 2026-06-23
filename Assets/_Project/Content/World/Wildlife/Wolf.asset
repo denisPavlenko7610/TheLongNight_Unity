@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efe7ec419897479ab551cc0beb67267e, type: 3}
+  m_Name: Wolf
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Wildlife.AnimalDefinition
+  _species: 20
+  _walkSpeed: 1.8
+  _runSpeed: 4.2
+  _wanderRadius: 18
+  _decisionInterval: 16
+  _detectionRadius: 1.7
+  _fleeRadius: 8
+  _attackDistance: 1.7
+  _attackCooldownSeconds: 2.5
+  _conditionDamage: 12

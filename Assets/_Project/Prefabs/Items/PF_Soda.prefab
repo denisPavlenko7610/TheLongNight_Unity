@@ -105,7 +105,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 855412870696026853, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
       propertyPath: m_Name
-      value: PF_WorldItem_Soda
+      value: PF_Soda
+      objectReference: {fileID: 0}
+    - target: {fileID: 1444054733713550285, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
+      propertyPath: _prefabId
+      value: 59fec7885e2a22445bcf331f26aed222
       objectReference: {fileID: 0}
     - target: {fileID: 2695528187752430520, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
       propertyPath: _definition

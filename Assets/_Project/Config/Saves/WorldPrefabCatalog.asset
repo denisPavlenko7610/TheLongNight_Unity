@@ -13,15 +13,25 @@ MonoBehaviour:
   m_Name: WorldPrefabCatalog
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Saves.WorldPrefabCatalog
   _entries:
+  - _prefabId: a1cf745ef22565742822f540e54594f6
+    _prefab: {fileID: 4978511017525028414, guid: a1cf745ef22565742822f540e54594f6, type: 3}
+  - _prefabId: bb41027118e20c24399ca4469372f39e
+    _prefab: {fileID: 5400089882884650207, guid: bb41027118e20c24399ca4469372f39e, type: 3}
+  - _prefabId: e7bf8113aac0d8c4c9928300cd8e9ce3
+    _prefab: {fileID: 6370225795084895194, guid: e7bf8113aac0d8c4c9928300cd8e9ce3, type: 3}
   - _prefabId: e02ebbc0b37b5234a8d15811e42ee3fc
     _prefab: {fileID: 4345701269771662234, guid: e02ebbc0b37b5234a8d15811e42ee3fc, type: 3}
   - _prefabId: ef8b67afedcf8eb448e1f981aefe89ac
     _prefab: {fileID: 2932041338315092396, guid: ef8b67afedcf8eb448e1f981aefe89ac, type: 3}
   - _prefabId: 2a72e51b847421e40bbf6a8cc4979b1a
     _prefab: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
+  - _prefabId: 9cc4be2578556c543be24ceebf608650
+    _prefab: {fileID: 655045038954475702, guid: 9cc4be2578556c543be24ceebf608650, type: 3}
   - _prefabId: 59fec7885e2a22445bcf331f26aed222
     _prefab: {fileID: 7194434326370485006, guid: 59fec7885e2a22445bcf331f26aed222, type: 3}
   - _prefabId: 6af49e91d4aa3d849a160ebd3d2d5edb
     _prefab: {fileID: 497848112949897493, guid: 6af49e91d4aa3d849a160ebd3d2d5edb, type: 3}
   - _prefabId: fb34099346a811f428a907e1e3470f7a
     _prefab: {fileID: 855412870696026853, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
+  - _prefabId: 89281e817bfa32e48ac1ad1bb9d26fc2
+    _prefab: {fileID: 2449650109437670412, guid: 89281e817bfa32e48ac1ad1bb9d26fc2, type: 3}

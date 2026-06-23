@@ -1,7 +1,4 @@
 ﻿using TLN.Application.Input;
-using TLN.Application.Notifications;
-using TLN.Gameplay.Inventory;
-using TLN.Gameplay.Items;
 using TLN.Gameplay.Sleep;
 using TLN.UI.Common;
 using UnityEngine;
@@ -27,8 +24,6 @@ namespace TLN.UI.Sleep
 
 		private Button _pickUpButton;
 
-		private IInventoryService _inventoryService;
-		private INotificationService _notificationService;
 		private BedrollActor _currentBedroll;
 
 		private SleepService _sleepService;
@@ -37,15 +32,10 @@ namespace TLN.UI.Sleep
 		[Inject]
 		public void Construct(
 			SleepService sleepService,
-			IInputModeService inputModeService,
-			IInventoryService inventoryService,
-			INotificationService notificationService
-		)
+			IInputModeService inputModeService)
 		{
 			_sleepService = sleepService;
 			_inputModeService = inputModeService;
-			_inventoryService = inventoryService;
-			_notificationService = notificationService;
 		}
 
 		private void Awake()
@@ -127,34 +117,10 @@ namespace TLN.UI.Sleep
 				return;
 			}
 
-			if (!_currentBedroll.CanPickUp)
+			if (_currentBedroll.TryPickUp())
 			{
-				return;
+				Hide();
 			}
-
-			ItemDefinition packedItemDefinition = _currentBedroll.PackedItemDefinition;
-
-			if (packedItemDefinition == null)
-			{
-				_notificationService?.Show("Cannot pick up this bedroll.");
-				return;
-			}
-
-			InventoryAddResult result = _inventoryService.AddItem(packedItemDefinition, _currentBedroll.PackedAmount);
-
-			if (!result.IsSuccess)
-			{
-				_notificationService?.Show(result.FailureReason);
-				return;
-			}
-
-			_notificationService?.Show($"Picked up {packedItemDefinition.DisplayName}");
-
-			GameObject bedrollObject = _currentBedroll.gameObject;
-
-			Hide();
-
-			Destroy(bedrollObject);
 		}
 
 		private void SleepAndClose(int hours)

@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 3744872592613563825}
   - component: {fileID: 8450343619317734159}
   - component: {fileID: 813576616210406674}
+  - component: {fileID: 7608435689244403836}
   m_Layer: 7
   m_Name: PF_Placed_Bedroll_Unrolled
   m_TagString: Untagged
@@ -162,6 +163,20 @@ MonoBehaviour:
   _canPickUp: 1
   _packedItemDefinition: {fileID: 11400000, guid: 58494d478b83457428b46a5700a4e7a5, type: 2}
   _packedAmount: 1
+--- !u!114 &7608435689244403836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2449650109437670412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facb31f6d5484be4887122c98efc3461, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Saves.PersistentWorldEntity
+  _id: 
+  _prefabId: 89281e817bfa32e48ac1ad1bb9d26fc2
 --- !u!1 &3751663659917516063
 GameObject:
   m_ObjectHideFlags: 0

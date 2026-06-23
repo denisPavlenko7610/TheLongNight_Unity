@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ba0bc912addff5a42b6c5b282afd0cfa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 311465
+  packageName: Realistic Furry Wolf
+  packageVersion: 1.0
+  assetPath: Assets/Wolf/HDRP/Wolf/Materials/Fur_Wolf_HDRP.mat
+  uploadId: 733725
