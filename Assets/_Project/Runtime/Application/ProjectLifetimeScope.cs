@@ -10,27 +10,32 @@ using TLN.Application.Time;
 using VContainer;
 using VContainer.Unity;
 
-public sealed class ProjectLifetimeScope : LifetimeScope
+namespace TLN.Application
 {
-	protected override void Configure(IContainerBuilder builder)
+	public sealed class ProjectLifetimeScope : LifetimeScope
 	{
-		builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
-		builder.Register<ISceneLoader>(
-			container => new SceneLoaderService(container.Resolve<IGameStateMachine>()),
-			Lifetime.Singleton);
-		builder.Register<ICursorService, CursorService>(Lifetime.Singleton);
-		builder.Register<IInputModeService, InputModeService>(Lifetime.Singleton);
-		builder.Register<IGameTimeScaleService, GameTimeScaleService>(Lifetime.Singleton);
+		protected override void Configure(IContainerBuilder builder)
+		{
+			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
+			builder.Register<ISceneLoader>(
+				container =>
+					new SceneLoaderService(container.Resolve<IGameStateMachine>()),
+				Lifetime.Singleton
+			);
+			builder.Register<ICursorService, CursorService>(Lifetime.Singleton);
+			builder.Register<IInputModeService, InputModeService>(Lifetime.Singleton);
+			builder.Register<IGameTimeScaleService, GameTimeScaleService>(Lifetime.Singleton);
 
-		builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
-		builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
-		builder.Register<UnityLocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
+			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
+			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
+			builder.Register<UnityLocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
 
-		builder.RegisterEntryPoint<GameStateInputModeController>();
-		builder.RegisterEntryPoint<GameStatePauseController>();
-		builder.RegisterEntryPoint<ProjectStartupEntryPoint>();
+			builder.RegisterEntryPoint<GameStateInputModeController>();
+			builder.RegisterEntryPoint<GameStatePauseController>();
+			builder.RegisterEntryPoint<ProjectStartupEntryPoint>();
 
-		builder.Register<SaveSessionService>(Lifetime.Singleton);
-		builder.Register<JsonSaveRepository>(Lifetime.Singleton).As<ISaveRepository>();
+			builder.Register<SaveSessionService>(Lifetime.Singleton);
+			builder.Register<JsonSaveRepository>(Lifetime.Singleton).As<ISaveRepository>();
+		}
 	}
 }

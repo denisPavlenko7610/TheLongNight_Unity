@@ -15,9 +15,7 @@ namespace TLN.Gameplay.Player.Input
 		private IGameStateMachine _gameStateMachine;
 
 		[Inject]
-		public void Construct(
-			IBuildWindow buildWindow,
-			IGameStateMachine gameStateMachine)
+		public void Construct(IBuildWindow buildWindow, IGameStateMachine gameStateMachine)
 		{
 			_buildWindow = buildWindow;
 			_gameStateMachine = gameStateMachine;
@@ -38,8 +36,7 @@ namespace TLN.Gameplay.Player.Input
 				return;
 			}
 
-			if (_gameStateMachine != null
-				&& _gameStateMachine.CurrentState != GameStateId.Playing)
+			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
 			{
 				return;
 			}

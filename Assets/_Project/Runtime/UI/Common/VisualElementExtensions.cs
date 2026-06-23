@@ -10,7 +10,9 @@ namespace TLN.UI.Common
 
 			if (element == null)
 			{
-				throw new System.InvalidOperationException($"Required UI element was not found. Name: {name}, Type: {typeof(T).Name}");
+				throw new System.InvalidOperationException(
+					$"Required UI element was not found. Name: {name}, Type: {typeof(T).Name}"
+				);
 			}
 
 			return element;
@@ -38,9 +40,7 @@ namespace TLN.UI.Common
 
 		public static UIFillIcon RequiredFillIcon(this VisualElement root, string maskName, float height)
 		{
-			return new UIFillIcon(
-				root.RequiredQ<VisualElement>(maskName),
-				height);
+			return new UIFillIcon(root.RequiredQ<VisualElement>(maskName), height);
 		}
 	}
 }

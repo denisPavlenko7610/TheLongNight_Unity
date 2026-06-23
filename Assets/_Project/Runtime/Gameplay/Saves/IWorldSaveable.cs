@@ -1,11 +1,11 @@
 ﻿namespace TLN.Gameplay.Saves
 {
-    public interface IWorldSaveable
-    {
-        string SaveTypeId { get; }
+	public interface IWorldSaveable
+	{
+		string SaveTypeId { get; }
 
-        string CaptureStateJson();
+		string CaptureStateJson();
 
-        void RestoreStateJson(string json);
-    }
+		void RestoreStateJson(string json);
+	}
 }

@@ -36,7 +36,8 @@ namespace TLN.Gameplay.Player.Look
 
 		private void Update()
 		{
-			if (_inputModeService != null && _inputModeService.CanUseLookInput) {
+			if (_inputModeService != null && _inputModeService.CanUseLookInput)
+			{
 				Look(UnityEngine.Time.deltaTime);
 			}
 		}

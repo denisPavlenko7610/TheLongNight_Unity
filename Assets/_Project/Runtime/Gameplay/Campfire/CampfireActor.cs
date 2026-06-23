@@ -9,343 +9,340 @@ using VContainer;
 
 namespace TLN.Gameplay.Campfire
 {
-    [RequireComponent(typeof(PersistentWorldEntity))]
-    public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider, IWorldSaveable
-    {
-        [Header("Interaction")]
-        [SerializeField] private string _interactionText = "Use campfire";
+	[RequireComponent(typeof(PersistentWorldEntity))]
+	public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider, IWorldSaveable
+	{
+		[Header("Interaction")]
+		[SerializeField] private string _interactionText = "Use campfire";
 
-        [Header("Burning")]
-        [SerializeField] private int _startBurnMinutes;
-        [SerializeField] private int _maxBurnMinutes = 720;
-        [SerializeField] private int _minimumBurnMinutesToIgnite = 1;
+		[Header("Burning")]
+		[SerializeField] private int _startBurnMinutes;
+		[SerializeField] private int _maxBurnMinutes = 720;
+		[SerializeField] private int _minimumBurnMinutesToIgnite = 1;
 
-        [Header("Warmth")]
-        [SerializeField] private float _warmthBonus = 20f;
-        [SerializeField] private float _warmthRadius = 4f;
+		[Header("Warmth")]
+		[SerializeField] private float _warmthBonus = 20f;
+		[SerializeField] private float _warmthRadius = 4f;
 
-        [Header("Visuals")]
-        [SerializeField] private GameObject _burningRoot;
-        [SerializeField] private Light _fireLight;
-        [SerializeField] private ParticleSystem _fireParticles;
-        [SerializeField] private AudioSource _fireLoopAudio;
+		[Header("Visuals")]
+		[SerializeField] private GameObject _burningRoot;
+		[SerializeField] private Light _fireLight;
+		[SerializeField] private ParticleSystem _fireParticles;
+		[SerializeField] private AudioSource _fireLoopAudio;
 
-        private ICampfireWindow _campfireWindow;
-        private IGameTimeService _gameTimeService;
-        private int _lastKnownTotalMinutes;
-        private int _remainingBurnMinutes;
-        private IWarmthService _warmthService;
-        private CampfireState _state = CampfireState.Unlit;
+		private ICampfireWindow _campfireWindow;
+		private IGameTimeService _gameTimeService;
+		private int _lastKnownTotalMinutes;
+		private int _remainingBurnMinutes;
+		private IWarmthService _warmthService;
+		private CampfireState _state = CampfireState.Unlit;
 
-        public string InteractionText => _interactionText;
-        public CampfireState State => _state;
-        public bool IsBurning => _state == CampfireState.Burning;
-        public int RemainingBurnMinutes => _remainingBurnMinutes;
-        public int MaxBurnMinutes => _maxBurnMinutes;
-        public float WarmthBonus => IsBurning ? _warmthBonus : 0f;
-        public bool IsWarmthActive => IsBurning;
-        public float WarmthRadius => _warmthRadius;
-        public Vector3 Position => transform.position;
+		public string InteractionText => _interactionText;
+		public CampfireState State => _state;
+		public bool IsBurning => _state == CampfireState.Burning;
+		public int RemainingBurnMinutes => _remainingBurnMinutes;
+		public int MaxBurnMinutes => _maxBurnMinutes;
+		public float WarmthBonus => IsBurning ? _warmthBonus : 0f;
+		public bool IsWarmthActive => IsBurning;
+		public float WarmthRadius => _warmthRadius;
+		public Vector3 Position => transform.position;
 
-        public float FuelNormalized => _maxBurnMinutes <= 0 ? 0f : Mathf.Clamp01((float)_remainingBurnMinutes / _maxBurnMinutes);
+		public float FuelNormalized =>
+			_maxBurnMinutes <= 0 ? 0f : Mathf.Clamp01((float)_remainingBurnMinutes / _maxBurnMinutes);
 
-        public event Action Changed;
-        public event Action BurnedOut;
+		public event Action Changed;
+		public event Action BurnedOut;
 
-        [Inject]
-        public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService)
-        {
-            _campfireWindow = campfireWindow;
-            _gameTimeService = gameTimeService;
-            _warmthService = warmthService;
+		[Inject]
+		public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService)
+		{
+			_campfireWindow = campfireWindow;
+			_gameTimeService = gameTimeService;
+			_warmthService = warmthService;
 
-            _warmthService?.Register(this);
+			_warmthService?.Register(this);
 
-            if (_gameTimeService != null)
-            {
-                _lastKnownTotalMinutes = _gameTimeService.TotalMinutes;
-                _gameTimeService.Changed += OnGameTimeChanged;
-            }
-        }
+			if (_gameTimeService != null)
+			{
+				_lastKnownTotalMinutes = _gameTimeService.TotalMinutes;
+				_gameTimeService.Changed += OnGameTimeChanged;
+			}
+		}
 
-        private void Awake()
-        {
-            _remainingBurnMinutes = Mathf.Clamp(_startBurnMinutes, 0, _maxBurnMinutes);
+		private void Awake()
+		{
+			_remainingBurnMinutes = Mathf.Clamp(_startBurnMinutes, 0, _maxBurnMinutes);
 
-            if (_remainingBurnMinutes <= 0)
-            {
-                _state = CampfireState.Unlit;
-            }
+			if (_remainingBurnMinutes <= 0)
+			{
+				_state = CampfireState.Unlit;
+			}
 
-            ApplyVisualState();
-        }
+			ApplyVisualState();
+		}
 
-        private void OnDestroy()
-        {
-            if (_gameTimeService != null)
-            {
-                _gameTimeService.Changed -= OnGameTimeChanged;
-            }
+		private void OnDestroy()
+		{
+			if (_gameTimeService != null)
+			{
+				_gameTimeService.Changed -= OnGameTimeChanged;
+			}
 
-            _warmthService?.Unregister(this);
-        }
+			_warmthService?.Unregister(this);
+		}
 
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawWireSphere(transform.position, _warmthRadius);
-        }
-#endif
+		#if UNITY_EDITOR
+		private void OnDrawGizmosSelected()
+		{
+			Gizmos.DrawWireSphere(transform.position, _warmthRadius);
+		}
+		#endif
 
-        public bool CanInteract(InteractionContext context)
-        {
-            return true;
-        }
+		public bool CanInteract(InteractionContext context)
+		{
+			return true;
+		}
 
-        public void Interact(InteractionContext context)
-        {
-            if (_campfireWindow == null)
-            {
-                TLNLogger.LogWarning("Cannot open campfire window because CampfireActor was not constructed.", this);
-                return;
-            }
+		public void Interact(InteractionContext context)
+		{
+			if (_campfireWindow == null)
+			{
+				TLNLogger.LogWarning("Cannot open campfire window because CampfireActor was not constructed.", this);
+				return;
+			}
 
-            _campfireWindow.Show(this);
-        }
+			_campfireWindow.Show(this);
+		}
 
-        public bool CanAddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
-        {
-            if (fuelDefinition == null)
-            {
-                failureReason = "Fuel item is missing.";
-                return false;
-            }
+		public bool CanAddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
+		{
+			if (fuelDefinition == null)
+			{
+				failureReason = "Fuel item is missing.";
+				return false;
+			}
 
-            if (amount <= 0)
-            {
-                failureReason = "Fuel amount must be greater than zero.";
-                return false;
-            }
+			if (amount <= 0)
+			{
+				failureReason = "Fuel amount must be greater than zero.";
+				return false;
+			}
 
-            if (fuelDefinition.BurnMinutes <= 0)
-            {
-                failureReason = "This item cannot burn.";
-                return false;
-            }
+			if (fuelDefinition.BurnMinutes <= 0)
+			{
+				failureReason = "This item cannot burn.";
+				return false;
+			}
 
-            if (_remainingBurnMinutes >= _maxBurnMinutes)
-            {
-                failureReason = "Campfire cannot accept more fuel.";
-                return false;
-            }
+			if (_remainingBurnMinutes >= _maxBurnMinutes)
+			{
+				failureReason = "Campfire cannot accept more fuel.";
+				return false;
+			}
 
-            failureReason = string.Empty;
-            return true;
-        }
+			failureReason = string.Empty;
+			return true;
+		}
 
-        public bool AddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
-        {
-            if (!CanAddFuel(fuelDefinition, amount, out failureReason))
-            {
-                return false;
-            }
+		public bool AddFuel(FuelItemDefinition fuelDefinition, int amount, out string failureReason)
+		{
+			if (!CanAddFuel(fuelDefinition, amount, out failureReason))
+			{
+				return false;
+			}
 
-            int addedMinutes = fuelDefinition.BurnMinutes * amount;
-            _remainingBurnMinutes = Mathf.Clamp(
-                _remainingBurnMinutes + addedMinutes,
-                0,
-                _maxBurnMinutes);
+			int addedMinutes = fuelDefinition.BurnMinutes * amount;
+			_remainingBurnMinutes = Mathf.Clamp(
+				_remainingBurnMinutes + addedMinutes,
+				0,
+				_maxBurnMinutes
+			);
 
-            if (_state == CampfireState.BurnedOut && _remainingBurnMinutes > 0)
-            {
-                SetState(CampfireState.Unlit);
-            }
-            else
-            {
-                Changed?.Invoke();
-            }
+			if (_state == CampfireState.BurnedOut && _remainingBurnMinutes > 0)
+			{
+				SetState(CampfireState.Unlit);
+			}
+			else
+			{
+				Changed?.Invoke();
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        public bool Ignite(out string failureReason)
-        {
-            if (IsBurning)
-            {
-                failureReason = "Campfire is already burning.";
-                return false;
-            }
+		public bool Ignite(out string failureReason)
+		{
+			if (IsBurning)
+			{
+				failureReason = "Campfire is already burning.";
+				return false;
+			}
 
-            if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
-            {
-                failureReason = "Not enough fuel to start a fire.";
-                return false;
-            }
+			if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
+			{
+				failureReason = "Not enough fuel to start a fire.";
+				return false;
+			}
 
-            SetState(CampfireState.Burning);
+			SetState(CampfireState.Burning);
 
-            failureReason = string.Empty;
-            return true;
-        }
+			failureReason = string.Empty;
+			return true;
+		}
 
-        public bool Extinguish(out string failureReason)
-        {
-            if (!IsBurning)
-            {
-                failureReason = "Campfire is not burning.";
-                return false;
-            }
+		public bool Extinguish(out string failureReason)
+		{
+			if (!IsBurning)
+			{
+				failureReason = "Campfire is not burning.";
+				return false;
+			}
 
-            SetState(CampfireState.Unlit);
+			SetState(CampfireState.Unlit);
 
-            failureReason = string.Empty;
-            return true;
-        }
+			failureReason = string.Empty;
+			return true;
+		}
 
-        private void OnGameTimeChanged()
-        {
-            if (_gameTimeService == null)
-            {
-                return;
-            }
+		private void OnGameTimeChanged()
+		{
+			if (_gameTimeService == null)
+			{
+				return;
+			}
 
-            int currentTotalMinutes = _gameTimeService.TotalMinutes;
-            int elapsedMinutes = currentTotalMinutes - _lastKnownTotalMinutes;
-            _lastKnownTotalMinutes = currentTotalMinutes;
+			int currentTotalMinutes = _gameTimeService.TotalMinutes;
+			int elapsedMinutes = currentTotalMinutes - _lastKnownTotalMinutes;
+			_lastKnownTotalMinutes = currentTotalMinutes;
 
-            if (elapsedMinutes <= 0)
-            {
-                return;
-            }
+			if (elapsedMinutes <= 0)
+			{
+				return;
+			}
 
-            if (!IsBurning)
-            {
-                return;
-            }
+			if (!IsBurning)
+			{
+				return;
+			}
 
-            Burn(elapsedMinutes);
-        }
+			Burn(elapsedMinutes);
+		}
 
-        private void Burn(int minutes)
-        {
-            _remainingBurnMinutes = Mathf.Max(0, _remainingBurnMinutes - minutes);
+		private void Burn(int minutes)
+		{
+			_remainingBurnMinutes = Mathf.Max(0, _remainingBurnMinutes - minutes);
 
-            if (_remainingBurnMinutes <= 0)
-            {
-                SetState(CampfireState.BurnedOut);
-                BurnedOut?.Invoke();
-                return;
-            }
+			if (_remainingBurnMinutes <= 0)
+			{
+				SetState(CampfireState.BurnedOut);
+				BurnedOut?.Invoke();
+				return;
+			}
 
-            Changed?.Invoke();
-        }
+			Changed?.Invoke();
+		}
 
-        private void SetState(CampfireState state)
-        {
-            if (_state == state)
-            {
-                return;
-            }
+		private void SetState(CampfireState state)
+		{
+			if (_state == state)
+			{
+				return;
+			}
 
-            _state = state;
-            ApplyVisualState();
-            Changed?.Invoke();
-        }
+			_state = state;
+			ApplyVisualState();
+			Changed?.Invoke();
+		}
 
-        private void ApplyVisualState()
-        {
-            bool isBurning = IsBurning;
+		private void ApplyVisualState()
+		{
+			bool isBurning = IsBurning;
 
-            if (_burningRoot != null)
-            {
-                _burningRoot.SetActive(isBurning);
-            }
+			if (_burningRoot != null)
+			{
+				_burningRoot.SetActive(isBurning);
+			}
 
-            if (_fireLight != null)
-            {
-                _fireLight.enabled = isBurning;
-            }
+			if (_fireLight != null)
+			{
+				_fireLight.enabled = isBurning;
+			}
 
-            if (_fireParticles != null)
-            {
-                if (isBurning)
-                {
-                    _fireParticles.Play();
-                }
-                else
-                {
-                    _fireParticles.Stop();
-                }
-            }
+			if (_fireParticles != null)
+			{
+				if (isBurning)
+				{
+					_fireParticles.Play();
+				}
+				else
+				{
+					_fireParticles.Stop();
+				}
+			}
 
-            if (_fireLoopAudio != null)
-            {
-                if (isBurning && !_fireLoopAudio.isPlaying)
-                {
-                    _fireLoopAudio.Play();
-                }
-                else if (!isBurning && _fireLoopAudio.isPlaying)
-                {
-                    _fireLoopAudio.Stop();
-                }
-            }
-        }
+			if (_fireLoopAudio != null)
+			{
+				if (isBurning && !_fireLoopAudio.isPlaying)
+				{
+					_fireLoopAudio.Play();
+				}
+				else if (!isBurning && _fireLoopAudio.isPlaying)
+				{
+					_fireLoopAudio.Stop();
+				}
+			}
+		}
 
-        public string SaveTypeId => "campfire";
+		public string SaveTypeId => "campfire";
 
-        public string CaptureStateJson()
-        {
-            CampfireSaveData data = new CampfireSaveData
-            {
-                state = _state.ToString(),
-                remainingBurnMinutes = _remainingBurnMinutes,
-                lastKnownTotalMinutes = _lastKnownTotalMinutes
-            };
+		public string CaptureStateJson()
+		{
+			CampfireSaveData data = new CampfireSaveData
+			{
+				state = _state.ToString(),
+				remainingBurnMinutes = _remainingBurnMinutes,
+				lastKnownTotalMinutes = _lastKnownTotalMinutes
+			};
 
-            return JsonConvert.SerializeObject(data);
-        }
+			return JsonConvert.SerializeObject(data);
+		}
 
-        public void RestoreStateJson(string json)
-        {
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return;
-            }
+		public void RestoreStateJson(string json)
+		{
+			if (string.IsNullOrWhiteSpace(json))
+			{
+				return;
+			}
 
-            CampfireSaveData data = JsonConvert.DeserializeObject<CampfireSaveData>(json);
+			CampfireSaveData data = JsonConvert.DeserializeObject<CampfireSaveData>(json);
 
-            if (data == null)
-            {
-                return;
-            }
+			if (data == null)
+			{
+				return;
+			}
 
-            _remainingBurnMinutes = Mathf.Clamp(
-                data.remainingBurnMinutes,
-                0,
-                _maxBurnMinutes);
+			_remainingBurnMinutes = Mathf.Clamp(data.remainingBurnMinutes, 0, _maxBurnMinutes);
 
-            _lastKnownTotalMinutes = data.lastKnownTotalMinutes;
+			_lastKnownTotalMinutes = data.lastKnownTotalMinutes;
 
-            if (!System.Enum.TryParse(
-                data.state,
-                out CampfireState restoredState))
-            {
-                restoredState = _remainingBurnMinutes > 0
-                    ? CampfireState.Unlit
-                    : CampfireState.BurnedOut;
-            }
+			if (!Enum.TryParse(data.state, out CampfireState restoredState))
+			{
+				restoredState = _remainingBurnMinutes > 0
+					? CampfireState.Unlit
+					: CampfireState.BurnedOut;
+			}
 
-            _state = restoredState;
+			_state = restoredState;
 
-            ApplyVisualState();
-            Changed?.Invoke();
-        }
+			ApplyVisualState();
+			Changed?.Invoke();
+		}
 
-        private sealed class CampfireSaveData
-        {
-            public string state;
-            public int remainingBurnMinutes;
-            public int lastKnownTotalMinutes;
-        }
-    }
+		private sealed class CampfireSaveData
+		{
+			public string state;
+			public int remainingBurnMinutes;
+			public int lastKnownTotalMinutes;
+		}
+	}
 }

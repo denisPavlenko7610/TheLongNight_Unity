@@ -46,10 +46,7 @@ namespace TLN.Gameplay.Placement
 				return false;
 			}
 
-			Quaternion rotation = Quaternion.Euler(
-				0f,
-				cameraTransform.eulerAngles.y,
-				0f);
+			Quaternion rotation = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
 
 			instance = _worldObjectFactory.Create(prefab, groundPosition, rotation);
 			Placed?.Invoke(instance);
@@ -70,12 +67,7 @@ namespace TLN.Gameplay.Placement
 			forward = _playerRoot.transform.forward;
 			forward.y = 0f;
 
-			if (forward.sqrMagnitude > 0.0001f)
-			{
-				return forward.normalized;
-			}
-
-			return Vector3.forward;
+			return forward.sqrMagnitude > 0.0001f ? forward.normalized : Vector3.forward;
 		}
 
 		private static bool TryFindGroundPosition(Vector3 origin, out Vector3 groundPosition)
@@ -85,8 +77,14 @@ namespace TLN.Gameplay.Placement
 
 			Vector3 rayOrigin = origin + Vector3.up * rayStartHeight;
 
-			if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, Physics.DefaultRaycastLayers,
-				QueryTriggerInteraction.Ignore))
+			if (Physics.Raycast(
+					rayOrigin,
+					Vector3.down,
+					out RaycastHit hit,
+					rayDistance,
+					Physics.DefaultRaycastLayers,
+					QueryTriggerInteraction.Ignore
+				))
 			{
 				groundPosition = hit.point;
 				return true;

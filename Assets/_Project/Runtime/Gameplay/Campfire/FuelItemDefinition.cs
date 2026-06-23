@@ -3,9 +3,7 @@ using TLN.Gameplay.Items;
 
 namespace TLN.Gameplay.Campfire
 {
-	[CreateAssetMenu(
-		fileName = "FuelItemDefinition",
-		menuName = "TLN/Items/Fuel Item Definition")]
+	[CreateAssetMenu(fileName = "FuelItemDefinition", menuName = "TLN/Items/Fuel Item Definition")]
 	public sealed class FuelItemDefinition : ItemDefinition
 	{
 		[Header("Fuel")]

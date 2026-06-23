@@ -3,85 +3,85 @@
     <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/SurvivalMenuWindow/SurvivalMenuWindow.uss?fileID=7433441132597879392&amp;guid=1744bb8bedf34184b5cf118a36be9c4e&amp;type=3#SurvivalMenuWindow"/>
 
     <ui:VisualElement name="survival-menu-root" class="survival-menu-root">
-        <ui:VisualElement class="survival-menu-vignette" />
+        <ui:VisualElement class="survival-menu-vignette"/>
 
         <ui:VisualElement class="survival-menu-frame">
 
             <ui:VisualElement class="survival-menu-header">
                 <ui:VisualElement>
-                    <ui:Label name="survival-header-title-label" text="BACKPACK" class="survival-menu-title" />
-                    <ui:VisualElement class="survival-title-underline" />
-                    <ui:Label name="survival-weight-label" text="0.00 / 0.00 KG" class="survival-menu-weight" />
+                    <ui:Label name="survival-header-title-label" text="BACKPACK" class="survival-menu-title"/>
+                    <ui:VisualElement class="survival-title-underline"/>
+                    <ui:Label name="survival-weight-label" text="0.00 / 0.00 KG" class="survival-menu-weight"/>
                 </ui:VisualElement>
 
-                <ui:Button name="survival-close-button" text="BACK" class="survival-close-button" />
+                <ui:Button name="survival-close-button" text="BACK" class="survival-close-button"/>
             </ui:VisualElement>
 
             <ui:VisualElement class="survival-menu-content">
 
                 <ui:VisualElement class="survival-category-column">
                     <ui:Button name="survival-inventory-tab-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-all" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-all"/>
                     </ui:Button>
 
                     <ui:Button name="survival-food-category-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-food" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-food"/>
                     </ui:Button>
 
                     <ui:Button name="survival-medicine-category-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-medicine" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-medicine"/>
                     </ui:Button>
 
                     <ui:Button name="survival-clothes-category-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-clothing" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-clothing"/>
                     </ui:Button>
 
                     <ui:Button name="survival-tools-category-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-tools" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-tools"/>
                     </ui:Button>
 
                     <ui:Button name="survival-fire-category-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-fire" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-fire"/>
                     </ui:Button>
 
                     <ui:Button name="survival-crafting-tab-button" text="" class="survival-category-button">
-                        <ui:VisualElement class="survival-category-icon survival-category-icon-craft" />
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-craft"/>
                     </ui:Button>
                 </ui:VisualElement>
 
                 <ui:VisualElement class="survival-list-panel">
                     <ui:VisualElement class="survival-list-header">
                         <ui:Label
-                            name="survival-items-label"
-                            text="ITEMS"
-                            class="survival-section-title" />
+                                name="survival-items-label"
+                                text="ITEMS"
+                                class="survival-section-title"/>
 
                         <ui:Label
-                            name="survival-sort-label"
-                            text="SORT: A-Z"
-                            class="survival-sort-label" />
+                                name="survival-sort-label"
+                                text="SORT: A-Z"
+                                class="survival-sort-label"/>
                     </ui:VisualElement>
 
-                    <ui:ListView name="survival-list-view" class="survival-list-view" />
+                    <ui:ListView name="survival-list-view" class="survival-list-view"/>
                 </ui:VisualElement>
 
                 <ui:VisualElement class="survival-details-panel">
-                    <ui:Label name="survival-details-title-label" text="ITEM" class="survival-details-title" />
+                    <ui:Label name="survival-details-title-label" text="ITEM" class="survival-details-title"/>
 
                     <ui:Label
-                        name="survival-details-description-label"
-                        text="Select an item."
-                        class="survival-details-description" />
+                            name="survival-details-description-label"
+                            text="Select an item."
+                            class="survival-details-description"/>
 
                     <ui:VisualElement class="survival-details-icon-frame">
-                        <ui:VisualElement name="survival-details-icon" class="survival-details-icon" />
+                        <ui:VisualElement name="survival-details-icon" class="survival-details-icon"/>
                     </ui:VisualElement>
 
                     <ui:VisualElement class="survival-details-meta-panel">
-                        <ui:Label name="survival-details-meta-label" text="-" class="survival-details-meta" />
+                        <ui:Label name="survival-details-meta-label" text="-" class="survival-details-meta"/>
                     </ui:VisualElement>
 
-                    <ui:Button name="survival-action-button" text="USE" class="survival-action-button" />
+                    <ui:Button name="survival-action-button" text="USE" class="survival-action-button"/>
                 </ui:VisualElement>
 
             </ui:VisualElement>

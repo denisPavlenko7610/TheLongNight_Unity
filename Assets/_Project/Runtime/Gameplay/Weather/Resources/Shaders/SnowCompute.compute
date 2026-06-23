@@ -22,7 +22,10 @@ float _SeedOffset;
 float _MinSize;
 float _MaxSize;
 
-float Hash(float s) { return frac(sin(s) * 43758.5453); }
+float Hash(float s)
+{
+	return frac(sin(s) * 43758.5453);
+}
 
 float SnowflakeSizeT(float seed)
 {
@@ -60,12 +63,14 @@ void RespawnParticle(inout SnowParticle p, float seed, bool topSpawn)
 	p.position = ct + float3(
 		(Hash(seed) - 0.5) * he.x * 2.0,
 		verticalPosition,
-		(Hash(seed + 0.27) - 0.5) * he.z * 2.0);
+		(Hash(seed + 0.27) - 0.5) * he.z * 2.0
+	);
 
 	p.velocity = float3(
 		Hash(seed + 0.4) * 0.7 - 0.35,
 		-Hash(seed + 0.5) * 1.8 - 0.45,
-		Hash(seed + 0.6) * 0.7 - 0.35);
+		Hash(seed + 0.6) * 0.7 - 0.35
+	);
 
 	float sizeT = SnowflakeSizeT(seed);
 	p.size = lerp(_MinSize, _MaxSize, sizeT);
@@ -76,19 +81,26 @@ void RespawnParticle(inout SnowParticle p, float seed, bool topSpawn)
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
 	uint index = id.x;
-	if (index >= _ParticleCount) return;
+	if (index >= _ParticleCount)
+	{
+		return;
+	}
 
 	SnowParticle p = _SnowParticles[index];
 
 	float3 turb = float3(
 		Turbulence3D(p.position, p.seed, _Turbulence),
 		Turbulence3D(p.position + float3(43, 17, 0), p.seed + 1, _Turbulence * 0.5),
-		Turbulence3D(p.position + float3(0, 29, 61), p.seed + 2, _Turbulence));
+		Turbulence3D(p.position + float3(0, 29, 61), p.seed + 2, _Turbulence)
+	);
 
 	p.velocity += (float3(0, -_Gravity, 0) + _Wind + turb) * _DeltaTime;
 
 	float spd = length(p.velocity);
-	if (spd > 5.0) p.velocity = (p.velocity / spd) * 5.0;
+	if (spd > 5.0)
+	{
+		p.velocity = (p.velocity / spd) * 5.0;
+	}
 
 	p.position += p.velocity * _DeltaTime;
 

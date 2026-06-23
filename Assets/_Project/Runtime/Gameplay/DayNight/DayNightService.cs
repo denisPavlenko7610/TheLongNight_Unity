@@ -64,11 +64,15 @@ namespace TLN.Gameplay.DayNight
 			float phaseEnd = _config.GetPhaseEndHour(CurrentPhase);
 
 			if (phaseEnd <= phaseStart)
+			{
 				phaseEnd += 24f;
+			}
 
 			float normalizedHour = hour;
 			if (normalizedHour < phaseStart)
+			{
 				normalizedHour += 24f;
+			}
 
 			PhaseProgress01 = Mathf.Approximately(phaseEnd, phaseStart)
 				? 0f

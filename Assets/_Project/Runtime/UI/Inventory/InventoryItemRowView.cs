@@ -8,115 +8,118 @@ using UnityEngine.UIElements;
 
 namespace TLN.UI.Inventory
 {
-    public sealed class InventoryItemRowView
-    {
-        private readonly VisualElement _root;
-        private readonly VisualElement _icon;
-        private readonly Label _nameLabel;
-        private readonly Label _metaLabel;
-        private readonly Button _useButton;
-        private readonly IAddressableAssetService _addressableAssetService;
+	public sealed class InventoryItemRowView
+	{
+		private readonly VisualElement _root;
+		private readonly VisualElement _icon;
+		private readonly Label _nameLabel;
+		private readonly Label _metaLabel;
+		private readonly Button _useButton;
+		private readonly IAddressableAssetService _addressableAssetService;
 
-        private int _itemIndex;
-        private int _iconRequestVersion;
-        private bool _isDisposed;
-        private Action<int> _useClicked;
+		private int _itemIndex;
+		private int _iconRequestVersion;
+		private bool _isDisposed;
+		private Action<int> _useClicked;
 
-        public VisualElement Root => _root;
+		public VisualElement Root => _root;
 
-        public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
-        {
-            _root = root;
-            _addressableAssetService = addressableAssetService;
+		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
+		{
+			_root = root;
+			_addressableAssetService = addressableAssetService;
 
-            _icon = root.RequiredQ<VisualElement>("item-icon");
-            _nameLabel = root.RequiredQ<Label>("item-name-label");
-            _metaLabel = root.RequiredQ<Label>("item-meta-label");
-            _useButton = root.RequiredQ<Button>("item-use-button");
+			_icon = root.RequiredQ<VisualElement>("item-icon");
+			_nameLabel = root.RequiredQ<Label>("item-name-label");
+			_metaLabel = root.RequiredQ<Label>("item-meta-label");
+			_useButton = root.RequiredQ<Button>("item-use-button");
 
-            _useButton.clicked += OnUseClicked;
-        }
+			_useButton.clicked += OnUseClicked;
+		}
 
-        public void Bind(int itemIndex, ItemStack stack, Action<int> useClicked)
-        {
-            _itemIndex = itemIndex;
-            _useClicked = useClicked;
-            _isDisposed = false;
+		public void Bind(int itemIndex, ItemStack stack, Action<int> useClicked)
+		{
+			_itemIndex = itemIndex;
+			_useClicked = useClicked;
+			_isDisposed = false;
 
-            _nameLabel.text = stack.Definition.DisplayName;
-            _metaLabel.text = CreateMetaText(stack);
-            _useButton.SetEnabled(stack.Definition.UseKind != ItemUseKind.None);
+			_nameLabel.text = stack.Definition.DisplayName;
+			_metaLabel.text = CreateMetaText(stack);
+			_useButton.SetEnabled(stack.Definition.UseKind != ItemUseKind.None);
 
-            SetIcon(stack.Definition);
-        }
+			SetIcon(stack.Definition);
+		}
 
-        public void Dispose()
-        {
-            _isDisposed = true;
-            _iconRequestVersion++;
+		public void Dispose()
+		{
+			_isDisposed = true;
+			_iconRequestVersion++;
 
-            _useButton.clicked -= OnUseClicked;
-        }
+			_useButton.clicked -= OnUseClicked;
+		}
 
-        private static string CreateMetaText(ItemStack stack)
-        {
-            string weightText = $"{stack.Definition.Weight * stack.Amount:0.##} kg";
+		private static string CreateMetaText(ItemStack stack)
+		{
+			string weightText = $"{stack.Definition.Weight * stack.Amount:0.##} kg";
 
-            if (stack.Definition is ClothingItemDefinition clothing)
-            {
-                return $"x{stack.Amount} / {weightText} / {clothing.Slot} / +{clothing.WarmthBonus:0.#} warmth";
-            }
+			if (stack.Definition is ClothingItemDefinition clothing)
+			{
+				return $"x{stack.Amount} / {weightText} / {clothing.Slot} / +{clothing.WarmthBonus:0.#} warmth";
+			}
 
-            return $"x{stack.Amount} / {weightText}";
-        }
+			return $"x{stack.Amount} / {weightText}";
+		}
 
-        private void SetIcon(ItemDefinition definition)
-        {
-            _iconRequestVersion++;
-            int requestVersion = _iconRequestVersion;
+		private void SetIcon(ItemDefinition definition)
+		{
+			_iconRequestVersion++;
+			int requestVersion = _iconRequestVersion;
 
-            _icon.style.backgroundImage = StyleKeyword.None;
+			_icon.style.backgroundImage = StyleKeyword.None;
 
-            if (definition == null)
-            {
-                return;
-            }
+			if (definition == null)
+			{
+				return;
+			}
 
-            if (definition.IconReference == null || !definition.IconReference.RuntimeKeyIsValid())
-            {
-                return;
-            }
+			if (definition.IconReference == null || !definition.IconReference.RuntimeKeyIsValid())
+			{
+				return;
+			}
 
-            _addressableAssetService?.LoadSprite(definition.IconReference, sprite =>
-            {
-                if (_isDisposed)
-                {
-                    return;
-                }
+			_addressableAssetService?.LoadSprite(
+				definition.IconReference,
+				sprite =>
+				{
+					if (_isDisposed)
+					{
+						return;
+					}
 
-                if (requestVersion != _iconRequestVersion)
-                {
-                    return;
-                }
+					if (requestVersion != _iconRequestVersion)
+					{
+						return;
+					}
 
-                SetDirectIcon(sprite);
-            });
-        }
+					SetDirectIcon(sprite);
+				}
+			);
+		}
 
-        private void SetDirectIcon(Sprite sprite)
-        {
-            if (sprite == null)
-            {
-                _icon.style.backgroundImage = StyleKeyword.None;
-                return;
-            }
+		private void SetDirectIcon(Sprite sprite)
+		{
+			if (sprite == null)
+			{
+				_icon.style.backgroundImage = StyleKeyword.None;
+				return;
+			}
 
-            _icon.style.backgroundImage = new StyleBackground(sprite);
-        }
+			_icon.style.backgroundImage = new StyleBackground(sprite);
+		}
 
-        private void OnUseClicked()
-        {
-            _useClicked?.Invoke(_itemIndex);
-        }
-    }
+		private void OnUseClicked()
+		{
+			_useClicked?.Invoke(_itemIndex);
+		}
+	}
 }

@@ -9,151 +9,150 @@ using VContainer;
 
 namespace TLN.UI.Building
 {
-    [RequireComponent(typeof(UIDocument))]
-    public sealed class BuildWindowView : MonoBehaviour, IBuildWindow
-    {
-        private const string VisibleClassName = "build-window-root-visible";
+	[RequireComponent(typeof(UIDocument))]
+	public sealed class BuildWindowView : MonoBehaviour, IBuildWindow
+	{
+		private const string VisibleClassName = "build-window-root-visible";
 
-        private readonly List<BuildRecipeButtonView> _recipeButtonViews = new();
+		private readonly List<BuildRecipeButtonView> _recipeButtonViews = new();
 
-        private VisualElement _root;
-        private ScrollView _recipesScrollView;
-        private Button _closeButton;
+		private VisualElement _root;
+		private ScrollView _recipesScrollView;
+		private Button _closeButton;
 
-        private BuildRecipeCatalog _recipeCatalog;
-        private IBuildService _buildService;
-        private IInputModeService _inputModeService;
-        private INotificationService _notificationService;
+		private BuildRecipeCatalog _recipeCatalog;
+		private IBuildService _buildService;
+		private IInputModeService _inputModeService;
+		private INotificationService _notificationService;
 
-        private bool _isVisible;
+		private bool _isVisible;
 
-        [Inject]
-        public void Construct(
-            BuildRecipeCatalog recipeCatalog,
-            IBuildService buildService,
-            IInputModeService inputModeService,
-            INotificationService notificationService)
-        {
-            _recipeCatalog = recipeCatalog;
-            _buildService = buildService;
-            _inputModeService = inputModeService;
-            _notificationService = notificationService;
+		[Inject]
+		public void Construct(
+			BuildRecipeCatalog recipeCatalog,
+			IBuildService buildService,
+			IInputModeService inputModeService,
+			INotificationService notificationService
+		)
+		{
+			_recipeCatalog = recipeCatalog;
+			_buildService = buildService;
+			_inputModeService = inputModeService;
+			_notificationService = notificationService;
 
-            Hide();
-        }
+			Hide();
+		}
 
-        private void Awake()
-        {
-            UIDocument document = GetComponent<UIDocument>();
-            VisualElement documentRoot = document.rootVisualElement;
+		private void Awake()
+		{
+			UIDocument document = GetComponent<UIDocument>();
+			VisualElement documentRoot = document.rootVisualElement;
 
-            _root = documentRoot.RequiredQ<VisualElement>("build-window-root");
-            _recipesScrollView = documentRoot.RequiredQ<ScrollView>("build-recipes-scroll-view");
-            _closeButton = documentRoot.RequiredQ<Button>("build-close-button");
+			_root = documentRoot.RequiredQ<VisualElement>("build-window-root");
+			_recipesScrollView = documentRoot.RequiredQ<ScrollView>("build-recipes-scroll-view");
+			_closeButton = documentRoot.RequiredQ<Button>("build-close-button");
 
-            _closeButton.clicked += Hide;
-        }
+			_closeButton.clicked += Hide;
+		}
 
-        private void OnDestroy()
-        {
-            if (_closeButton != null)
-            {
-                _closeButton.clicked -= Hide;
-            }
+		private void OnDestroy()
+		{
+			if (_closeButton != null)
+			{
+				_closeButton.clicked -= Hide;
+			}
 
-            ClearRecipes();
-        }
+			ClearRecipes();
+		}
 
-        public void Toggle()
-        {
-            if (_isVisible)
-            {
-                Hide();
-                return;
-            }
+		public void Toggle()
+		{
+			if (_isVisible)
+			{
+				Hide();
+				return;
+			}
 
-            Show();
-        }
+			Show();
+		}
 
-        public void Hide()
-        {
-            _isVisible = false;
+		public void Hide()
+		{
+			_isVisible = false;
 
-            _root?.RemoveFromClassList(VisibleClassName);
+			_root?.RemoveFromClassList(VisibleClassName);
 
-            _inputModeService?.SetGameplayMode();
-        }
+			_inputModeService?.SetGameplayMode();
+		}
 
-        private void Show()
-        {
-            _isVisible = true;
-            RefreshRecipes();
+		private void Show()
+		{
+			_isVisible = true;
+			RefreshRecipes();
 
-            _root?.AddToClassList(VisibleClassName);
+			_root?.AddToClassList(VisibleClassName);
 
-            _inputModeService?.SetUIMode();
-        }
+			_inputModeService?.SetUIMode();
+		}
 
-        private void RefreshRecipes()
-        {
-            ClearRecipes();
+		private void RefreshRecipes()
+		{
+			ClearRecipes();
 
-            if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
-            {
-                _notificationService?.Show("Build recipes are missing.");
-                return;
-            }
+			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
+			{
+				_notificationService?.Show("Build recipes are missing.");
+				return;
+			}
 
-            foreach (BuildRecipeDefinition recipe in _recipeCatalog.Recipes)
-            {
-                if (recipe == null)
-                {
-                    continue;
-                }
+			foreach (BuildRecipeDefinition recipe in _recipeCatalog.Recipes)
+			{
+				if (recipe == null)
+				{
+					continue;
+				}
 
-                CreateRecipeButton(recipe);
-            }
-        }
+				CreateRecipeButton(recipe);
+			}
+		}
 
-        private void CreateRecipeButton(BuildRecipeDefinition recipe)
-        {
-            BuildRecipeButtonView buttonView = new BuildRecipeButtonView(
-                recipe,
-                OnBuildClicked);
+		private void CreateRecipeButton(BuildRecipeDefinition recipe)
+		{
+			BuildRecipeButtonView buttonView = new BuildRecipeButtonView(recipe, OnBuildClicked);
 
-            _recipeButtonViews.Add(buttonView);
-            _recipesScrollView.Add(buttonView.Root);
-        }
+			_recipeButtonViews.Add(buttonView);
+			_recipesScrollView.Add(buttonView.Root);
+		}
 
-        private void OnBuildClicked(BuildRecipeDefinition recipe)
-        {
-            if (_buildService == null)
-            {
-                _notificationService?.Show("Build service is missing.");
-                return;
-            }
+		private void OnBuildClicked(BuildRecipeDefinition recipe)
+		{
+			if (_buildService == null)
+			{
+				_notificationService?.Show("Build service is missing.");
+				return;
+			}
 
-            BuildResult result = _buildService.Build(recipe);
+			BuildResult result = _buildService.Build(recipe);
 
-            if (result.IsSuccess)
-            {
-                Hide();
-            }
-        }
+			if (result.IsSuccess)
+			{
+				Hide();
+			}
+		}
 
-        private void ClearRecipes()
-        {
-            foreach (BuildRecipeButtonView buttonView in _recipeButtonViews)
-            {
-                buttonView.Dispose();
-            }
+		private void ClearRecipes()
+		{
+			foreach (BuildRecipeButtonView buttonView in _recipeButtonViews)
+			{
+				buttonView.Dispose();
+			}
 
-            _recipeButtonViews.Clear();
+			_recipeButtonViews.Clear();
 
-            if (_recipesScrollView != null)
-            {
-                _recipesScrollView.Clear();
-            }
-        }
-    }
+			if (_recipesScrollView != null)
+			{
+				_recipesScrollView.Clear();
+			}
+		}
+	}
 }

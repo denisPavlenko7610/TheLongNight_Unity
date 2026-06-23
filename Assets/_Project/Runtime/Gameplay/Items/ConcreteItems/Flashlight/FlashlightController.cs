@@ -44,22 +44,26 @@ namespace TLN.Gameplay.Flashlight
 
 		public void Toggle()
 		{
-			if (_isOn) {
+			if (_isOn)
+			{
 				TurnOff();
 			}
-			else {
+			else
+			{
 				TurnOn();
 			}
 		}
 
 		private void TurnOn()
 		{
-			if (_currentBattery <= 0f) {
+			if (_currentBattery <= 0f)
+			{
 				return;
 			}
 
 			_isOn = true;
-			if (_light != null) {
+			if (_light != null)
+			{
 				_light.enabled = true;
 			}
 			OnStateChanged?.Invoke(true);
@@ -68,7 +72,8 @@ namespace TLN.Gameplay.Flashlight
 		private void TurnOff()
 		{
 			_isOn = false;
-			if (_light != null) {
+			if (_light != null)
+			{
 				_light.enabled = false;
 			}
 			OnStateChanged?.Invoke(false);

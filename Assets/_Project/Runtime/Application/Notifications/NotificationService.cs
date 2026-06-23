@@ -1,5 +1,4 @@
 ﻿using TLN.Core.Logging;
-using UnityEngine;
 
 namespace TLN.Application.Notifications
 {

@@ -1,24 +1,24 @@
 {
-    "name": "TLN.Gameplay",
-    "rootNamespace": "",
-    "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:a67556dddcab4a758aee68b3fd82911b",
-        "GUID:8f08fa4cbd82da1408aaa7c16afdc67f",
-        "GUID:49cbf21cabd7ad5468a920bb5c7777b6",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:9e24947de15b9834991c9d8411ea37cf",
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
-        "GUID:df380645f10b7bc4b97d4f5eb6303d95",
-        "GUID:457756d89b35d2941b3e7b37b4ece6f1"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "TLN.Gameplay",
+  "rootNamespace": "",
+  "references": [
+    "GUID:75469ad4d38634e559750d17036d5f7c",
+    "GUID:a67556dddcab4a758aee68b3fd82911b",
+    "GUID:8f08fa4cbd82da1408aaa7c16afdc67f",
+    "GUID:49cbf21cabd7ad5468a920bb5c7777b6",
+    "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+    "GUID:9e24947de15b9834991c9d8411ea37cf",
+    "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+    "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+    "GUID:457756d89b35d2941b3e7b37b4ece6f1"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

@@ -7,7 +7,7 @@ namespace TLN.Gameplay.Player.Input
 {
 	public sealed class PlayerTimeOverlayController : MonoBehaviour
 	{
-		[SerializeField][Assign] private PlayerInputReader _inputReader;
+		[SerializeField] [Assign] private PlayerInputReader _inputReader;
 
 		private ITimeOverlayView _timeOverlayView;
 		private bool _wasStatusHeldPreviousFrame;

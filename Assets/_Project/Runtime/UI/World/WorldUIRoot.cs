@@ -11,28 +11,28 @@ namespace TLN.UI.World
 	public sealed class WorldUIRoot : MonoBehaviour
 	{
 		[field: Header("World UI")]
-		[field: SerializeField][field: Assign(Mode.Scene)]
+		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public WorldHUDView HUD { get; private set; }
 
-		[field: SerializeField][field: Assign(Mode.Scene)]
+		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public SurvivalMenuWindowView SurvivalMenu { get; private set; }
 
-		[field: SerializeField][field: Assign(Mode.Scene)]
+		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public SleepWindowView SleepWindow { get; private set; }
 
-		[field: SerializeField][field: Assign(Mode.Scene)]
+		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public PauseMenuView PauseMenu { get; private set; }
 
-		[field: SerializeField][field: Assign(Mode.Scene)]
+		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public CampfireWindowView CampfireWindow { get; private set; }
 
 		public bool HasAllRequiredReferences()
 		{
-			return HUD != null
-				&& SurvivalMenu != null
-				&& CampfireWindow != null
-				&& SleepWindow != null
-				&& PauseMenu != null;
+			return HUD != null &&
+				SurvivalMenu != null &&
+				CampfireWindow != null &&
+				SleepWindow != null &&
+				PauseMenu != null;
 		}
 	}
 }

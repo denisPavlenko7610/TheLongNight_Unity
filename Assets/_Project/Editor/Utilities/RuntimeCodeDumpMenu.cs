@@ -24,7 +24,7 @@ namespace TLN.Editor.Utilities
 			".cs",
 			".uxml",
 			".uss",
-			".ucss",
+			".ucss"
 		};
 
 		[MenuItem(MenuPath)]
@@ -51,7 +51,7 @@ namespace TLN.Editor.Utilities
 
 			ClearPreviousDumpFiles();
 
-			List<string> createdFiles = new List<string>();
+			List<string> createdFiles = new();
 			int partIndex = 1;
 			int filesInCurrentPart = 0;
 			StringBuilder builder = CreatePartBuilder(partIndex, files.Length);
@@ -75,7 +75,10 @@ namespace TLN.Editor.Utilities
 
 				if (blockEstimatedTokens > MaxEstimatedTokensPerFile)
 				{
-					Debug.LogWarning($"Single file exceeds token limit estimate and will be written as one block: {assetPath} ({blockEstimatedTokens} tokens)");
+					Debug.LogWarning(
+						$"Single file exceeds token limit estimate and will be written as one block:" +
+						$" {assetPath} ({blockEstimatedTokens} tokens)"
+					);
 				}
 
 				builder.Append(block);
@@ -163,7 +166,9 @@ namespace TLN.Editor.Utilities
 		{
 			DeleteAssetAndMeta(LegacyOutputFile);
 
-			foreach (string filePath in Directory.GetFiles(UnityEngine.Application.dataPath, $"{OutputFileNamePrefix}*{OutputFileExtension}", SearchOption.TopDirectoryOnly))
+			foreach (string filePath in Directory.GetFiles(UnityEngine.Application.dataPath,
+					$"{OutputFileNamePrefix}*{OutputFileExtension}",
+					SearchOption.TopDirectoryOnly))
 			{
 				DeleteAssetAndMeta(ToAssetPath(filePath));
 			}

@@ -6,60 +6,54 @@ using VContainer.Unity;
 
 namespace TLN.Application.Time
 {
-    public sealed class GameStatePauseController :
-        IInitializable,
-        IDisposable
-    {
-        private readonly IGameStateMachine _gameStateMachine;
-        private readonly IGameTimeScaleService _timeScaleService;
+	public sealed class GameStatePauseController : IInitializable, IDisposable
+	{
+		private readonly IGameStateMachine _gameStateMachine;
+		private readonly IGameTimeScaleService _timeScaleService;
 
-        public GameStatePauseController(
-            IGameStateMachine gameStateMachine,
-            IGameTimeScaleService timeScaleService)
-        {
-            _gameStateMachine = gameStateMachine;
-            _timeScaleService = timeScaleService;
-        }
+		public GameStatePauseController(IGameStateMachine gameStateMachine, IGameTimeScaleService timeScaleService)
+		{
+			_gameStateMachine = gameStateMachine;
+			_timeScaleService = timeScaleService;
+		}
 
-        public void Initialize()
-        {
-            _gameStateMachine.StateChanged += OnGameStateChanged;
+		public void Initialize()
+		{
+			_gameStateMachine.StateChanged += OnGameStateChanged;
 
-            if (_gameStateMachine.CurrentState != GameStateId.None)
-            {
-                ApplyState(_gameStateMachine.CurrentState);
-            }
-        }
+			if (_gameStateMachine.CurrentState != GameStateId.None)
+			{
+				ApplyState(_gameStateMachine.CurrentState);
+			}
+		}
 
-        public void Dispose()
-        {
-            _gameStateMachine.StateChanged -= OnGameStateChanged;
+		public void Dispose()
+		{
+			_gameStateMachine.StateChanged -= OnGameStateChanged;
 
-            UnityEngine.Time.timeScale = 1f;
-            AudioListener.pause = false;
-        }
+			UnityEngine.Time.timeScale = 1f;
+			AudioListener.pause = false;
+		}
 
-        private void OnGameStateChanged(
-            GameStateId previousState,
-            GameStateId nextState)
-        {
-            ApplyState(nextState);
-        }
+		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)
+		{
+			ApplyState(nextState);
+		}
 
-        private void ApplyState(GameStateId state)
-        {
-            bool shouldStopSimulation = state is GameStateId.Paused or GameStateId.Loading;
+		private void ApplyState(GameStateId state)
+		{
+			bool shouldStopSimulation = state is GameStateId.Paused or GameStateId.Loading;
 
-            if (shouldStopSimulation)
-            {
-                _timeScaleService.SetPaused();
-            }
-            else
-            {
-                _timeScaleService.SetNormal();
-            }
+			if (shouldStopSimulation)
+			{
+				_timeScaleService.SetPaused();
+			}
+			else
+			{
+				_timeScaleService.SetNormal();
+			}
 
-            AudioListener.pause = state == GameStateId.Paused;
-        }
-    }
+			AudioListener.pause = state == GameStateId.Paused;
+		}
+	}
 }

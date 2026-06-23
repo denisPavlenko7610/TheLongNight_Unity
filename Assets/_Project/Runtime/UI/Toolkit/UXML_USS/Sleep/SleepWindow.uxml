@@ -13,7 +13,7 @@
                 <ui:Button name="sleep-4h-button" text="4 HOURS" class="sleep-button"/>
                 <ui:Button name="sleep-8h-button" text="8 HOURS" class="sleep-button"/>
             </ui:VisualElement>
-            <ui:Button name="sleep-pick-up-button" text="PICK UP" class="sleep-pick-up-button" />
+            <ui:Button name="sleep-pick-up-button" text="PICK UP" class="sleep-pick-up-button"/>
             <ui:Button name="sleep-cancel-button" text="CANCEL" class="sleep-cancel-button"/>
         </ui:VisualElement>
     </ui:VisualElement>

@@ -1,5 +1,4 @@
 using TLN.Application.GameStates;
-using TLN.Application.Notifications;
 using TLN.Core.GameStates;
 using UnityEngine;
 using VContainer;
@@ -13,7 +12,11 @@ namespace TLN.Gameplay.Survival
 		private SurvivalWarningService _warningService;
 
 		[Inject]
-		public void Construct(ISurvivalService survivalService, SurvivalWarningService survivalWarningService, IGameStateMachine gameStateMachine)
+		public void Construct(
+			ISurvivalService survivalService,
+			SurvivalWarningService survivalWarningService,
+			IGameStateMachine gameStateMachine
+		)
 		{
 			_survivalService = survivalService;
 			_gameStateMachine = gameStateMachine;

@@ -42,9 +42,7 @@ namespace TLN.Gameplay.Player.Input
 		}
 
 		[Inject]
-		public void Construct(
-			IInventoryWindow inventoryWindow,
-			IGameStateMachine gameStateMachine)
+		public void Construct(IInventoryWindow inventoryWindow, IGameStateMachine gameStateMachine)
 		{
 			_inventoryWindow = inventoryWindow;
 			_gameStateMachine = gameStateMachine;

@@ -25,14 +25,16 @@ namespace TLN.Gameplay.Player.Movement
 		{
 			_characterController = GetComponent<CharacterController>();
 
-			if (_inputReader == null) {
+			if (_inputReader == null)
+			{
 				_inputReader = GetComponent<PlayerInputReader>();
 			}
 		}
 
 		private void Update()
 		{
-			if (_inputModeService != null && _inputModeService.CanUseMovementInput) {
+			if (_inputModeService != null && _inputModeService.CanUseMovementInput)
+			{
 				Move(UnityEngine.Time.deltaTime);
 			}
 		}
@@ -69,7 +71,8 @@ namespace TLN.Gameplay.Player.Movement
 
 		private void ApplyGravity(float deltaTime)
 		{
-			if (_characterController.isGrounded && _verticalVelocity < 0f) {
+			if (_characterController.isGrounded && _verticalVelocity < 0f)
+			{
 				_verticalVelocity = -2f;
 			}
 

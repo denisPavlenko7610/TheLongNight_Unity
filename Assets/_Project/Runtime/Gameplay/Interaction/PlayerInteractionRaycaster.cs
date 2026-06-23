@@ -25,7 +25,13 @@ namespace TLN.Gameplay.Interaction
 
 				if (interactable != null)
 				{
-					interactionHit = new InteractionHit(interactable, hit.collider, hit.point, hit.normal, hit.distance);
+					interactionHit = new InteractionHit(
+						interactable,
+						hit.collider,
+						hit.point,
+						hit.normal,
+						hit.distance
+					);
 					return true;
 				}
 			}

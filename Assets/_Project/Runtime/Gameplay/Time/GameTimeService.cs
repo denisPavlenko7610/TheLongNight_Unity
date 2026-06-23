@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace TLN.Gameplay.Time
 {
@@ -37,13 +36,15 @@ namespace TLN.Gameplay.Time
 
 		public void Tick(float deltaTime)
 		{
-			if (deltaTime <= 0f) {
+			if (deltaTime <= 0f)
+			{
 				return;
 			}
 
 			_accumulatedGameMinutes += deltaTime * _config.GameMinutesPerRealSecond;
 
-			if (_accumulatedGameMinutes < 1f) {
+			if (_accumulatedGameMinutes < 1f)
+			{
 				return;
 			}
 
@@ -62,7 +63,8 @@ namespace TLN.Gameplay.Time
 
 		public void AdvanceHours(int hours)
 		{
-			if (hours <= 0) {
+			if (hours <= 0)
+			{
 				return;
 			}
 
@@ -71,7 +73,8 @@ namespace TLN.Gameplay.Time
 
 		public void AdvanceMinutes(int minutes)
 		{
-			if (minutes <= 0) {
+			if (minutes <= 0)
+			{
 				return;
 			}
 
@@ -85,12 +88,12 @@ namespace TLN.Gameplay.Time
 			int safeHour = Math.Clamp(hour, 0, 23);
 			int safeMinute = Math.Clamp(minute, 0, 59);
 
-			return ((safeDay - 1) * MinutesPerDay) + (safeHour * MinutesPerHour) + safeMinute;
+			return (safeDay - 1) * MinutesPerDay + safeHour * MinutesPerHour + safeMinute;
 		}
 
 		private static GameTime ConvertTotalMinutesToGameTime(int totalMinutes)
 		{
-			int day = (totalMinutes / MinutesPerDay) + 1;
+			int day = totalMinutes / MinutesPerDay + 1;
 			int minutesInCurrentDay = totalMinutes % MinutesPerDay;
 
 			int hour = minutesInCurrentDay / MinutesPerHour;

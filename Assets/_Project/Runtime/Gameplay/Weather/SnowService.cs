@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using TLN.Core.Logging;
+using TLN.Core.Utilities;
 using TLN.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -8,16 +9,16 @@ namespace TLN.Gameplay.Weather
 {
 	public sealed class SnowService : MonoBehaviour
 	{
-		[SerializeField] SnowConfig _config;
-		[SerializeField] Transform _followTarget;
-		[SerializeField] bool _autoFollowPlayerCamera = true;
-		[SerializeField, Range(0, 1)] float _intensity = 0.5f;
-		[SerializeField] Vector3 _windDirection = new Vector3(0.5f, 0, 0.3f);
-		[SerializeField, Range(0, 1)] float _windStrength = 0.5f;
-		[SerializeField] bool _active = true;
+		[SerializeField] private SnowConfig _config;
+		[SerializeField] private Transform _followTarget;
+		[SerializeField] private bool _autoFollowPlayerCamera = true;
+		[SerializeField] [Range(0, 1)] private float _intensity = 0.5f;
+		[SerializeField] private Vector3 _windDirection = new Vector3(0.5f, 0, 0.3f);
+		[SerializeField] [Range(0, 1)] private float _windStrength = 0.5f;
+		[SerializeField] private bool _active = true;
 
 		[StructLayout(LayoutKind.Sequential)]
-		struct Particle
+		private struct Particle
 		{
 			public Vector3 position;
 			public float seed;
@@ -25,54 +26,71 @@ namespace TLN.Gameplay.Weather
 			public float size;
 		}
 
-		ComputeShader _computeShader;
-		Material _material;
-		Mesh _quadMesh;
-		ComputeBuffer _particleBuffer;
-		ComputeBuffer _argsBuffer;
-		int _kernelIndex;
-		int _maxParticles;
-		bool _initialized;
+		private ComputeShader _computeShader;
+		private Material _material;
+		private Mesh _quadMesh;
+		private ComputeBuffer _particleBuffer;
+		private ComputeBuffer _argsBuffer;
+		private int _kernelIndex;
+		private int _maxParticles;
+		private bool _initialized;
 
-		float _radius, _height, _fallDepth, _gravity, _windInfluence, _turbulence;
-		float _minSize, _maxSize, _softness, _sparkleIntensity, _depthFade, _fadeDistance;
-		Color _color;
-		float _seedOffset;
-		Vector3 _lastVolumeCenter;
-		float _nextFollowSearchTime;
-		readonly uint[] _argsData = new uint[5];
+		private float _radius, _height, _fallDepth, _gravity, _windInfluence, _turbulence;
+		private float _minSize, _maxSize, _softness, _sparkleIntensity, _depthFade, _fadeDistance;
+		private Color _color;
+		private float _seedOffset;
+		private Vector3 _lastVolumeCenter;
+		private float _nextFollowSearchTime;
+		private readonly uint[] _argsData = new uint[5];
 
-		static readonly int PropSnowParticles = Shader.PropertyToID("_SnowParticles");
-		static readonly int PropVolumeCenter = Shader.PropertyToID("_VolumeCenter");
-		static readonly int PropVolumeHalfExtents = Shader.PropertyToID("_VolumeHalfExtents");
-		static readonly int PropWind = Shader.PropertyToID("_Wind");
-		static readonly int PropGravity = Shader.PropertyToID("_Gravity");
-		static readonly int PropTurbulence = Shader.PropertyToID("_Turbulence");
-		static readonly int PropDeltaTime = Shader.PropertyToID("_DeltaTime");
-		static readonly int PropParticleCount = Shader.PropertyToID("_ParticleCount");
-		static readonly int PropTime = Shader.PropertyToID("_Time");
-		static readonly int PropSeedOffset = Shader.PropertyToID("_SeedOffset");
-		static readonly int PropMinSize = Shader.PropertyToID("_MinSize");
-		static readonly int PropMaxSize = Shader.PropertyToID("_MaxSize");
-		static readonly int PropColor = Shader.PropertyToID("_Color");
-		static readonly int PropSoftness = Shader.PropertyToID("_Softness");
-		static readonly int PropSparkleIntensity = Shader.PropertyToID("_SparkleIntensity");
-		static readonly int PropSparkleFrequency = Shader.PropertyToID("_SparkleFrequency");
-		static readonly int PropTimeGlobal = Shader.PropertyToID("_TimeGlobal");
-		static readonly int PropDepthFade = Shader.PropertyToID("_DepthFade");
-		static readonly int PropFadeDistance = Shader.PropertyToID("_FadeDistance");
+		private static readonly int PropSnowParticles = Shader.PropertyToID("_SnowParticles");
+		private static readonly int PropVolumeCenter = Shader.PropertyToID("_VolumeCenter");
+		private static readonly int PropVolumeHalfExtents = Shader.PropertyToID("_VolumeHalfExtents");
+		private static readonly int PropWind = Shader.PropertyToID("_Wind");
+		private static readonly int PropGravity = Shader.PropertyToID("_Gravity");
+		private static readonly int PropTurbulence = Shader.PropertyToID("_Turbulence");
+		private static readonly int PropDeltaTime = Shader.PropertyToID("_DeltaTime");
+		private static readonly int PropParticleCount = Shader.PropertyToID("_ParticleCount");
+		private static readonly int PropTime = Shader.PropertyToID("_Time");
+		private static readonly int PropSeedOffset = Shader.PropertyToID("_SeedOffset");
+		private static readonly int PropMinSize = Shader.PropertyToID("_MinSize");
+		private static readonly int PropMaxSize = Shader.PropertyToID("_MaxSize");
+		private static readonly int PropColor = Shader.PropertyToID("_Color");
+		private static readonly int PropSoftness = Shader.PropertyToID("_Softness");
+		private static readonly int PropSparkleIntensity = Shader.PropertyToID("_SparkleIntensity");
+		private static readonly int PropSparkleFrequency = Shader.PropertyToID("_SparkleFrequency");
+		private static readonly int PropTimeGlobal = Shader.PropertyToID("_TimeGlobal");
+		private static readonly int PropDepthFade = Shader.PropertyToID("_DepthFade");
+		private static readonly int PropFadeDistance = Shader.PropertyToID("_FadeDistance");
 
-		public float Intensity { get => _intensity; set => _intensity = Mathf.Clamp01(value); }
-		public Transform Follow { get => _followTarget; set => AssignFollowTarget(value, true); }
-		public bool Active { get => _active; set => _active = value; }
-		public void SetWind(Vector3 direction, float strength) { _windDirection = direction.normalized; _windStrength = Mathf.Clamp01(strength); }
+		public float Intensity
+		{
+			get => _intensity;
+			set => _intensity = Mathf.Clamp01(value);
+		}
+		public Transform Follow
+		{
+			get => _followTarget;
+			set => AssignFollowTarget(value, true);
+		}
+		public bool Active
+		{
+			get => _active;
+			set => _active = value;
+		}
 
-		void Start()
+		public void SetWind(Vector3 direction, float strength)
+		{
+			_windDirection = direction.normalized;
+			_windStrength = Mathf.Clamp01(strength);
+		}
+
+		private void Start()
 		{
 			TryResolveFollowTarget(true);
 		}
 
-		void Awake()
+		private void Awake()
 		{
 			_radius = _config ? _config.Radius : 40f;
 			_height = _config ? _config.Height : 30f;
@@ -111,7 +129,7 @@ namespace TLN.Gameplay.Weather
 			_initialized = true;
 		}
 
-		void OnDestroy()
+		private void OnDestroy()
 		{
 			_particleBuffer?.Release();
 			_argsBuffer?.Release();
@@ -126,7 +144,7 @@ namespace TLN.Gameplay.Weather
 			}
 		}
 
-		void Update()
+		private void Update()
 		{
 			if (!_initialized || !_active)
 			{
@@ -156,7 +174,8 @@ namespace TLN.Gameplay.Weather
 			}
 			_lastVolumeCenter = volumeCenter;
 
-			float gust = Mathf.Sin(UnityEngine.Time.time * 0.7f) * 0.3f + Mathf.Sin(UnityEngine.Time.time * 1.3f + 1.5f) * 0.2f;
+			float gust = Mathf.Sin(UnityEngine.Time.time * 0.7f) * 0.3f +
+				Mathf.Sin(UnityEngine.Time.time * 1.3f + 1.5f) * 0.2f;
 			Vector3 windForce = _windDirection.normalized * (Mathf.Max(0f, _windStrength + gust) * _windInfluence * 2f);
 
 			_computeShader.SetVector(PropVolumeCenter, volumeCenter);
@@ -184,10 +203,20 @@ namespace TLN.Gameplay.Weather
 
 			UpdateArgsBuffer(activeCount);
 			Vector3 drawBoundsSize = halfExtents * 2.2f + Vector3.one * (_maxSize * 4f);
-			Graphics.DrawMeshInstancedIndirect(_quadMesh, 0, _material, new Bounds(volumeCenter, drawBoundsSize), _argsBuffer, 0, null, ShadowCastingMode.Off, false);
+			Graphics.DrawMeshInstancedIndirect(
+				_quadMesh,
+				0,
+				_material,
+				new Bounds(volumeCenter, drawBoundsSize),
+				_argsBuffer,
+				0,
+				null,
+				ShadowCastingMode.Off,
+				false
+			);
 		}
 
-		bool TryResolveFollowTarget(bool force)
+		private bool TryResolveFollowTarget(bool force)
 		{
 			if (!_autoFollowPlayerCamera || _followTarget)
 			{
@@ -208,7 +237,7 @@ namespace TLN.Gameplay.Weather
 				return true;
 			}
 
-			Camera mainCamera = Camera.main;
+			Camera mainCamera = CameraUtility.GetMainCamera();
 			if (mainCamera != null)
 			{
 				AssignFollowTarget(mainCamera.transform, true);
@@ -218,7 +247,7 @@ namespace TLN.Gameplay.Weather
 			return false;
 		}
 
-		void AssignFollowTarget(Transform target, bool recenter)
+		private void AssignFollowTarget(Transform target, bool recenter)
 		{
 			_followTarget = target;
 			if (!_initialized || !recenter || _followTarget == null)
@@ -231,7 +260,7 @@ namespace TLN.Gameplay.Weather
 			_lastVolumeCenter = volumeCenter;
 		}
 
-		void FillParticleBuffer(Vector3 center)
+		private void FillParticleBuffer(Vector3 center)
 		{
 			Vector3 halfExtents = new Vector3(_radius, _height * 0.5f, _radius);
 			Particle[] particles = new Particle[_maxParticles];
@@ -243,15 +272,18 @@ namespace TLN.Gameplay.Weather
 			{
 				particles[i] = new Particle
 				{
-					position = center + new Vector3(
-						Random.Range(-halfExtents.x, halfExtents.x),
-						Random.Range(-halfExtents.y, halfExtents.y),
-						Random.Range(-halfExtents.z, halfExtents.z)),
+					position = center +
+						new Vector3(
+							Random.Range(-halfExtents.x, halfExtents.x),
+							Random.Range(-halfExtents.y, halfExtents.y),
+							Random.Range(-halfExtents.z, halfExtents.z)
+						),
 					seed = Random.Range(0f, 10000f),
 					velocity = new Vector3(
 						Random.Range(-0.5f, 0.5f),
 						Random.Range(-2f, -0.2f),
-						Random.Range(-0.5f, 0.5f)),
+						Random.Range(-0.5f, 0.5f)
+					),
 					size = RandomSnowflakeSize()
 				};
 			}
@@ -260,13 +292,14 @@ namespace TLN.Gameplay.Weather
 			_particleBuffer.SetData(particles);
 		}
 
-		float RandomSnowflakeSize()
+		private float RandomSnowflakeSize()
 		{
 			float sizeT = Mathf.Pow(Random.value, 1.35f);
 			if (Random.value > 0.92f)
 			{
 				sizeT = Mathf.Lerp(sizeT, 1f, 0.65f);
 			}
+
 			if (Random.value < 0.18f)
 			{
 				sizeT *= 0.35f;
@@ -275,7 +308,7 @@ namespace TLN.Gameplay.Weather
 			return Mathf.Lerp(_minSize, _maxSize, Mathf.Clamp01(sizeT));
 		}
 
-		void UpdateArgsBuffer(int activeCount)
+		private void UpdateArgsBuffer(int activeCount)
 		{
 			_argsData[0] = _quadMesh.GetIndexCount(0);
 			_argsData[1] = (uint)Mathf.Clamp(activeCount, 0, _maxParticles);
@@ -285,26 +318,32 @@ namespace TLN.Gameplay.Weather
 			_argsBuffer.SetData(_argsData);
 		}
 
-		static ComputeBuffer CreateArgsBuffer(Mesh mesh, uint maxInstances)
+		private static ComputeBuffer CreateArgsBuffer(Mesh mesh, uint maxInstances)
 		{
 			ComputeBuffer buffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments);
 			buffer.SetData(new uint[] { mesh.GetIndexCount(0), maxInstances, 0, 0, 0 });
 			return buffer;
 		}
 
-		static Mesh CreateQuadMesh()
+		private static Mesh CreateQuadMesh()
 		{
 			Mesh mesh = new Mesh { name = "SnowQuad", hideFlags = HideFlags.HideAndDontSave };
-			mesh.SetVertices(new[]
-			{
-				new Vector3(-1, -1, 0), new Vector3(1, -1, 0),
-				new Vector3(1, 1, 0), new Vector3(-1, 1, 0)
-			});
+			mesh.SetVertices(
+				new[]
+				{
+					new Vector3(-1, -1, 0), new Vector3(1, -1, 0),
+					new Vector3(1, 1, 0), new Vector3(-1, 1, 0)
+				}
+			);
 
-			mesh.SetUVs(0, new[] {
-				new Vector2(0, 0), new Vector2(1, 0),
-				new Vector2(1, 1), new Vector2(0, 1)
-			});
+			mesh.SetUVs(
+				0,
+				new[]
+				{
+					new Vector2(0, 0), new Vector2(1, 0),
+					new Vector2(1, 1), new Vector2(0, 1)
+				}
+			);
 
 			mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
 			mesh.RecalculateBounds();

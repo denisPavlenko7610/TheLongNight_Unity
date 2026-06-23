@@ -21,15 +21,15 @@ using VContainer.Unity;
 
 public sealed class WorldLifetimeScope : LifetimeScope
 {
-	[SerializeField, Required] private WorldUIRoot _uiRoot;
-	[SerializeField, Required] private InventoryConfig _inventoryConfig;
-	[SerializeField, Required] private GameTimeConfig _gameTimeConfig;
-	[SerializeField, Required] private DayNightConfig _dayNightConfig;
-	[SerializeField, Required] private SurvivalConfig _survivalConfig;
-	[SerializeField, Required] private SleepConfig _sleepConfig;
-	[SerializeField, Required] private BuildRecipeCatalog _buildRecipeCatalog;
-	[SerializeField, Required] private ItemCatalog _itemCatalog;
-	[SerializeField, Required] private WorldPrefabCatalog _worldPrefabCatalog;
+	[SerializeField] [Required] private WorldUIRoot _uiRoot;
+	[SerializeField] [Required] private InventoryConfig _inventoryConfig;
+	[SerializeField] [Required] private GameTimeConfig _gameTimeConfig;
+	[SerializeField] [Required] private DayNightConfig _dayNightConfig;
+	[SerializeField] [Required] private SurvivalConfig _survivalConfig;
+	[SerializeField] [Required] private SleepConfig _sleepConfig;
+	[SerializeField] [Required] private BuildRecipeCatalog _buildRecipeCatalog;
+	[SerializeField] [Required] private ItemCatalog _itemCatalog;
+	[SerializeField] [Required] private WorldPrefabCatalog _worldPrefabCatalog;
 
 	[SerializeField] private float _survivalWarningCooldownSeconds = 30f;
 
@@ -50,15 +50,19 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.Register<DayNightService>(Lifetime.Scoped).As<IDayNightService>();
 		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();
 		builder.Register<SleepService>(Lifetime.Scoped);
-
 		builder.Register<InventoryService>(Lifetime.Scoped).As<IInventoryService>();
 		builder.Register<PlayerEquipmentService>(Lifetime.Scoped).As<IPlayerEquipmentService>();
 		builder.Register<ItemUseService>(Lifetime.Scoped).As<IItemUseService>();
 		builder.Register<IWorldObjectFactory, VContainerWorldObjectFactory>(Lifetime.Scoped);
 		builder.Register<PlacementService>(Lifetime.Scoped);
-		builder.Register(container => new SurvivalWarningService(
-			container.Resolve<ISurvivalService>(), container.Resolve<INotificationService>(),
-			_survivalWarningCooldownSeconds), Lifetime.Scoped);
+		builder.Register(
+			container => new SurvivalWarningService(
+				container.Resolve<ISurvivalService>(),
+				container.Resolve<INotificationService>(),
+				_survivalWarningCooldownSeconds
+			),
+			Lifetime.Scoped
+		);
 
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
 		builder.Register<IBuildService, BuildService>(Lifetime.Scoped);

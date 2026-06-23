@@ -43,7 +43,9 @@ namespace TLN.Gameplay.DayNight
 		private void Initialize()
 		{
 			if (_isInitialized)
+			{
 				return;
+			}
 
 			if (_sunLight != null)
 			{
@@ -81,7 +83,9 @@ namespace TLN.Gameplay.DayNight
 		private void ConfigureVisualEnvironment()
 		{
 			if (_visualEnvironment == null)
+			{
 				return;
+			}
 
 			_visualEnvironment.skyType.overrideState = true;
 			_visualEnvironment.skyType.value = SkySettings.GetUniqueID<PhysicallyBasedSky>();
@@ -94,13 +98,19 @@ namespace TLN.Gameplay.DayNight
 		private void Update()
 		{
 			if (!_isInitialized)
+			{
 				return;
+			}
 
 			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
+			{
 				return;
+			}
 
 			if (_dayNightService == null)
+			{
 				return;
+			}
 
 			_dayNightService.Refresh();
 			ApplyDayNightSettings();
@@ -132,16 +142,15 @@ namespace TLN.Gameplay.DayNight
 		private void ApplySun(Color color, float intensity, float shadowStrength)
 		{
 			if (_sunLight == null)
+			{
 				return;
+			}
 
 			_sunLight.color = color;
 			_sunLight.intensity = intensity;
 			_sunLight.shadowStrength = shadowStrength;
 
-			Quaternion rotation = Quaternion.Euler(
-				_dayNightService.SunElevation,
-				_dayNightService.SunAzimuth,
-				0f);
+			Quaternion rotation = Quaternion.Euler(_dayNightService.SunElevation, _dayNightService.SunAzimuth, 0f);
 
 			_sunLight.transform.rotation = rotation;
 
@@ -154,7 +163,9 @@ namespace TLN.Gameplay.DayNight
 		private void ApplySky(Color skyTint, Color groundTint)
 		{
 			if (_physicallyBasedSky == null)
+			{
 				return;
+			}
 
 			_physicallyBasedSky.zenithTint.overrideState = true;
 			_physicallyBasedSky.zenithTint.value = skyTint;
@@ -177,7 +188,9 @@ namespace TLN.Gameplay.DayNight
 		private void ApplyFog(Color color, float density)
 		{
 			if (_fog == null)
+			{
 				return;
+			}
 
 			_fog.color.overrideState = true;
 			_fog.color.value = color;
@@ -192,7 +205,9 @@ namespace TLN.Gameplay.DayNight
 		private void ApplyExposure(float exposureValue)
 		{
 			if (_exposure == null)
+			{
 				return;
+			}
 
 			_exposure.mode.overrideState = true;
 			_exposure.mode.value = ExposureMode.Fixed;
@@ -203,10 +218,14 @@ namespace TLN.Gameplay.DayNight
 		private void ApplyColorFilter(Color colorFilter)
 		{
 			if (_colorAdjustments == null)
+			{
 				return;
+			}
 
 			if (colorFilter == Color.clear)
+			{
 				colorFilter = Color.white;
+			}
 
 			_colorAdjustments.colorFilter.overrideState = true;
 			_colorAdjustments.colorFilter.value = colorFilter;
@@ -215,7 +234,9 @@ namespace TLN.Gameplay.DayNight
 		private PhaseSettings GetCurrentPhaseSettings()
 		{
 			if (_dayNightService == null || _config == null)
+			{
 				return _config.Day;
+			}
 
 			return _config.GetPhaseSettings(_dayNightService.CurrentPhase);
 		}
@@ -223,7 +244,9 @@ namespace TLN.Gameplay.DayNight
 		private PhaseSettings GetNextPhaseSettings()
 		{
 			if (_dayNightService == null || _config == null)
+			{
 				return _config.Day;
+			}
 
 			DayNightPhase nextPhase = _config.GetNextPhase(_dayNightService.CurrentPhase);
 			return _config.GetPhaseSettings(nextPhase);

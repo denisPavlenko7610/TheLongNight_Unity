@@ -9,15 +9,13 @@ namespace TLN.Editor.PlayFromBoot
 	public static class PlayFromBoot
 	{
 		private const string BootScenePath = "Assets/_Project/Scenes/Boot.unity";
-		private const string InspectorRestoreSessionKey =
-			"TLN.Editor.PlayFromBoot.RestoreInspectorWindow";
+		private const string InspectorRestoreSessionKey = "TLN.Editor.PlayFromBoot.RestoreInspectorWindow";
 
 		private static bool _preparedForPendingPlayMode;
 
 		static PlayFromBoot()
 		{
-			EditorSceneManager.playModeStartScene =
-				AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
+			EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
 
 			EditorApplication.update -= OnEditorUpdate;
 			EditorApplication.update += OnEditorUpdate;
@@ -37,8 +35,7 @@ namespace TLN.Editor.PlayFromBoot
 				EditorApplication.delayCall += RestoreInspectorWindow;
 			}
 
-			if (EditorApplication.isPlaying ||
-			    EditorApplication.isPlayingOrWillChangePlaymode)
+			if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
 			{
 				PrepareForPlayModeTransition();
 			}
@@ -81,6 +78,7 @@ namespace TLN.Editor.PlayFromBoot
 					_preparedForPendingPlayMode = false;
 					EditorApplication.delayCall -= ClearEditorSelection;
 					EditorApplication.delayCall += ClearEditorSelection;
+
 					EditorApplication.delayCall -= RestoreInspectorWindow;
 					EditorApplication.delayCall += RestoreInspectorWindow;
 					break;
@@ -89,8 +87,7 @@ namespace TLN.Editor.PlayFromBoot
 
 		private static void OnBeforeAssemblyReload()
 		{
-			if (!EditorApplication.isPlaying &&
-			    !EditorApplication.isPlayingOrWillChangePlaymode)
+			if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode)
 			{
 				return;
 			}
@@ -106,8 +103,7 @@ namespace TLN.Editor.PlayFromBoot
 
 		private static void SelectStableEditorTarget()
 		{
-			SceneAsset bootScene =
-				AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
+			SceneAsset bootScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(BootScenePath);
 
 			if (bootScene == null)
 			{
@@ -121,16 +117,14 @@ namespace TLN.Editor.PlayFromBoot
 
 		private static void CloseInspectorWindows()
 		{
-			Type inspectorWindowType =
-				typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+			Type inspectorWindowType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
 
 			if (inspectorWindowType == null)
 			{
 				return;
 			}
 
-			UnityEngine.Object[] inspectorWindows =
-				Resources.FindObjectsOfTypeAll(inspectorWindowType);
+			UnityEngine.Object[] inspectorWindows = Resources.FindObjectsOfTypeAll(inspectorWindowType);
 
 			if (inspectorWindows.Length == 0)
 			{
@@ -157,8 +151,7 @@ namespace TLN.Editor.PlayFromBoot
 
 			SessionState.SetBool(InspectorRestoreSessionKey, false);
 
-			Type inspectorWindowType =
-				typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+			Type inspectorWindowType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
 
 			if (inspectorWindowType == null)
 			{
@@ -170,7 +163,7 @@ namespace TLN.Editor.PlayFromBoot
 
 		private static void ClearEditorSelection()
 		{
-			Selection.objects = new UnityEngine.Object[0];
+			Selection.objects = Array.Empty<UnityEngine.Object>();
 			Selection.activeObject = null;
 		}
 	}

@@ -1,10 +1,11 @@
+using System;
 using TLN.Application.GameStates;
 using TLN.Core.GameStates;
-using TLN.Core.Lifetime;
+using VContainer.Unity;
 
 namespace TLN.Application.Input
 {
-	public sealed class GameStateInputModeController : IGameService, IInitializable, IDisposableService, VContainer.Unity.IInitializable, System.IDisposable
+	public sealed class GameStateInputModeController : IInitializable, IDisposable
 	{
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly IInputModeService _inputModeService;

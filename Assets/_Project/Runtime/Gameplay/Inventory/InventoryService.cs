@@ -98,7 +98,9 @@ namespace TLN.Gameplay.Inventory
 
 			Changed?.Invoke();
 
-			TLNLogger.Log($"Inventory: added {amount} x {definition.DisplayName}. Weight: {CurrentWeight:0.##}/{MaxCarryWeight:0.##}");
+			TLNLogger.Log(
+				$"Inventory: added {amount} x {definition.DisplayName}. Weight: {CurrentWeight:0.##}/{MaxCarryWeight:0.##}"
+			);
 
 			return InventoryAddResult.Success();
 		}
@@ -118,7 +120,6 @@ namespace TLN.Gameplay.Inventory
 			}
 
 			ItemStack stack = _items[index];
-
 			if (amount > stack.Amount)
 			{
 				reason = "Not enough items.";

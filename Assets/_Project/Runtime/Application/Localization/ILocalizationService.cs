@@ -3,14 +3,14 @@ using TLN.Core.Lifetime;
 
 namespace TLN.Application.Localization
 {
-    public interface ILocalizationService : IGameService
-    {
-        string CurrentLocaleCode { get; }
+	public interface ILocalizationService : IGameService
+	{
+		string CurrentLocaleCode { get; }
 
-        event Action LocaleChanged;
+		event Action LocaleChanged;
 
-        string Get(string tableName, string entryKey, params object[] arguments);
+		string Get(string tableName, string entryKey, params object[] arguments);
 
-        bool TrySetLocale(string localeCode);
-    }
+		bool TrySetLocale(string localeCode);
+	}
 }

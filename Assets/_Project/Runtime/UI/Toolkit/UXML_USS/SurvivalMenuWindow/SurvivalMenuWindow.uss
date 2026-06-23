@@ -136,7 +136,7 @@
     background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_food.png");
 }
 
-.survival-category-icon-fire{
+.survival-category-icon-fire {
     background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_fire.png");
 }
 

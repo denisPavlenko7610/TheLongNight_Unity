@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TLN.Core.Lifetime;
 using TLN.Core.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -8,167 +7,158 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace TLN.Application.Assets
 {
-    public sealed class AddressableAssetService : IAddressableAssetService, IDisposableService, IDisposable
-    {
-        private readonly Dictionary<string, CachedOperation> _cachedOperations =
-            new Dictionary<string, CachedOperation>();
+	public sealed class AddressableAssetService : IAddressableAssetService, IDisposable
+	{
+		private readonly Dictionary<string, CachedOperation> _cachedOperations = new();
 
-        public void LoadSprite(
-            AssetReferenceSprite spriteReference,
-            Action<Sprite> completed)
-        {
-            LoadAsset(spriteReference, completed);
-        }
+		public void LoadSprite(AssetReferenceSprite spriteReference, Action<Sprite> completed)
+		{
+			LoadAsset(spriteReference, completed);
+		}
 
-        public void LoadPrefab(AssetReferenceGameObject prefabReference, Action<GameObject> completed)
-        {
-            LoadAsset(prefabReference, completed);
-        }
+		public void LoadPrefab(AssetReferenceGameObject prefabReference, Action<GameObject> completed)
+		{
+			LoadAsset(prefabReference, completed);
+		}
 
-        public void LoadAsset<TAsset>(
-            AssetReference assetReference,
-            Action<TAsset> completed)
-            where TAsset : UnityEngine.Object
-        {
-            if (completed == null)
-            {
-                return;
-            }
+		public void LoadAsset<TAsset>(AssetReference assetReference, Action<TAsset> completed)
+			where TAsset : UnityEngine.Object
+		{
+			if (completed == null)
+			{
+				return;
+			}
 
-            if (assetReference == null)
-            {
-                TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. AssetReference is null.");
-                completed.Invoke(null);
-                return;
-            }
+			if (assetReference == null)
+			{
+				TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. AssetReference is null.");
+				completed.Invoke(null);
+				return;
+			}
 
-            if (!assetReference.RuntimeKeyIsValid())
-            {
-                TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. Runtime key is invalid.");
-                completed.Invoke(null);
-                return;
-            }
+			if (!assetReference.RuntimeKeyIsValid())
+			{
+				TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. Runtime key is invalid.");
+				completed.Invoke(null);
+				return;
+			}
 
-            string key = CreateKey<TAsset>(assetReference);
+			string key = CreateKey<TAsset>(assetReference);
 
-            if (_cachedOperations.TryGetValue(key, out CachedOperation cachedOperation))
-            {
-                if (cachedOperation.Handle.IsValid() && cachedOperation.Handle.IsDone)
-                {
-                    TAsset loadedAsset = cachedOperation.Handle.Result as TAsset;
-                    completed.Invoke(loadedAsset);
-                    return;
-                }
+			if (_cachedOperations.TryGetValue(key, out CachedOperation cachedOperation))
+			{
+				if (cachedOperation.Handle.IsValid() && cachedOperation.Handle.IsDone)
+				{
+					TAsset loadedAsset = cachedOperation.Handle.Result as TAsset;
+					completed.Invoke(loadedAsset);
+					return;
+				}
 
-                cachedOperation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
-                return;
-            }
+				cachedOperation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
+				return;
+			}
 
-            AsyncOperationHandle<TAsset> handle =
-                Addressables.LoadAssetAsync<TAsset>(assetReference);
+			AsyncOperationHandle<TAsset> handle = Addressables.LoadAssetAsync<TAsset>(assetReference);
 
-            CachedOperation operation = new CachedOperation(handle);
-            operation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
+			CachedOperation operation = new CachedOperation(handle);
+			operation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
 
-            _cachedOperations.Add(key, operation);
+			_cachedOperations.Add(key, operation);
 
-            handle.Completed += completedHandle =>
-            {
-                OnAssetLoaded(key, completedHandle);
-            };
-        }
+			handle.Completed += completedHandle =>
+			{
+				OnAssetLoaded(key, completedHandle);
+			};
+		}
 
-        public void ReleaseAll()
-        {
-            foreach (CachedOperation operation in _cachedOperations.Values)
-            {
-                operation.Release();
-            }
+		public void ReleaseAll()
+		{
+			foreach (CachedOperation operation in _cachedOperations.Values)
+			{
+				operation.Release();
+			}
 
-            _cachedOperations.Clear();
-        }
+			_cachedOperations.Clear();
+		}
 
-        public void Dispose()
-        {
-            ReleaseAll();
-        }
+		public void Dispose()
+		{
+			ReleaseAll();
+		}
 
-        private void OnAssetLoaded<TAsset>(
-            string key,
-            AsyncOperationHandle<TAsset> handle)
-            where TAsset : UnityEngine.Object
-        {
-            if (!_cachedOperations.TryGetValue(key, out CachedOperation operation))
-            {
-                return;
-            }
+		private void OnAssetLoaded<TAsset>(string key, AsyncOperationHandle<TAsset> handle)
+			where TAsset : UnityEngine.Object
+		{
+			if (!_cachedOperations.TryGetValue(key, out CachedOperation operation))
+			{
+				return;
+			}
 
-            UnityEngine.Object result = null;
+			UnityEngine.Object result = null;
 
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                result = handle.Result;
-            }
-            else
-            {
-                string exceptionMessage = handle.OperationException == null
-                    ? "No exception message."
-                    : handle.OperationException.Message;
+			if (handle.Status == AsyncOperationStatus.Succeeded)
+			{
+				result = handle.Result;
+			}
+			else
+			{
+				string exceptionMessage = handle.OperationException == null
+					? "No exception message."
+					: handle.OperationException.Message;
 
-                TLNLogger.LogWarning(
-                    $"Addressables: failed to load asset. Key: {key}. Status: {handle.Status}. Error: {exceptionMessage}");
-            }
+				TLNLogger.LogWarning(
+					$"Addressables: failed to load asset. Key: {key}. Status: {handle.Status}. Error: {exceptionMessage}"
+				);
+			}
 
-            operation.Complete(result);
-        }
+			operation.Complete(result);
+		}
 
-        private static string CreateKey<TAsset>(AssetReference assetReference)
-            where TAsset : UnityEngine.Object
-        {
-            return $"{typeof(TAsset).FullName}:{assetReference.RuntimeKey}";
-        }
+		private static string CreateKey<TAsset>(AssetReference assetReference) where TAsset : UnityEngine.Object
+		{
+			return $"{typeof(TAsset).FullName}:{assetReference.RuntimeKey}";
+		}
 
-        private sealed class CachedOperation
-        {
-            private readonly List<Action<UnityEngine.Object>> _completedCallbacks =
-                new List<Action<UnityEngine.Object>>();
+		private sealed class CachedOperation
+		{
+			private readonly List<Action<UnityEngine.Object>> _completedCallbacks = new();
 
-            public AsyncOperationHandle Handle { get; }
+			public AsyncOperationHandle Handle { get; }
 
-            public CachedOperation(AsyncOperationHandle handle)
-            {
-                Handle = handle;
-            }
+			public CachedOperation(AsyncOperationHandle handle)
+			{
+				Handle = handle;
+			}
 
-            public void AddCompletedCallback(Action<UnityEngine.Object> completed)
-            {
-                if (completed == null)
-                {
-                    return;
-                }
+			public void AddCompletedCallback(Action<UnityEngine.Object> completed)
+			{
+				if (completed == null)
+				{
+					return;
+				}
 
-                _completedCallbacks.Add(completed);
-            }
+				_completedCallbacks.Add(completed);
+			}
 
-            public void Complete(UnityEngine.Object asset)
-            {
-                for (int i = 0; i < _completedCallbacks.Count; i++)
-                {
-                    _completedCallbacks[i]?.Invoke(asset);
-                }
+			public void Complete(UnityEngine.Object asset)
+			{
+				for (int i = 0; i < _completedCallbacks.Count; i++)
+				{
+					_completedCallbacks[i]?.Invoke(asset);
+				}
 
-                _completedCallbacks.Clear();
-            }
+				_completedCallbacks.Clear();
+			}
 
-            public void Release()
-            {
-                if (!Handle.IsValid())
-                {
-                    return;
-                }
+			public void Release()
+			{
+				if (!Handle.IsValid())
+				{
+					return;
+				}
 
-                Addressables.Release(Handle);
-            }
-        }
-    }
+				Addressables.Release(Handle);
+			}
+		}
+	}
 }

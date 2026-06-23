@@ -4,12 +4,12 @@
 
     <ui:VisualElement name="build-window-root" class="build-window-root">
         <ui:VisualElement class="build-window tln-panel">
-            <ui:Label text="BUILD" class="build-title" />
-            <ui:Label text="Choose what to build." class="build-description" />
+            <ui:Label text="BUILD" class="build-title"/>
+            <ui:Label text="Choose what to build." class="build-description"/>
 
-            <ui:ScrollView name="build-recipes-scroll-view" class="build-recipes-scroll-view" />
+            <ui:ScrollView name="build-recipes-scroll-view" class="build-recipes-scroll-view"/>
 
-            <ui:Button name="build-close-button" text="CLOSE" class="build-close-button" />
+            <ui:Button name="build-close-button" text="CLOSE" class="build-close-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

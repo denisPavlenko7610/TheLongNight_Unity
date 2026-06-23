@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="../Common/TLNTheme.uss" />
-    <Style src="../Common/TLNMenu.uss" />
-    <Style src="../Common/TLNSettings.uss" />
-    <Style src="../Common/TLNSaveSlots.uss" />
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="../Common/TLNMenu.uss"/>
+    <Style src="../Common/TLNSettings.uss"/>
+    <Style src="../Common/TLNSaveSlots.uss"/>
     <Style src="MainMenu.uss"/>
     <ui:VisualElement name="main-menu-root" class="main-menu-root">
         <ui:VisualElement class="main-menu-background"/>
@@ -11,70 +11,90 @@
                 <ui:Label text="THE LONG NIGHT" class="main-menu-title"/>
                 <ui:Label name="main-menu-subtitle-label" text="SURVIVE THE WHITE SILENCE" class="main-menu-subtitle">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16570758856704)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16570758856704)"/>
                     </Bindings>
                 </ui:Label>
             </ui:VisualElement>
             <ui:VisualElement class="main-menu-rule"/>
             <ui:VisualElement name="save-slots-panel" class="tln-settings-panel save-slots-panel">
-                <ui:Label name="save-slots-title-label" class="tln-settings-title" text="SAVE SLOTS" />
-                <ui:Label name="save-slots-description-label" class="tln-settings-label" text="Choose a slot." />
+                <ui:Label name="save-slots-title-label" class="tln-settings-title" text="SAVE SLOTS"/>
+                <ui:Label name="save-slots-description-label" class="tln-settings-label" text="Choose a slot."/>
 
                 <ui:VisualElement class="save-slots-list">
-                    <ui:Button name="save-slot-1-button" class="tln-menu-button save-slot-button" text="SLOT 1" />
-                    <ui:Button name="save-slot-2-button" class="tln-menu-button save-slot-button" text="SLOT 2" />
-                    <ui:Button name="save-slot-3-button" class="tln-menu-button save-slot-button" text="SLOT 3" />
+                    <ui:Button name="save-slot-1-button" class="tln-menu-button save-slot-button" text="SLOT 1"/>
+                    <ui:Button name="save-slot-2-button" class="tln-menu-button save-slot-button" text="SLOT 2"/>
+                    <ui:Button name="save-slot-3-button" class="tln-menu-button save-slot-button" text="SLOT 3"/>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="save-overwrite-panel" class="save-overwrite-panel">
-                    <ui:Label name="save-overwrite-label" class="save-overwrite-label" text="Overwrite save?" />
+                    <ui:Label name="save-overwrite-label" class="save-overwrite-label" text="Overwrite save?"/>
                     <ui:VisualElement class="save-overwrite-buttons">
-                        <ui:Button name="save-overwrite-confirm-button" class="tln-menu-button" text="OVERWRITE" />
-                        <ui:Button name="save-overwrite-cancel-button" class="tln-menu-button" text="CANCEL" />
+                        <ui:Button name="save-overwrite-confirm-button" class="tln-menu-button" text="OVERWRITE"/>
+                        <ui:Button name="save-overwrite-cancel-button" class="tln-menu-button" text="CANCEL"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <ui:Button name="save-slots-back-button" class="tln-menu-button tln-settings-back-button" text="BACK" />
+                <ui:Button name="save-slots-back-button" class="tln-menu-button tln-settings-back-button" text="BACK"/>
             </ui:VisualElement>
             <ui:VisualElement name="main-menu-navigation-panel" class="main-menu-list">
                 <ui:Button name="new-game-button" text="NEW GAME" class="main-menu-button tln-menu-button">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16620834652160)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16620834652160)"/>
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="load-game-button" text="LOAD GAME" class="main-menu-button tln-menu-button">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16675578707968)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16675578707968)"/>
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="options-button" text="OPTIONS" class="main-menu-button tln-menu-button">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16725834858496)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16725834858496)"/>
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="quit-button" text="QUIT" class="main-menu-button tln-menu-button">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16781396803584)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16781396803584)"/>
                     </Bindings>
                 </ui:Button>
             </ui:VisualElement>
             <ui:VisualElement name="main-menu-settings-panel" class="main-menu-settings-panel tln-settings-panel">
-                <ui:Label name="settings-title-label" text="OPTIONS" class="main-menu-settings-title tln-settings-title">
+                <ui:Label name="settings-title-label" text="OPTIONS"
+                          class="main-menu-settings-title tln-settings-title">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16837533368320)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(16837533368320)"/>
                     </Bindings>
                 </ui:Label>
                 <ui:VisualElement class="main-menu-setting-block tln-settings-block">
-                    <ui:Label name="settings-language-label" text="LANGUAGE" class="main-menu-setting-label tln-settings-label">
+                    <ui:Label name="settings-language-label" text="LANGUAGE"
+                              class="main-menu-setting-label tln-settings-label">
                         <Bindings>
-                            <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(16904361213952)"/>
+                            <UnityEngine.Localization.LocalizedString property="text"
+                                                                      table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                      entry="Id(16904361213952)"/>
                         </Bindings>
                     </ui:Label>
-                    <ui:DropdownField name="language-dropdown" class="main-menu-language-dropdown tln-settings-dropdown"/>
+                    <ui:DropdownField name="language-dropdown"
+                                      class="main-menu-language-dropdown tln-settings-dropdown"/>
                 </ui:VisualElement>
-                <ui:Button name="settings-back-button" text="BACK" class="main-menu-button tln-menu-button tln-settings-back-button">
+                <ui:Button name="settings-back-button" text="BACK"
+                           class="main-menu-button tln-menu-button tln-settings-back-button">
                     <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text" table="GUID:37fc28fc516039c4aa469640f9c1e2a1" entry="Id(2449644584960)"/>
+                        <UnityEngine.Localization.LocalizedString property="text"
+                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  entry="Id(2449644584960)"/>
                     </Bindings>
                 </ui:Button>
             </ui:VisualElement>

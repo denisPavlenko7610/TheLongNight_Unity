@@ -141,18 +141,28 @@ namespace TLN.Gameplay.DayNight
 
 		public DayNightPhase GetPhaseForHour(float hour)
 		{
-			float h = Mathf.Repeat(hour, 24f);
+			hour %= 24f;
 
-			if (h >= _dawn.StartHour && h < _morning.StartHour)
+			if (hour >= _dawn.StartHour && hour < _morning.StartHour)
+			{
 				return DayNightPhase.Dawn;
-			if (h >= _morning.StartHour && h < _day.StartHour)
+			}
+			if (hour >= _morning.StartHour && hour < _day.StartHour)
+			{
 				return DayNightPhase.Morning;
-			if (h >= _day.StartHour && h < _afternoon.StartHour)
+			}
+			if (hour >= _day.StartHour && hour < _afternoon.StartHour)
+			{
 				return DayNightPhase.Day;
-			if (h >= _afternoon.StartHour && h < _dusk.StartHour)
+			}
+			if (hour >= _afternoon.StartHour && hour < _dusk.StartHour)
+			{
 				return DayNightPhase.Afternoon;
-			if (h >= _dusk.StartHour && h < _night.StartHour)
+			}
+			if (hour >= _dusk.StartHour && hour < _night.StartHour)
+			{
 				return DayNightPhase.Dusk;
+			}
 
 			return DayNightPhase.Night;
 		}

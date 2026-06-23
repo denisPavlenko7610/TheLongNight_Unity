@@ -18,8 +18,14 @@ namespace TLN.Gameplay.Items
 		private readonly IPlayerEquipmentService _equipmentService;
 		private readonly IAddressableAssetService _addressableAssetService;
 
-		public ItemUseService(IInventoryService inventoryService, ISurvivalService survivalService, INotificationService notificationService,
-			PlacementService placementService, IPlayerEquipmentService equipmentService, IAddressableAssetService addressableAssetService)
+		public ItemUseService(
+			IInventoryService inventoryService,
+			ISurvivalService survivalService,
+			INotificationService notificationService,
+			PlacementService placementService,
+			IPlayerEquipmentService equipmentService,
+			IAddressableAssetService addressableAssetService
+		)
 		{
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
@@ -93,19 +99,16 @@ namespace TLN.Gameplay.Items
 				return Fail($"Placed prefab reference is missing for {placeable.DisplayName}.");
 			}
 
-			_addressableAssetService.LoadPrefab(
-				placeable.PlacedPrefabReference,
-				prefab =>
+			_addressableAssetService.LoadPrefab(placeable.PlacedPrefabReference, prefab =>
 				{
 					OnPlaceablePrefabLoaded(placeable, prefab);
-				});
+				}
+			);
 
 			return ItemUseResult.Success($"Placing {placeable.DisplayName}...");
 		}
 
-		private void OnPlaceablePrefabLoaded(
-			PlaceableItemDefinition placeable,
-			GameObject prefab)
+		private void OnPlaceablePrefabLoaded(PlaceableItemDefinition placeable, GameObject prefab)
 		{
 			if (placeable == null)
 			{
@@ -118,22 +121,14 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			bool wasPlaced = _placementService.TryPlace(
-				prefab,
-				placeable.PlaceDistance,
-				out GameObject placedObject);
-
+			bool wasPlaced = _placementService.TryPlace(prefab, placeable.PlaceDistance, out GameObject placedObject);
 			if (!wasPlaced)
 			{
 				Fail("Cannot place item here.");
 				return;
 			}
 
-			bool wasRemoved = _inventoryService.TryRemoveItem(
-				placeable,
-				1,
-				out string removeFailureReason);
-
+			bool wasRemoved = _inventoryService.TryRemoveItem(placeable, 1, out string removeFailureReason);
 			if (!wasRemoved)
 			{
 				Object.Destroy(placedObject);
