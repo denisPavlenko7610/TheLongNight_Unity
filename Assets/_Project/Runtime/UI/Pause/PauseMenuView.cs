@@ -230,7 +230,10 @@ namespace TLN.UI.Pause
 
 		private void OnSaveClicked()
 		{
-			_gameSaveService?.SaveManual();
+			if (_gameSaveService != null)
+			{
+				_ = _gameSaveService.SaveManual();
+			}
 		}
 
 		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)

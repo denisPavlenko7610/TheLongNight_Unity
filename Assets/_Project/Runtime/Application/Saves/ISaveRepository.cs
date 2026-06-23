@@ -10,6 +10,8 @@ namespace TLN.Application.Saves
 		bool TryGetMostRecentSlot(out int slotId);
 		bool Delete(int slotId);
 
+		void PrepareForBackgroundAccess();
+
 		GameSaveData Load(int slotId);
 		void Save(GameSaveData data);
 

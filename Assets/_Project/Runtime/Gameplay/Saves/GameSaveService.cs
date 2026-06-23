@@ -51,7 +51,7 @@ namespace TLN.Gameplay.Saves
 			_worldSaveRegistry = worldSaveRegistry;
 		}
 
-		public bool SaveManual()
+		public async Awaitable<bool> SaveManual()
 		{
 			if (!CanSaveManually)
 			{
@@ -60,14 +60,27 @@ namespace TLN.Gameplay.Saves
 				return false;
 			}
 
-			return SaveCheckpoint(SaveTrigger.Manual);
+			return await SaveCheckpoint(SaveTrigger.Manual);
 		}
 
-		public bool SaveCheckpoint(SaveTrigger trigger)
+		public async Awaitable<bool> SaveCheckpoint(SaveTrigger trigger)
 		{
 			GameSaveData data = CreateSaveData(trigger);
+			_saveRepository.PrepareForBackgroundAccess();
 
-			_saveRepository.Save(data);
+			try
+			{
+				await Awaitable.BackgroundThreadAsync();
+				_saveRepository.Save(data);
+				await Awaitable.MainThreadAsync();
+			}
+			catch (Exception exception)
+			{
+				await Awaitable.MainThreadAsync();
+				TLNLogger.LogError($"Failed to save checkpoint. {exception}");
+				_notificationService?.Show("Failed to save game.");
+				return false;
+			}
 
 			_notificationService?.Show("Game saved.");
 

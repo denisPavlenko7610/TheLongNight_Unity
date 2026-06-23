@@ -14,6 +14,9 @@ namespace TLN.Application.Saves
 		private const string SaveFolderName = "Saves";
 		private const string SaveFileFormat = "slot_{0}.json";
 
+		private readonly object _ioLock = new object();
+		private string _saveDirectory;
+
 		private static readonly JsonSerializerSettings SerializerSettings =
 			new JsonSerializerSettings
 			{
@@ -27,65 +30,82 @@ namespace TLN.Application.Saves
 
 		public bool SaveExists(int slotId)
 		{
-			return IsValidSlot(slotId) && File.Exists(GetSlotPath(slotId));
+			lock (_ioLock)
+			{
+				return IsValidSlot(slotId) && File.Exists(GetSlotPath(slotId));
+			}
+		}
+
+		public void PrepareForBackgroundAccess()
+		{
+			lock (_ioLock)
+			{
+				EnsureSaveDirectoryPath();
+			}
 		}
 
 		public GameSaveData Load(int slotId)
 		{
-			if (!IsValidSlot(slotId))
+			lock (_ioLock)
 			{
-				return null;
-			}
+				if (!IsValidSlot(slotId))
+				{
+					return null;
+				}
 
-			string path = GetSlotPath(slotId);
+				string path = GetSlotPath(slotId);
 
-			if (!File.Exists(path))
-			{
-				return null;
-			}
+				if (!File.Exists(path))
+				{
+					return null;
+				}
 
-			try
-			{
-				string json = File.ReadAllText(path);
-				return string.IsNullOrWhiteSpace(json)
-					? null
-					: JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
-			}
-			catch (Exception exception)
-			{
-				TLNLogger.LogError($"Failed to load save slot {slotId}. {exception}");
+				try
+				{
+					string json = File.ReadAllText(path);
+					return string.IsNullOrWhiteSpace(json)
+						? null
+						: JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
+				}
+				catch (Exception exception)
+				{
+					TLNLogger.LogError($"Failed to load save slot {slotId}. {exception}");
 
-				return null;
+					return null;
+				}
 			}
 		}
 
 		public void Save(GameSaveData data)
 		{
-			if (data == null)
+			lock (_ioLock)
 			{
-				return;
+				if (data == null)
+				{
+					return;
+				}
+
+				if (!IsValidSlot(data.slotId))
+				{
+					throw new ArgumentOutOfRangeException(nameof(data.slotId), data.slotId, "Invalid save slot.");
+				}
+
+				Directory.CreateDirectory(GetSaveDirectory());
+
+				string json = JsonConvert.SerializeObject(data, SerializerSettings);
+
+				string path = GetSlotPath(data.slotId);
+				string temporaryPath = path + ".tmp";
+
+				File.WriteAllText(temporaryPath, json);
+
+				if (File.Exists(path))
+				{
+					File.Delete(path);
+				}
+
+				File.Move(temporaryPath, path);
 			}
-
-			if (!IsValidSlot(data.slotId))
-			{
-				throw new ArgumentOutOfRangeException(nameof(data.slotId), data.slotId, "Invalid save slot.");
-			}
-
-			Directory.CreateDirectory(GetSaveDirectory());
-
-			string json = JsonConvert.SerializeObject(data, SerializerSettings);
-
-			string path = GetSlotPath(data.slotId);
-			string temporaryPath = path + ".tmp";
-
-			File.WriteAllText(temporaryPath, json);
-
-			if (File.Exists(path))
-			{
-				File.Delete(path);
-			}
-
-			File.Move(temporaryPath, path);
 		}
 
 		public IReadOnlyList<SaveSlotSummary> GetSlotSummaries()
@@ -148,18 +168,21 @@ namespace TLN.Application.Saves
 
 		public bool Delete(int slotId)
 		{
-			if (!IsValidSlot(slotId))
+			lock (_ioLock)
 			{
-				return false;
+				if (!IsValidSlot(slotId))
+				{
+					return false;
+				}
+
+				bool deleted = false;
+
+				DeleteFileIfExists(GetSlotPath(slotId), ref deleted);
+
+				DeleteFileIfExists(GetSlotPath(slotId) + ".tmp", ref deleted);
+
+				return deleted;
 			}
-
-			bool deleted = false;
-
-			DeleteFileIfExists(GetSlotPath(slotId), ref deleted);
-
-			DeleteFileIfExists(GetSlotPath(slotId) + ".tmp", ref deleted);
-
-			return deleted;
 		}
 
 		private static void DeleteFileIfExists(string path, ref bool deleted)
@@ -197,9 +220,21 @@ namespace TLN.Application.Saves
 			return Path.Combine(GetSaveDirectory(), fileName);
 		}
 
-		private static string GetSaveDirectory()
+		private string GetSaveDirectory()
 		{
-			return Path.Combine(UnityEngine.Application.persistentDataPath, SaveFolderName);
+			return EnsureSaveDirectoryPath();
+		}
+
+		private string EnsureSaveDirectoryPath()
+		{
+			if (!string.IsNullOrWhiteSpace(_saveDirectory))
+			{
+				return _saveDirectory;
+			}
+
+			_saveDirectory = Path.Combine(UnityEngine.Application.persistentDataPath, SaveFolderName);
+
+			return _saveDirectory;
 		}
 	}
 }

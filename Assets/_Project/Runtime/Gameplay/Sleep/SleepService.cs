@@ -46,7 +46,7 @@ namespace TLN.Gameplay.Sleep
 			string message = $"You slept for {hours} hour(s).";
 			_notificationService.Show(message);
 
-			_gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);
+			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);
 
 			return SleepResult.Success(message);
 		}

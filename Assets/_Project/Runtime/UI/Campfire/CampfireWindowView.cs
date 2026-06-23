@@ -179,7 +179,10 @@ namespace TLN.UI.Campfire
 
 			_notificationService?.Show("Fire started.");
 
-			_gameSaveService?.SaveCheckpoint(SaveTrigger.CampfireIgnited);
+			if (_gameSaveService != null)
+			{
+				_ = _gameSaveService.SaveCheckpoint(SaveTrigger.CampfireIgnited);
+			}
 
 			Refresh();
 		}
