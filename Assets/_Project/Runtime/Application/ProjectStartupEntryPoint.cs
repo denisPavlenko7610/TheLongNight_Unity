@@ -8,6 +8,8 @@ namespace TLN.Application.App
 {
 	public sealed class ProjectStartupEntryPoint : IStartable
 	{
+		private const int DefaultTargetFrameRate = 60;
+
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly ISceneLoader _sceneLoader;
 
@@ -27,8 +29,8 @@ namespace TLN.Application.App
 
 		private static void ApplyDefaultFrameSync()
 		{
-			QualitySettings.vSyncCount = 1;
-			UnityEngine.Application.targetFrameRate = -1;
+			QualitySettings.vSyncCount = 0;
+			UnityEngine.Application.targetFrameRate = DefaultTargetFrameRate;
 		}
 	}
 }

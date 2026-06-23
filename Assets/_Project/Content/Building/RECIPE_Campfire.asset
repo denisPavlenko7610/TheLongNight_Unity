@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: RECIPE_Campfire
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Building.BuildRecipeDefinition
   _id: campfire
-  _displayName: Campfire
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:398425b04f8438449bf4de53e525cd6a
+    m_TableEntryReference:
+      m_KeyId: 120000000000000
+      m_Key:
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:398425b04f8438449bf4de53e525cd6a
+    m_TableEntryReference:
+      m_KeyId: 120000000000001
+      m_Key:
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _placedPrefab: {fileID: 8348191795608528315, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
   _placeDistance: 2
   _ingredients:

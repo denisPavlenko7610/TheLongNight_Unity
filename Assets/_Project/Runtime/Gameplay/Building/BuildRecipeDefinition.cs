@@ -20,10 +20,21 @@ namespace TLN.Gameplay.Building
 		[SerializeField] private BuildRecipeIngredient[] _ingredients;
 
 		public string Id => _id;
-		public string DisplayName => _displayName?.GetLocalizedString() ?? Id;
-		public string Description => _description?.GetLocalizedString() ?? string.Empty;
+		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
+		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
 		public GameObject PlacedPrefab => _placedPrefab;
 		public float PlaceDistance => _placeDistance;
 		public IReadOnlyList<BuildRecipeIngredient> Ingredients => _ingredients;
+
+		private static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
+		{
+			if (localizedString == null || localizedString.IsEmpty)
+			{
+				return fallback;
+			}
+
+			string value = localizedString.GetLocalizedString();
+			return string.IsNullOrWhiteSpace(value) ? fallback : value;
+		}
 	}
 }

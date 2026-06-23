@@ -17,7 +17,15 @@ MonoBehaviour:
   m_SharedData: {fileID: 11400000, guid: 398425b04f8438449bf4de53e525cd6a, type: 2}
   m_Metadata:
     m_Items: []
-  m_TableData: []
+  m_TableData:
+  - m_Id: 120000000000000
+    m_Localized: Campfire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 120000000000001
+    m_Localized: A small campfire for warmth and cooking.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -14,7 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
   m_TableCollectionName: Recipes
   m_TableCollectionNameGuidString: 398425b04f8438449bf4de53e525cd6a
-  m_Entries: []
+  m_Entries:
+  - m_Id: 120000000000000
+    m_Key: recipe.campfire.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 120000000000001
+    m_Key: recipe.campfire.description
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

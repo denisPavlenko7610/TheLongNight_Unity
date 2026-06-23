@@ -1,4 +1,3 @@
-using System;
 using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
@@ -19,6 +18,7 @@ namespace TLN.UI.MainMenu
 	public sealed class MainMenuView : MonoBehaviour
 	{
 		private const string DisabledClassName = "main-menu-button-disabled";
+		private const int DefaultNewGameSlotId = 1;
 
 		private VisualElement _root;
 		private VisualElement _navigationPanel;
@@ -266,24 +266,12 @@ namespace TLN.UI.MainMenu
 
 		private void OnNewGameClicked()
 		{
-			ShowSaveSlotsForNewGame();
+			OnNewGameSlotSelected(DefaultNewGameSlotId);
 		}
 
 		private void OnLoadGameClicked()
 		{
 			ShowSaveSlotsForLoadGame();
-		}
-
-		private void ShowSaveSlotsForNewGame()
-		{
-			if (!TryEnsureSaveSlotsPanel())
-			{
-				return;
-			}
-
-			_navigationPanel.SetVisible(false);
-			_settingsPanel.SetVisible(false);
-			_saveSlotsPanel.ShowNewGame();
 		}
 
 		private void ShowSaveSlotsForLoadGame()

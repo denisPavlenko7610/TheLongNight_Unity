@@ -25,13 +25,24 @@ namespace TLN.Gameplay.Items
 		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
 
 		public string Id => _id;
-		public string DisplayName => _displayName?.GetLocalizedString() ?? Id;
-		public string Description => _description?.GetLocalizedString() ?? string.Empty;
+		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
+		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
 		public ItemCategory Category => _category;
 		public float Weight => _weight;
 		public bool IsStackable => _isStackable;
 		public int MaxStackSize => _maxStackSize;
 		public AssetReferenceSprite IconReference => _iconReference;
 		public ItemUseKind UseKind => _useKind;
+
+		private static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
+		{
+			if (localizedString == null || localizedString.IsEmpty)
+			{
+				return fallback;
+			}
+
+			string value = localizedString.GetLocalizedString();
+			return string.IsNullOrWhiteSpace(value) ? fallback : value;
+		}
 	}
 }
