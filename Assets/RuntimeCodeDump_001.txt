@@ -6902,12 +6902,7 @@ RefreshAnimation();
 }
 private PlayerRoot GetPlayer()
 {
-if (_targetService == null)
-{
-throw new InvalidOperationException(
-$"{nameof(AnimalActor)} was not constructed. {nameof(WildlifeTargetService)} is missing.");
-}
-return _targetService.PlayerRoot;
+return _targetService?.PlayerRoot;
 }
 private void TickRabbit(PlayerRoot player)
 {

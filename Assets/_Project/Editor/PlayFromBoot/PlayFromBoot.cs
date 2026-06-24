@@ -9,7 +9,6 @@ namespace TLN.Editor.PlayFromBoot
 	public static class PlayFromBoot
 	{
 		private const string BootScenePath = "Assets/_Project/Scenes/Boot.unity";
-		private const string InspectorRestoreSessionKey = "TLN.Editor.PlayFromBoot.RestoreInspectorWindow";
 
 		private static bool _preparedForPendingPlayMode;
 
@@ -29,12 +28,6 @@ namespace TLN.Editor.PlayFromBoot
 			EditorApplication.delayCall -= ClearEditorSelection;
 			EditorApplication.delayCall += ClearEditorSelection;
 
-			if (SessionState.GetBool(InspectorRestoreSessionKey, false))
-			{
-				EditorApplication.delayCall -= RestoreInspectorWindow;
-				EditorApplication.delayCall += RestoreInspectorWindow;
-			}
-
 			if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
 			{
 				PrepareForPlayModeTransition();
@@ -51,7 +44,6 @@ namespace TLN.Editor.PlayFromBoot
 			if (!EditorApplication.isPlayingOrWillChangePlaymode)
 			{
 				_preparedForPendingPlayMode = false;
-				RestoreInspectorWindow();
 				return;
 			}
 
@@ -78,9 +70,6 @@ namespace TLN.Editor.PlayFromBoot
 					_preparedForPendingPlayMode = false;
 					EditorApplication.delayCall -= ClearEditorSelection;
 					EditorApplication.delayCall += ClearEditorSelection;
-
-					EditorApplication.delayCall -= RestoreInspectorWindow;
-					EditorApplication.delayCall += RestoreInspectorWindow;
 					break;
 			}
 		}
@@ -98,7 +87,6 @@ namespace TLN.Editor.PlayFromBoot
 		private static void PrepareForPlayModeTransition()
 		{
 			SelectStableEditorTarget();
-			CloseInspectorWindows();
 		}
 
 		private static void SelectStableEditorTarget()
@@ -113,52 +101,6 @@ namespace TLN.Editor.PlayFromBoot
 
 			Selection.objects = new UnityEngine.Object[] { bootScene };
 			Selection.activeObject = bootScene;
-		}
-
-		private static void CloseInspectorWindows()
-		{
-			Type inspectorWindowType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
-
-			if (inspectorWindowType == null)
-			{
-				return;
-			}
-
-			UnityEngine.Object[] inspectorWindows = Resources.FindObjectsOfTypeAll(inspectorWindowType);
-
-			if (inspectorWindows.Length == 0)
-			{
-				return;
-			}
-
-			SessionState.SetBool(InspectorRestoreSessionKey, true);
-
-			foreach (UnityEngine.Object inspectorWindow in inspectorWindows)
-			{
-				if (inspectorWindow is EditorWindow editorWindow)
-				{
-					editorWindow.Close();
-				}
-			}
-		}
-
-		private static void RestoreInspectorWindow()
-		{
-			if (!SessionState.GetBool(InspectorRestoreSessionKey, false))
-			{
-				return;
-			}
-
-			SessionState.SetBool(InspectorRestoreSessionKey, false);
-
-			Type inspectorWindowType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
-
-			if (inspectorWindowType == null)
-			{
-				return;
-			}
-
-			EditorWindow.GetWindow(inspectorWindowType);
 		}
 
 		private static void ClearEditorSelection()

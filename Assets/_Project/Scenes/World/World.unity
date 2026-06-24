@@ -304,7 +304,7 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157207112}
   m_Enabled: 1
-  serializedVersion: 12
+  serializedVersion: 13
   m_Type: 1
   m_Color: {r: 0.78, g: 0.88, b: 1, a: 1}
   m_Intensity: 2865.1304
@@ -356,7 +356,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0.025
   m_ShadowAngle: 2.5
   m_LightUnit: 2
   m_LuxAtDistance: 1
@@ -399,7 +399,8 @@ MonoBehaviour:
   m_ShapeWidth: -1
   m_ShapeHeight: -1
   m_AspectRatio: 1
-  m_Version: 14
+  m_ShapeRadius: -1
+  m_Version: 15
   m_ObsoleteShadowResolutionTier: 1
   m_ObsoleteUseShadowQualitySettings: 0
   m_ObsoleteCustomShadowResolution: 512
@@ -412,7 +413,6 @@ MonoBehaviour:
   m_AffectDiffuse: 1
   m_AffectSpecular: 1
   m_NonLightmappedOnly: 0
-  m_ShapeRadius: 0.025
   m_SoftnessScale: 1
   m_UseCustomSpotLightShadowCone: 0
   m_CustomSpotLightShadowCone: 30
@@ -450,7 +450,6 @@ MonoBehaviour:
   m_FilterTracedShadow: 1
   m_FilterSizeTraced: 16
   m_SunLightConeAngle: 0.5
-  m_LightShadowRadius: 0.5
   m_SemiTransparentShadow: 0
   m_ColorShadow: 1
   m_DistanceBasedFiltering: 0
@@ -1205,7 +1204,6 @@ GameObject:
   m_Component:
   - component: {fileID: 565384058}
   - component: {fileID: 565384057}
-  - component: {fileID: 565384056}
   m_Layer: 0
   m_Name: DayNight
   m_TagString: Untagged
@@ -1213,24 +1211,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &565384056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565384055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65be215d39f68f94b8229e20c0157911, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.StarFieldGenerator
-  _cubeFaceResolution: 512
-  _starCount: 4200
-  _minStarBrightness: 0.35
-  _maxStarBrightness: 4
-  _starSizeSoftness: 0.65
-  _seed: 42
 --- !u!114 &565384057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1245,7 +1225,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.DayNightController
   _sunLight: {fileID: 157207113}
   _skyVolume: {fileID: 432432460}
-  _starFieldGenerator: {fileID: 565384056}
 --- !u!4 &565384058
 Transform:
   m_ObjectHideFlags: 0
@@ -1629,6 +1608,7 @@ Terrain:
   m_AllowAutoConnect: 1
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
+  m_EnableHeightmapLODFrustumCulling: 1
   m_TreeMotionVectorModeOverride: 3
 --- !u!114 &863185214
 MonoBehaviour:
@@ -3172,6 +3152,14 @@ PrefabInstance:
     - target: {fileID: 3832346466748127405, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4847149174086130656, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
+      propertyPath: m_Version
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4847149174086130656, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
+      propertyPath: m_ShapeRadius
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7786694538252668051, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: _id

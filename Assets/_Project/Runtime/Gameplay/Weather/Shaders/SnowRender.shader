@@ -5,7 +5,6 @@ Shader "TLN/VFX/SnowParticle"
         _Color("Tint", Color) = (1, 1, 1, 1)
         _Softness("Softness", Range(0, 1)) = 0.5
         _SparkleIntensity("Sparkle", Range(0, 1)) = 0.3
-        _SparkleFrequency("Sparkle Frequency", Range(1, 10)) = 3
         _DepthFade("Depth Fade", Range(0, 1)) = 0.4
         _FadeDistance("Fade Distance", Range(10, 120)) = 45
     }
@@ -48,16 +47,11 @@ Shader "TLN/VFX/SnowParticle"
             StructuredBuffer<Particle> _SnowParticles;
 
             float4 _Color;
-            float _Softness, _SparkleIntensity, _SparkleFrequency, _DepthFade, _FadeDistance, _TimeGlobal;
+            float _Softness, _SparkleIntensity, _DepthFade, _FadeDistance, _TimeGlobal;
 
-            float Random(float s)
+            float Hash(float s)
             {
                 return frac(sin(s) * 43758.5453);
-            }
-
-            float RandomRange(float s, float minVal, float maxVal)
-            {
-                return minVal + Random(s) * (maxVal - minVal);
             }
 
             struct Attributes
@@ -76,35 +70,17 @@ Shader "TLN/VFX/SnowParticle"
                 float depth : TEXCOORD3;
             };
 
-            // Procedural snowflake shape: soft circle + 6 crystal arms
-            float SnowflakeShape(float2 uv, float seed)
+            float SnowflakeShape(float2 uv)
             {
                 float dist = length(uv);
-                float circle = 1.0 - smoothstep(0.85, 1.05, dist);
+                float circle = 1.0 - smoothstep(0.6, 1.0, dist);
 
-                float arms = 0;
-                for (int i = 0; i < 6; i++)
-                {
-                    float angle = i * 1.0472 + Random(seed + i * 0.01) * 0.2;
-                    float2 dir = float2(cos(angle), sin(angle));
-                    float projection = dot(uv, dir);
-                    float armWidth = 0.08 + Random(seed + i * 0.02) * 0.06;
-                    float armLength = projection / (0.7 + Random(seed + i * 0.03) * 0.4);
-                    float arm = smoothstep(-armWidth, 0, projection) * smoothstep(armLength, armLength - 0.1, projection);
-                    arm *= smoothstep(1.0, 0.7, dist);
-                    arms = max(arms, arm);
-                }
+                float angle = atan2(uv.y, uv.x);
+                float armPattern = cos(angle * 6.0);
+                float armRadial = 1.0 - smoothstep(0.0, 0.7, dist);
+                float arms = max(0, armPattern) * armRadial;
 
-                float detail = 0;
-                for (int j = 0; j < 3; j++)
-                {
-                    float dAngle = Random(seed + j * 0.1) * 6.28;
-                    float2 dDir = float2(cos(dAngle), sin(dAngle));
-                    float dProj = abs(dot(uv, dDir));
-                    detail += smoothstep(0.15, 0.05, dProj) * 0.1;
-                }
-
-                return saturate(circle * 0.4 + arms * 0.6 + detail);
+                return saturate(circle * 0.5 + arms * 0.5);
             }
 
             Varyings Vertex(Attributes input)
@@ -128,12 +104,20 @@ Shader "TLN/VFX/SnowParticle"
                 float3 worldPos = particleRWS + right * input.vertex.x * halfSize + up * input.vertex.y * halfSize;
 
                 output.positionCS = TransformWorldToHClip(worldPos);
-                output.uv = input.uv;
+
+                float rot = Hash(particle.seed + 10.0) * 6.2832;
+                float cr = cos(rot), sr = sin(rot);
+                float2 uvCentered = input.uv - 0.5;
+                output.uv = float2(
+                    uvCentered.x * cr - uvCentered.y * sr,
+                    uvCentered.x * sr + uvCentered.y * cr
+                ) + 0.5;
+
                 output.seed = particle.seed;
 
                 float distanceToCamera = sqrt(distanceSqr);
                 float distFade = saturate(1.0 - distanceToCamera / max(_FadeDistance, 1.0));
-                output.alpha = saturate(distFade * (0.6 + Random(particle.seed) * 0.4));
+                output.alpha = saturate(distFade * (0.6 + Hash(particle.seed) * 0.4));
                 output.depth = distanceToCamera;
 
                 return output;
@@ -141,35 +125,21 @@ Shader "TLN/VFX/SnowParticle"
 
             float4 Fragment(Varyings input) : SV_Target
             {
-                float rotation = Random(input.seed + 10.0) * 6.2832;
-                float cosRot = cos(rotation);
-                float sinRot = sin(rotation);
-                float2 rotatedUV = float2(
-                    (input.uv.x - 0.5) * cosRot - (input.uv.y - 0.5) * sinRot + 0.5,
-                    (input.uv.x - 0.5) * sinRot + (input.uv.y - 0.5) * cosRot + 0.5
-                );
-
-                float shape = SnowflakeShape(rotatedUV * 2.0 - 1.0, input.seed);
-
+                float2 uvCentered = input.uv * 2.0 - 1.0;
+                float shape = SnowflakeShape(uvCentered);
                 float softEdge = smoothstep(0.0, _Softness, shape);
 
-                float sparkle = 0;
+                float3 color = _Color.rgb * (0.5 + 0.5 * softEdge);
+
                 if (_SparkleIntensity > 0)
                 {
-                    float phase = 1.5 + Random(input.seed + 0.5) * 3.0;
-                    float offset = Random(input.seed + 1.0) * 6.28;
-                    float twinkle = sin(_TimeGlobal * phase + offset) * 0.5 + 0.5;
-                    float centerBright = 1.0 - length(rotatedUV * 2.0 - 1.0);
-                    sparkle = twinkle * Random(input.seed) * _SparkleIntensity * saturate(centerBright * 3.0);
+                    float twinkle = sin(_TimeGlobal * (1.5 + Hash(input.seed + 0.5) * 3.0) + Hash(input.seed + 1.0) * 6.28) * 0.5 + 0.5;
+                    float centerBright = 1.0 - length(uvCentered);
+                    float sparkle = twinkle * Hash(input.seed) * _SparkleIntensity * saturate(centerBright * 3.0);
+                    color += sparkle * 0.8;
                 }
 
                 float alpha = softEdge * input.alpha;
-                float brightness = 0.5 + 0.5 * softEdge + sparkle * 0.8;
-                float3 color = _Color.rgb * brightness;
-
-                float blueShift = Random(input.seed + 2) * 0.12;
-                color += float3(-blueShift * 0.25, -blueShift * 0.1, blueShift);
-
                 float depthFade = saturate(1.0 - input.depth / max(_FadeDistance * 1.6, 1.0));
                 alpha *= lerp(1.0, depthFade, _DepthFade);
 
