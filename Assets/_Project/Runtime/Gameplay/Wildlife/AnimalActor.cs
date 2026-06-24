@@ -15,6 +15,11 @@ namespace TLN.Gameplay.Wildlife
     [RequireComponent(typeof(NavMeshAgent))]
     public sealed class AnimalActor : MonoBehaviour
     {
+        private const float RemainingDistanceThreshold = 0.5f;
+        private const float DirectionEpsilon = 0.001f;
+        private const float MovingVelocityThreshold = 0.02f;
+        private const int MaxNavMeshAttempts = 12;
+
         [Header("Definition")]
         [SerializeField][Required] private AnimalDefinition _definition;
 
@@ -178,7 +183,7 @@ namespace TLN.Gameplay.Wildlife
             }
 
             if (_agent.hasPath &&
-                _agent.remainingDistance > 0.5f)
+                _agent.remainingDistance > RemainingDistanceThreshold)
             {
                 return;
             }
@@ -206,7 +211,7 @@ namespace TLN.Gameplay.Wildlife
 
             direction.y = 0f;
 
-            if (direction.sqrMagnitude <= 0.001f)
+            if (direction.sqrMagnitude <= DirectionEpsilon)
             {
                 direction = -transform.forward;
             }
@@ -299,7 +304,7 @@ namespace TLN.Gameplay.Wildlife
             Vector3 center,
             float radius)
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < MaxNavMeshAttempts; i++)
             {
                 Vector3 randomDirection =
                     UnityEngine.Random.insideUnitSphere * radius;
@@ -363,60 +368,36 @@ namespace TLN.Gameplay.Wildlife
             bool isMoving =
                 _agent != null &&
                 _agent.enabled &&
-                _agent.velocity.sqrMagnitude > 0.02f;
+                _agent.velocity.sqrMagnitude > MovingVelocityThreshold;
 
             _animationController.ApplyMovementState(_state, isMoving);
         }
 
-        public bool IsPlayerInsideDetectionRadius()
+        private float GetDistanceToPlayer()
         {
             PlayerRoot player = GetPlayer();
 
             if (player == null || _definition == null)
             {
-                return false;
+                return float.MaxValue;
             }
 
-            float distanceToPlayer =
-                Vector3.Distance(
-                    transform.position,
-                    player.transform.position);
+            return Vector3.Distance(transform.position, player.transform.position);
+        }
 
-            return distanceToPlayer <= _definition.DetectionRadius;
+        public bool IsPlayerInsideDetectionRadius()
+        {
+            return GetDistanceToPlayer() <= _definition.DetectionRadius;
         }
 
         public bool IsPlayerInsideFleeRadius()
         {
-            PlayerRoot player = GetPlayer();
-
-            if (player == null || _definition == null)
-            {
-                return false;
-            }
-
-            float distanceToPlayer =
-                Vector3.Distance(
-                    transform.position,
-                    player.transform.position);
-
-            return distanceToPlayer <= _definition.FleeRadius;
+            return GetDistanceToPlayer() <= _definition.FleeRadius;
         }
 
         public bool IsPlayerInsideAttackDistance()
         {
-            PlayerRoot player = GetPlayer();
-
-            if (player == null || _definition == null)
-            {
-                return false;
-            }
-
-            float distanceToPlayer =
-                Vector3.Distance(
-                    transform.position,
-                    player.transform.position);
-
-            return distanceToPlayer <= _definition.AttackDistance;
+            return GetDistanceToPlayer() <= _definition.AttackDistance;
         }
 
         public void WanderAroundHome()

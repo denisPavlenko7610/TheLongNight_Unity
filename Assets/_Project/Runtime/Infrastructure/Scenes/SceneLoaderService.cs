@@ -1,4 +1,5 @@
-﻿using TLN.Application.GameStates;
+﻿using System;
+using TLN.Application.GameStates;
 using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace TLN.Infrastructure.Scenes
 			_gameStateMachine = gameStateMachine;
 		}
 
-		public async void LoadMainMenu()
+		public async Awaitable LoadMainMenu()
 		{
 			if (_isLoading)
 			{
@@ -28,10 +29,19 @@ namespace TLN.Infrastructure.Scenes
 
 			_isLoading = true;
 			_gameStateMachine.Enter(GameStateId.Loading);
-			await LoadSceneAsync(SceneNames.MainMenu, GameStateId.MainMenu);
+
+			try
+			{
+				await LoadSceneAsync(SceneNames.MainMenu, GameStateId.MainMenu);
+			}
+			catch (Exception exception)
+			{
+				TLNLogger.LogError($"Failed to load MainMenu: {exception}");
+				_isLoading = false;
+			}
 		}
 
-		public async void LoadWorld()
+		public async Awaitable LoadWorld()
 		{
 			if (_isLoading)
 			{
@@ -41,7 +51,16 @@ namespace TLN.Infrastructure.Scenes
 
 			_isLoading = true;
 			_gameStateMachine.Enter(GameStateId.Loading);
-			await LoadSceneAsync(SceneNames.World, GameStateId.Playing);
+
+			try
+			{
+				await LoadSceneAsync(SceneNames.World, GameStateId.Playing);
+			}
+			catch (Exception exception)
+			{
+				TLNLogger.LogError($"Failed to load World: {exception}");
+				_isLoading = false;
+			}
 		}
 
 		private async Awaitable LoadSceneAsync(string sceneName, GameStateId stateAfterLoading)

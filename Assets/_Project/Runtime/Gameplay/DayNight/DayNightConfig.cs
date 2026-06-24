@@ -1,3 +1,4 @@
+using TLN.Gameplay.Time;
 using UnityEngine;
 
 namespace TLN.Gameplay.DayNight
@@ -141,7 +142,7 @@ namespace TLN.Gameplay.DayNight
 
 		public DayNightPhase GetPhaseForHour(float hour)
 		{
-			hour %= 24f;
+			hour %= GameTime.HoursPerDay;
 
 			if (hour >= _dawn.StartHour && hour < _morning.StartHour)
 			{
@@ -190,8 +191,8 @@ namespace TLN.Gameplay.DayNight
 				DayNightPhase.Day => _afternoon.StartHour,
 				DayNightPhase.Afternoon => _dusk.StartHour,
 				DayNightPhase.Dusk => _night.StartHour,
-				DayNightPhase.Night => _dawn.StartHour + 24f,
-				_ => 24f
+				DayNightPhase.Night => _dawn.StartHour + GameTime.HoursPerDay,
+				_ => GameTime.HoursPerDay
 			};
 		}
 

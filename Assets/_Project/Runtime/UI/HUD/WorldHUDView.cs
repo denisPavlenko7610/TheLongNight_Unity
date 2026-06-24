@@ -218,7 +218,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			float dayTime = hour + minute / 60f;
+			float dayTime = hour + minute / (float)GameTime.MinutesPerHour;
 
 			float progress = isDay
 				? CalculateDayProgress(dayTime)
@@ -247,7 +247,7 @@ namespace TLN.UI.HUD
 
 			if (normalizedHour < nightStartHour)
 			{
-				normalizedHour += 24f;
+				normalizedHour += GameTime.HoursPerDay;
 			}
 
 			return Mathf.InverseLerp(nightStartHour, nightEndHourNextDay, normalizedHour);
@@ -274,11 +274,15 @@ namespace TLN.UI.HUD
 
 		private static string GetTimePeriodLabel(int hour)
 		{
+			const int morningEnd = 11;
+			const int afternoonEnd = 17;
+			const int eveningEnd = 21;
+
 			return hour switch
 			{
-				>= 5 and < 11 => "MORNING",
-				>= 11 and < 17 => "AFTERNOON",
-				>= 17 and < 21 => "EVENING",
+				>= 5 and < morningEnd => "MORNING",
+				>= morningEnd and < afternoonEnd => "AFTERNOON",
+				>= afternoonEnd and < eveningEnd => "EVENING",
 				_ => "NIGHT"
 			};
 		}
@@ -290,11 +294,11 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_hungerIcon.SetValue(_survivalService.Hunger.Value / 100f);
-			_thirstIcon.SetValue(_survivalService.Thirst.Value / 100f);
-			_fatigueIcon.SetValue(_survivalService.Fatigue.Value / 100f);
-			_coldIcon.SetValue(_survivalService.Cold.Value / 100f);
-			_conditionIcon.SetValue(_survivalService.Condition.Value / 100f);
+			_hungerIcon.SetValue(_survivalService.Hunger.Value / SurvivalService.MaxStat);
+			_thirstIcon.SetValue(_survivalService.Thirst.Value / SurvivalService.MaxStat);
+			_fatigueIcon.SetValue(_survivalService.Fatigue.Value / SurvivalService.MaxStat);
+			_coldIcon.SetValue(_survivalService.Cold.Value / SurvivalService.MaxStat);
+			_conditionIcon.SetValue(_survivalService.Condition.Value / SurvivalService.MaxStat);
 		}
 
 		private void ShowInteractionPrompt(string text)

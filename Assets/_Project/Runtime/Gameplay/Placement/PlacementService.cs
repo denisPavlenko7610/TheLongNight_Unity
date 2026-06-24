@@ -7,6 +7,8 @@ namespace TLN.Gameplay.Placement
 {
 	public sealed class PlacementService
 	{
+		private const float DirectionEpsilon = 0.0001f;
+
 		private PlayerRoot _playerRoot;
 		public PlayerRoot PlayerRoot => _playerRoot;
 		public event Action<GameObject> Placed;
@@ -59,7 +61,7 @@ namespace TLN.Gameplay.Placement
 			Vector3 forward = cameraTransform.forward;
 			forward.y = 0f;
 
-			if (forward.sqrMagnitude > 0.0001f)
+			if (forward.sqrMagnitude > DirectionEpsilon)
 			{
 				return forward.normalized;
 			}
@@ -67,7 +69,7 @@ namespace TLN.Gameplay.Placement
 			forward = _playerRoot.transform.forward;
 			forward.y = 0f;
 
-			return forward.sqrMagnitude > 0.0001f ? forward.normalized : Vector3.forward;
+			return forward.sqrMagnitude > DirectionEpsilon ? forward.normalized : Vector3.forward;
 		}
 
 		private static bool TryFindGroundPosition(Vector3 origin, out Vector3 groundPosition)

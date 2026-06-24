@@ -199,12 +199,6 @@ namespace TLN.UI.MainMenu
 			_loadGameButton.AddToClassList(DisabledClassName);
 		}
 
-		private static void SetComingSoon(Button button)
-		{
-			button.SetEnabled(false);
-			button.AddToClassList(DisabledClassName);
-		}
-
 		private void ShowNavigationPanel()
 		{
 			_navigationPanel.SetVisible(true);
@@ -286,7 +280,7 @@ namespace TLN.UI.MainMenu
 			_saveSlotsPanel.ShowLoadGame();
 		}
 
-		private void OnNewGameSlotSelected(int slotId)
+		private async void OnNewGameSlotSelected(int slotId)
 		{
 			UnityEngine.Cursor.visible = false;
 
@@ -306,10 +300,10 @@ namespace TLN.UI.MainMenu
 
 			_saveRepository?.Delete(slotId);
 			_saveSessionService.StartNewGame(slotId);
-			_sceneLoader.LoadWorld();
+			await _sceneLoader.LoadWorld();
 		}
 
-		private void OnLoadGameSlotSelected(int slotId)
+		private async void OnLoadGameSlotSelected(int slotId)
 		{
 			if (_sceneLoader == null)
 			{
@@ -324,7 +318,7 @@ namespace TLN.UI.MainMenu
 			}
 
 			_saveSessionService.RequestLoadGame(slotId);
-			_sceneLoader.LoadWorld();
+			await _sceneLoader.LoadWorld();
 		}
 
 		private void OnQuitClicked()

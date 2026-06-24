@@ -1,4 +1,5 @@
 ﻿using TLN.Core.Lifetime;
+using UnityEngine;
 
 namespace TLN.Application.Scenes
 {
@@ -6,7 +7,7 @@ namespace TLN.Application.Scenes
 	{
 		bool IsLoading { get; }
 
-		void LoadMainMenu();
-		void LoadWorld();
+		Awaitable LoadMainMenu();
+		Awaitable LoadWorld();
 	}
 }

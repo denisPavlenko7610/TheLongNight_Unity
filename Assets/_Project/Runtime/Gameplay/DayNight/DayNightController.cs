@@ -8,6 +8,8 @@ namespace TLN.Gameplay.DayNight
 {
 	public sealed class DayNightController : MonoBehaviour
 	{
+		private const float ShadowThreshold = 0.01f;
+
 		[SerializeField] private Light _sunLight;
 		[SerializeField] private Volume _skyVolume;
 
@@ -15,7 +17,6 @@ namespace TLN.Gameplay.DayNight
 		private DayNightConfig _config;
 		private IGameStateMachine _gameStateMachine;
 
-		private Fog _fog;
 		private Exposure _exposure;
 		private ColorAdjustments _colorAdjustments;
 
@@ -51,12 +52,28 @@ namespace TLN.Gameplay.DayNight
 			if (_skyVolume != null && _skyVolume.profile != null)
 			{
 				VolumeProfile profile = _skyVolume.profile;
-				profile.TryGet(out _fog);
 				profile.TryGet(out _exposure);
 				profile.TryGet(out _colorAdjustments);
+
+				SetupVolumeOverrides();
 			}
 
 			_isInitialized = true;
+		}
+
+		private void SetupVolumeOverrides()
+		{
+			if (_exposure != null)
+			{
+				_exposure.mode.overrideState = true;
+				_exposure.mode.value = ExposureMode.Fixed;
+				_exposure.fixedExposure.overrideState = true;
+			}
+
+			if (_colorAdjustments != null)
+			{
+				_colorAdjustments.colorFilter.overrideState = true;
+			}
 		}
 
 		private void Update()
@@ -86,17 +103,14 @@ namespace TLN.Gameplay.DayNight
 			PhaseSettings nextPhase = GetNextPhaseSettings();
 			float t = _dayNightService.PhaseBlend01;
 
-			Color sunColor = Color.Lerp(currentPhase.SunColor, nextPhase.SunColor, t);
-			float sunIntensity = Mathf.Lerp(currentPhase.SunIntensity, nextPhase.SunIntensity, t);
-			float shadowStrength = Mathf.Lerp(currentPhase.SunShadowStrength, nextPhase.SunShadowStrength, t);
-			Color fogColor = Color.Lerp(currentPhase.FogColor, nextPhase.FogColor, t);
-			float fogDensity = Mathf.Lerp(currentPhase.FogDensity, nextPhase.FogDensity, t);
-			float exposureValue = Mathf.Lerp(currentPhase.Exposure, nextPhase.Exposure, t);
-			Color colorFilter = Color.Lerp(currentPhase.ColorFilter, nextPhase.ColorFilter, t);
+			ApplySun(
+				Color.Lerp(currentPhase.SunColor, nextPhase.SunColor, t),
+				Mathf.Lerp(currentPhase.SunIntensity, nextPhase.SunIntensity, t),
+				Mathf.Lerp(currentPhase.SunShadowStrength, nextPhase.SunShadowStrength, t)
+			);
 
-			ApplySun(sunColor, sunIntensity, shadowStrength);
-			ApplyExposure(exposureValue);
-			ApplyColorFilter(colorFilter);
+			ApplyExposure(Mathf.Lerp(currentPhase.Exposure, nextPhase.Exposure, t));
+			ApplyColorFilter(Color.Lerp(currentPhase.ColorFilter, nextPhase.ColorFilter, t));
 		}
 
 		private void ApplySun(Color color, float intensity, float shadowStrength)
@@ -120,7 +134,7 @@ namespace TLN.Gameplay.DayNight
 				return;
 			}
 
-			bool shadowsEnabled = shadowStrength > 0.01f;
+			bool shadowsEnabled = shadowStrength > ShadowThreshold;
 			if (_lastShadowsEnabled == shadowsEnabled)
 			{
 				return;
@@ -137,9 +151,6 @@ namespace TLN.Gameplay.DayNight
 				return;
 			}
 
-			_exposure.mode.overrideState = true;
-			_exposure.mode.value = ExposureMode.Fixed;
-			_exposure.fixedExposure.overrideState = true;
 			_exposure.fixedExposure.value = exposureValue;
 		}
 
@@ -155,7 +166,6 @@ namespace TLN.Gameplay.DayNight
 				colorFilter = Color.white;
 			}
 
-			_colorAdjustments.colorFilter.overrideState = true;
 			_colorAdjustments.colorFilter.value = colorFilter;
 		}
 

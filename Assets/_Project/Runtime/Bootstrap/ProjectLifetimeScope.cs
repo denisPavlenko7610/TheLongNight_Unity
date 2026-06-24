@@ -33,7 +33,7 @@ namespace TLN.Bootstrap
 
 			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
-			builder.Register<UnityLocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
+			builder.Register<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
 
 			builder.RegisterEntryPoint<GameStateInputModeController>();
 			builder.RegisterEntryPoint<GameStatePauseController>();

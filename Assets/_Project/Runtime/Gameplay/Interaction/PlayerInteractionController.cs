@@ -6,8 +6,11 @@ using VContainer;
 
 namespace TLN.Gameplay.Interaction
 {
+	[RequireComponent(typeof(PlayerRoot), typeof(PlayerInputReader))]
 	public sealed class PlayerInteractionController : MonoBehaviour
 	{
+		private const float DebugNormalRayLength = 0.35f;
+
 		[Header("References")]
 		[SerializeField] private PlayerRoot _playerRoot;
 		[SerializeField] private PlayerInputReader _inputReader;
@@ -103,7 +106,7 @@ namespace TLN.Gameplay.Interaction
 			if (hasHit)
 			{
 				Debug.DrawRay(origin, direction * hit.Distance, _debugHitColor, _debugRayDuration);
-				Debug.DrawRay(hit.Point, hit.Normal * 0.35f, _debugNormalColor, _debugRayDuration);
+				Debug.DrawRay(hit.Point, hit.Normal * DebugNormalRayLength, _debugNormalColor, _debugRayDuration);
 
 				return;
 			}

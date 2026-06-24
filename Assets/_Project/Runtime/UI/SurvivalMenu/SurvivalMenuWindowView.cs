@@ -19,6 +19,7 @@ namespace TLN.UI.SurvivalMenu
 	{
 		private const string VisibleClassName = "survival-menu-root-visible";
 		private const string SelectedTabClassName = "survival-menu-tab-selected";
+	private const float ListItemHeight = 62f;
 
 		private readonly List<object> _listItems = new List<object>();
 
@@ -289,7 +290,7 @@ namespace TLN.UI.SurvivalMenu
 		private void SetupListView()
 		{
 			_listView.itemsSource = _listItems;
-			_listView.fixedItemHeight = 62f;
+			_listView.fixedItemHeight = ListItemHeight;
 			_listView.selectionType = SelectionType.Single;
 			_listView.makeItem = MakeListItem;
 			_listView.bindItem = BindListItem;
@@ -937,7 +938,7 @@ namespace TLN.UI.SurvivalMenu
 			Refresh();
 		}
 
-		private readonly struct InventoryRowData
+		private sealed class InventoryRowData
 		{
 			public int InventoryIndex { get; }
 			public ItemDefinition Definition { get; }
@@ -959,7 +960,7 @@ namespace TLN.UI.SurvivalMenu
 			}
 		}
 
-		private readonly struct RecipeRowData
+		private sealed class RecipeRowData
 		{
 			public BuildRecipeDefinition Recipe { get; }
 

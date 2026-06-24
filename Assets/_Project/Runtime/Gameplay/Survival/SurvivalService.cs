@@ -5,6 +5,10 @@ namespace TLN.Gameplay.Survival
 {
 	public sealed class SurvivalService : ISurvivalService
 	{
+		public const float MinStat = 0f;
+		public const float MaxStat = 100f;
+		private const float SecondsPerMinute = 60f;
+
 		private readonly SurvivalConfig _config;
 
 		public SurvivalStat Hunger { get; private set; }
@@ -19,11 +23,11 @@ namespace TLN.Gameplay.Survival
 		{
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
-			Hunger = new SurvivalStat(SurvivalStatId.Hunger, _config.InitialHunger, 0f, 100f);
-			Thirst = new SurvivalStat(SurvivalStatId.Thirst, _config.InitialThirst, 0f, 100f);
-			Fatigue = new SurvivalStat(SurvivalStatId.Fatigue, _config.InitialFatigue, 0f, 100f);
-			Cold = new SurvivalStat(SurvivalStatId.Cold, _config.InitialCold, 0f, 100f);
-			Condition = new SurvivalStat(SurvivalStatId.Condition, _config.InitialCondition, 0f, 100f);
+			Hunger = new SurvivalStat(SurvivalStatId.Hunger, _config.InitialHunger, MinStat, MaxStat);
+			Thirst = new SurvivalStat(SurvivalStatId.Thirst, _config.InitialThirst, MinStat, MaxStat);
+			Fatigue = new SurvivalStat(SurvivalStatId.Fatigue, _config.InitialFatigue, MinStat, MaxStat);
+			Cold = new SurvivalStat(SurvivalStatId.Cold, _config.InitialCold, MinStat, MaxStat);
+			Condition = new SurvivalStat(SurvivalStatId.Condition, _config.InitialCondition, MinStat, MaxStat);
 		}
 
 		public void Tick(float deltaTime)
@@ -63,7 +67,7 @@ namespace TLN.Gameplay.Survival
 
 		private float ConvertRealDeltaTimeToGameHours(float deltaTime)
 		{
-			float realMinutes = deltaTime / 60f;
+			float realMinutes = deltaTime / SecondsPerMinute;
 			return realMinutes * _config.GameHoursPerRealMinute;
 		}
 
@@ -71,22 +75,22 @@ namespace TLN.Gameplay.Survival
 		{
 			float damage = 0f;
 
-			if (Hunger.Value >= 100f)
+			if (Hunger.Value >= MaxStat)
 			{
 				damage += 5f * gameHours;
 			}
 
-			if (Thirst.Value >= 100f)
+			if (Thirst.Value >= MaxStat)
 			{
 				damage += 10f * gameHours;
 			}
 
-			if (Fatigue.Value >= 100f)
+			if (Fatigue.Value >= MaxStat)
 			{
 				damage += 3f * gameHours;
 			}
 
-			if (Cold.Value >= 100f)
+			if (Cold.Value >= MaxStat)
 			{
 				damage += 15f * gameHours;
 			}
@@ -95,23 +99,6 @@ namespace TLN.Gameplay.Survival
 			{
 				Condition.Subtract(damage);
 			}
-		}
-
-		private static SurvivalStat ApplyStatChange(SurvivalStat stat, float change)
-		{
-			if (change > 0f)
-			{
-				stat.Add(change);
-				return stat;
-			}
-
-			if (change < 0f)
-			{
-				stat.Subtract(-change);
-				return stat;
-			}
-
-			return stat;
 		}
 
 		public void ApplyConsumable(ConsumableItemDefinition consumable)

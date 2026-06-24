@@ -4,8 +4,12 @@ using UnityEngine;
 
 namespace TLN.Gameplay.DayNight
 {
-	public sealed class DayNightService : IDayNightService
+	public sealed class DayNightService : IDayNightService, IDisposable
 	{
+		private const float HoursInDay = 24f;
+		private const float MinutesPerHour = 60f;
+		private const float MinutesInDay = HoursInDay * MinutesPerHour;
+
 		private readonly DayNightConfig _config;
 		private readonly IGameTimeService _gameTimeService;
 
@@ -34,6 +38,11 @@ namespace TLN.Gameplay.DayNight
 			Refresh();
 		}
 
+		public void Dispose()
+		{
+			_gameTimeService.Changed -= OnGameTimeChanged;
+		}
+
 		private void OnGameTimeChanged()
 		{
 			Refresh();
@@ -53,25 +62,25 @@ namespace TLN.Gameplay.DayNight
 
 		private void RecalculateFromCurrentTime()
 		{
-			float minutesInDay = Mathf.Repeat(_gameTimeService.TotalMinutesExact, 24f * 60f);
-			float hour = minutesInDay / 60f;
+			float minutesInDay = Mathf.Repeat(_gameTimeService.TotalMinutesExact, MinutesInDay);
+			float hour = minutesInDay / MinutesPerHour;
 
 			CurrentPhase = _config.GetPhaseForHour(hour);
 
-			DayProgress01 = minutesInDay / (24f * 60f);
+			DayProgress01 = minutesInDay / MinutesInDay;
 
 			float phaseStart = _config.GetPhaseStartHour(CurrentPhase);
 			float phaseEnd = _config.GetPhaseEndHour(CurrentPhase);
 
 			if (phaseEnd <= phaseStart)
 			{
-				phaseEnd += 24f;
+				phaseEnd += HoursInDay;
 			}
 
 			float normalizedHour = hour;
 			if (normalizedHour < phaseStart)
 			{
-				normalizedHour += 24f;
+				normalizedHour += HoursInDay;
 			}
 
 			PhaseProgress01 = Mathf.Approximately(phaseEnd, phaseStart)
@@ -97,25 +106,30 @@ namespace TLN.Gameplay.DayNight
 
 		private void CalculateSunPosition(float hour)
 		{
+			const float nightElevationBase = -2f;
+			const float nightElevationAmplitude = 33f;
+			const float azimuthDayEnd = 180f;
+			const float azimuthFullCircle = 360f;
+
 			float sunriseHour = _config.SunriseHour;
 			float sunsetHour = _config.SunsetHour;
 
-			float dayLengthHours = sunsetHour - sunriseHour;
+			float dayLengthHours = Mathf.Max(0.01f, sunsetHour - sunriseHour);
 
 			if (hour >= sunriseHour && hour <= sunsetHour)
 			{
 				float dayProgress = (hour - sunriseHour) / dayLengthHours;
-				SunAzimuth = Mathf.Lerp(0f, 180f, dayProgress) + _config.NorthAngle;
+				SunAzimuth = Mathf.Lerp(0f, azimuthDayEnd, dayProgress) + _config.NorthAngle;
 				SunElevation = _config.SunElevationCurve.Evaluate(dayProgress);
 			}
 			else
 			{
-				float nightHour = hour < sunriseHour ? hour + 24f : hour;
-				float nightDuration = 24f - dayLengthHours;
+				float nightHour = hour < sunriseHour ? hour + HoursInDay : hour;
+				float nightDuration = Mathf.Max(0.01f, HoursInDay - dayLengthHours);
 
 				float nightProgress = (nightHour - sunsetHour) / nightDuration;
-				SunAzimuth = Mathf.Lerp(180f, 360f, nightProgress) + _config.NorthAngle;
-				SunElevation = -2f - Mathf.Sin(nightProgress * Mathf.PI) * 33f;
+				SunAzimuth = Mathf.Lerp(azimuthDayEnd, azimuthFullCircle, nightProgress) + _config.NorthAngle;
+				SunElevation = nightElevationBase - Mathf.Sin(nightProgress * Mathf.PI) * nightElevationAmplitude;
 			}
 		}
 	}

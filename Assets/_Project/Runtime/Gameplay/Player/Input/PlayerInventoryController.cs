@@ -5,6 +5,7 @@ using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
+	[RequireComponent(typeof(PlayerInputReader))]
 	public sealed class PlayerInventoryController : MonoBehaviour
 	{
 		[SerializeField] private PlayerInputReader _inputReader;

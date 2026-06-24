@@ -269,12 +269,14 @@ namespace TLN.Gameplay.World
             return true;
         }
 
+        private const float FullCircleDegrees = 360f;
+
         private static Quaternion CreateRotation(
             RandomWorldSpawnEntry entry,
             Vector3 groundNormal)
         {
             Quaternion yaw =
-                Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+                Quaternion.Euler(0f, Random.Range(0f, FullCircleDegrees), 0f);
 
             if (!entry.AlignToGroundNormal)
             {

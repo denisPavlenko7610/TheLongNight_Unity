@@ -14,6 +14,9 @@ namespace BayatGames.Utilities.Editor
 	public class SceneSwitcherWindow : EditorWindow
 	{
 
+		private const float MinWindowWidth = 250f;
+		private const float MinWindowHeight = 200f;
+
 		public enum ScenesSource
 		{
 			Assets,
@@ -34,7 +37,7 @@ namespace BayatGames.Utilities.Editor
 		public static void Init()
 		{
 			SceneSwitcherWindow window = GetWindow<SceneSwitcherWindow>("Scene Switcher");
-			window.minSize = new Vector2(250f, 200f);
+			window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
 			window.Show();
 		}
 

@@ -6,6 +6,8 @@ namespace TLN.Gameplay.World
 	[Serializable]
 	public sealed class RandomWorldSpawnEntry
 	{
+		private const float MinSpawnRadius = 0.1f;
+		private const float MinNavMeshSearchRadius = 0.1f;
 		[SerializeField] private GameObject _prefab;
 		[SerializeField] private int _minCount;
 		[SerializeField] private int _maxCount = 1;
@@ -26,14 +28,14 @@ namespace TLN.Gameplay.World
 		public GameObject Prefab => _prefab;
 		public int MinCount => Mathf.Max(0, _minCount);
 		public int MaxCount => Mathf.Max(MinCount, _maxCount);
-		public float SpawnRadius => Mathf.Max(0.1f, _spawnRadius);
+		public float SpawnRadius => Mathf.Max(MinSpawnRadius, _spawnRadius);
 		public float MinDistanceBetweenInstances => Mathf.Max(0f, _minDistanceBetweenInstances);
 
 		public bool AlignToGroundNormal => _alignToGroundNormal;
 		public float SpawnYOffset => _spawnYOffset;
 
 		public bool RequireNavMesh => _requireNavMesh;
-		public float NavMeshSearchRadius => Mathf.Max(0.1f, _navMeshSearchRadius);
+		public float NavMeshSearchRadius => Mathf.Max(MinNavMeshSearchRadius, _navMeshSearchRadius);
 
 		public Color DebugColor => _debugColor;
 	}

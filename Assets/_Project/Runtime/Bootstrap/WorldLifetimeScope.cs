@@ -17,7 +17,7 @@ using TLN.Gameplay.Time;
 using TLN.Gameplay.Wildlife;
 using TLN.Gameplay.World;
 using TLN.Infrastructure.World;
-using TLN.UI.World;
+using TLN.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

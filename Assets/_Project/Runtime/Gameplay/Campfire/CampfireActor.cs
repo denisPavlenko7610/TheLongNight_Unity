@@ -17,7 +17,7 @@ namespace TLN.Gameplay.Campfire
 
 		[Header("Burning")]
 		[SerializeField] private int _startBurnMinutes;
-		[SerializeField] private int _maxBurnMinutes = 720;
+		[SerializeField] private int _maxBurnMinutes = 12 * 60;
 		[SerializeField] private int _minimumBurnMinutesToIgnite = 1;
 
 		[Header("Warmth")]

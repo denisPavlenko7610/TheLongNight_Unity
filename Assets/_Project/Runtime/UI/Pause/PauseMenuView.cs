@@ -113,10 +113,10 @@ namespace TLN.UI.Pause
 			_saveSlotsPanel.ShowLoadGame();
 		}
 
-		private void OnLoadGameSlotSelected(int slotId)
+		private async void OnLoadGameSlotSelected(int slotId)
 		{
 			_saveSessionService.RequestLoadGame(slotId);
-			_sceneLoader.LoadWorld();
+			await _sceneLoader.LoadWorld();
 		}
 
 		private void EnsureInitialized()
@@ -311,9 +311,12 @@ namespace TLN.UI.Pause
 			ShowNavigationPanel();
 		}
 
-		private void OnQuitClicked()
+		private async void OnQuitClicked()
 		{
-			_sceneLoader?.LoadMainMenu();
+			if (_sceneLoader != null)
+			{
+				await _sceneLoader.LoadMainMenu();
+			}
 		}
 
 		private void OnLanguageChanged(ChangeEvent<string> changeEvent)

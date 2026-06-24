@@ -9,6 +9,8 @@ namespace TLN.Gameplay.Player
 {
 	public sealed class PlayerWarmthController : MonoBehaviour
 	{
+		private const float SecondsPerMinute = 60f;
+
 		private IWarmthService _warmthService;
 		private IPlayerEquipmentService _equipmentService;
 		private ISurvivalService _survivalService;
@@ -95,7 +97,7 @@ namespace TLN.Gameplay.Player
 
 		private float ConvertRealDeltaTimeToGameHours(float deltaTime)
 		{
-			float realMinutes = deltaTime / 60f;
+			float realMinutes = deltaTime / SecondsPerMinute;
 			return realMinutes * _survivalConfig.GameHoursPerRealMinute;
 		}
 	}

@@ -8,7 +8,7 @@ using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 using TLN.Gameplay.Wildlife;
-using TLN.UI.World;
+using TLN.UI;
 using UnityEngine;
 using VContainer;
 

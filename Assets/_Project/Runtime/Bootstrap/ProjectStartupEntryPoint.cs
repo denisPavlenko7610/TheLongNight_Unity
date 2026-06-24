@@ -8,6 +8,7 @@ namespace TLN.Bootstrap
 	public sealed class ProjectStartupEntryPoint : IStartable
 	{
 		private const int DefaultTargetFrameRate = 60;
+		private const int DisableVSync = 0;
 
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly ISceneLoader _sceneLoader;
@@ -18,17 +19,17 @@ namespace TLN.Bootstrap
 			_sceneLoader = sceneLoader;
 		}
 
-		public void Start()
+		public async void Start()
 		{
 			ApplyDefaultFrameSync();
 
 			_gameStateMachine.Enter(GameStateId.Boot);
-			_sceneLoader.LoadMainMenu();
+			await _sceneLoader.LoadMainMenu();
 		}
 
 		private static void ApplyDefaultFrameSync()
 		{
-			QualitySettings.vSyncCount = 0;
+			QualitySettings.vSyncCount = DisableVSync;
 			UnityEngine.Application.targetFrameRate = DefaultTargetFrameRate;
 		}
 	}

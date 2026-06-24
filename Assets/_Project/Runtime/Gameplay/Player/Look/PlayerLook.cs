@@ -5,6 +5,7 @@ using VContainer;
 
 namespace TLN.Gameplay.Player.Look
 {
+	[RequireComponent(typeof(PlayerInputReader))]
 	public sealed class PlayerLook : MonoBehaviour
 	{
 		[Header("References")]

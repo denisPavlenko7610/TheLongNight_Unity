@@ -5,13 +5,13 @@ using UnityEngine.Localization.Settings;
 
 namespace TLN.Infrastructure.Localization
 {
-	public sealed class UnityLocalizationService : ILocalizationService, IDisposable
+	public sealed class LocalizationService : ILocalizationService, IDisposable
 	{
 		public string CurrentLocaleCode => LocalizationSettings.SelectedLocale?.Identifier.Code ?? string.Empty;
 
 		public event Action LocaleChanged;
 
-		public UnityLocalizationService()
+		public LocalizationService()
 		{
 			LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
 		}

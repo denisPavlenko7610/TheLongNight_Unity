@@ -6,7 +6,7 @@ using TLN.UI.Sleep;
 using TLN.UI.SurvivalMenu;
 using UnityEngine;
 
-namespace TLN.UI.World
+namespace TLN.UI
 {
 	public sealed class WorldUIRoot : MonoBehaviour
 	{

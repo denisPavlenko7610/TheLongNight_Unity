@@ -1,15 +1,58 @@
 using System.Runtime.InteropServices;
 using TLN.Core.Logging;
-using TLN.Core.Utilities;
 using TLN.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
+using VContainer;
 
 namespace TLN.Gameplay.Weather
 {
 	public sealed class SnowService : MonoBehaviour
 	{
+		private const float DefaultRadius = 40f;
+		private const float DefaultHeight = 30f;
+		private const float DefaultFallDepth = 8f;
+		private const float DefaultGravity = 0.6f;
+		private const float DefaultWindInfluence = 0.7f;
+		private const float DefaultTurbulence = 1.2f;
+		private const float DefaultMinSize = 0.01f;
+		private const float DefaultMaxSize = 0.083f;
+		private const float DefaultSoftness = 0.7f;
+		private const float DefaultSparkleIntensity = 0.15f;
+		private const float DefaultFadeDistance = 45f;
+		private const float DefaultDepthFade = 0.5f;
+		private const int DefaultMaxParticles = 15000;
+		private static readonly Color DefaultSnowColor = new Color(0.88f, 0.91f, 0.98f);
+
+		private const float MaxDeltaTime = 0.1f;
+		private const int ComputeThreadGroupSize = 64;
+		private const float WindForceMultiplier = 2f;
+		private const float SparkleFrequency = 2f;
+		private const float DrawBoundsPadding = 2.2f;
+		private const float MaxSizePadding = 4f;
+		private const float FollowSearchCooldown = 0.5f;
+		private const float SeedOffsetMultiplier = 997.3f;
+		private const int FillSeed = 42;
+		private const float MaxRandomSeed = 10000f;
+
+		private const float GustFrequency1 = 0.7f;
+		private const float GustAmplitude1 = 0.3f;
+		private const float GustFrequency2 = 1.3f;
+		private const float GustPhase2 = 1.5f;
+		private const float GustAmplitude2 = 0.2f;
+
+		private const float InitVelocityRangeXZ = 0.5f;
+		private const float InitVelocityMinY = -2f;
+		private const float InitVelocityMaxY = -0.2f;
+
+		private const float SnowflakeSizePow = 1.35f;
+		private const float SnowflakeLargeChanceThreshold = 0.92f;
+		private const float SnowflakeLargeBlend = 0.65f;
+		private const float SnowflakeSmallChanceThreshold = 0.18f;
+		private const float SnowflakeSmallMultiplier = 0.35f;
+
 		[SerializeField] private SnowConfig _config;
+		[SerializeField] private Shader _snowShader;
 		[SerializeField] private Transform _followTarget;
 		[SerializeField] private bool _autoFollowPlayerCamera = true;
 		[SerializeField] [Range(0, 1)] private float _intensity = 0.5f;
@@ -41,6 +84,7 @@ namespace TLN.Gameplay.Weather
 		private float _seedOffset;
 		private Vector3 _lastVolumeCenter;
 		private float _nextFollowSearchTime;
+		private PlayerRoot _playerRoot;
 		private readonly uint[] _argsData = new uint[5];
 
 		private static readonly int PropSnowParticles = Shader.PropertyToID("_SnowParticles");
@@ -85,6 +129,12 @@ namespace TLN.Gameplay.Weather
 			_windStrength = Mathf.Clamp01(strength);
 		}
 
+		[Inject]
+		public void Construct(PlayerRoot playerRoot)
+		{
+			_playerRoot = playerRoot;
+		}
+
 		private void Start()
 		{
 			TryResolveFollowTarget(true);
@@ -92,32 +142,31 @@ namespace TLN.Gameplay.Weather
 
 		private void Awake()
 		{
-			_radius = _config ? _config.Radius : 40f;
-			_height = _config ? _config.Height : 30f;
-			_fallDepth = _config ? _config.FallDepth : 8f;
-			_gravity = _config ? _config.Gravity : 0.6f;
-			_windInfluence = _config ? _config.WindInfluence : 0.7f;
-			_turbulence = _config ? _config.Turbulence : 1.2f;
-			_minSize = _config ? _config.MinSize : 0.01f;
-			_maxSize = _config ? _config.MaxSize : 0.083f;
-			_softness = _config ? _config.Softness : 0.7f;
-			_sparkleIntensity = _config ? _config.SparkleIntensity : 0.15f;
-			_fadeDistance = _config ? _config.FadeDistance : 45f;
-			_depthFade = 0.5f;
-			_color = _config ? _config.SnowColor : new Color(0.88f, 0.91f, 0.98f);
-			_maxParticles = _config ? _config.MaxParticles : 15000;
-			_seedOffset = Random.Range(0f, 10000f);
+			_radius = _config ? _config.Radius : DefaultRadius;
+			_height = _config ? _config.Height : DefaultHeight;
+			_fallDepth = _config ? _config.FallDepth : DefaultFallDepth;
+			_gravity = _config ? _config.Gravity : DefaultGravity;
+			_windInfluence = _config ? _config.WindInfluence : DefaultWindInfluence;
+			_turbulence = _config ? _config.Turbulence : DefaultTurbulence;
+			_minSize = _config ? _config.MinSize : DefaultMinSize;
+			_maxSize = _config ? _config.MaxSize : DefaultMaxSize;
+			_softness = _config ? _config.Softness : DefaultSoftness;
+			_sparkleIntensity = _config ? _config.SparkleIntensity : DefaultSparkleIntensity;
+			_fadeDistance = _config ? _config.FadeDistance : DefaultFadeDistance;
+			_depthFade = DefaultDepthFade;
+			_color = _config ? _config.SnowColor : DefaultSnowColor;
+			_maxParticles = _config ? _config.MaxParticles : DefaultMaxParticles;
+			_seedOffset = Random.Range(0f, MaxRandomSeed);
 
 			_computeShader = Resources.Load<ComputeShader>("Shaders/SnowCompute");
-			Shader shader = Shader.Find("TLN/VFX/SnowParticle");
-			if (!_computeShader || !shader)
+			if (!_computeShader || !_snowShader)
 			{
 				TLNLogger.LogError("[Snow] Shaders not found");
 				return;
 			}
 
 			_kernelIndex = _computeShader.FindKernel("CSMain");
-			_material = new Material(shader) { hideFlags = HideFlags.HideAndDontSave, enableInstancing = true };
+			_material = new Material(_snowShader) { hideFlags = HideFlags.HideAndDontSave, enableInstancing = true };
 			_quadMesh = CreateQuadMesh();
 			_particleBuffer = new ComputeBuffer(_maxParticles, sizeof(float) * 8);
 			_argsBuffer = CreateArgsBuffer(_quadMesh, (uint)_maxParticles);
@@ -151,7 +200,7 @@ namespace TLN.Gameplay.Weather
 				return;
 			}
 
-			float deltaTime = Mathf.Min(UnityEngine.Time.deltaTime, 0.1f);
+			float deltaTime = Mathf.Min(UnityEngine.Time.deltaTime, MaxDeltaTime);
 			if (!_followTarget)
 			{
 				TryResolveFollowTarget(false);
@@ -174,9 +223,9 @@ namespace TLN.Gameplay.Weather
 			}
 			_lastVolumeCenter = volumeCenter;
 
-			float gust = Mathf.Sin(UnityEngine.Time.time * 0.7f) * 0.3f +
-				Mathf.Sin(UnityEngine.Time.time * 1.3f + 1.5f) * 0.2f;
-			Vector3 windForce = _windDirection.normalized * (Mathf.Max(0f, _windStrength + gust) * _windInfluence * 2f);
+			float gust = Mathf.Sin(UnityEngine.Time.time * GustFrequency1) * GustAmplitude1 +
+				Mathf.Sin(UnityEngine.Time.time * GustFrequency2 + GustPhase2) * GustAmplitude2;
+			Vector3 windForce = _windDirection.normalized * (Mathf.Max(0f, _windStrength + gust) * _windInfluence * WindForceMultiplier);
 
 			_computeShader.SetVector(PropVolumeCenter, volumeCenter);
 			_computeShader.SetVector(PropVolumeHalfExtents, halfExtents);
@@ -190,19 +239,19 @@ namespace TLN.Gameplay.Weather
 			_computeShader.SetFloat(PropMinSize, _minSize);
 			_computeShader.SetFloat(PropMaxSize, _maxSize);
 			_computeShader.SetBuffer(_kernelIndex, PropSnowParticles, _particleBuffer);
-			_computeShader.Dispatch(_kernelIndex, Mathf.CeilToInt(activeCount / 64f), 1, 1);
+			_computeShader.Dispatch(_kernelIndex, Mathf.CeilToInt(activeCount / (float)ComputeThreadGroupSize), 1, 1);
 
 			_material.SetBuffer(PropSnowParticles, _particleBuffer);
 			_material.SetColor(PropColor, _color);
 			_material.SetFloat(PropSoftness, _softness);
 			_material.SetFloat(PropSparkleIntensity, _sparkleIntensity);
-			_material.SetFloat(PropSparkleFrequency, 2f);
+			_material.SetFloat(PropSparkleFrequency, SparkleFrequency);
 			_material.SetFloat(PropTimeGlobal, UnityEngine.Time.time);
 			_material.SetFloat(PropDepthFade, _depthFade);
 			_material.SetFloat(PropFadeDistance, _fadeDistance);
 
 			UpdateArgsBuffer(activeCount);
-			Vector3 drawBoundsSize = halfExtents * 2.2f + Vector3.one * (_maxSize * 4f);
+			Vector3 drawBoundsSize = halfExtents * DrawBoundsPadding + Vector3.one * (_maxSize * MaxSizePadding);
 			Graphics.DrawMeshInstancedIndirect(
 				_quadMesh,
 				0,
@@ -228,19 +277,11 @@ namespace TLN.Gameplay.Weather
 				return false;
 			}
 
-			_nextFollowSearchTime = UnityEngine.Time.unscaledTime + 0.5f;
+			_nextFollowSearchTime = UnityEngine.Time.unscaledTime + FollowSearchCooldown;
 
-			PlayerRoot player = FindFirstObjectByType<PlayerRoot>();
-			if (player != null && player.Camera != null)
+			if (_playerRoot != null && _playerRoot.Camera != null)
 			{
-				AssignFollowTarget(player.Camera.transform, true);
-				return true;
-			}
-
-			Camera mainCamera = CameraUtility.GetMainCamera();
-			if (mainCamera != null)
-			{
-				AssignFollowTarget(mainCamera.transform, true);
+				AssignFollowTarget(_playerRoot.Camera.transform, true);
 				return true;
 			}
 
@@ -266,7 +307,7 @@ namespace TLN.Gameplay.Weather
 			Particle[] particles = new Particle[_maxParticles];
 
 			Random.State state = Random.state;
-			Random.InitState(42 ^ Mathf.RoundToInt(_seedOffset * 997.3f));
+			Random.InitState(FillSeed ^ Mathf.RoundToInt(_seedOffset * SeedOffsetMultiplier));
 
 			for (int i = 0; i < _maxParticles; i++)
 			{
@@ -278,11 +319,11 @@ namespace TLN.Gameplay.Weather
 							Random.Range(-halfExtents.y, halfExtents.y),
 							Random.Range(-halfExtents.z, halfExtents.z)
 						),
-					seed = Random.Range(0f, 10000f),
+					seed = Random.Range(0f, MaxRandomSeed),
 					velocity = new Vector3(
-						Random.Range(-0.5f, 0.5f),
-						Random.Range(-2f, -0.2f),
-						Random.Range(-0.5f, 0.5f)
+						Random.Range(-InitVelocityRangeXZ, InitVelocityRangeXZ),
+						Random.Range(InitVelocityMinY, InitVelocityMaxY),
+						Random.Range(-InitVelocityRangeXZ, InitVelocityRangeXZ)
 					),
 					size = RandomSnowflakeSize()
 				};
@@ -294,15 +335,15 @@ namespace TLN.Gameplay.Weather
 
 		private float RandomSnowflakeSize()
 		{
-			float sizeT = Mathf.Pow(Random.value, 1.35f);
-			if (Random.value > 0.92f)
+			float sizeT = Mathf.Pow(Random.value, SnowflakeSizePow);
+			if (Random.value > SnowflakeLargeChanceThreshold)
 			{
-				sizeT = Mathf.Lerp(sizeT, 1f, 0.65f);
+				sizeT = Mathf.Lerp(sizeT, 1f, SnowflakeLargeBlend);
 			}
 
-			if (Random.value < 0.18f)
+			if (Random.value < SnowflakeSmallChanceThreshold)
 			{
-				sizeT *= 0.35f;
+				sizeT *= SnowflakeSmallMultiplier;
 			}
 
 			return Mathf.Lerp(_minSize, _maxSize, Mathf.Clamp01(sizeT));

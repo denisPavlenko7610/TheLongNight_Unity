@@ -4,6 +4,9 @@ namespace TLN.Gameplay.Survival
 {
 	public sealed class SurvivalWarningService
 	{
+		private const float DefaultWarningThreshold = 80f;
+		private const float ConditionCriticalThreshold = 25f;
+
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
 
@@ -27,7 +30,7 @@ namespace TLN.Gameplay.Survival
 		{
 			CheckStatWarning(
 				_survivalService.Hunger.Value,
-				80f,
+				DefaultWarningThreshold,
 				"You are hungry.",
 				unscaledTime,
 				ref _nextHungerWarningTime
@@ -35,7 +38,7 @@ namespace TLN.Gameplay.Survival
 
 			CheckStatWarning(
 				_survivalService.Thirst.Value,
-				80f,
+				DefaultWarningThreshold,
 				"You are thirsty.",
 				unscaledTime,
 				ref _nextThirstWarningTime
@@ -43,7 +46,7 @@ namespace TLN.Gameplay.Survival
 
 			CheckStatWarning(
 				_survivalService.Fatigue.Value,
-				80f,
+				DefaultWarningThreshold,
 				"You are exhausted.",
 				unscaledTime,
 				ref _nextFatigueWarningTime
@@ -51,7 +54,7 @@ namespace TLN.Gameplay.Survival
 
 			CheckStatWarning(
 				_survivalService.Cold.Value,
-				80f,
+				DefaultWarningThreshold,
 				"You are freezing.",
 				unscaledTime,
 				ref _nextColdWarningTime
@@ -59,7 +62,7 @@ namespace TLN.Gameplay.Survival
 
 			CheckStatWarning(
 				_survivalService.Condition.Value,
-				25f,
+				ConditionCriticalThreshold,
 				"Condition is critical.",
 				unscaledTime,
 				ref _nextConditionWarningTime,

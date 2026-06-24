@@ -8,6 +8,8 @@ namespace TLN.Gameplay.Player.Movement
 	[RequireComponent(typeof(CharacterController))]
 	public sealed class PlayerMotor : MonoBehaviour
 	{
+		private const float GroundedSnapVelocity = -2f;
+
 		[Header("References")]
 		[SerializeField] private PlayerInputReader _inputReader;
 
@@ -73,7 +75,7 @@ namespace TLN.Gameplay.Player.Movement
 		{
 			if (_characterController.isGrounded && _verticalVelocity < 0f)
 			{
-				_verticalVelocity = -2f;
+				_verticalVelocity = GroundedSnapVelocity;
 			}
 
 			_verticalVelocity += _gravity * deltaTime;

@@ -4,10 +4,6 @@ namespace TLN.Gameplay.Time
 {
 	public sealed class GameTimeService : IGameTimeService
 	{
-		private const int MinutesPerHour = 60;
-		private const int HoursPerDay = 24;
-		private const int MinutesPerDay = MinutesPerHour * HoursPerDay;
-
 		private readonly GameTimeConfig _config;
 		private float _accumulatedGameMinutes;
 
@@ -28,7 +24,7 @@ namespace TLN.Gameplay.Time
 			if (_config.RandomStartTime)
 			{
 				startHour = UnityEngine.Random.Range(_config.MinRandomHour, _config.MaxRandomHour);
-				startMinute = UnityEngine.Random.Range(0, 59);
+				startMinute = UnityEngine.Random.Range(0, GameTime.MinutesPerHour - 1);
 			}
 
 			TotalMinutes = ConvertStartTimeToTotalMinutes(startDay, startHour, startMinute);
@@ -68,7 +64,7 @@ namespace TLN.Gameplay.Time
 				return;
 			}
 
-			AdvanceMinutes(hours * MinutesPerHour);
+			AdvanceMinutes(hours * GameTime.MinutesPerHour);
 		}
 
 		public void AdvanceMinutes(int minutes)
@@ -85,19 +81,19 @@ namespace TLN.Gameplay.Time
 		private static int ConvertStartTimeToTotalMinutes(int day, int hour, int minute)
 		{
 			int safeDay = Math.Max(1, day);
-			int safeHour = Math.Clamp(hour, 0, 23);
-			int safeMinute = Math.Clamp(minute, 0, 59);
+			int safeHour = Math.Clamp(hour, 0, GameTime.HoursPerDay - 1);
+			int safeMinute = Math.Clamp(minute, 0, GameTime.MinutesPerHour - 1);
 
-			return (safeDay - 1) * MinutesPerDay + safeHour * MinutesPerHour + safeMinute;
+			return (safeDay - 1) * GameTime.MinutesPerDay + safeHour * GameTime.MinutesPerHour + safeMinute;
 		}
 
 		private static GameTime ConvertTotalMinutesToGameTime(int totalMinutes)
 		{
-			int day = totalMinutes / MinutesPerDay + 1;
-			int minutesInCurrentDay = totalMinutes % MinutesPerDay;
+			int day = totalMinutes / GameTime.MinutesPerDay + 1;
+			int minutesInCurrentDay = totalMinutes % GameTime.MinutesPerDay;
 
-			int hour = minutesInCurrentDay / MinutesPerHour;
-			int minute = minutesInCurrentDay % MinutesPerHour;
+			int hour = minutesInCurrentDay / GameTime.MinutesPerHour;
+			int minute = minutesInCurrentDay % GameTime.MinutesPerHour;
 
 			return new GameTime(day, hour, minute);
 		}

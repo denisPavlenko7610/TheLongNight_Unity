@@ -6,12 +6,6 @@ using UnityEngine.UIElements;
 
 namespace TLN.UI.Saves
 {
-	public enum SaveSlotsPanelMode
-	{
-		NewGame = 0,
-		LoadGame = 10
-	}
-
 	public sealed class SaveSlotsPanel : IDisposable
 	{
 		private const string EmptySlotText = "EMPTY";

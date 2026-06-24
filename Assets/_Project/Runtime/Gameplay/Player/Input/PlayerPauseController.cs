@@ -4,6 +4,7 @@ using VContainer;
 
 namespace TLN.Gameplay.Player.Input
 {
+	[RequireComponent(typeof(PlayerInputReader))]
 	public sealed class PlayerPauseController : MonoBehaviour
 	{
 		[SerializeField] private PlayerInputReader _inputReader;
