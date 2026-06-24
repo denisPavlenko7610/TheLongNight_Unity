@@ -144,6 +144,7 @@ namespace TLN.UI.Pause
 			_saveSlotsPanel = new SaveSlotsPanel(
 				documentRoot,
 				_saveRepository,
+				_localizationService,
 				null,
 				OnLoadGameSlotSelected,
 				ShowNavigationPanel

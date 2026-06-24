@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.UI.Common;
 using UnityEngine.UIElements;
@@ -8,7 +9,6 @@ namespace TLN.UI.Saves
 {
 	public sealed class SaveSlotsPanel : IDisposable
 	{
-		private const string EmptySlotText = "EMPTY";
 		private const string EmptySlotClassName = "save-slot-button-empty";
 		private const string OccupiedSlotClassName = "save-slot-button-occupied";
 		private const int MinutesPerHour = 60;
@@ -30,6 +30,7 @@ namespace TLN.UI.Saves
 		private readonly Button _overwriteCancelButton;
 
 		private readonly ISaveRepository _saveRepository;
+		private readonly ILocalizationService _localizationService;
 		private readonly Action<int> _newGameSelected;
 		private readonly Action<int> _loadGameSelected;
 		private readonly Action _backClicked;
@@ -40,12 +41,14 @@ namespace TLN.UI.Saves
 		public SaveSlotsPanel(
 			VisualElement root,
 			ISaveRepository saveRepository,
+			ILocalizationService localizationService,
 			Action<int> newGameSelected,
 			Action<int> loadGameSelected,
 			Action backClicked
 		)
 		{
 			_saveRepository = saveRepository;
+			_localizationService = localizationService;
 			_newGameSelected = newGameSelected;
 			_loadGameSelected = loadGameSelected;
 			_backClicked = backClicked;
@@ -90,8 +93,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.NewGame;
 
-			_titleLabel.text = "NEW GAME";
-			_descriptionLabel.text = "Choose a slot. Occupied slots will be overwritten.";
+			_titleLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.NewGame);
+			_descriptionLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.NewGameDescription);
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -102,8 +105,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.LoadGame;
 
-			_titleLabel.text = "LOAD GAME";
-			_descriptionLabel.text = "Choose a save slot to continue.";
+			_titleLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.LoadGame);
+			_descriptionLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.LoadGameDescription);
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -141,12 +144,14 @@ namespace TLN.UI.Saves
 			button.SetEnabled(isEnabled);
 		}
 
-		private static string CreateEmptySlotText(int slotId)
+		private string CreateEmptySlotText(int slotId)
 		{
-			return $"SLOT {slotId}\n{EmptySlotText}";
+			return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.SlotFormat,
+				slotId,
+				_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.Empty));
 		}
 
-		private static string CreateOccupiedSlotText(
+		private string CreateOccupiedSlotText(
 			int slotId,
 			GameSaveData saveData
 		)
@@ -156,17 +161,17 @@ namespace TLN.UI.Saves
 			string savedAt = CreateSavedAtText(saveData.savedAtUtc);
 
 			string reason = string.IsNullOrWhiteSpace(saveData.saveReason)
-				? "Save"
+				? _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.DefaultReason)
 				: saveData.saveReason;
 
 			string details = string.IsNullOrEmpty(savedAt)
-				? $"{gameTime} / {reason}"
-				: $"{gameTime} / {reason} / {savedAt}";
+				? _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.DetailsFormat, gameTime, reason)
+				: _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.DetailsFormatWithDate, gameTime, reason, savedAt);
 
-			return $"SLOT {slotId}\n{details}";
+			return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.SlotFormat, slotId, details);
 		}
 
-		private static string CreateGameTimeText(int totalMinutes)
+		private string CreateGameTimeText(int totalMinutes)
 		{
 			int safeTotalMinutes = Math.Max(0, totalMinutes);
 
@@ -175,7 +180,7 @@ namespace TLN.UI.Saves
 			int hour = minutesInDay / MinutesPerHour;
 			int minute = minutesInDay % MinutesPerHour;
 
-			return $"DAY {day}, {hour:00}:{minute:00}";
+			return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.DayTimeFormat, day, hour.ToString("00"), minute.ToString("00"));
 		}
 
 		private static string CreateSavedAtText(string savedAtUtc)
@@ -258,7 +263,7 @@ namespace TLN.UI.Saves
 		{
 			_pendingOverwriteSlotId = slotId;
 
-			_overwriteLabel.text = $"Slot {slotId} already has a save. Overwrite it?";
+			_overwriteLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.OverwriteLabel, slotId);
 
 			_overwriteRoot.SetVisible(true);
 		}

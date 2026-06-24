@@ -1,4 +1,5 @@
-﻿using TLN.Application.Notifications;
+﻿using TLN.Application.Localization;
+using TLN.Application.Notifications;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Survival;
@@ -45,6 +46,7 @@ namespace TLN.UI.HUD
 
 		private ISurvivalService _survivalService;
 		private IGameTimeService _gameTimeService;
+		private ILocalizationService _localizationService;
 
 		private float _notificationHideTime;
 		private bool _isInitialized;
@@ -102,12 +104,13 @@ namespace TLN.UI.HUD
 			UpdateTimeOverlayLifetime();
 		}
 
-		public void Construct(ISurvivalService survivalService, IGameTimeService gameTimeService)
+		public void Construct(ISurvivalService survivalService, IGameTimeService gameTimeService, ILocalizationService localizationService)
 		{
 			EnsureInitialized();
 
 			_survivalService = survivalService;
 			_gameTimeService = gameTimeService;
+			_localizationService = localizationService;
 
 			RefreshAll();
 			_nextRefreshTime = UnityTime.unscaledTime + _refreshInterval;
@@ -179,8 +182,8 @@ namespace TLN.UI.HUD
 
 			GameTime time = _gameTimeService.CurrentTime;
 
-			SetLabel(_timeDayLabel, $"DAY {time.Day}");
-			SetLabel(_timePeriodLabel, GetTimePeriodLabel(time.Hour));
+			SetLabel(_timeDayLabel, _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.HUD.Day, time.Day));
+			SetLabel(_timePeriodLabel, _localizationService.Get(LocalizationTableNames.UI, GetTimePeriodKey(time.Hour)));
 
 			bool isDay = IsDayTime(time.Hour);
 
@@ -272,7 +275,7 @@ namespace TLN.UI.HUD
 			return new Vector2(x, y);
 		}
 
-		private static string GetTimePeriodLabel(int hour)
+		private static string GetTimePeriodKey(int hour)
 		{
 			const int morningEnd = 11;
 			const int afternoonEnd = 17;
@@ -280,10 +283,10 @@ namespace TLN.UI.HUD
 
 			return hour switch
 			{
-				>= 5 and < morningEnd => "MORNING",
-				>= morningEnd and < afternoonEnd => "AFTERNOON",
-				>= afternoonEnd and < eveningEnd => "EVENING",
-				_ => "NIGHT"
+				>= 5 and < morningEnd => LocalizationKeys.HUD.Morning,
+				>= morningEnd and < afternoonEnd => LocalizationKeys.HUD.Afternoon,
+				>= afternoonEnd and < eveningEnd => LocalizationKeys.HUD.Evening,
+				_ => LocalizationKeys.HUD.Night
 			};
 		}
 
@@ -308,7 +311,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_interactionPromptLabel.text = $"E — {text}";
+			_interactionPromptLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.HUD.InteractionPrompt, text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
 

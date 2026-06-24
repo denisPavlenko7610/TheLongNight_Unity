@@ -113,6 +113,7 @@ namespace TLN.UI.MainMenu
 			_saveSlotsPanel = new SaveSlotsPanel(
 				_root,
 				_saveRepository,
+				_localizationService,
 				OnNewGameSlotSelected,
 				OnLoadGameSlotSelected,
 				ShowNavigationPanel

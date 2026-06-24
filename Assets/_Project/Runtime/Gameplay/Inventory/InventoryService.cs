@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TLN.Application.Localization;
 using TLN.Core.Logging;
 using TLN.Gameplay.Items;
 
@@ -8,6 +9,7 @@ namespace TLN.Gameplay.Inventory
 	public sealed class InventoryService : IInventoryService
 	{
 		private readonly InventoryConfig _config;
+		private readonly ILocalizationService _localizationService;
 		private readonly List<ItemStack> _items = new();
 
 		public IReadOnlyList<ItemStack> Items => _items;
@@ -17,22 +19,23 @@ namespace TLN.Gameplay.Inventory
 
 		public event Action Changed;
 
-		public InventoryService(InventoryConfig config)
+		public InventoryService(InventoryConfig config, ILocalizationService localizationService)
 		{
 			_config = config;
+			_localizationService = localizationService;
 		}
 
 		public bool CanAddItem(ItemDefinition definition, int amount, out string reason)
 		{
 			if (definition == null)
 			{
-				reason = "Invalid item.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidItem);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = "Invalid amount.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
@@ -41,7 +44,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (weightAfterAdd > MaxCarryWeight)
 			{
-				reason = "Too heavy.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.TooHeavy);
 				return false;
 			}
 
@@ -109,20 +112,20 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (index < 0 || index >= _items.Count)
 			{
-				reason = "Invalid inventory slot.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidSlot);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = "Invalid amount.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
 			ItemStack stack = _items[index];
 			if (amount > stack.Amount)
 			{
-				reason = "Not enough items.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.NotEnough);
 				return false;
 			}
 
@@ -148,13 +151,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = "Invalid item.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidItem);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = "Invalid amount.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
@@ -162,7 +165,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (availableAmount < amount)
 			{
-				reason = $"Not enough {definition.DisplayName}.";
+				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.NotEnoughItem, definition.DisplayName);
 				return false;
 			}
 

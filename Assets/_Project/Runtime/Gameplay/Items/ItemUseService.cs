@@ -1,4 +1,5 @@
 ﻿using TLN.Application.Assets;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Results;
 using TLN.Gameplay.Equipment;
@@ -14,6 +15,7 @@ namespace TLN.Gameplay.Items
 		private readonly IInventoryService _inventoryService;
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
+		private readonly ILocalizationService _localizationService;
 		private readonly PlacementService _placementService;
 		private readonly IPlayerEquipmentService _equipmentService;
 		private readonly IAddressableAssetService _addressableAssetService;
@@ -22,6 +24,7 @@ namespace TLN.Gameplay.Items
 			IInventoryService inventoryService,
 			ISurvivalService survivalService,
 			INotificationService notificationService,
+			ILocalizationService localizationService,
 			PlacementService placementService,
 			IPlayerEquipmentService equipmentService,
 			IAddressableAssetService addressableAssetService
@@ -30,6 +33,7 @@ namespace TLN.Gameplay.Items
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 			_placementService = placementService;
 			_equipmentService = equipmentService;
 			_addressableAssetService = addressableAssetService;
@@ -39,7 +43,7 @@ namespace TLN.Gameplay.Items
 		{
 			if (index < 0 || index >= _inventoryService.Items.Count)
 			{
-				return Fail("Invalid inventory slot.");
+				return Fail(LocalizationKeys.Items.InvalidSlot);
 			}
 
 			ItemStack stack = _inventoryService.Items[index];
@@ -49,12 +53,13 @@ namespace TLN.Gameplay.Items
 				ItemUseKind.Consumable => UseConsumableAt(index, stack),
 				ItemUseKind.Placeable => UsePlaceableAt(index, stack),
 				ItemUseKind.Clothing => UseClothing(stack),
-				_ => Fail("This item cannot be used.")
+				_ => Fail(LocalizationKeys.Items.CannotUse)
 			};
 		}
 
-		private ItemUseResult Fail(string message)
+		private ItemUseResult Fail(string key, params object[] arguments)
 		{
+			string message = _localizationService.Get(LocalizationTableNames.Gameplay, key, arguments);
 			_notificationService.Show(message);
 			return ItemUseResult.Failure(message);
 		}
@@ -63,7 +68,7 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not ConsumableItemDefinition consumable)
 			{
-				return ItemUseResult.Failure("This item cannot be consumed.");
+				return ItemUseResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.CannotConsume));
 			}
 
 			bool wasRemoved = _inventoryService.TryRemoveItemAt(index, 1, out string removeFailureReason);
@@ -75,7 +80,7 @@ namespace TLN.Gameplay.Items
 
 			_survivalService.ApplyConsumable(consumable);
 
-			string message = $"Used {consumable.DisplayName}";
+			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Used, consumable.DisplayName);
 			_notificationService.Show(message);
 
 			return ItemUseResult.Success(message);
@@ -85,18 +90,18 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not PlaceableItemDefinition placeable)
 			{
-				return Fail("This item cannot be placed.");
+				return Fail(LocalizationKeys.Items.CannotPlace);
 			}
 
 			if (_addressableAssetService == null)
 			{
-				return Fail("Addressable asset service is missing.");
+				return Fail(LocalizationKeys.Items.AddressableServiceMissing);
 			}
 
 			if (placeable.PlacedPrefabReference == null ||
 				!placeable.PlacedPrefabReference.RuntimeKeyIsValid())
 			{
-				return Fail($"Placed prefab reference is missing for {placeable.DisplayName}.");
+				return Fail(LocalizationKeys.Items.PrefabReferenceMissing, placeable.DisplayName);
 			}
 
 			_addressableAssetService.LoadPrefab(placeable.PlacedPrefabReference, prefab =>
@@ -105,7 +110,7 @@ namespace TLN.Gameplay.Items
 				}
 			);
 
-			return ItemUseResult.Success($"Placing {placeable.DisplayName}...");
+			return ItemUseResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Placing, placeable.DisplayName));
 		}
 
 		private void OnPlaceablePrefabLoaded(PlaceableItemDefinition placeable, GameObject prefab)
@@ -117,14 +122,14 @@ namespace TLN.Gameplay.Items
 
 			if (prefab == null)
 			{
-				Fail($"Cannot load placed prefab for {placeable.DisplayName}.");
+				Fail(LocalizationKeys.Items.PrefabLoadFailed, placeable.DisplayName);
 				return;
 			}
 
 			bool wasPlaced = _placementService.TryPlace(prefab, placeable.PlaceDistance, out GameObject placedObject);
 			if (!wasPlaced)
 			{
-				Fail("Cannot place item here.");
+				Fail(LocalizationKeys.Items.CannotPlaceHere);
 				return;
 			}
 
@@ -136,7 +141,7 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			string message = $"Placed {placeable.DisplayName}";
+			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Placed, placeable.DisplayName);
 			_notificationService.Show(message);
 		}
 
@@ -144,12 +149,12 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not ClothingItemDefinition clothing)
 			{
-				return Fail("This item cannot be equipped.");
+				return Fail(LocalizationKeys.Items.CannotEquip);
 			}
 
 			if (_equipmentService == null)
 			{
-				return Fail("Equipment service is missing.");
+				return Fail(LocalizationKeys.Items.EquipmentServiceMissing);
 			}
 
 			OperationResult result = _equipmentService.ToggleEquip(clothing);

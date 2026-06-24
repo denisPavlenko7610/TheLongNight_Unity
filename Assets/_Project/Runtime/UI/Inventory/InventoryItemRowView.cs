@@ -1,5 +1,6 @@
 ﻿using System;
 using TLN.Application.Assets;
+using TLN.Application.Localization;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Items;
 using TLN.UI.Common;
@@ -16,6 +17,7 @@ namespace TLN.UI.Inventory
 		private readonly Label _metaLabel;
 		private readonly Button _useButton;
 		private readonly IAddressableAssetService _addressableAssetService;
+		private readonly ILocalizationService _localizationService;
 
 		private int _itemIndex;
 		private int _iconRequestVersion;
@@ -24,10 +26,11 @@ namespace TLN.UI.Inventory
 
 		public VisualElement Root => _root;
 
-		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
+		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService, ILocalizationService localizationService)
 		{
 			_root = root;
 			_addressableAssetService = addressableAssetService;
+			_localizationService = localizationService;
 
 			_icon = root.RequiredQ<VisualElement>("item-icon");
 			_nameLabel = root.RequiredQ<Label>("item-name-label");
@@ -58,16 +61,16 @@ namespace TLN.UI.Inventory
 			_useButton.clicked -= OnUseClicked;
 		}
 
-		private static string CreateMetaText(ItemStack stack)
+		private string CreateMetaText(ItemStack stack)
 		{
-			string weightText = $"{stack.Definition.Weight * stack.Amount:0.##} kg";
+			string weightText = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
 
 			if (stack.Definition is ClothingItemDefinition clothing)
 			{
-				return $"x{stack.Amount} / {weightText} / {clothing.Slot} / +{clothing.WarmthBonus:0.#} warmth";
+				return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
 			}
 
-			return $"x{stack.Amount} / {weightText}";
+			return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.MetaDefault, stack.Amount, weightText);
 		}
 
 		private void SetIcon(ItemDefinition definition)

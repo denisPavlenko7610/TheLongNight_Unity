@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Core.Logging;
@@ -24,6 +25,7 @@ namespace TLN.Gameplay.Saves
 		private readonly PlacementService _placementService;
 		private readonly ItemCatalog _itemCatalog;
 		private readonly INotificationService _notificationService;
+		private readonly ILocalizationService _localizationService;
 		private readonly WorldSaveRegistry _worldSaveRegistry;
 
 		public bool CanSaveManually => false;
@@ -37,6 +39,7 @@ namespace TLN.Gameplay.Saves
 			PlacementService placementService,
 			ItemCatalog itemCatalog,
 			INotificationService notificationService,
+			ILocalizationService localizationService,
 			WorldSaveRegistry worldSaveRegistry
 		)
 		{
@@ -48,6 +51,7 @@ namespace TLN.Gameplay.Saves
 			_placementService = placementService;
 			_itemCatalog = itemCatalog;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 			_worldSaveRegistry = worldSaveRegistry;
 		}
 
@@ -55,7 +59,7 @@ namespace TLN.Gameplay.Saves
 		{
 			if (!CanSaveManually)
 			{
-				_notificationService?.Show("Manual saving is not available in this mode.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.ManualUnavailable));
 
 				return false;
 			}
@@ -78,11 +82,11 @@ namespace TLN.Gameplay.Saves
 			{
 				await Awaitable.MainThreadAsync();
 				TLNLogger.LogError($"Failed to save checkpoint. {exception}");
-				_notificationService?.Show("Failed to save game.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.Failed));
 				return false;
 			}
 
-			_notificationService?.Show("Game saved.");
+			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.Saved));
 
 			return true;
 		}
@@ -101,14 +105,14 @@ namespace TLN.Gameplay.Saves
 
 			if (data == null)
 			{
-				_notificationService?.Show($"Save slot {slotId} is empty.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.SlotEmpty, slotId));
 
 				return false;
 			}
 
 			ApplySaveData(data);
 
-			_notificationService?.Show("Game loaded.");
+			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Saves.Loaded));
 
 			return true;
 		}

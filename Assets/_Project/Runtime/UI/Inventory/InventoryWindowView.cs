@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TLN.Application.Assets;
+using TLN.Application.Localization;
 using TLN.Core.Logging;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
@@ -27,6 +28,7 @@ namespace TLN.UI.Inventory
 
 		private bool _isVisible;
 		private IAddressableAssetService _addressableAssetService;
+		private ILocalizationService _localizationService;
 
 		private IInventoryService _inventoryService;
 		private IItemUseService _itemUseService;
@@ -35,12 +37,14 @@ namespace TLN.UI.Inventory
 		public void Construct(
 			IInventoryService inventoryService,
 			IItemUseService itemUseService,
-			IAddressableAssetService addressableAssetService
+			IAddressableAssetService addressableAssetService,
+			ILocalizationService localizationService
 		)
 		{
 			_inventoryService = inventoryService;
 			_itemUseService = itemUseService;
 			_addressableAssetService = addressableAssetService;
+			_localizationService = localizationService;
 
 			_inventoryService.Changed += Refresh;
 
@@ -106,7 +110,7 @@ namespace TLN.UI.Inventory
 
 		private void RefreshWeight()
 		{
-			_weightLabel.text = $"{_inventoryService.CurrentWeight:0.##} / {_inventoryService.MaxCarryWeight:0.##} KG";
+			_weightLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.WeightKg, _inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
 		}
 
 		private void RefreshItems()
@@ -138,7 +142,7 @@ namespace TLN.UI.Inventory
 				return;
 			}
 
-			InventoryItemRowView rowView = new InventoryItemRowView(rowRoot, _addressableAssetService);
+			InventoryItemRowView rowView = new InventoryItemRowView(rowRoot, _addressableAssetService, _localizationService);
 			rowView.Bind(index, stack, OnUseClicked);
 
 			_rowViews.Add(rowView);

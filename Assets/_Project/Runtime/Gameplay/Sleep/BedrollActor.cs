@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
@@ -26,6 +27,7 @@ namespace TLN.Gameplay.Sleep
 		private ISleepWindow _sleepWindow;
 		private IInventoryService _inventoryService;
 		private INotificationService _notificationService;
+		private ILocalizationService _localizationService;
 		private WorldSaveRegistry _worldSaveRegistry;
 		private ItemCatalog _itemCatalog;
 		private PersistentWorldEntity _persistentEntity;
@@ -42,6 +44,7 @@ namespace TLN.Gameplay.Sleep
 			ISleepWindow sleepWindow,
 			IInventoryService inventoryService,
 			INotificationService notificationService,
+			ILocalizationService localizationService,
 			WorldSaveRegistry worldSaveRegistry,
 			ItemCatalog itemCatalog
 		)
@@ -49,6 +52,7 @@ namespace TLN.Gameplay.Sleep
 			_sleepWindow = sleepWindow;
 			_inventoryService = inventoryService;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 			_worldSaveRegistry = worldSaveRegistry;
 			_itemCatalog = itemCatalog;
 		}
@@ -87,13 +91,13 @@ namespace TLN.Gameplay.Sleep
 
 			if (_packedItemDefinition == null)
 			{
-				_notificationService?.Show("Cannot pick up this bedroll.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.PickupFailed));
 				return false;
 			}
 
 			if (_inventoryService == null)
 			{
-				_notificationService?.Show("Inventory service is missing.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.InventoryMissing));
 				return false;
 			}
 
@@ -109,7 +113,7 @@ namespace TLN.Gameplay.Sleep
 				return false;
 			}
 
-			_notificationService?.Show($"Picked up {_packedItemDefinition.DisplayName}.");
+			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.PickedUp, _packedItemDefinition.DisplayName));
 
 			if (_persistentEntity != null &&
 				_persistentEntity.IsSceneObject)

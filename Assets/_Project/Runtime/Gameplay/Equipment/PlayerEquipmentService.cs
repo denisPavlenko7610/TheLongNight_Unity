@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TLN.Application.Localization;
 using TLN.Core.Results;
 
 namespace TLN.Gameplay.Equipment
@@ -9,11 +10,17 @@ namespace TLN.Gameplay.Equipment
 		private const int DefaultSlotCapacity = 2;
 
 		private readonly List<ClothingItemDefinition> _equippedItems = new();
+		private readonly ILocalizationService _localizationService;
 
 		public IReadOnlyList<ClothingItemDefinition> EquippedItems => _equippedItems;
 		public float WarmthBonus { get; private set; }
 
 		public event Action Changed;
+
+		public PlayerEquipmentService(ILocalizationService localizationService)
+		{
+			_localizationService = localizationService;
+		}
 
 		public bool IsEquipped(ClothingItemDefinition item)
 		{
@@ -51,12 +58,12 @@ namespace TLN.Gameplay.Equipment
 		{
 			if (item == null)
 			{
-				return OperationResult.Failure("Clothing item is missing.");
+				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.ItemMissing));
 			}
 
 			if (item.Slot == ClothingSlotId.None)
 			{
-				return OperationResult.Failure("Clothing slot is missing.");
+				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.SlotMissing));
 			}
 
 			if (IsEquipped(item))
@@ -65,7 +72,7 @@ namespace TLN.Gameplay.Equipment
 				RecalculateWarmthBonus();
 				Changed?.Invoke();
 
-				return OperationResult.Success($"Unequipped {item.DisplayName}.");
+				return OperationResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.Unequipped, item.DisplayName));
 			}
 
 			int equippedCount = GetEquippedCount(item.Slot);
@@ -73,14 +80,14 @@ namespace TLN.Gameplay.Equipment
 
 			if (equippedCount >= slotCapacity)
 			{
-				return OperationResult.Failure($"No free {item.Slot} clothing slot.");
+				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.NoFreeSlot, item.Slot));
 			}
 
 			_equippedItems.Add(item);
 			RecalculateWarmthBonus();
 			Changed?.Invoke();
 
-			return OperationResult.Success($"Equipped {item.DisplayName}.");
+			return OperationResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.Equipped, item.DisplayName));
 		}
 
 		private void RecalculateWarmthBonus()

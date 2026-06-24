@@ -911,7 +911,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (_itemUseService == null)
 			{
-				_notificationService?.Show("Item use service is missing.");
+				_notificationService?.Show(L(LocalizationKeys.SurvivalMenu.ServiceMissingItemUse));
 				return;
 			}
 
@@ -923,7 +923,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show("Build service is missing.");
+				_notificationService?.Show(L(LocalizationKeys.SurvivalMenu.ServiceMissingBuild));
 				return;
 			}
 

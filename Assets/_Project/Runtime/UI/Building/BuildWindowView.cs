@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TLN.Application.Input;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Gameplay.Building;
 using TLN.UI.Common;
@@ -24,6 +25,7 @@ namespace TLN.UI.Building
 		private IBuildService _buildService;
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
+		private ILocalizationService _localizationService;
 
 		private bool _isVisible;
 
@@ -32,13 +34,15 @@ namespace TLN.UI.Building
 			BuildRecipeCatalog recipeCatalog,
 			IBuildService buildService,
 			IInputModeService inputModeService,
-			INotificationService notificationService
+			INotificationService notificationService,
+			ILocalizationService localizationService
 		)
 		{
 			_recipeCatalog = recipeCatalog;
 			_buildService = buildService;
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 
 			Hide();
 		}
@@ -101,7 +105,7 @@ namespace TLN.UI.Building
 
 			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
 			{
-				_notificationService?.Show("Build recipes are missing.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Build.RecipesMissing));
 				return;
 			}
 
@@ -128,7 +132,7 @@ namespace TLN.UI.Building
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show("Build service is missing.");
+				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Build.ServiceMissing));
 				return;
 			}
 

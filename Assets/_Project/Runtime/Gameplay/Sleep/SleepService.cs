@@ -1,4 +1,5 @@
-﻿using TLN.Application.Notifications;
+﻿using TLN.Application.Localization;
+using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
@@ -10,6 +11,7 @@ namespace TLN.Gameplay.Sleep
 		private readonly SleepConfig _config;
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
+		private readonly ILocalizationService _localizationService;
 		private readonly IGameTimeService _gameTimeService;
 		private readonly IGameSaveService _gameSaveService;
 
@@ -17,6 +19,7 @@ namespace TLN.Gameplay.Sleep
 			SleepConfig config,
 			ISurvivalService survivalService,
 			INotificationService notificationService,
+			ILocalizationService localizationService,
 			IGameTimeService gameTimeService,
 			IGameSaveService gameSaveService
 		)
@@ -24,6 +27,7 @@ namespace TLN.Gameplay.Sleep
 			_config = config;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 			_gameTimeService = gameTimeService;
 			_gameSaveService = gameSaveService;
 		}
@@ -32,18 +36,18 @@ namespace TLN.Gameplay.Sleep
 		{
 			if (hours < _config.MinSleepHours)
 			{
-				return SleepResult.Failure($"You need to sleep at least {_config.MinSleepHours} hour.");
+				return SleepResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.MinHours, _config.MinSleepHours));
 			}
 
 			if (hours > _config.MaxSleepHours)
 			{
-				return SleepResult.Failure($"You cannot sleep more than {_config.MaxSleepHours} hours.");
+				return SleepResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.MaxHours, _config.MaxSleepHours));
 			}
 
 			ApplySleepEffects(hours);
 			_gameTimeService.AdvanceHours(hours);
 
-			string message = $"You slept for {hours} hour(s).";
+			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.Result, hours);
 			_notificationService.Show(message);
 
 			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);

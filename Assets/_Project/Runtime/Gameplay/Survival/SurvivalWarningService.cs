@@ -1,4 +1,5 @@
-﻿using TLN.Application.Notifications;
+﻿using TLN.Application.Localization;
+using TLN.Application.Notifications;
 
 namespace TLN.Gameplay.Survival
 {
@@ -9,6 +10,7 @@ namespace TLN.Gameplay.Survival
 
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
+		private readonly ILocalizationService _localizationService;
 
 		private readonly float _warningCooldownSeconds;
 
@@ -19,10 +21,11 @@ namespace TLN.Gameplay.Survival
 		private float _nextConditionWarningTime;
 
 		public SurvivalWarningService(ISurvivalService survivalService, INotificationService notificationService,
-			float warningCooldownSeconds)
+			ILocalizationService localizationService, float warningCooldownSeconds)
 		{
 			_survivalService = survivalService;
 			_notificationService = notificationService;
+			_localizationService = localizationService;
 			_warningCooldownSeconds = warningCooldownSeconds;
 		}
 
@@ -31,7 +34,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Hunger.Value,
 				DefaultWarningThreshold,
-				"You are hungry.",
+				LocalizationKeys.Notifications.Hunger,
 				unscaledTime,
 				ref _nextHungerWarningTime
 			);
@@ -39,7 +42,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Thirst.Value,
 				DefaultWarningThreshold,
-				"You are thirsty.",
+				LocalizationKeys.Notifications.Thirst,
 				unscaledTime,
 				ref _nextThirstWarningTime
 			);
@@ -47,7 +50,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Fatigue.Value,
 				DefaultWarningThreshold,
-				"You are exhausted.",
+				LocalizationKeys.Notifications.Exhausted,
 				unscaledTime,
 				ref _nextFatigueWarningTime
 			);
@@ -55,7 +58,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Cold.Value,
 				DefaultWarningThreshold,
-				"You are freezing.",
+				LocalizationKeys.Notifications.Freezing,
 				unscaledTime,
 				ref _nextColdWarningTime
 			);
@@ -63,14 +66,14 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Condition.Value,
 				ConditionCriticalThreshold,
-				"Condition is critical.",
+				LocalizationKeys.Notifications.ConditionCritical,
 				unscaledTime,
 				ref _nextConditionWarningTime,
 				true
 			);
 		}
 
-		private void CheckStatWarning(float value, float threshold, string message, float unscaledTime, ref float nextWarningTime,
+		private void CheckStatWarning(float value, float threshold, string key, float unscaledTime, ref float nextWarningTime,
 			bool isLowerValueDangerous = false)
 		{
 			bool isDangerous = isLowerValueDangerous
@@ -87,7 +90,7 @@ namespace TLN.Gameplay.Survival
 				return;
 			}
 
-			_notificationService.Show(message);
+			_notificationService.Show(_localizationService.Get(LocalizationTableNames.Gameplay, key));
 			nextWarningTime = unscaledTime + _warningCooldownSeconds;
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using TLN.Application.Localization;
 using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Saves;
@@ -32,6 +33,7 @@ namespace TLN.Gameplay.Campfire
 
 		private ICampfireWindow _campfireWindow;
 		private IGameTimeService _gameTimeService;
+		private ILocalizationService _localizationService;
 		private int _lastKnownTotalMinutes;
 		private int _remainingBurnMinutes;
 		private IWarmthService _warmthService;
@@ -54,11 +56,12 @@ namespace TLN.Gameplay.Campfire
 		public event Action BurnedOut;
 
 		[Inject]
-		public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService)
+		public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService, ILocalizationService localizationService)
 		{
 			_campfireWindow = campfireWindow;
 			_gameTimeService = gameTimeService;
 			_warmthService = warmthService;
+			_localizationService = localizationService;
 
 			_warmthService?.Register(this);
 
@@ -118,25 +121,25 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (fuelDefinition == null)
 			{
-				failureReason = "Fuel item is missing.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FuelMissing);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				failureReason = "Fuel amount must be greater than zero.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FuelAmountZero);
 				return false;
 			}
 
 			if (fuelDefinition.BurnMinutes <= 0)
 			{
-				failureReason = "This item cannot burn.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.CannotBurn);
 				return false;
 			}
 
 			if (_remainingBurnMinutes >= _maxBurnMinutes)
 			{
-				failureReason = "Campfire cannot accept more fuel.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.Full);
 				return false;
 			}
 
@@ -174,13 +177,13 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (IsBurning)
 			{
-				failureReason = "Campfire is already burning.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.AlreadyBurning);
 				return false;
 			}
 
 			if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
 			{
-				failureReason = "Not enough fuel to start a fire.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.NotEnoughFuel);
 				return false;
 			}
 
@@ -194,7 +197,7 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (!IsBurning)
 			{
-				failureReason = "Campfire is not burning.";
+				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.NotBurning);
 				return false;
 			}
 

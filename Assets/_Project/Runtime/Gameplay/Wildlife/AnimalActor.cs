@@ -1,6 +1,7 @@
 ﻿using System;
 using Assign;
 using TLN.Application.GameStates;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Logging;
 using TLN.Core.Validation;
@@ -35,10 +36,11 @@ namespace TLN.Gameplay.Wildlife
         [Header("Navigation")]
         [SerializeField][Assign] private NavMeshAgent _agent;
 
-        private IGameStateMachine _gameStateMachine;
-        private ISurvivalService _survivalService;
-        private INotificationService _notificationService;
-        private WildlifeTargetService _targetService;
+		private IGameStateMachine _gameStateMachine;
+		private ISurvivalService _survivalService;
+		private INotificationService _notificationService;
+		private ILocalizationService _localizationService;
+		private WildlifeTargetService _targetService;
 
         private Vector3 _homePosition;
         private AnimalStateId _state = AnimalStateId.None;
@@ -53,18 +55,20 @@ namespace TLN.Gameplay.Wildlife
 
         public bool HasPlayerTarget => GetPlayer() != null;
 
-        [Inject]
-        public void Construct(
-            IGameStateMachine gameStateMachine,
-            ISurvivalService survivalService,
-            INotificationService notificationService,
-            WildlifeTargetService targetService)
-        {
-            _gameStateMachine = gameStateMachine;
-            _survivalService = survivalService;
-            _notificationService = notificationService;
-            _targetService = targetService;
-        }
+		[Inject]
+		public void Construct(
+			IGameStateMachine gameStateMachine,
+			ISurvivalService survivalService,
+			INotificationService notificationService,
+			ILocalizationService localizationService,
+			WildlifeTargetService targetService)
+		{
+			_gameStateMachine = gameStateMachine;
+			_survivalService = survivalService;
+			_notificationService = notificationService;
+			_localizationService = localizationService;
+			_targetService = targetService;
+		}
 
         private void Awake()
         {
@@ -287,7 +291,7 @@ namespace TLN.Gameplay.Wildlife
 
             _survivalService.DamageCondition(_definition.ConditionDamage);
 
-            _notificationService?.Show($"Wolf attack! Condition -{_definition.ConditionDamage:0}.");
+            _notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Survival.WolfAttack, _definition.ConditionDamage));
         }
 
         private void ApplyState(AnimalStateId state)
