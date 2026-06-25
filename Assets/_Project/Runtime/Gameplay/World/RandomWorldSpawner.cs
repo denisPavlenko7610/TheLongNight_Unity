@@ -85,16 +85,25 @@ namespace TLN.Gameplay.World
 
             _hasSpawned = true;
 
-            Random.State previousState = Random.state;
+            Random.State previousState = default;
 
             if (_useFixedSeed)
             {
+                previousState = Random.state;
                 Random.InitState(_seed);
             }
 
-            SpawnEntries();
-
-            Random.state = previousState;
+            try
+            {
+                SpawnEntries();
+            }
+            finally
+            {
+                if (_useFixedSeed)
+                {
+                    Random.state = previousState;
+                }
+            }
         }
 
         public void TrySpawnForWorldStart(bool wasSaveLoaded)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Newtonsoft.Json;
@@ -106,27 +105,6 @@ namespace TLN.Infrastructure.Saves
 
 				File.Move(temporaryPath, path);
 			}
-		}
-
-		public IReadOnlyList<SaveSlotSummary> GetSlotSummaries()
-		{
-			List<SaveSlotSummary> summaries = new List<SaveSlotSummary>();
-
-			for (int slotId = 1; slotId <= SlotCount; slotId++)
-			{
-				GameSaveData data = Load(slotId);
-
-				if (data == null)
-				{
-					summaries.Add(new SaveSlotSummary(slotId, false, string.Empty, string.Empty));
-
-					continue;
-				}
-
-				summaries.Add(new SaveSlotSummary(slotId, true, data.savedAtUtc, data.saveReason));
-			}
-
-			return summaries;
 		}
 
 		public bool TryGetMostRecentSlot(out int slotId)

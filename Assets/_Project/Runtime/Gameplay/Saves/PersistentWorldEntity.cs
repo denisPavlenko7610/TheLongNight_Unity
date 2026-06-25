@@ -113,6 +113,11 @@ namespace TLN.Gameplay.Saves
 
 		private static void RestoreComponent(MonoBehaviour[] behaviours, WorldComponentSaveData componentData)
 		{
+			if (string.IsNullOrWhiteSpace(componentData.typeId))
+			{
+				return;
+			}
+
 			for (int i = 0; i < behaviours.Length; i++)
 			{
 				if (behaviours[i] is not IWorldSaveable saveable)
@@ -125,7 +130,18 @@ namespace TLN.Gameplay.Saves
 					continue;
 				}
 
-				saveable.RestoreStateJson(componentData.json);
+				try
+				{
+					saveable.RestoreStateJson(componentData.json);
+				}
+				catch (Exception exception)
+				{
+					TLNLogger.LogError(
+						$"Failed to restore world component save data. Type: {componentData.typeId}. {exception}",
+						behaviours[i]
+					);
+				}
+
 				return;
 			}
 		}

@@ -23,8 +23,11 @@ namespace TLN.Gameplay.Time
 
 			if (_config.RandomStartTime)
 			{
-				startHour = UnityEngine.Random.Range(_config.MinRandomHour, _config.MaxRandomHour);
-				startMinute = UnityEngine.Random.Range(0, GameTime.MinutesPerHour - 1);
+				int minRandomHour = Math.Clamp(_config.MinRandomHour, 0, GameTime.HoursPerDay - 1);
+				int maxRandomHour = Math.Clamp(_config.MaxRandomHour, minRandomHour, GameTime.HoursPerDay - 1);
+
+				startHour = UnityEngine.Random.Range(minRandomHour, maxRandomHour + 1);
+				startMinute = UnityEngine.Random.Range(0, GameTime.MinutesPerHour);
 			}
 
 			TotalMinutes = ConvertStartTimeToTotalMinutes(startDay, startHour, startMinute);

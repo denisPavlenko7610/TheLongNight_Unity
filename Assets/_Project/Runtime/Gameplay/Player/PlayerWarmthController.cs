@@ -10,12 +10,19 @@ namespace TLN.Gameplay.Player
 	public sealed class PlayerWarmthController : MonoBehaviour
 	{
 		private const float SecondsPerMinute = 60f;
+		private const float WarmthRefreshInterval = 0.5f;
+		private const float ColdExposureTickInterval = 0.25f;
 
 		private IWarmthService _warmthService;
 		private IPlayerEquipmentService _equipmentService;
 		private ISurvivalService _survivalService;
 		private SurvivalConfig _survivalConfig;
 		private IGameStateMachine _gameStateMachine;
+
+		private float _nextWarmthRefreshTime;
+		private float _cachedFireWarmth;
+		private Vector3 _lastWarmthPosition;
+		private float _coldExposureAccumulator;
 
 		[Inject]
 		public void Construct(
@@ -51,7 +58,15 @@ namespace TLN.Gameplay.Player
 				return;
 			}
 
-			ApplyColdExposure(UnityEngine.Time.deltaTime);
+			_coldExposureAccumulator += UnityEngine.Time.deltaTime;
+
+			if (_coldExposureAccumulator < ColdExposureTickInterval)
+			{
+				return;
+			}
+
+			ApplyColdExposure(_coldExposureAccumulator);
+			_coldExposureAccumulator = 0f;
 		}
 
 		private void ApplyColdExposure(float deltaTime)
@@ -87,7 +102,17 @@ namespace TLN.Gameplay.Player
 
 		private float GetFireWarmthPerGameHour()
 		{
-			return _warmthService?.GetWarmthAt(transform.position) ?? 0f;
+			Vector3 currentPos = transform.position;
+			float sqrDist = (currentPos - _lastWarmthPosition).sqrMagnitude;
+
+			if (UnityEngine.Time.time >= _nextWarmthRefreshTime || sqrDist > 1f)
+			{
+				_nextWarmthRefreshTime = UnityEngine.Time.time + WarmthRefreshInterval;
+				_lastWarmthPosition = currentPos;
+				_cachedFireWarmth = _warmthService?.GetWarmthAt(currentPos) ?? 0f;
+			}
+
+			return _cachedFireWarmth;
 		}
 
 		private float GetClothingWarmthPerGameHour()

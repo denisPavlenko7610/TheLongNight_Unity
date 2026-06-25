@@ -102,7 +102,7 @@ namespace TLN.Gameplay.Saves
 
 			if (data == null)
 			{
-				_notificationService?.Show(string.Format(LocalizationKeys.SlotEmpty, slotId));
+				_notificationService?.Show(LocalizationKeys.SlotEmpty(slotId));
 
 				return false;
 			}

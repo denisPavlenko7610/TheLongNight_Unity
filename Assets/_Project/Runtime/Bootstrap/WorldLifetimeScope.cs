@@ -83,7 +83,21 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_worldTimeController);
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
-		RegisterRandomWorldSpawners(builder);
+
+		if (_randomWorldSpawners != null)
+		{
+			builder.RegisterBuildCallback(resolver =>
+			{
+				for (int i = 0; i < _randomWorldSpawners.Length; i++)
+				{
+					RandomWorldSpawner spawner = _randomWorldSpawners[i];
+					if (spawner != null)
+					{
+						resolver.Inject(spawner);
+					}
+				}
+			});
+		}
 
 		builder.RegisterComponent(_uiRoot);
 		builder.RegisterComponent(_uiRoot.HUD).AsImplementedInterfaces();
@@ -93,23 +107,4 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.PauseMenu);
 	}
 
-	private void RegisterRandomWorldSpawners(IContainerBuilder builder)
-	{
-		if (_randomWorldSpawners == null)
-		{
-			return;
-		}
-
-		for (int i = 0; i < _randomWorldSpawners.Length; i++)
-		{
-			RandomWorldSpawner spawner = _randomWorldSpawners[i];
-
-			if (spawner == null)
-			{
-				continue;
-			}
-
-			builder.RegisterComponent(spawner);
-		}
-	}
 }

@@ -18,7 +18,7 @@ public partial class WanderAroundHomeAction : Action
 
 	protected override Status OnUpdate()
 	{
-		if (Self.Value == null || !Self.Value.TryGetComponent(out AnimalActor animal))
+		if (Self == null || Self.Value == null || !Self.Value.TryGetComponent(out AnimalActor animal))
 		{
 			return Status.Failure;
 		}

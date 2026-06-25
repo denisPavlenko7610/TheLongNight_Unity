@@ -113,7 +113,7 @@ namespace TLN.Gameplay.Sleep
 				return false;
 			}
 
-			_notificationService?.Show(string.Format(LocalizationKeys.BedrollPickedUp, _packedItemDefinition.DisplayName));
+			_notificationService?.Show(LocalizationKeys.BedrollPickedUp(_packedItemDefinition.DisplayName));
 
 			if (_persistentEntity != null &&
 				_persistentEntity.IsSceneObject)

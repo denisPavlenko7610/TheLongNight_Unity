@@ -2,6 +2,7 @@
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Application.Settings;
+using TLN.Core.Logging;
 using TLN.UI.Common;
 using TLN.UI.Options;
 using TLN.UI.Saves;
@@ -109,6 +110,18 @@ namespace TLN.UI.Pause
 
 		private async void OnLoadGameSlotSelected(int slotId)
 		{
+			if (_saveSessionService == null)
+			{
+				TLNLogger.LogError("Cannot load game because save session service is missing.");
+				return;
+			}
+
+			if (_sceneLoader == null)
+			{
+				TLNLogger.LogError("Cannot load game because scene loader is missing.");
+				return;
+			}
+
 			_saveSessionService.RequestLoadGame(slotId);
 			await _sceneLoader.LoadWorld();
 		}
@@ -300,7 +313,7 @@ namespace TLN.UI.Pause
 				return;
 			}
 
-		_saveSlotsPanel = new SaveSlotsPanel(
+			_saveSlotsPanel = new SaveSlotsPanel(
 				_root,
 				_saveRepository,
 				null,

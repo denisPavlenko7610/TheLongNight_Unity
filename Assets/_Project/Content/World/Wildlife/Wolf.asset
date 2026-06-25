@@ -17,8 +17,9 @@ MonoBehaviour:
   _runSpeed: 4.2
   _wanderRadius: 18
   _decisionInterval: 16
-  _detectionRadius: 1.7
+  _detectionRadius: 10
   _fleeRadius: 8
   _attackDistance: 1.7
   _attackCooldownSeconds: 2.5
   _conditionDamage: 12
+  _maxHealth: 100

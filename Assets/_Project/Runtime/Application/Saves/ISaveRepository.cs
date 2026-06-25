@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 namespace TLN.Application.Saves
 {
 	public interface ISaveRepository
@@ -14,7 +12,5 @@ namespace TLN.Application.Saves
 
 		GameSaveData Load(int slotId);
 		void Save(GameSaveData data);
-
-		IReadOnlyList<SaveSlotSummary> GetSlotSummaries();
 	}
 }

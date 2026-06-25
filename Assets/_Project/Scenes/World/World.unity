@@ -1527,7 +1527,7 @@ GameObject:
   - component: {fileID: 863185213}
   - component: {fileID: 863185212}
   - component: {fileID: 863185214}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Terrain1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1579,17 +1579,17 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: fa26fc36befa9654c8a375df2bb024c1, type: 2}
-  m_TreeDistance: 5000
+  m_TreeDistance: 1000
   m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 107.8
-  m_TreeMaximumFullLODCount: 50
+  m_TreeCrossFadeLength: 25
+  m_TreeMaximumFullLODCount: 20
   m_DetailObjectDistance: 143
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
   m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
-  m_ShadowCastingMode: 2
+  m_ShadowCastingMode: 1
   m_DrawHeightmap: 1
   m_DrawInstanced: 1
   m_DrawTreesAndFoliage: 1
@@ -2907,7 +2907,10 @@ MonoBehaviour:
   _worldTimeController: {fileID: 577968086}
   _dayNightController: {fileID: 565384057}
   _worldSurvivalController: {fileID: 577968084}
-  _randomWorldSpawners: []
+  _randomWorldSpawners:
+  - {fileID: 353570849}
+  - {fileID: 722304488}
+  - {fileID: 1427149963}
   _survivalWarningCooldownSeconds: 30
 --- !u!1 &2013410473
 GameObject:

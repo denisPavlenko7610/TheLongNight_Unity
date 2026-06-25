@@ -19,7 +19,6 @@ namespace TLN.UI.MainMenu
 	public sealed class MainMenuView : MonoBehaviour
 	{
 		private const string DisabledClassName = "main-menu-button-disabled";
-		private const int DefaultNewGameSlotId = 1;
 
 		private VisualElement _root;
 		private VisualElement _navigationPanel;
@@ -202,12 +201,24 @@ namespace TLN.UI.MainMenu
 
 		private void OnNewGameClicked()
 		{
-			OnNewGameSlotSelected(DefaultNewGameSlotId);
+			ShowSaveSlotsForNewGame();
 		}
 
 		private void OnLoadGameClicked()
 		{
 			ShowSaveSlotsForLoadGame();
+		}
+
+		private void ShowSaveSlotsForNewGame()
+		{
+			if (!TryEnsureSaveSlotsPanel())
+			{
+				return;
+			}
+
+			_navigationPanel.SetVisible(false);
+			_settingsPanel.SetVisible(false);
+			_saveSlotsPanel.ShowNewGame();
 		}
 
 		private void ShowSaveSlotsForLoadGame()
@@ -224,8 +235,6 @@ namespace TLN.UI.MainMenu
 
 		private async void OnNewGameSlotSelected(int slotId)
 		{
-			UnityEngine.Cursor.visible = false;
-
 			if (_sceneLoader == null)
 			{
 				TLNLogger.LogError("Cannot start a new game because scene loader is missing.");
@@ -240,6 +249,7 @@ namespace TLN.UI.MainMenu
 				return;
 			}
 
+			UnityEngine.Cursor.visible = false;
 			_saveRepository?.Delete(slotId);
 			_saveSessionService.StartNewGame(slotId);
 			await _sceneLoader.LoadWorld();
@@ -259,6 +269,7 @@ namespace TLN.UI.MainMenu
 				return;
 			}
 
+			UnityEngine.Cursor.visible = false;
 			_saveSessionService.RequestLoadGame(slotId);
 			await _sceneLoader.LoadWorld();
 		}

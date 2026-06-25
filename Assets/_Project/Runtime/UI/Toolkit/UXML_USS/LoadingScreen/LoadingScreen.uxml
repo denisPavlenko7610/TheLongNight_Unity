@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="LoadingScreen.uss"/>
+
+    <ui:VisualElement name="loading-screen-overlay">
+        <ui:Label name="loading-screen-label" text="Loading..."/>
+    </ui:VisualElement>
+</ui:UXML>

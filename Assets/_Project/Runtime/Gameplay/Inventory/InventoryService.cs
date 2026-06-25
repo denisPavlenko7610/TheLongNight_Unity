@@ -163,7 +163,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (availableAmount < amount)
 			{
-				reason = string.Format(LocalizationKeys.InventoryNotEnoughItem, definition.DisplayName);
+				reason = LocalizationKeys.InventoryNotEnoughItem(definition.DisplayName);
 				return false;
 			}
 

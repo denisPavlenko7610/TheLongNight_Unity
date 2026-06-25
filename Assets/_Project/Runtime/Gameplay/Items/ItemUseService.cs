@@ -65,7 +65,7 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not ConsumableItemDefinition consumable)
 			{
-				return ItemUseResult.Failure(string.Format(LocalizationKeys.CannotConsume));
+				return ItemUseResult.Failure(LocalizationKeys.CannotConsume);
 			}
 
 			bool wasRemoved = _inventoryService.TryRemoveItemAt(index, 1, out string removeFailureReason);
@@ -77,7 +77,7 @@ namespace TLN.Gameplay.Items
 
 			_survivalService.ApplyConsumable(consumable);
 
-			string message = string.Format(LocalizationKeys.Used, consumable.DisplayName);
+			string message = LocalizationKeys.Used(consumable.DisplayName);
 			_notificationService.Show(message);
 
 			return ItemUseResult.Success(message);
@@ -107,7 +107,7 @@ namespace TLN.Gameplay.Items
 				}
 			);
 
-			return ItemUseResult.Success(string.Format(LocalizationKeys.Placing, placeable.DisplayName));
+			return ItemUseResult.Success(LocalizationKeys.Placing(placeable.DisplayName));
 		}
 
 		private void OnPlaceablePrefabLoaded(PlaceableItemDefinition placeable, GameObject prefab)
@@ -138,7 +138,7 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			string message = string.Format(LocalizationKeys.Placed, placeable.DisplayName);
+			string message = LocalizationKeys.Placed(placeable.DisplayName);
 			_notificationService.Show(message);
 		}
 

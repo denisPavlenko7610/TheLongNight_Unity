@@ -115,8 +115,8 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_stateLabel.text = string.Format(LocalizationKeys.CampfireStateLabel, _currentCampfire.State);
-			_fuelLabel.text = string.Format(LocalizationKeys.CampfireFuelLabel, _currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
+			_stateLabel.text = LocalizationKeys.CampfireStateLabel(_currentCampfire.State);
+			_fuelLabel.text = LocalizationKeys.CampfireFuelLabel(_currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
 			float fuelPercent = _currentCampfire.MaxBurnMinutes > 0
 				? Mathf.Clamp01((float)_currentCampfire.RemainingBurnMinutes / _currentCampfire.MaxBurnMinutes) * 100f
 				: 0f;
@@ -170,7 +170,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(string.Format(LocalizationKeys.FuelAdded, fuel.DisplayName));
+			_notificationService?.Show(LocalizationKeys.FuelAdded(fuel.DisplayName));
 			Refresh();
 		}
 

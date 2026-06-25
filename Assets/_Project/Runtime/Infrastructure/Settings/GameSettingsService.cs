@@ -49,6 +49,7 @@ namespace TLN.Infrastructure.Settings
 			}
 
 			Apply();
+			_originalSettings = DeepCopy(Settings);
 		}
 
 		public void Apply()
@@ -65,7 +66,13 @@ namespace TLN.Infrastructure.Settings
 
 			if (!string.IsNullOrWhiteSpace(Settings.LocaleCode))
 			{
-				LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(Settings.LocaleCode);
+				UnityEngine.Localization.Locale locale =
+					LocalizationSettings.AvailableLocales.GetLocale(Settings.LocaleCode);
+
+				if (locale != null)
+				{
+					LocalizationSettings.SelectedLocale = locale;
+				}
 			}
 		}
 

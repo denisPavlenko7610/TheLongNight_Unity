@@ -51,18 +51,22 @@ namespace TLN.Gameplay.Campfire
 					continue;
 				}
 
-				if (provider.WarmthRadius <= 0f)
+				float radius = provider.WarmthRadius;
+				if (radius <= 0f)
 				{
 					continue;
 				}
 
-				float distance = Vector3.Distance(position, provider.Position);
-				if (distance > provider.WarmthRadius)
+				Vector3 offset = position - provider.Position;
+				float sqrDistance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+				float sqrRadius = radius * radius;
+
+				if (sqrDistance > sqrRadius)
 				{
 					continue;
 				}
 
-				float normalizedDistance = Mathf.Clamp01(distance / provider.WarmthRadius);
+				float normalizedDistance = Mathf.Sqrt(sqrDistance) / radius;
 				float strength = 1f - normalizedDistance;
 				float warmth = provider.WarmthBonus * strength;
 

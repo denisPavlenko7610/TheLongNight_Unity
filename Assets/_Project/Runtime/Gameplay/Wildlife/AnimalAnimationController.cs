@@ -21,10 +21,25 @@ namespace TLN.Gameplay.Wildlife
         [SerializeField] private string _deadParameter = "Dead";
         [SerializeField] private string _isDeadParameter = "IsDead";
 
-        private readonly HashSet<int> _parameterHashes = new();
+        private int _isWalkHash;
+        private int _isRunHash;
+        private int _attackLeftHash;
+        private int _attackRightHash;
+        private int _hitHash;
+        private int _deadHash;
+        private int _isDeadHash;
+
+        private readonly Dictionary<int, AnimatorControllerParameterType> _parametersByHash = new();
 
         private void Awake()
         {
+            _isWalkHash = Animator.StringToHash(_isWalkParameter);
+            _isRunHash = Animator.StringToHash(_isRunParameter);
+            _attackLeftHash = Animator.StringToHash(_attackLeftParameter);
+            _attackRightHash = Animator.StringToHash(_attackRightParameter);
+            _hitHash = Animator.StringToHash(_hitParameter);
+            _deadHash = Animator.StringToHash(_deadParameter);
+            _isDeadHash = Animator.StringToHash(_isDeadParameter);
             CacheParameters();
         }
 
@@ -32,8 +47,8 @@ namespace TLN.Gameplay.Wildlife
             AnimalStateId state,
             bool isMoving)
         {
-            bool hasWalk = HasParameter(_isWalkParameter);
-            bool hasRun = HasParameter(_isRunParameter);
+            bool hasWalk = IsBool(_isWalkHash);
+            bool hasRun = IsBool(_isRunHash);
 
             bool shouldWalk =
                 isMoving &&
@@ -45,28 +60,36 @@ namespace TLN.Gameplay.Wildlife
                 (
                     state == AnimalStateId.Flee ||
                     state == AnimalStateId.Chase ||
-                    state == AnimalStateId.Attack ||
-                    state == AnimalStateId.Wander && !hasWalk
+                    (state == AnimalStateId.Wander && !hasWalk)
                 );
 
-            SetBoolIfExists(_isWalkParameter, shouldWalk);
-            SetBoolIfExists(_isRunParameter, shouldRun && hasRun);
+            if (hasWalk)
+            {
+                _animator.SetBool(_isWalkHash, shouldWalk);
+            }
+
+            if (hasRun)
+            {
+                _animator.SetBool(_isRunHash, shouldRun);
+            }
         }
 
         public void PlayAttack()
         {
-            bool canPlayLeft = HasParameter(_attackLeftParameter);
-            bool canPlayRight = HasParameter(_attackRightParameter);
+            ResetMovementState();
+
+            bool canPlayLeft = IsTrigger(_attackLeftHash);
+            bool canPlayRight = IsTrigger(_attackRightHash);
 
             if (canPlayLeft && canPlayRight)
             {
                 if (Random.value < 0.5f)
                 {
-                    SetTriggerIfExists(_attackLeftParameter);
+                    _animator.SetTrigger(_attackLeftHash);
                 }
                 else
                 {
-                    SetTriggerIfExists(_attackRightParameter);
+                    _animator.SetTrigger(_attackRightHash);
                 }
 
                 return;
@@ -74,38 +97,49 @@ namespace TLN.Gameplay.Wildlife
 
             if (canPlayLeft)
             {
-                SetTriggerIfExists(_attackLeftParameter);
+                _animator.SetTrigger(_attackLeftHash);
                 return;
             }
 
             if (canPlayRight)
             {
-                SetTriggerIfExists(_attackRightParameter);
+                _animator.SetTrigger(_attackRightHash);
             }
         }
 
         public void PlayHit()
         {
-            SetTriggerIfExists(_hitParameter);
+            if (IsTrigger(_hitHash))
+            {
+                _animator.SetTrigger(_hitHash);
+            }
         }
 
         public void PlayDeath()
         {
-            SetBoolIfExists(_isWalkParameter, false);
-            SetBoolIfExists(_isRunParameter, false);
+            ResetMovementState();
 
-            if (HasParameter(_deadParameter))
+            if (IsTrigger(_deadHash))
             {
-                SetTriggerIfExists(_deadParameter);
+                _animator.SetTrigger(_deadHash);
                 return;
             }
 
-            SetTriggerIfExists(_isDeadParameter);
+            if (IsTrigger(_isDeadHash))
+            {
+                _animator.SetTrigger(_isDeadHash);
+                return;
+            }
+
+            if (IsBool(_isDeadHash))
+            {
+                _animator.SetBool(_isDeadHash, true);
+            }
         }
 
         private void CacheParameters()
         {
-            _parameterHashes.Clear();
+            _parametersByHash.Clear();
 
             if (_animator == null)
             {
@@ -116,46 +150,34 @@ namespace TLN.Gameplay.Wildlife
 
             for (int i = 0; i < parameters.Length; i++)
             {
-                _parameterHashes.Add(parameters[i].nameHash);
+                AnimatorControllerParameter parameter = parameters[i];
+                _parametersByHash[parameter.nameHash] = parameter.type;
             }
         }
 
-        private bool HasParameter(string parameterName)
+        private void ResetMovementState()
         {
-            if (_animator == null)
+            if (IsBool(_isWalkHash))
             {
-                return false;
+                _animator.SetBool(_isWalkHash, false);
             }
 
-            if (string.IsNullOrWhiteSpace(parameterName))
+            if (IsBool(_isRunHash))
             {
-                return false;
+                _animator.SetBool(_isRunHash, false);
             }
-
-            return _parameterHashes.Contains(
-                Animator.StringToHash(parameterName));
         }
 
-        private void SetBoolIfExists(
-            string parameterName,
-            bool value)
+        private bool IsTrigger(int hash)
         {
-            if (!HasParameter(parameterName))
-            {
-                return;
-            }
-
-            _animator.SetBool(parameterName, value);
+            return _parametersByHash.TryGetValue(hash, out AnimatorControllerParameterType type) &&
+                   type == AnimatorControllerParameterType.Trigger;
         }
 
-        private void SetTriggerIfExists(string parameterName)
+        private bool IsBool(int hash)
         {
-            if (!HasParameter(parameterName))
-            {
-                return;
-            }
-
-            _animator.SetTrigger(parameterName);
+            return _parametersByHash.TryGetValue(hash, out AnimatorControllerParameterType type) &&
+                   type == AnimatorControllerParameterType.Bool;
         }
     }
 }

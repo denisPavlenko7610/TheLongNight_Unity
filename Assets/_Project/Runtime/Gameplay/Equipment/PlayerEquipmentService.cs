@@ -69,7 +69,7 @@ namespace TLN.Gameplay.Equipment
 				RecalculateWarmthBonus();
 				Changed?.Invoke();
 
-				return OperationResult.Success(string.Format(LocalizationKeys.Unequipped, item.DisplayName));
+				return OperationResult.Success(LocalizationKeys.Unequipped(item.DisplayName));
 			}
 
 			int equippedCount = GetEquippedCount(item.Slot);
@@ -77,14 +77,14 @@ namespace TLN.Gameplay.Equipment
 
 			if (equippedCount >= slotCapacity)
 			{
-				return OperationResult.Failure(string.Format(LocalizationKeys.NoFreeSlot, item.Slot));
+				return OperationResult.Failure(LocalizationKeys.NoFreeSlot(item.Slot));
 			}
 
 			_equippedItems.Add(item);
 			RecalculateWarmthBonus();
 			Changed?.Invoke();
 
-			return OperationResult.Success(string.Format(LocalizationKeys.Equipped, item.DisplayName));
+			return OperationResult.Success(LocalizationKeys.Equipped(item.DisplayName));
 		}
 
 		private void RecalculateWarmthBonus()

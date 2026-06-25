@@ -12,6 +12,8 @@ using TLN.Infrastructure.Saves;
 using TLN.Infrastructure.Scenes;
 using TLN.Infrastructure.Settings;
 using TLN.Infrastructure.Time;
+using TLN.UI.LoadingScreen;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -19,6 +21,8 @@ namespace TLN.Bootstrap
 {
 	public sealed class ProjectLifetimeScope : LifetimeScope
 	{
+		[SerializeField] private GameObject _loadingScreenPrefab;
+
 		protected override void Configure(IContainerBuilder builder)
 		{
 			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
@@ -35,6 +39,13 @@ namespace TLN.Bootstrap
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
 			builder.RegisterEntryPoint<GameStateInputModeController>();
 			builder.RegisterEntryPoint<GameStatePauseController>();
+			builder.RegisterEntryPoint(
+				container => new LoadingScreenController(
+					container.Resolve<IGameStateMachine>(),
+					_loadingScreenPrefab
+				),
+				Lifetime.Singleton
+			);
 			builder.RegisterEntryPoint<ProjectStartupEntryPoint>();
 
 			builder.Register<SaveSessionService>(Lifetime.Singleton);

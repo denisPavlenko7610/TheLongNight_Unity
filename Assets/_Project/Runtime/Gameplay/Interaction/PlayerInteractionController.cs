@@ -95,6 +95,7 @@ namespace TLN.Gameplay.Interaction
 
 		private void DrawDebugRay(bool hasHit, InteractionHit hit)
 		{
+			#if UNITY_EDITOR
 			if (!_drawDebugRay || _camera == null)
 			{
 				return;
@@ -112,6 +113,7 @@ namespace TLN.Gameplay.Interaction
 			}
 
 			Debug.DrawRay(origin, direction * _maxDistance, _debugMissColor, _debugRayDuration);
+			#endif
 		}
 
 		private void TryInteract()

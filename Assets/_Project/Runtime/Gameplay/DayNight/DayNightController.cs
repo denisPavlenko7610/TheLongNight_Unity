@@ -9,6 +9,7 @@ namespace TLN.Gameplay.DayNight
 	public sealed class DayNightController : MonoBehaviour
 	{
 		private const float ShadowThreshold = 0.01f;
+		private const float RefreshInterval = 0.5f;
 
 		[SerializeField] private Light _sunLight;
 		[SerializeField] private Volume _skyVolume;
@@ -23,6 +24,7 @@ namespace TLN.Gameplay.DayNight
 		private HDAdditionalLightData _sunLightData;
 		private bool _isInitialized;
 		private bool _lastShadowsEnabled;
+		private float _nextRefreshTime;
 
 		[Inject]
 		public void Construct(IDayNightService dayNightService, DayNightConfig config, IGameStateMachine gameStateMachine)
@@ -93,6 +95,12 @@ namespace TLN.Gameplay.DayNight
 				return;
 			}
 
+			if (UnityEngine.Time.time < _nextRefreshTime)
+			{
+				return;
+			}
+
+			_nextRefreshTime = UnityEngine.Time.time + RefreshInterval;
 			_dayNightService.Refresh();
 			ApplyDayNightSettings();
 		}

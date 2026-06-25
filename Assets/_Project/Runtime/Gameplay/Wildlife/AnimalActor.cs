@@ -19,6 +19,11 @@ namespace TLN.Gameplay.Wildlife
         private const float RemainingDistanceThreshold = 0.5f;
         private const float DirectionEpsilon = 0.001f;
         private const float MovingVelocityThreshold = 0.02f;
+        private const float AnimationRefreshInterval = 0.1f;
+        private const float FleeRepathInterval = 0.3f;
+        private const float AttackAnimationLockSeconds = 0.95f;
+        private const string FurNameFragment = "fur";
+        private const string HairNameFragment = "hair";
         private const int MaxNavMeshAttempts = 12;
 
         [Header("Definition")]
@@ -41,12 +46,19 @@ namespace TLN.Gameplay.Wildlife
 		private INotificationService _notificationService;
 		private WildlifeTargetService _targetService;
 
-        private Vector3 _homePosition;
+		private Vector3 _homePosition;
         private AnimalStateId _state = AnimalStateId.None;
         private float _nextDecisionTime;
         private float _nextAttackTime;
+        private float _nextFleeTime;
+        private float _nextAnimationTime;
+        private float _attackAnimationLockUntil;
 
         private bool _isDead;
+		private Transform _playerTransform;
+		private float _sqrFleeRadius;
+		private float _sqrDetectionRadius;
+		private float _sqrAttackDistance;
 
         public AnimalDefinition Definition => _definition;
         public AnimalStateId State => _state;
@@ -71,11 +83,26 @@ namespace TLN.Gameplay.Wildlife
         {
             _homePosition = transform.position;
 
+            if (_definition != null)
+            {
+                _sqrFleeRadius = _definition.FleeRadius * _definition.FleeRadius;
+                _sqrDetectionRadius = _definition.DetectionRadius * _definition.DetectionRadius;
+                _sqrAttackDistance = _definition.AttackDistance * _definition.AttackDistance;
+
+                if (_definition.Species == AnimalSpeciesId.Wolf)
+                {
+                    DisableWolfFurRenderers();
+                }
+            }
+
+            ApplyDefinitionToAgent();
             ApplyState(AnimalStateId.Idle);
         }
 
         private void Update()
         {
+            float currentTime = UnityEngine.Time.time;
+
             if (_isDead)
             {
                 StopMovement();
@@ -89,18 +116,32 @@ namespace TLN.Gameplay.Wildlife
                 return;
             }
 
-            if (!_useInternalDecisionLogic)
+            if (_definition == null)
             {
-                RefreshAnimation();
+                StopMovement();
                 return;
             }
 
-            if (_agent != null && _agent.isStopped)
+            if (!_useInternalDecisionLogic)
             {
-                _agent.isStopped = false;
+                RefreshAnimationIfNeeded(currentTime);
+                return;
             }
 
             PlayerRoot player = GetPlayer();
+            _playerTransform = player != null ? player.transform : null;
+
+            if (IsAttackAnimationLocked(currentTime))
+            {
+                HoldAttackPose();
+                RefreshAnimationIfNeeded(currentTime);
+                return;
+            }
+
+            if (_agent != null && _agent.enabled && _agent.isOnNavMesh && _agent.isStopped)
+            {
+                _agent.isStopped = false;
+            }
 
             switch (_definition.Species)
             {
@@ -113,7 +154,7 @@ namespace TLN.Gameplay.Wildlife
                     break;
             }
 
-            RefreshAnimation();
+            RefreshAnimationIfNeeded(currentTime);
         }
 
         private PlayerRoot GetPlayer()
@@ -123,16 +164,13 @@ namespace TLN.Gameplay.Wildlife
 
         private void TickRabbit(PlayerRoot player)
         {
-            if (player != null)
+            if (player != null && _playerTransform != null)
             {
-                float distanceToPlayer =
-                    Vector3.Distance(
-                        transform.position,
-                        player.transform.position);
+                float sqrDist = (transform.position - _playerTransform.position).sqrMagnitude;
 
-                if (distanceToPlayer <= _definition.FleeRadius)
+                if (sqrDist <= _sqrFleeRadius)
                 {
-                    FleeFrom(player.transform.position);
+                    FleeFrom(_playerTransform.position);
                     return;
                 }
             }
@@ -142,26 +180,23 @@ namespace TLN.Gameplay.Wildlife
 
         private void TickWolf(PlayerRoot player)
         {
-            if (player == null)
+            if (player == null || _playerTransform == null)
             {
                 Wander();
                 return;
             }
 
-            float distanceToPlayer =
-                Vector3.Distance(
-                    transform.position,
-                    player.transform.position);
+            float sqrDist = (transform.position - _playerTransform.position).sqrMagnitude;
 
-            if (distanceToPlayer <= _definition.AttackDistance)
+            if (sqrDist <= _sqrAttackDistance)
             {
                 AttackPlayer();
                 return;
             }
 
-            if (distanceToPlayer <= _definition.DetectionRadius)
+            if (sqrDist <= _sqrDetectionRadius)
             {
-                Chase(player.transform.position);
+                Chase(_playerTransform.position);
                 return;
             }
 
@@ -170,15 +205,23 @@ namespace TLN.Gameplay.Wildlife
 
         private void Wander()
         {
-            if (UnityEngine.Time.time < _nextDecisionTime)
+            float currentTime = UnityEngine.Time.time;
+
+            if (IsAttackAnimationLocked(currentTime))
+            {
+                HoldAttackPose();
+                return;
+            }
+
+            if (currentTime < _nextDecisionTime)
             {
                 return;
             }
 
             _nextDecisionTime =
-                UnityEngine.Time.time + _definition.DecisionInterval;
+                currentTime + _definition.DecisionInterval;
 
-            if (_agent == null)
+            if (_agent == null || !_agent.enabled || !_agent.isOnNavMesh)
             {
                 return;
             }
@@ -202,10 +245,30 @@ namespace TLN.Gameplay.Wildlife
 
         private void FleeFrom(Vector3 threatPosition)
         {
-            if (_agent == null)
+            float currentTime = UnityEngine.Time.time;
+
+            if (IsAttackAnimationLocked(currentTime))
+            {
+                HoldAttackPose();
+                return;
+            }
+
+            if (_agent == null || !_agent.enabled || !_agent.isOnNavMesh)
             {
                 return;
             }
+
+            ApplyState(AnimalStateId.Flee);
+            _agent.speed = _definition.RunSpeed;
+
+            if (currentTime < _nextFleeTime &&
+                _agent.hasPath &&
+                _agent.remainingDistance > RemainingDistanceThreshold)
+            {
+                return;
+            }
+
+            _nextFleeTime = currentTime + FleeRepathInterval;
 
             Vector3 direction =
                 transform.position - threatPosition;
@@ -223,15 +286,20 @@ namespace TLN.Gameplay.Wildlife
             targetPosition =
                 FindNearestNavMeshPoint(targetPosition, _definition.FleeRadius);
 
-            ApplyState(AnimalStateId.Flee);
-
-            _agent.speed = _definition.RunSpeed;
             _agent.SetDestination(targetPosition);
         }
 
         private void Chase(Vector3 targetPosition)
         {
-            if (_agent == null)
+            float currentTime = UnityEngine.Time.time;
+
+            if (IsAttackAnimationLocked(currentTime))
+            {
+                HoldAttackPose();
+                return;
+            }
+
+            if (_agent == null || !_agent.enabled || !_agent.isOnNavMesh)
             {
                 return;
             }
@@ -244,36 +312,46 @@ namespace TLN.Gameplay.Wildlife
 
         public void StopMovement()
         {
-            if (_agent == null)
+            if (_agent == null || !_agent.enabled)
             {
+                ApplyState(AnimalStateId.Idle);
                 return;
             }
 
-            if (_agent.enabled && _agent.isOnNavMesh)
+            if (_agent.isOnNavMesh)
             {
-                _agent.ResetPath();
-            }
+                if (_agent.hasPath)
+                {
+                    _agent.ResetPath();
+                }
 
-            _agent.isStopped = true;
+                _agent.isStopped = true;
+            }
 
             ApplyState(AnimalStateId.Idle);
         }
 
         public void AttackPlayer()
         {
-            if (_isDead)
+            if (_isDead || _definition == null)
             {
                 return;
             }
+
+            float currentTime = UnityEngine.Time.time;
 
             ApplyState(AnimalStateId.Attack);
+            StopAgent();
+            FacePlayer();
+            RefreshAnimation();
 
-            if (UnityEngine.Time.time < _nextAttackTime)
+            if (currentTime < _nextAttackTime)
             {
                 return;
             }
 
-            _nextAttackTime = UnityEngine.Time.time + _definition.AttackCooldownSeconds;
+            _nextAttackTime = currentTime + _definition.AttackCooldownSeconds;
+            _attackAnimationLockUntil = currentTime + AttackAnimationLockSeconds;
 
             _animationController?.PlayAttack();
 
@@ -288,7 +366,7 @@ namespace TLN.Gameplay.Wildlife
 
             _survivalService.DamageCondition(_definition.ConditionDamage);
 
-            _notificationService?.Show(string.Format(LocalizationKeys.WolfAttack, _definition.ConditionDamage));
+            _notificationService?.Show(LocalizationKeys.WolfAttack(_definition.ConditionDamage));
         }
 
         private void ApplyState(AnimalStateId state)
@@ -346,17 +424,65 @@ namespace TLN.Gameplay.Wildlife
 
         private void StopAgent()
         {
-            if (_agent == null)
+            if (_agent == null || !_agent.enabled)
             {
                 return;
             }
 
-            if (_agent.isOnNavMesh)
+            if (!_agent.isOnNavMesh)
+            {
+                return;
+            }
+
+            if (_agent.hasPath)
             {
                 _agent.ResetPath();
             }
 
             _agent.isStopped = true;
+        }
+
+        private void HoldAttackPose()
+        {
+            ApplyState(AnimalStateId.Attack);
+            StopAgent();
+            FacePlayer();
+        }
+
+        private bool IsAttackAnimationLocked(float currentTime)
+        {
+            return currentTime < _attackAnimationLockUntil;
+        }
+
+        private void FacePlayer()
+        {
+            Transform playerTransform = GetPlayerTransform();
+
+            if (playerTransform == null)
+            {
+                return;
+            }
+
+            Vector3 direction = playerTransform.position - transform.position;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude <= DirectionEpsilon)
+            {
+                return;
+            }
+
+            transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+        }
+
+        private void RefreshAnimationIfNeeded(float currentTime)
+        {
+            if (currentTime < _nextAnimationTime)
+            {
+                return;
+            }
+
+            RefreshAnimation();
+            _nextAnimationTime = currentTime + AnimationRefreshInterval;
         }
 
         private void RefreshAnimation()
@@ -367,37 +493,106 @@ namespace TLN.Gameplay.Wildlife
             }
 
             bool isMoving =
+                _state != AnimalStateId.Attack &&
                 _agent != null &&
                 _agent.enabled &&
-                _agent.velocity.sqrMagnitude > MovingVelocityThreshold;
+                (
+                    _agent.velocity.sqrMagnitude > MovingVelocityThreshold ||
+                    _agent.desiredVelocity.sqrMagnitude > MovingVelocityThreshold
+                );
 
             _animationController.ApplyMovementState(_state, isMoving);
         }
 
+        private void ApplyDefinitionToAgent()
+        {
+            if (_agent == null || _definition == null)
+            {
+                return;
+            }
+
+            _agent.speed = _definition.WalkSpeed;
+            _agent.baseOffset = 0f;
+        }
+
+        private void DisableWolfFurRenderers()
+        {
+            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                Renderer renderer = renderers[i];
+
+                if (renderer == null || !IsWolfFurRenderer(renderer))
+                {
+                    continue;
+                }
+
+                renderer.enabled = false;
+            }
+        }
+
+        private static bool IsWolfFurRenderer(Renderer renderer)
+        {
+            string objectName = renderer.gameObject.name;
+
+            return objectName.IndexOf(FurNameFragment, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   objectName.IndexOf(HairNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         private float GetDistanceToPlayer()
         {
-            PlayerRoot player = GetPlayer();
+            Transform playerTransform = GetPlayerTransform();
 
-            if (player == null || _definition == null)
+            if (playerTransform == null || _definition == null)
             {
                 return float.MaxValue;
             }
 
-            return Vector3.Distance(transform.position, player.transform.position);
+            return Vector3.Distance(transform.position, playerTransform.position);
+        }
+
+        private Transform GetPlayerTransform()
+        {
+            PlayerRoot player = GetPlayer();
+
+            if (player != null)
+            {
+                _playerTransform = player.transform;
+                return _playerTransform;
+            }
+
+            _playerTransform = null;
+            return null;
         }
 
         public bool IsPlayerInsideDetectionRadius()
         {
+            if (_definition == null)
+            {
+                return false;
+            }
+
             return GetDistanceToPlayer() <= _definition.DetectionRadius;
         }
 
         public bool IsPlayerInsideFleeRadius()
         {
+            if (_definition == null)
+            {
+                return false;
+            }
+
             return GetDistanceToPlayer() <= _definition.FleeRadius;
         }
 
         public bool IsPlayerInsideAttackDistance()
         {
+            if (_definition == null)
+            {
+                return false;
+            }
+
             return GetDistanceToPlayer() <= _definition.AttackDistance;
         }
 

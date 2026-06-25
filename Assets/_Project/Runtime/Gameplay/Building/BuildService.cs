@@ -58,8 +58,7 @@ namespace TLN.Gameplay.Building
 
 				if (availableAmount < ingredient.Amount)
 				{
-					failureReason = string.Format(LocalizationKeys.NotEnoughItems,
-						ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
+					failureReason = LocalizationKeys.NotEnoughItems(ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
 
 					return false;
 				}
@@ -90,7 +89,7 @@ namespace TLN.Gameplay.Building
 				return Fail(consumeFailureReason);
 			}
 
-			string message = string.Format(LocalizationKeys.Built, recipe.DisplayName);
+			string message = LocalizationKeys.Built(recipe.DisplayName);
 			_notificationService.Show(message);
 			return BuildResult.Success(message);
 		}
@@ -176,7 +175,7 @@ namespace TLN.Gameplay.Building
 
 			if (remainingAmount > 0)
 			{
-				failureReason = string.Format(LocalizationKeys.NotEnoughItem, item.DisplayName);
+				failureReason = LocalizationKeys.NotEnoughItem(item.DisplayName);
 				return false;
 			}
 

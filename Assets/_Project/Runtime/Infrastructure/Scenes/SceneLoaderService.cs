@@ -21,31 +21,19 @@ namespace TLN.Infrastructure.Scenes
 
 		public async Awaitable LoadMainMenu()
 		{
-			if (_isLoading)
-			{
-				TLNLogger.LogWarning("Cannot load MainMenu because another scene is already loading.");
-				return;
-			}
-
-			_isLoading = true;
-			_gameStateMachine.Enter(GameStateId.Loading);
-
-			try
-			{
-				await LoadSceneAsync(SceneNames.MainMenu, GameStateId.MainMenu);
-			}
-			catch (Exception exception)
-			{
-				TLNLogger.LogError($"Failed to load MainMenu: {exception}");
-				_isLoading = false;
-			}
+			await LoadScene(SceneNames.MainMenu, GameStateId.MainMenu);
 		}
 
 		public async Awaitable LoadWorld()
 		{
+			await LoadScene(SceneNames.World, GameStateId.Playing);
+		}
+
+		private async Awaitable LoadScene(string sceneName, GameStateId stateAfterLoading)
+		{
 			if (_isLoading)
 			{
-				TLNLogger.LogWarning("Cannot load World because another scene is already loading.");
+				TLNLogger.LogWarning($"Cannot load {sceneName} because another scene is already loading.");
 				return;
 			}
 
@@ -54,11 +42,11 @@ namespace TLN.Infrastructure.Scenes
 
 			try
 			{
-				await LoadSceneAsync(SceneNames.World, GameStateId.Playing);
+				await LoadSceneAsync(sceneName, stateAfterLoading);
 			}
 			catch (Exception exception)
 			{
-				TLNLogger.LogError($"Failed to load World: {exception}");
+				TLNLogger.LogError($"Failed to load {sceneName}: {exception}");
 				_isLoading = false;
 			}
 		}
@@ -66,6 +54,8 @@ namespace TLN.Infrastructure.Scenes
 		private async Awaitable LoadSceneAsync(string sceneName, GameStateId stateAfterLoading)
 		{
 			await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+
+			ShaderPreloader.PrewarmSnowShaders();
 
 			_isLoading = false;
 

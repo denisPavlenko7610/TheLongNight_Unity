@@ -143,15 +143,10 @@ namespace TLN.UI.Saves
 
 		private string CreateEmptySlotText(int slotId)
 		{
-			return string.Format(LocalizationKeys.SlotFormat,
-				slotId,
-				LocalizationKeys.Empty);
+			return LocalizationKeys.SlotFormat(slotId, LocalizationKeys.Empty);
 		}
 
-		private string CreateOccupiedSlotText(
-			int slotId,
-			GameSaveData saveData
-		)
+		private string CreateOccupiedSlotText(int slotId, GameSaveData saveData)
 		{
 			string gameTime = CreateGameTimeText(saveData.time?.totalMinutes ?? 0);
 
@@ -162,10 +157,10 @@ namespace TLN.UI.Saves
 				: saveData.saveReason;
 
 			string details = string.IsNullOrEmpty(savedAt)
-				? string.Format(LocalizationKeys.DetailsFormat, gameTime, reason)
-				: string.Format(LocalizationKeys.DetailsFormatWithDate, gameTime, reason, savedAt);
+				? LocalizationKeys.DetailsFormat(gameTime, reason)
+				: LocalizationKeys.DetailsFormatWithDate(gameTime, reason, savedAt);
 
-			return string.Format(LocalizationKeys.SlotFormat, slotId, details);
+			return LocalizationKeys.SlotFormat(slotId, details);
 		}
 
 		private string CreateGameTimeText(int totalMinutes)
@@ -177,7 +172,7 @@ namespace TLN.UI.Saves
 			int hour = minutesInDay / MinutesPerHour;
 			int minute = minutesInDay % MinutesPerHour;
 
-			return string.Format(LocalizationKeys.DayTimeFormat, day, hour.ToString("00"), minute.ToString("00"));
+			return LocalizationKeys.DayTimeFormat(day, hour.ToString("00"), minute.ToString("00"));
 		}
 
 		private static string CreateSavedAtText(string savedAtUtc)
@@ -260,7 +255,7 @@ namespace TLN.UI.Saves
 		{
 			_pendingOverwriteSlotId = slotId;
 
-			_overwriteLabel.text = string.Format(LocalizationKeys.OverwriteLabel, slotId);
+			_overwriteLabel.text = LocalizationKeys.OverwriteLabel(slotId);
 
 			_overwriteRoot.SetVisible(true);
 		}

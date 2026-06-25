@@ -97,8 +97,6 @@ namespace TLN.Gameplay.Saves
 
 			DestroyRuntimeEntitiesMissingFromSave(entitiesById, worldData);
 
-			entitiesById = FindEntitiesById();
-
 			if (worldData.entities == null)
 			{
 				return;
@@ -135,27 +133,38 @@ namespace TLN.Gameplay.Saves
 				return;
 			}
 
-			CreateRuntimeEntity(data);
+			if (TryCreateRuntimeEntity(data, out PersistentWorldEntity createdEntity))
+			{
+				entitiesById[data.id] = createdEntity;
+			}
 		}
 
-		private void CreateRuntimeEntity(WorldEntitySaveData data)
+		private bool TryCreateRuntimeEntity(WorldEntitySaveData data, out PersistentWorldEntity entity)
 		{
+			entity = null;
+
 			if (!_prefabCatalog.TryGetPrefab(data.prefabId, out GameObject prefab))
 			{
 				TLNLogger.LogWarning($"Cannot restore world entity. " + $"Unknown prefab id: {data.prefabId}");
-				return;
+				return false;
 			}
 
 			GameObject instance = _worldObjectFactory.Create(prefab, data.position.ToVector3(), data.rotation.ToQuaternion());
+			if (instance == null)
+			{
+				TLNLogger.LogWarning($"Cannot restore world entity. Factory returned null: {data.prefabId}");
+				return false;
+			}
 
-			if (!instance.TryGetComponent(out PersistentWorldEntity entity))
+			if (!instance.TryGetComponent(out entity))
 			{
 				TLNLogger.LogWarning($"Restored prefab has no PersistentWorldEntity: {data.prefabId}", instance);
-				return;
+				return false;
 			}
 
 			entity.InitializeRuntimeEntity(data.id);
 			entity.RestoreState(data);
+			return true;
 		}
 
 		private void DestroySceneEntitiesMarkedAsDestroyed(Dictionary<string, PersistentWorldEntity> entitiesById)
@@ -173,6 +182,7 @@ namespace TLN.Gameplay.Saves
 				}
 
 				Object.Destroy(entity.gameObject);
+				entitiesById.Remove(entityId);
 			}
 		}
 
@@ -198,8 +208,12 @@ namespace TLN.Gameplay.Saves
 				}
 			}
 
-			foreach (PersistentWorldEntity entity in entitiesById.Values)
+			List<string> removedIds = new List<string>();
+
+			foreach (KeyValuePair<string, PersistentWorldEntity> pair in entitiesById)
 			{
+				PersistentWorldEntity entity = pair.Value;
+
 				if (entity == null || entity.IsSceneObject)
 				{
 					continue;
@@ -211,6 +225,12 @@ namespace TLN.Gameplay.Saves
 				}
 
 				Object.Destroy(entity.gameObject);
+				removedIds.Add(pair.Key);
+			}
+
+			for (int i = 0; i < removedIds.Count; i++)
+			{
+				entitiesById.Remove(removedIds[i]);
 			}
 		}
 
@@ -233,7 +253,10 @@ namespace TLN.Gameplay.Saves
 					continue;
 				}
 
-				result[entity.Id] = entity;
+				if (!result.TryAdd(entity.Id, entity))
+				{
+					TLNLogger.LogWarning($"Duplicate persistent world entity id: {entity.Id}", entity);
+				}
 			}
 
 			return result;

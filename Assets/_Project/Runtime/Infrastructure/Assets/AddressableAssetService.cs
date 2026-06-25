@@ -95,9 +95,10 @@ namespace TLN.Infrastructure.Assets
 				return;
 			}
 
+			bool succeeded = handle.Status == AsyncOperationStatus.Succeeded;
 			UnityEngine.Object result = null;
 
-			if (handle.Status == AsyncOperationStatus.Succeeded)
+			if (succeeded)
 			{
 				result = handle.Result;
 			}
@@ -113,6 +114,12 @@ namespace TLN.Infrastructure.Assets
 			}
 
 			operation.Complete(result);
+
+			if (!succeeded)
+			{
+				_cachedOperations.Remove(key);
+				operation.Release();
+			}
 		}
 
 		private static string CreateKey<TAsset>(AssetReference assetReference) where TAsset : UnityEngine.Object

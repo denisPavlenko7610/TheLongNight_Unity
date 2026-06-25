@@ -20,12 +20,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Fur_2
-    second: {fileID: 2100000, guid: ba0bc912addff5a42b6c5b282afd0cfa, type: 2}
+    second: {fileID: 2100000, guid: 8a97de759a77c7247980d66682d18c19, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Hair
-    second: {fileID: 2100000, guid: 13dba4dc157eeb54f97e984dc3cb2add, type: 2}
+    second: {fileID: 2100000, guid: 8a97de759a77c7247980d66682d18c19, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

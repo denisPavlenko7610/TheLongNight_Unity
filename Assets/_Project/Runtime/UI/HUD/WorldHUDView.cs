@@ -96,8 +96,6 @@ namespace TLN.UI.HUD
 
 		private void Update()
 		{
-			EnsureInitialized();
-
 			RefreshIfNeeded();
 			UpdateNotificationLifetime();
 			UpdateTimeOverlayLifetime();
@@ -180,7 +178,7 @@ namespace TLN.UI.HUD
 
 			GameTime time = _gameTimeService.CurrentTime;
 
-			SetLabel(_timeDayLabel, string.Format(LocalizationKeys.HUDDay, time.Day));
+			SetLabel(_timeDayLabel, LocalizationKeys.HUDDay(time.Day));
 			SetLabel(_timePeriodLabel, GetTimePeriodKey(time.Hour));
 
 			bool isDay = IsDayTime(time.Hour);
@@ -309,7 +307,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_interactionPromptLabel.text = string.Format(LocalizationKeys.HUDInteractionPrompt, text);
+			_interactionPromptLabel.text = LocalizationKeys.HUDInteractionPrompt(text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
 

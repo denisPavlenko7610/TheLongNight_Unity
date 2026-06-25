@@ -61,14 +61,14 @@ namespace TLN.UI.Inventory
 
 		private string CreateMetaText(ItemStack stack)
 		{
-			string weightText = string.Format(LocalizationKeys.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
+			string weightText = LocalizationKeys.WeightKg(stack.Definition.Weight * stack.Amount, 0f);
 
 			if (stack.Definition is ClothingItemDefinition clothing)
 			{
-				return string.Format(LocalizationKeys.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
+				return LocalizationKeys.MetaClothing(stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
 			}
 
-			return string.Format(LocalizationKeys.MetaDefault, stack.Amount, weightText);
+			return LocalizationKeys.MetaDefault(stack.Amount, weightText);
 		}
 
 		private void SetIcon(ItemDefinition definition)

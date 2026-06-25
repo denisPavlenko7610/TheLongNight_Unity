@@ -507,11 +507,7 @@ namespace TLN.UI.SurvivalMenu
 				return;
 			}
 
-			_weightLabel.text = string.Format(
-				LocalizationKeys.WeightFormat,
-				_inventoryService.CurrentWeight,
-				_inventoryService.MaxCarryWeight
-			);
+			_weightLabel.text = LocalizationKeys.WeightFormat(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
 		}
 
 		private void RefreshLocalizedStaticText()
@@ -814,7 +810,7 @@ namespace TLN.UI.SurvivalMenu
 				return LocalizationKeys.RequirementsNone;
 			}
 
-			return string.Format(LocalizationKeys.RequirementsFormat, string.Join(", ", parts));
+			return LocalizationKeys.RequirementsFormat(string.Join(", ", parts));
 		}
 
 		private string GetBuildStateText(BuildRecipeDefinition recipe)

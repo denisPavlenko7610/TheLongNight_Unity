@@ -4,12 +4,13 @@ namespace TLN.Application.Localization
 {
 	public static class LocalizationKeys
 	{
-		private static string ui(string key) =>
-			LocalizationSettings.StringDatabase.GetLocalizedString("UI", key);
+		private static string ui(string key, params object[] args) =>
+			LocalizationSettings.StringDatabase.GetLocalizedString("UI", key, arguments: args);
 
-		private static string gameplay(string key) =>
-			LocalizationSettings.StringDatabase.GetLocalizedString("Gameplay", key);
+		private static string gameplay(string key, params object[] args) =>
+			LocalizationSettings.StringDatabase.GetLocalizedString("Gameplay", key, arguments: args);
 
+		// Simple keys (no format arguments)
 		public static string CommonBack => ui("common.back");
 		public static string CommonUse => ui("common.use");
 		public static string CommonBuild => ui("common.build");
@@ -40,8 +41,6 @@ namespace TLN.Application.Localization
 		public static string BuildReady => ui("survival.build.ready");
 		public static string SurvivalBuildServiceMissing => ui("survival.build.service_missing");
 		public static string RequirementsNone => ui("survival.recipe.requirements_none");
-		public static string RequirementsFormat => ui("survival.recipe.requirements_format");
-		public static string WeightFormat => ui("survival.weight.format");
 		public static string ServiceMissingItemUse => ui("survival.service_missing.item_use");
 		public static string ServiceMissingBuild => ui("survival.service_missing.build");
 		public static string SleepWindowTitle => ui("sleep_window.title");
@@ -52,28 +51,20 @@ namespace TLN.Application.Localization
 		public static string EightHours => ui("sleep_window.8h");
 		public static string PickUp => ui("sleep_window.pick_up");
 		public static string Cancel => ui("sleep_window.cancel");
-		public static string HUDDay => ui("hud.day");
 		public static string HUDMorning => ui("hud.morning");
 		public static string HUDAfternoon => ui("hud.afternoon");
 		public static string HUDEvening => ui("hud.evening");
 		public static string HUDNight => ui("hud.night");
-		public static string HUDInteractionPrompt => ui("hud.interaction_prompt");
 		public static string ManualUnavailable => ui("save.manual_unavailable");
 		public static string Failed => ui("save.failed");
 		public static string Saved => ui("save.saved");
-		public static string SlotEmpty => ui("save.slot_empty");
 		public static string Loaded => ui("save.loaded");
 		public static string NewGame => ui("save.new_game");
 		public static string NewGameDescription => ui("save.new_game_description");
 		public static string LoadGame => ui("save.load_game");
 		public static string LoadGameDescription => ui("save.load_game_description");
 		public static string Empty => ui("save.empty");
-		public static string SlotFormat => ui("save.slot_format");
 		public static string DefaultReason => ui("save.default_reason");
-		public static string OverwriteLabel => ui("save.overwrite_label");
-		public static string DetailsFormat => ui("save.details_format");
-		public static string DetailsFormatWithDate => ui("save.details_format_with_date");
-		public static string DayTimeFormat => ui("save.day_time_format");
 		public static string SettingsTitle => ui("settings.title");
 		public static string SettingsTabAudio => ui("settings.tab.audio");
 		public static string SettingsTabGraphics => ui("settings.tab.graphics");
@@ -106,41 +97,62 @@ namespace TLN.Application.Localization
 		public static string SettingsQualityUltra => ui("settings.quality.ultra");
 		public static string SettingsDefaults => ui("settings.defaults");
 		public static string SettingsBack => ui("settings.back");
-		public static string WeightKg => ui("inventory.weight_kg");
-		public static string MetaDefault => ui("inventory.meta_default");
-		public static string MetaClothing => ui("inventory.meta_clothing");
 		public static string InteractionPickup => ui("item.interaction_pickup");
-		public static string InteractionPickupFormat => ui("item.interaction_pickup_format");
-		public static string CampfireStateLabel => ui("campfire.state_label");
-		public static string CampfireFuelLabel => ui("campfire.fuel_label");
 		public static string BuildRecipesMissing => ui("build.recipes_missing");
 		public static string BuildServiceMissing => ui("build.service_missing");
+		public static string ItemsInvalidSlot => gameplay("item.invalid_slot");
+		public static string CannotConsume => gameplay("item.cannot_consume");
+
+		// Keys with format arguments
+		public static string CampfireStateLabel(params object[] args) => ui("campfire.state_label", args);
+		public static string CampfireFuelLabel(params object[] args) => ui("campfire.fuel_label", args);
+		public static string FuelAdded(params object[] args) => gameplay("campfire.fuel_added", args);
+		public static string SlotFormat(params object[] args) => ui("save.slot_format", args);
+		public static string SlotEmpty(params object[] args) => ui("save.slot_empty", args);
+		public static string OverwriteLabel(params object[] args) => ui("save.overwrite_label", args);
+		public static string DetailsFormat(params object[] args) => ui("save.details_format", args);
+		public static string DetailsFormatWithDate(params object[] args) => ui("save.details_format_with_date", args);
+		public static string DayTimeFormat(params object[] args) => ui("save.day_time_format", args);
+		public static string RequirementsFormat(params object[] args) => ui("survival.recipe.requirements_format", args);
+		public static string HUDDay(params object[] args) => ui("hud.day", args);
+		public static string HUDInteractionPrompt(params object[] args) => ui("hud.interaction_prompt", args);
+		public static string WeightKg(params object[] args) => ui("inventory.weight_kg", args);
+		public static string WeightFormat(params object[] args) => ui("survival.weight.format", args);
+		public static string MetaDefault(params object[] args) => ui("inventory.meta_default", args);
+		public static string MetaClothing(params object[] args) => ui("inventory.meta_clothing", args);
+		public static string InteractionPickupFormat(params object[] args) => ui("item.interaction_pickup_format", args);
+		public static string ItemsPickedUp(params object[] args) => gameplay("item.picked_up", args);
+		public static string BedrollPickedUp(params object[] args) => gameplay("bedroll.picked_up", args);
+		public static string NotEnoughItems(params object[] args) => gameplay("build.not_enough_items", args);
+		public static string NotEnoughItem(params object[] args) => gameplay("build.not_enough_item", args);
+		public static string Built(params object[] args) => gameplay("build.built", args);
+		public static string Unequipped(params object[] args) => gameplay("equip.unequipped", args);
+		public static string NoFreeSlot(params object[] args) => gameplay("equip.no_free_slot", args);
+		public static string Equipped(params object[] args) => gameplay("equip.equipped", args);
+		public static string InventoryNotEnoughItem(params object[] args) => gameplay("inventory.not_enough_item", args);
+		public static string MinHours(params object[] args) => gameplay("sleep.min_hours", args);
+		public static string MaxHours(params object[] args) => gameplay("sleep.max_hours", args);
+		public static string Result(params object[] args) => gameplay("sleep.result", args);
+		public static string Used(params object[] args) => gameplay("item.used", args);
+		public static string Placing(params object[] args) => gameplay("item.placing", args);
+		public static string Placed(params object[] args) => gameplay("item.placed", args);
+		public static string WolfAttack(params object[] args) => gameplay("survival.wolf_attack", args);
 
 		public static string Hunger => gameplay("notification.hunger");
 		public static string Thirst => gameplay("notification.thirst");
 		public static string Exhausted => gameplay("notification.exhausted");
 		public static string Freezing => gameplay("notification.freezing");
 		public static string ConditionCritical => gameplay("notification.condition_critical");
-		public static string MinHours => gameplay("sleep.min_hours");
-		public static string MaxHours => gameplay("sleep.max_hours");
-		public static string Result => gameplay("sleep.result");
-		public static string ItemsInvalidSlot => gameplay("item.invalid_slot");
 		public static string CannotUse => gameplay("item.cannot_use");
-		public static string CannotConsume => gameplay("item.cannot_consume");
 		public static string CannotPlace => gameplay("item.cannot_place");
 		public static string CannotEquip => gameplay("item.cannot_equip");
-		public static string Placing => gameplay("item.placing");
-		public static string Placed => gameplay("item.placed");
-		public static string Used => gameplay("item.used");
 		public static string CannotPlaceHere => gameplay("item.cannot_place_here");
 		public static string AddressableServiceMissing => gameplay("item.addressable_service_missing");
 		public static string PrefabReferenceMissing => gameplay("item.prefab_reference_missing");
 		public static string PrefabLoadFailed => gameplay("item.prefab_load_failed");
 		public static string EquipmentServiceMissing => gameplay("item.equipment_service_missing");
-		public static string ItemsPickedUp => gameplay("item.picked_up");
 		public static string BedrollPickupFailed => gameplay("bedroll.pickup_failed");
 		public static string BedrollInventoryMissing => gameplay("bedroll.inventory_service_missing");
-		public static string BedrollPickedUp => gameplay("bedroll.picked_up");
 		public static string FuelMissing => gameplay("campfire.fuel_missing");
 		public static string FuelAmountZero => gameplay("campfire.fuel_amount_zero");
 		public static string CannotBurn => gameplay("campfire.cannot_burn");
@@ -149,28 +161,19 @@ namespace TLN.Application.Localization
 		public static string NotEnoughFuel => gameplay("campfire.not_enough_fuel");
 		public static string NotBurning => gameplay("campfire.not_burning");
 		public static string NoFuelInInventory => gameplay("campfire.no_fuel_in_inventory");
-		public static string FuelAdded => gameplay("campfire.fuel_added");
 		public static string FireStarted => gameplay("campfire.fire_started");
 		public static string FireExtinguished => gameplay("campfire.fire_extinguished");
 		public static string RecipeMissing => gameplay("build.recipe_missing");
 		public static string PrefabMissing => gameplay("build.prefab_missing");
 		public static string NoIngredients => gameplay("build.no_ingredients");
 		public static string InvalidIngredient => gameplay("build.invalid_ingredient");
-		public static string NotEnoughItems => gameplay("build.not_enough_items");
-		public static string NotEnoughItem => gameplay("build.not_enough_item");
 		public static string CannotBuildHere => gameplay("build.cannot_build_here");
-		public static string Built => gameplay("build.built");
 		public static string EquipmentItemMissing => gameplay("equip.item_missing");
 		public static string EquipmentSlotMissing => gameplay("equip.slot_missing");
-		public static string Unequipped => gameplay("equip.unequipped");
-		public static string NoFreeSlot => gameplay("equip.no_free_slot");
-		public static string Equipped => gameplay("equip.equipped");
-		public static string WolfAttack => gameplay("survival.wolf_attack");
 		public static string InventoryInvalidItem => gameplay("inventory.invalid_item");
 		public static string InvalidAmount => gameplay("inventory.invalid_amount");
 		public static string TooHeavy => gameplay("inventory.too_heavy");
 		public static string InventoryInvalidSlot => gameplay("inventory.invalid_slot");
 		public static string NotEnough => gameplay("inventory.not_enough");
-		public static string InventoryNotEnoughItem => gameplay("inventory.not_enough_item");
 	}
 }
