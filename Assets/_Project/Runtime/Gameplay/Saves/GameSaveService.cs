@@ -25,7 +25,6 @@ namespace TLN.Gameplay.Saves
 		private readonly PlacementService _placementService;
 		private readonly ItemCatalog _itemCatalog;
 		private readonly INotificationService _notificationService;
-		private readonly ILocalizationService _localizationService;
 		private readonly WorldSaveRegistry _worldSaveRegistry;
 
 		public bool CanSaveManually => false;
@@ -39,7 +38,6 @@ namespace TLN.Gameplay.Saves
 			PlacementService placementService,
 			ItemCatalog itemCatalog,
 			INotificationService notificationService,
-			ILocalizationService localizationService,
 			WorldSaveRegistry worldSaveRegistry
 		)
 		{
@@ -51,7 +49,6 @@ namespace TLN.Gameplay.Saves
 			_placementService = placementService;
 			_itemCatalog = itemCatalog;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
 			_worldSaveRegistry = worldSaveRegistry;
 		}
 
@@ -59,7 +56,7 @@ namespace TLN.Gameplay.Saves
 		{
 			if (!CanSaveManually)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Saves.ManualUnavailable));
+				_notificationService?.Show(LocalizationKeys.ManualUnavailable);
 
 				return false;
 			}
@@ -82,11 +79,11 @@ namespace TLN.Gameplay.Saves
 			{
 				await Awaitable.MainThreadAsync();
 				TLNLogger.LogError($"Failed to save checkpoint. {exception}");
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Saves.Failed));
+				_notificationService?.Show(LocalizationKeys.Failed);
 				return false;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Saves.Saved));
+			_notificationService?.Show(LocalizationKeys.Saved);
 
 			return true;
 		}
@@ -105,14 +102,14 @@ namespace TLN.Gameplay.Saves
 
 			if (data == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Saves.SlotEmpty, slotId));
+				_notificationService?.Show(string.Format(LocalizationKeys.SlotEmpty, slotId));
 
 				return false;
 			}
 
 			ApplySaveData(data);
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Saves.Loaded));
+			_notificationService?.Show(LocalizationKeys.Loaded);
 
 			return true;
 		}

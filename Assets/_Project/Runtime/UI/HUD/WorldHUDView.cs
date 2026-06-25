@@ -46,7 +46,6 @@ namespace TLN.UI.HUD
 
 		private ISurvivalService _survivalService;
 		private IGameTimeService _gameTimeService;
-		private ILocalizationService _localizationService;
 
 		private float _notificationHideTime;
 		private bool _isInitialized;
@@ -104,13 +103,12 @@ namespace TLN.UI.HUD
 			UpdateTimeOverlayLifetime();
 		}
 
-		public void Construct(ISurvivalService survivalService, IGameTimeService gameTimeService, ILocalizationService localizationService)
+		public void Construct(ISurvivalService survivalService, IGameTimeService gameTimeService)
 		{
 			EnsureInitialized();
 
 			_survivalService = survivalService;
 			_gameTimeService = gameTimeService;
-			_localizationService = localizationService;
 
 			RefreshAll();
 			_nextRefreshTime = UnityTime.unscaledTime + _refreshInterval;
@@ -182,8 +180,8 @@ namespace TLN.UI.HUD
 
 			GameTime time = _gameTimeService.CurrentTime;
 
-			SetLabel(_timeDayLabel, _localizationService.Get(LocalizationKeys.HUD.Day, time.Day));
-			SetLabel(_timePeriodLabel, _localizationService.Get(GetTimePeriodKey(time.Hour)));
+			SetLabel(_timeDayLabel, string.Format(LocalizationKeys.HUDDay, time.Day));
+			SetLabel(_timePeriodLabel, GetTimePeriodKey(time.Hour));
 
 			bool isDay = IsDayTime(time.Hour);
 
@@ -283,10 +281,10 @@ namespace TLN.UI.HUD
 
 			return hour switch
 			{
-				>= 5 and < morningEnd => LocalizationKeys.HUD.Morning,
-				>= morningEnd and < afternoonEnd => LocalizationKeys.HUD.Afternoon,
-				>= afternoonEnd and < eveningEnd => LocalizationKeys.HUD.Evening,
-				_ => LocalizationKeys.HUD.Night
+				>= 5 and < morningEnd => LocalizationKeys.HUDMorning,
+				>= morningEnd and < afternoonEnd => LocalizationKeys.HUDAfternoon,
+				>= afternoonEnd and < eveningEnd => LocalizationKeys.HUDEvening,
+				_ => LocalizationKeys.HUDNight
 			};
 		}
 
@@ -311,7 +309,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_interactionPromptLabel.text = _localizationService.Get(LocalizationKeys.HUD.InteractionPrompt, text);
+			_interactionPromptLabel.text = string.Format(LocalizationKeys.HUDInteractionPrompt, text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
 

@@ -23,7 +23,6 @@ namespace TLN.Gameplay.Items
 		private int _amount = 1;
 
 		private INotificationService _notificationService;
-		private ILocalizationService _localizationService;
 		private IInventoryService _inventoryService;
 		private ItemCatalog _itemCatalog;
 		private WorldSaveRegistry _worldSaveRegistry;
@@ -32,21 +31,19 @@ namespace TLN.Gameplay.Items
 		public string SaveTypeId => SaveType;
 
 		public string InteractionText => _definition == null
-			? _localizationService?.Get(LocalizationKeys.Items.InteractionPickup) ?? "Pick up item"
-			: _localizationService?.Get(LocalizationKeys.Items.InteractionPickupFormat, _definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
+			? LocalizationKeys.InteractionPickup ?? "Pick up item"
+			: string.Format(LocalizationKeys.InteractionPickupFormat, _definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
 
 		[Inject]
 		public void Construct(
 			IInventoryService inventoryService,
 			INotificationService notificationService,
-			ILocalizationService localizationService,
 			ItemCatalog itemCatalog,
 			WorldSaveRegistry worldSaveRegistry
 		)
 		{
 			_inventoryService = inventoryService;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
 			_itemCatalog = itemCatalog;
 			_worldSaveRegistry = worldSaveRegistry;
 		}
@@ -94,7 +91,7 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Items.PickedUp, _definition.DisplayName));
+			_notificationService?.Show(string.Format(LocalizationKeys.ItemsPickedUp, _definition.DisplayName));
 
 			if (_persistentEntity != null && _persistentEntity.IsSceneObject)
 			{

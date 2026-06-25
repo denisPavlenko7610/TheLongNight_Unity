@@ -9,7 +9,6 @@ namespace TLN.Gameplay.Inventory
 	public sealed class InventoryService : IInventoryService
 	{
 		private readonly InventoryConfig _config;
-		private readonly ILocalizationService _localizationService;
 		private readonly List<ItemStack> _items = new();
 
 		public IReadOnlyList<ItemStack> Items => _items;
@@ -19,23 +18,22 @@ namespace TLN.Gameplay.Inventory
 
 		public event Action Changed;
 
-		public InventoryService(InventoryConfig config, ILocalizationService localizationService)
+		public InventoryService(InventoryConfig config)
 		{
 			_config = config;
-			_localizationService = localizationService;
 		}
 
 		public bool CanAddItem(ItemDefinition definition, int amount, out string reason)
 		{
 			if (definition == null)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidItem);
+				reason = LocalizationKeys.InventoryInvalidItem;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
+				reason = LocalizationKeys.InvalidAmount;
 				return false;
 			}
 
@@ -44,7 +42,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (weightAfterAdd > MaxCarryWeight)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.TooHeavy);
+				reason = LocalizationKeys.TooHeavy;
 				return false;
 			}
 
@@ -112,20 +110,20 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (index < 0 || index >= _items.Count)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidSlot);
+				reason = LocalizationKeys.InventoryInvalidSlot;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
+				reason = LocalizationKeys.InvalidAmount;
 				return false;
 			}
 
 			ItemStack stack = _items[index];
 			if (amount > stack.Amount)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.NotEnough);
+				reason = LocalizationKeys.NotEnough;
 				return false;
 			}
 
@@ -151,13 +149,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidItem);
+				reason = LocalizationKeys.InventoryInvalidItem;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
+				reason = LocalizationKeys.InvalidAmount;
 				return false;
 			}
 
@@ -165,7 +163,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (availableAmount < amount)
 			{
-				reason = _localizationService.Get(LocalizationKeys.Inventory.NotEnoughItem, definition.DisplayName);
+				reason = string.Format(LocalizationKeys.InventoryNotEnoughItem, definition.DisplayName);
 				return false;
 			}
 

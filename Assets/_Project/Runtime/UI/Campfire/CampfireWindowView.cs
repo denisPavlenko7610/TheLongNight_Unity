@@ -28,7 +28,6 @@ namespace TLN.UI.Campfire
 
 		private CampfireActor _currentCampfire;
 		private IInventoryService _inventoryService;
-		private ILocalizationService _localizationService;
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
 		private IGameSaveService _gameSaveService;
@@ -36,14 +35,12 @@ namespace TLN.UI.Campfire
 		[Inject]
 		public void Construct(
 			IInventoryService inventoryService,
-			ILocalizationService localizationService,
 			IInputModeService inputModeService,
 			INotificationService notificationService,
 			IGameSaveService gameSaveService
 		)
 		{
 			_inventoryService = inventoryService;
-			_localizationService = localizationService;
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
 			_gameSaveService = gameSaveService;
@@ -118,8 +115,8 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_stateLabel.text = _localizationService.Get(LocalizationKeys.Campfire.StateLabel, _currentCampfire.State);
-			_fuelLabel.text = _localizationService.Get(LocalizationKeys.Campfire.FuelLabel, _currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
+			_stateLabel.text = string.Format(LocalizationKeys.CampfireStateLabel, _currentCampfire.State);
+			_fuelLabel.text = string.Format(LocalizationKeys.CampfireFuelLabel, _currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
 			float fuelPercent = _currentCampfire.MaxBurnMinutes > 0
 				? Mathf.Clamp01((float)_currentCampfire.RemainingBurnMinutes / _currentCampfire.MaxBurnMinutes) * 100f
 				: 0f;
@@ -138,7 +135,7 @@ namespace TLN.UI.Campfire
 
 			if (!TryFindFuelItem(out int itemIndex, out FuelItemDefinition fuel))
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.NoFuelInInventory));
+				_notificationService?.Show(LocalizationKeys.NoFuelInInventory);
 				return;
 			}
 
@@ -173,7 +170,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FuelAdded, fuel.DisplayName));
+			_notificationService?.Show(string.Format(LocalizationKeys.FuelAdded, fuel.DisplayName));
 			Refresh();
 		}
 
@@ -192,7 +189,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FireStarted));
+			_notificationService?.Show(LocalizationKeys.FireStarted);
 
 			if (_gameSaveService != null)
 			{
@@ -217,7 +214,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FireExtinguished));
+			_notificationService?.Show(LocalizationKeys.FireExtinguished);
 			Refresh();
 		}
 

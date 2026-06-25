@@ -1,226 +1,176 @@
+using UnityEngine.Localization.Settings;
+
 namespace TLN.Application.Localization
 {
 	public static class LocalizationKeys
 	{
-		public static class Common
-		{
-			public const string Back = "common.back";
-			public const string Use = "common.use";
-			public const string Build = "common.build";
-		}
+		private static string ui(string key) =>
+			LocalizationSettings.StringDatabase.GetLocalizedString("UI", key);
 
-		public static class SurvivalMenu
-		{
-			public const string HeaderBackpack = "survival.header.backpack";
-			public const string HeaderCrafting = "survival.header.crafting";
-			public const string HeaderFoodWater = "survival.header.food_water";
-			public const string HeaderMedicine = "survival.header.medicine";
-			public const string HeaderTools = "survival.header.tools";
-			public const string HeaderClothing = "survival.header.clothing";
-			public const string HeaderFire = "survival.header.fire";
-			public const string SectionItems = "survival.section.items";
-			public const string SortAlphabetically = "survival.sort.alphabetically";
-			public const string CategoryAll = "survival.category.all";
-			public const string CategoryFoodWater = "survival.category.food_water";
-			public const string CategoryMedicine = "survival.category.medicine";
-			public const string CategoryTools = "survival.category.tools";
-			public const string CategoryClothing = "survival.category.clothing";
-			public const string CategoryFire = "survival.category.fire";
-			public const string CategoryCrafting = "survival.category.crafting";
-			public const string EmptyBackpack = "survival.empty.backpack";
-			public const string EmptyCategory = "survival.empty.category";
-			public const string NothingSelected = "survival.empty.nothing_selected";
-			public const string NoRecipeSelected = "survival.empty.no_recipe_selected";
-			public const string DescriptionConsumable = "survival.description.consumable";
-			public const string DescriptionPlaceable = "survival.description.placeable";
-			public const string DescriptionClothing = "survival.description.clothing";
-			public const string DescriptionNoAction = "survival.description.no_action";
-			public const string BuildReady = "survival.build.ready";
-			public const string BuildServiceMissing = "survival.build.service_missing";
-			public const string RequirementsNone = "survival.recipe.requirements_none";
-			public const string RequirementsFormat = "survival.recipe.requirements_format";
-			public const string WeightFormat = "survival.weight.format";
-			public const string ServiceMissingItemUse = "survival.service_missing.item_use";
-			public const string ServiceMissingBuild = "survival.service_missing.build";
-		}
+		private static string gameplay(string key) =>
+			LocalizationSettings.StringDatabase.GetLocalizedString("Gameplay", key);
 
-		public static class Notifications
-		{
-			public const string Hunger = "notification.hunger";
-			public const string Thirst = "notification.thirst";
-			public const string Exhausted = "notification.exhausted";
-			public const string Freezing = "notification.freezing";
-			public const string ConditionCritical = "notification.condition_critical";
-		}
+		public static string CommonBack => ui("common.back");
+		public static string CommonUse => ui("common.use");
+		public static string CommonBuild => ui("common.build");
+		public static string HeaderBackpack => ui("survival.header.backpack");
+		public static string HeaderCrafting => ui("survival.header.crafting");
+		public static string HeaderFoodWater => ui("survival.header.food_water");
+		public static string HeaderMedicine => ui("survival.header.medicine");
+		public static string HeaderTools => ui("survival.header.tools");
+		public static string HeaderClothing => ui("survival.header.clothing");
+		public static string HeaderFire => ui("survival.header.fire");
+		public static string SectionItems => ui("survival.section.items");
+		public static string SortAlphabetically => ui("survival.sort.alphabetically");
+		public static string CategoryAll => ui("survival.category.all");
+		public static string CategoryFoodWater => ui("survival.category.food_water");
+		public static string CategoryMedicine => ui("survival.category.medicine");
+		public static string CategoryTools => ui("survival.category.tools");
+		public static string CategoryClothing => ui("survival.category.clothing");
+		public static string CategoryFire => ui("survival.category.fire");
+		public static string CategoryCrafting => ui("survival.category.crafting");
+		public static string EmptyBackpack => ui("survival.empty.backpack");
+		public static string EmptyCategory => ui("survival.empty.category");
+		public static string NothingSelected => ui("survival.empty.nothing_selected");
+		public static string NoRecipeSelected => ui("survival.empty.no_recipe_selected");
+		public static string DescriptionConsumable => ui("survival.description.consumable");
+		public static string DescriptionPlaceable => ui("survival.description.placeable");
+		public static string DescriptionClothing => ui("survival.description.clothing");
+		public static string DescriptionNoAction => ui("survival.description.no_action");
+		public static string BuildReady => ui("survival.build.ready");
+		public static string SurvivalBuildServiceMissing => ui("survival.build.service_missing");
+		public static string RequirementsNone => ui("survival.recipe.requirements_none");
+		public static string RequirementsFormat => ui("survival.recipe.requirements_format");
+		public static string WeightFormat => ui("survival.weight.format");
+		public static string ServiceMissingItemUse => ui("survival.service_missing.item_use");
+		public static string ServiceMissingBuild => ui("survival.service_missing.build");
+		public static string SleepWindowTitle => ui("sleep_window.title");
+		public static string Description => ui("sleep_window.description");
+		public static string OneHour => ui("sleep_window.1h");
+		public static string TwoHours => ui("sleep_window.2h");
+		public static string FourHours => ui("sleep_window.4h");
+		public static string EightHours => ui("sleep_window.8h");
+		public static string PickUp => ui("sleep_window.pick_up");
+		public static string Cancel => ui("sleep_window.cancel");
+		public static string HUDDay => ui("hud.day");
+		public static string HUDMorning => ui("hud.morning");
+		public static string HUDAfternoon => ui("hud.afternoon");
+		public static string HUDEvening => ui("hud.evening");
+		public static string HUDNight => ui("hud.night");
+		public static string HUDInteractionPrompt => ui("hud.interaction_prompt");
+		public static string ManualUnavailable => ui("save.manual_unavailable");
+		public static string Failed => ui("save.failed");
+		public static string Saved => ui("save.saved");
+		public static string SlotEmpty => ui("save.slot_empty");
+		public static string Loaded => ui("save.loaded");
+		public static string NewGame => ui("save.new_game");
+		public static string NewGameDescription => ui("save.new_game_description");
+		public static string LoadGame => ui("save.load_game");
+		public static string LoadGameDescription => ui("save.load_game_description");
+		public static string Empty => ui("save.empty");
+		public static string SlotFormat => ui("save.slot_format");
+		public static string DefaultReason => ui("save.default_reason");
+		public static string OverwriteLabel => ui("save.overwrite_label");
+		public static string DetailsFormat => ui("save.details_format");
+		public static string DetailsFormatWithDate => ui("save.details_format_with_date");
+		public static string DayTimeFormat => ui("save.day_time_format");
+		public static string SettingsTitle => ui("settings.title");
+		public static string SettingsTabAudio => ui("settings.tab.audio");
+		public static string SettingsTabGraphics => ui("settings.tab.graphics");
+		public static string SettingsTabControls => ui("settings.tab.controls");
+		public static string SettingsTabGameplay => ui("settings.tab.gameplay");
+		public static string SettingsAudioMaster => ui("settings.audio.master");
+		public static string SettingsAudioSfx => ui("settings.audio.sfx");
+		public static string SettingsAudioMusic => ui("settings.audio.music");
+		public static string SettingsAudioAmbient => ui("settings.audio.ambient");
+		public static string SettingsGraphicsDisplayMode => ui("settings.graphics.display_mode");
+		public static string SettingsGraphicsResolution => ui("settings.graphics.resolution");
+		public static string SettingsGraphicsQuality => ui("settings.graphics.quality");
+		public static string SettingsGraphicsTextureQuality => ui("settings.graphics.texture_quality");
+		public static string SettingsGraphicsFieldOfView => ui("settings.graphics.field_of_view");
+		public static string SettingsGraphicsBrightness => ui("settings.graphics.brightness");
+		public static string SettingsGraphicsVSync => ui("settings.graphics.vsync");
+		public static string SettingsControlsSensitivity => ui("settings.controls.sensitivity");
+		public static string SettingsControlsLookSmoothing => ui("settings.controls.look_smoothing");
+		public static string SettingsControlsInvertMouse => ui("settings.controls.invert_mouse");
+		public static string SettingsGameplayLanguage => ui("settings.gameplay.language");
+		public static string SettingsGameplaySubtitles => ui("settings.gameplay.subtitles");
+		public static string SettingsGameplayAutoWalk => ui("settings.gameplay.auto_walk");
+		public static string SettingsGameplayAutoHarvest => ui("settings.gameplay.auto_harvest");
+		public static string SettingsDisplayModeFullscreen => ui("settings.display_mode.fullscreen");
+		public static string SettingsDisplayModeWindowed => ui("settings.display_mode.windowed");
+		public static string SettingsDisplayModeBorderless => ui("settings.display_mode.borderless");
+		public static string SettingsQualityLow => ui("settings.quality.low");
+		public static string SettingsQualityMedium => ui("settings.quality.medium");
+		public static string SettingsQualityHigh => ui("settings.quality.high");
+		public static string SettingsQualityUltra => ui("settings.quality.ultra");
+		public static string SettingsDefaults => ui("settings.defaults");
+		public static string SettingsBack => ui("settings.back");
+		public static string WeightKg => ui("inventory.weight_kg");
+		public static string MetaDefault => ui("inventory.meta_default");
+		public static string MetaClothing => ui("inventory.meta_clothing");
+		public static string InteractionPickup => ui("item.interaction_pickup");
+		public static string InteractionPickupFormat => ui("item.interaction_pickup_format");
+		public static string CampfireStateLabel => ui("campfire.state_label");
+		public static string CampfireFuelLabel => ui("campfire.fuel_label");
+		public static string BuildRecipesMissing => ui("build.recipes_missing");
+		public static string BuildServiceMissing => ui("build.service_missing");
 
-		public static class Sleep
-		{
-			public const string MinHours = "sleep.min_hours";
-			public const string MaxHours = "sleep.max_hours";
-			public const string Result = "sleep.result";
-		}
-
-		public static class SleepWindow
-		{
-			public const string Title = "sleep_window.title";
-			public const string Description = "sleep_window.description";
-			public const string OneHour = "sleep_window.1h";
-			public const string TwoHours = "sleep_window.2h";
-			public const string FourHours = "sleep_window.4h";
-			public const string EightHours = "sleep_window.8h";
-			public const string PickUp = "sleep_window.pick_up";
-			public const string Cancel = "sleep_window.cancel";
-		}
-
-		public static class Items
-		{
-			public const string InvalidSlot = "item.invalid_slot";
-			public const string CannotUse = "item.cannot_use";
-			public const string CannotConsume = "item.cannot_consume";
-			public const string CannotPlace = "item.cannot_place";
-			public const string CannotEquip = "item.cannot_equip";
-			public const string Placing = "item.placing";
-			public const string Placed = "item.placed";
-			public const string Used = "item.used";
-			public const string CannotPlaceHere = "item.cannot_place_here";
-			public const string AddressableServiceMissing = "item.addressable_service_missing";
-			public const string PrefabReferenceMissing = "item.prefab_reference_missing";
-			public const string PrefabLoadFailed = "item.prefab_load_failed";
-			public const string EquipmentServiceMissing = "item.equipment_service_missing";
-			public const string PickedUp = "item.picked_up";
-			public const string InteractionPickup = "item.interaction_pickup";
-			public const string InteractionPickupFormat = "item.interaction_pickup_format";
-		}
-
-		public static class Bedroll
-		{
-			public const string PickupFailed = "bedroll.pickup_failed";
-			public const string InventoryMissing = "bedroll.inventory_service_missing";
-			public const string PickedUp = "bedroll.picked_up";
-		}
-
-		public static class Campfire
-		{
-			public const string FuelMissing = "campfire.fuel_missing";
-			public const string FuelAmountZero = "campfire.fuel_amount_zero";
-			public const string CannotBurn = "campfire.cannot_burn";
-			public const string Full = "campfire.full";
-			public const string AlreadyBurning = "campfire.already_burning";
-			public const string NotEnoughFuel = "campfire.not_enough_fuel";
-			public const string NotBurning = "campfire.not_burning";
-			public const string NoFuelInInventory = "campfire.no_fuel_in_inventory";
-			public const string FuelAdded = "campfire.fuel_added";
-			public const string FireStarted = "campfire.fire_started";
-			public const string FireExtinguished = "campfire.fire_extinguished";
-			public const string StateLabel = "campfire.state_label";
-			public const string FuelLabel = "campfire.fuel_label";
-		}
-
-		public static class Build
-		{
-			public const string RecipeMissing = "build.recipe_missing";
-			public const string PrefabMissing = "build.prefab_missing";
-			public const string NoIngredients = "build.no_ingredients";
-			public const string InvalidIngredient = "build.invalid_ingredient";
-			public const string NotEnoughItems = "build.not_enough_items";
-			public const string NotEnoughItem = "build.not_enough_item";
-			public const string CannotBuildHere = "build.cannot_build_here";
-			public const string Built = "build.built";
-			public const string ServiceMissing = "build.service_missing";
-			public const string RecipesMissing = "build.recipes_missing";
-		}
-
-		public static class Equipment
-		{
-			public const string ItemMissing = "equip.item_missing";
-			public const string SlotMissing = "equip.slot_missing";
-			public const string Unequipped = "equip.unequipped";
-			public const string NoFreeSlot = "equip.no_free_slot";
-			public const string Equipped = "equip.equipped";
-		}
-
-		public static class Survival
-		{
-			public const string WolfAttack = "survival.wolf_attack";
-		}
-
-		public static class Saves
-		{
-			public const string ManualUnavailable = "save.manual_unavailable";
-			public const string Failed = "save.failed";
-			public const string Saved = "save.saved";
-			public const string SlotEmpty = "save.slot_empty";
-			public const string Loaded = "save.loaded";
-			public const string NewGame = "save.new_game";
-			public const string NewGameDescription = "save.new_game_description";
-			public const string LoadGame = "save.load_game";
-			public const string LoadGameDescription = "save.load_game_description";
-			public const string Empty = "save.empty";
-			public const string SlotFormat = "save.slot_format";
-			public const string DefaultReason = "save.default_reason";
-			public const string OverwriteLabel = "save.overwrite_label";
-			public const string DetailsFormat = "save.details_format";
-			public const string DetailsFormatWithDate = "save.details_format_with_date";
-			public const string DayTimeFormat = "save.day_time_format";
-		}
-
-		public static class Inventory
-		{
-			public const string InvalidItem = "inventory.invalid_item";
-			public const string InvalidAmount = "inventory.invalid_amount";
-			public const string TooHeavy = "inventory.too_heavy";
-			public const string InvalidSlot = "inventory.invalid_slot";
-			public const string NotEnough = "inventory.not_enough";
-			public const string NotEnoughItem = "inventory.not_enough_item";
-			public const string WeightKg = "inventory.weight_kg";
-			public const string MetaDefault = "inventory.meta_default";
-			public const string MetaClothing = "inventory.meta_clothing";
-		}
-
-		public static class HUD
-		{
-			public const string Day = "hud.day";
-			public const string Morning = "hud.morning";
-			public const string Afternoon = "hud.afternoon";
-			public const string Evening = "hud.evening";
-			public const string Night = "hud.night";
-			public const string InteractionPrompt = "hud.interaction_prompt";
-		}
-
-		public static class Settings
-		{
-			public const string Title = "settings.title";
-			public const string TabAudio = "settings.tab.audio";
-			public const string TabGraphics = "settings.tab.graphics";
-			public const string TabControls = "settings.tab.controls";
-			public const string TabGameplay = "settings.tab.gameplay";
-			public const string AudioMaster = "settings.audio.master";
-			public const string AudioSfx = "settings.audio.sfx";
-			public const string AudioMusic = "settings.audio.music";
-			public const string AudioAmbient = "settings.audio.ambient";
-			public const string GraphicsDisplayMode = "settings.graphics.display_mode";
-			public const string GraphicsResolution = "settings.graphics.resolution";
-			public const string GraphicsQuality = "settings.graphics.quality";
-			public const string GraphicsTextureQuality = "settings.graphics.texture_quality";
-			public const string GraphicsFieldOfView = "settings.graphics.field_of_view";
-			public const string GraphicsBrightness = "settings.graphics.brightness";
-			public const string GraphicsVSync = "settings.graphics.vsync";
-			public const string ControlsSensitivity = "settings.controls.sensitivity";
-			public const string ControlsLookSmoothing = "settings.controls.look_smoothing";
-			public const string ControlsInvertMouse = "settings.controls.invert_mouse";
-			public const string GameplayLanguage = "settings.gameplay.language";
-			public const string GameplaySubtitles = "settings.gameplay.subtitles";
-			public const string GameplayAutoWalk = "settings.gameplay.auto_walk";
-			public const string GameplayAutoHarvest = "settings.gameplay.auto_harvest";
-			public const string DisplayModeFullscreen = "settings.display_mode.fullscreen";
-			public const string DisplayModeWindowed = "settings.display_mode.windowed";
-			public const string DisplayModeBorderless = "settings.display_mode.borderless";
-			public const string QualityLow = "settings.quality.low";
-			public const string QualityMedium = "settings.quality.medium";
-			public const string QualityHigh = "settings.quality.high";
-			public const string QualityUltra = "settings.quality.ultra";
-			public const string Defaults = "settings.defaults";
-			public const string Back = "settings.back";
-		}
+		public static string Hunger => gameplay("notification.hunger");
+		public static string Thirst => gameplay("notification.thirst");
+		public static string Exhausted => gameplay("notification.exhausted");
+		public static string Freezing => gameplay("notification.freezing");
+		public static string ConditionCritical => gameplay("notification.condition_critical");
+		public static string MinHours => gameplay("sleep.min_hours");
+		public static string MaxHours => gameplay("sleep.max_hours");
+		public static string Result => gameplay("sleep.result");
+		public static string ItemsInvalidSlot => gameplay("item.invalid_slot");
+		public static string CannotUse => gameplay("item.cannot_use");
+		public static string CannotConsume => gameplay("item.cannot_consume");
+		public static string CannotPlace => gameplay("item.cannot_place");
+		public static string CannotEquip => gameplay("item.cannot_equip");
+		public static string Placing => gameplay("item.placing");
+		public static string Placed => gameplay("item.placed");
+		public static string Used => gameplay("item.used");
+		public static string CannotPlaceHere => gameplay("item.cannot_place_here");
+		public static string AddressableServiceMissing => gameplay("item.addressable_service_missing");
+		public static string PrefabReferenceMissing => gameplay("item.prefab_reference_missing");
+		public static string PrefabLoadFailed => gameplay("item.prefab_load_failed");
+		public static string EquipmentServiceMissing => gameplay("item.equipment_service_missing");
+		public static string ItemsPickedUp => gameplay("item.picked_up");
+		public static string BedrollPickupFailed => gameplay("bedroll.pickup_failed");
+		public static string BedrollInventoryMissing => gameplay("bedroll.inventory_service_missing");
+		public static string BedrollPickedUp => gameplay("bedroll.picked_up");
+		public static string FuelMissing => gameplay("campfire.fuel_missing");
+		public static string FuelAmountZero => gameplay("campfire.fuel_amount_zero");
+		public static string CannotBurn => gameplay("campfire.cannot_burn");
+		public static string Full => gameplay("campfire.full");
+		public static string AlreadyBurning => gameplay("campfire.already_burning");
+		public static string NotEnoughFuel => gameplay("campfire.not_enough_fuel");
+		public static string NotBurning => gameplay("campfire.not_burning");
+		public static string NoFuelInInventory => gameplay("campfire.no_fuel_in_inventory");
+		public static string FuelAdded => gameplay("campfire.fuel_added");
+		public static string FireStarted => gameplay("campfire.fire_started");
+		public static string FireExtinguished => gameplay("campfire.fire_extinguished");
+		public static string RecipeMissing => gameplay("build.recipe_missing");
+		public static string PrefabMissing => gameplay("build.prefab_missing");
+		public static string NoIngredients => gameplay("build.no_ingredients");
+		public static string InvalidIngredient => gameplay("build.invalid_ingredient");
+		public static string NotEnoughItems => gameplay("build.not_enough_items");
+		public static string NotEnoughItem => gameplay("build.not_enough_item");
+		public static string CannotBuildHere => gameplay("build.cannot_build_here");
+		public static string Built => gameplay("build.built");
+		public static string EquipmentItemMissing => gameplay("equip.item_missing");
+		public static string EquipmentSlotMissing => gameplay("equip.slot_missing");
+		public static string Unequipped => gameplay("equip.unequipped");
+		public static string NoFreeSlot => gameplay("equip.no_free_slot");
+		public static string Equipped => gameplay("equip.equipped");
+		public static string WolfAttack => gameplay("survival.wolf_attack");
+		public static string InventoryInvalidItem => gameplay("inventory.invalid_item");
+		public static string InvalidAmount => gameplay("inventory.invalid_amount");
+		public static string TooHeavy => gameplay("inventory.too_heavy");
+		public static string InventoryInvalidSlot => gameplay("inventory.invalid_slot");
+		public static string NotEnough => gameplay("inventory.not_enough");
+		public static string InventoryNotEnoughItem => gameplay("inventory.not_enough_item");
 	}
 }

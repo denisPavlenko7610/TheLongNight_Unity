@@ -1,7 +1,6 @@
 using TLN.Application.Assets;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
-using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
@@ -9,7 +8,6 @@ using TLN.Application.Settings;
 using TLN.Application.Time;
 using TLN.Infrastructure.Assets;
 using TLN.Infrastructure.Input;
-using TLN.Infrastructure.Localization;
 using TLN.Infrastructure.Saves;
 using TLN.Infrastructure.Scenes;
 using TLN.Infrastructure.Settings;
@@ -35,8 +33,6 @@ namespace TLN.Bootstrap
 
 			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
-			builder.Register<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
-
 			builder.RegisterEntryPoint<GameStateInputModeController>();
 			builder.RegisterEntryPoint<GameStatePauseController>();
 			builder.RegisterEntryPoint<ProjectStartupEntryPoint>();

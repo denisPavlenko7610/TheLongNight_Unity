@@ -1,4 +1,3 @@
-using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Application.Settings;
@@ -32,7 +31,6 @@ namespace TLN.UI.MainMenu
 		private Button _quitButton;
 
 		private ISceneLoader _sceneLoader;
-		private ILocalizationService _localizationService;
 		private ISaveRepository _saveRepository;
 		private SaveSessionService _saveSessionService;
 		private IGameSettingsService _settingsService;
@@ -43,14 +41,12 @@ namespace TLN.UI.MainMenu
 		[Inject]
 		public void Construct(
 			ISceneLoader sceneLoader,
-			ILocalizationService localizationService,
 			ISaveRepository saveRepository,
 			SaveSessionService saveSessionService,
 			IGameSettingsService settingsService
 		)
 		{
 			_sceneLoader = sceneLoader;
-			_localizationService = localizationService;
 			_saveRepository = saveRepository;
 			_saveSessionService = saveSessionService;
 			_settingsService = settingsService;
@@ -99,7 +95,6 @@ namespace TLN.UI.MainMenu
 			_saveSlotsPanel = new SaveSlotsPanel(
 				_root,
 				_saveRepository,
-				_localizationService,
 				OnNewGameSlotSelected,
 				OnLoadGameSlotSelected,
 				ShowNavigationPanel
@@ -196,7 +191,6 @@ namespace TLN.UI.MainMenu
 			_optionsView = new OptionsView(
 				_settingsPanel,
 				_settingsService,
-				_localizationService,
 				ShowNavigationPanel
 			);
 		}

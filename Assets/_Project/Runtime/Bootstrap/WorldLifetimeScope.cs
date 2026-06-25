@@ -1,5 +1,4 @@
 using Assign;
-using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Core.Validation;
@@ -69,7 +68,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 			container => new SurvivalWarningService(
 				container.Resolve<ISurvivalService>(),
 				container.Resolve<INotificationService>(),
-				container.Resolve<ILocalizationService>(),
 				_survivalWarningCooldownSeconds
 			),
 			Lifetime.Scoped

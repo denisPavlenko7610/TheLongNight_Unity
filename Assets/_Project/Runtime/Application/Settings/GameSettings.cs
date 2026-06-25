@@ -1,4 +1,5 @@
 using System;
+using TLN.Application.Localization;
 
 namespace TLN.Application.Settings
 {
@@ -27,6 +28,6 @@ namespace TLN.Application.Settings
 		public bool SubtitlesEnabled = true;
 		public bool AutoWalkEnabled;
 		public bool AutoHarvestEnabled;
-		public string LocaleCode = "en";
+		public string LocaleCode = LocaleCodes.English;
 	}
 }

@@ -8,8 +8,8 @@ namespace TLN.UI.Common
 	public static class SettingsMenuHelper
 	{
 		public const string EnglishLanguageName = "English";
-		public const string UkrainianLanguageName = "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430";
-		public const string RussianLanguageName = "\u0420\u0443\u0441\u0441\u043a\u0438\u0439";
+		public const string UkrainianLanguageName = "Українська";
+		public const string RussianLanguageName = "Русский";
 
 		public static readonly List<string> SupportedLanguages = new()
 		{
@@ -29,17 +29,14 @@ namespace TLN.UI.Common
 			dropdown.SetValueWithoutNotify(EnglishLanguageName);
 		}
 
-		public static void SyncLanguageDropdown(
-			DropdownField dropdown,
-			ILocalizationService localizationService
-		)
+		public static void SyncLanguageDropdown(DropdownField dropdown)
 		{
-			if (dropdown == null || localizationService == null)
+			if (dropdown == null)
 			{
 				return;
 			}
 
-			string languageName = GetLanguageName(localizationService.CurrentLocaleCode);
+			string languageName = GetLanguageName(LocaleCodes.Current);
 
 			dropdown.SetValueWithoutNotify(languageName);
 		}
@@ -48,9 +45,9 @@ namespace TLN.UI.Common
 		{
 			return languageName switch
 			{
-				EnglishLanguageName => "en",
-				UkrainianLanguageName => "uk",
-				RussianLanguageName => "ru",
+				EnglishLanguageName => LocaleCodes.English,
+				UkrainianLanguageName => LocaleCodes.Ukrainian,
+				RussianLanguageName => LocaleCodes.Russian,
 				_ => string.Empty
 			};
 		}
@@ -62,12 +59,12 @@ namespace TLN.UI.Common
 				return EnglishLanguageName;
 			}
 
-			if (localeCode.StartsWith("uk", StringComparison.OrdinalIgnoreCase))
+			if (localeCode.StartsWith(LocaleCodes.Ukrainian, StringComparison.OrdinalIgnoreCase))
 			{
 				return UkrainianLanguageName;
 			}
 
-			if (localeCode.StartsWith("ru", StringComparison.OrdinalIgnoreCase))
+			if (localeCode.StartsWith(LocaleCodes.Russian, StringComparison.OrdinalIgnoreCase))
 			{
 				return RussianLanguageName;
 			}

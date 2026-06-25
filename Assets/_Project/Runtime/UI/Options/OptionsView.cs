@@ -12,22 +12,21 @@ namespace TLN.UI.Options
 	{
 		private static readonly string[] DisplayModeKeys =
 		{
-			LocalizationKeys.Settings.DisplayModeFullscreen,
-			LocalizationKeys.Settings.DisplayModeWindowed,
-			LocalizationKeys.Settings.DisplayModeBorderless
+			LocalizationKeys.SettingsDisplayModeFullscreen,
+			LocalizationKeys.SettingsDisplayModeWindowed,
+			LocalizationKeys.SettingsDisplayModeBorderless
 		};
 
 		private static readonly string[] QualityKeys =
 		{
-			LocalizationKeys.Settings.QualityLow,
-			LocalizationKeys.Settings.QualityMedium,
-			LocalizationKeys.Settings.QualityHigh,
-			LocalizationKeys.Settings.QualityUltra
+			LocalizationKeys.SettingsQualityLow,
+			LocalizationKeys.SettingsQualityMedium,
+			LocalizationKeys.SettingsQualityHigh,
+			LocalizationKeys.SettingsQualityUltra
 		};
 
 		private readonly VisualElement _root;
 		private readonly IGameSettingsService _settingsService;
-		private readonly ILocalizationService _localizationService;
 
 		private readonly Dictionary<string, Button> _tabButtons = new();
 		private readonly Dictionary<string, VisualElement> _tabContents = new();
@@ -74,13 +73,11 @@ namespace TLN.UI.Options
 		public OptionsView(
 			VisualElement root,
 			IGameSettingsService settingsService,
-			ILocalizationService localizationService,
 			Action backClicked
 		)
 		{
 			_root = root;
 			_settingsService = settingsService;
-			_localizationService = localizationService;
 
 			_availableResolutions = GetUniqueResolutions();
 			_titleLabel = root.RequiredQ<Label>("options-title");
@@ -137,20 +134,14 @@ namespace TLN.UI.Options
 			RefreshLocalizedText();
 			RefreshFromSettings();
 
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged += OnLocaleChanged;
-			}
+			LocaleCodes.LocaleChanged += OnLocaleChanged;
 
 			ShowTab("audio");
 		}
 
 		public void Dispose()
 		{
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged -= OnLocaleChanged;
-			}
+			LocaleCodes.LocaleChanged -= OnLocaleChanged;
 		}
 
 		public void RefreshFromSettings()
@@ -161,37 +152,37 @@ namespace TLN.UI.Options
 			}
 
 			_isApplyingChange = true;
-			GameSettings s = _settingsService.Settings;
+			GameSettings gameSettings = _settingsService.Settings;
 
-			_masterVolume.SetValueWithoutNotify(s.MasterVolume);
-			_sfxVolume.SetValueWithoutNotify(s.SfxVolume);
-			_musicVolume.SetValueWithoutNotify(s.MusicVolume);
-			_ambientVolume.SetValueWithoutNotify(s.AmbientVolume);
-			UpdateVolumeLabel(_masterVolumeValue, s.MasterVolume);
-			UpdateVolumeLabel(_sfxVolumeValue, s.SfxVolume);
-			UpdateVolumeLabel(_musicVolumeValue, s.MusicVolume);
-			UpdateVolumeLabel(_ambientVolumeValue, s.AmbientVolume);
+			_masterVolume.SetValueWithoutNotify(gameSettings.MasterVolume);
+			_sfxVolume.SetValueWithoutNotify(gameSettings.SfxVolume);
+			_musicVolume.SetValueWithoutNotify(gameSettings.MusicVolume);
+			_ambientVolume.SetValueWithoutNotify(gameSettings.AmbientVolume);
+			UpdateVolumeLabel(_masterVolumeValue, gameSettings.MasterVolume);
+			UpdateVolumeLabel(_sfxVolumeValue, gameSettings.SfxVolume);
+			UpdateVolumeLabel(_musicVolumeValue, gameSettings.MusicVolume);
+			UpdateVolumeLabel(_ambientVolumeValue, gameSettings.AmbientVolume);
 
-			int displayModeIndex = Mathf.Clamp(s.DisplayMode, 0, _displayModeLabels.Count - 1);
+			int displayModeIndex = Mathf.Clamp(gameSettings.DisplayMode, 0, _displayModeLabels.Count - 1);
 			_displayModeDropdown.SetValueWithoutNotify(_displayModeLabels[displayModeIndex]);
-			SelectResolutionInDropdown(s.ResolutionWidth, s.ResolutionHeight);
-			_qualityDropdown.SetValueWithoutNotify(_qualityLabels[Mathf.Clamp(s.QualityLevel, 0, _qualityLabels.Count - 1)]);
-			_textureQualityDropdown.SetValueWithoutNotify(_qualityLabels[Mathf.Clamp(s.TextureQuality, 0, _qualityLabels.Count - 1)]);
-			_fieldOfView.SetValueWithoutNotify(s.FieldOfView);
-			UpdateWholeNumberLabel(_fieldOfViewValue, s.FieldOfView);
-			_brightness.SetValueWithoutNotify(s.Brightness);
-			UpdateWholePercentLabel(_brightnessValue, s.Brightness);
-			_vsyncToggle.SetValueWithoutNotify(s.VSyncEnabled);
+			SelectResolutionInDropdown(gameSettings.ResolutionWidth, gameSettings.ResolutionHeight);
+			_qualityDropdown.SetValueWithoutNotify(_qualityLabels[Mathf.Clamp(gameSettings.QualityLevel, 0, _qualityLabels.Count - 1)]);
+			_textureQualityDropdown.SetValueWithoutNotify(_qualityLabels[Mathf.Clamp(gameSettings.TextureQuality, 0, _qualityLabels.Count - 1)]);
+			_fieldOfView.SetValueWithoutNotify(gameSettings.FieldOfView);
+			UpdateWholeNumberLabel(_fieldOfViewValue, gameSettings.FieldOfView);
+			_brightness.SetValueWithoutNotify(gameSettings.Brightness);
+			UpdateWholePercentLabel(_brightnessValue, gameSettings.Brightness);
+			_vsyncToggle.SetValueWithoutNotify(gameSettings.VSyncEnabled);
 
-			_mouseSensitivity.SetValueWithoutNotify(s.MouseSensitivity);
-			UpdatePercent01Label(_mouseSensitivityValue, s.MouseSensitivity);
-			_lookSmoothing.SetValueWithoutNotify(s.LookSmoothing);
-			UpdatePercent01Label(_lookSmoothingValue, s.LookSmoothing);
-			_invertMouseToggle.SetValueWithoutNotify(s.InvertMouseY);
+			_mouseSensitivity.SetValueWithoutNotify(gameSettings.MouseSensitivity);
+			UpdatePercent01Label(_mouseSensitivityValue, gameSettings.MouseSensitivity);
+			_lookSmoothing.SetValueWithoutNotify(gameSettings.LookSmoothing);
+			UpdatePercent01Label(_lookSmoothingValue, gameSettings.LookSmoothing);
+			_invertMouseToggle.SetValueWithoutNotify(gameSettings.InvertMouseY);
 
 			SyncLanguageDropdown();
-			_autoWalkToggle.SetValueWithoutNotify(s.AutoWalkEnabled);
-			_autoHarvestToggle.SetValueWithoutNotify(s.AutoHarvestEnabled);
+			_autoWalkToggle.SetValueWithoutNotify(gameSettings.AutoWalkEnabled);
+			_autoHarvestToggle.SetValueWithoutNotify(gameSettings.AutoHarvestEnabled);
 
 			_isApplyingChange = false;
 		}
@@ -224,7 +215,7 @@ namespace TLN.UI.Options
 
 		private void PopulateResolutionDropdown()
 		{
-			var resolutionLabels = new List<string>();
+			List<string> resolutionLabels = new List<string>();
 
 			foreach (Resolution res in _availableResolutions)
 			{
@@ -291,12 +282,12 @@ namespace TLN.UI.Options
 		{
 			_activeTab = tabName;
 
-			foreach (var kvp in _tabButtons)
+			foreach (KeyValuePair<string, Button> kvp in _tabButtons)
 			{
 				kvp.Value.EnableInClassList("options-tab-active", kvp.Key == tabName);
 			}
 
-			foreach (var kvp in _tabContents)
+			foreach (KeyValuePair<string, VisualElement> kvp in _tabContents)
 			{
 				kvp.Value.SetVisible(kvp.Key == tabName);
 			}
@@ -304,7 +295,10 @@ namespace TLN.UI.Options
 
 		private void OnVolumeChanged(ChangeEvent<float> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 
 			GameSettings s = _settingsService.Settings;
 			s.MasterVolume = _masterVolume.value;
@@ -322,9 +316,15 @@ namespace TLN.UI.Options
 
 		private void OnDisplayModeChanged(ChangeEvent<string> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			int index = _displayModeLabels.IndexOf(evt.newValue);
-			if (index < 0) return;
+			if (index < 0)
+			{
+				return;
+			}
 			_settingsService.Settings.DisplayMode = index;
 			_settingsService.Apply();
 			_settingsService.Save();
@@ -332,9 +332,15 @@ namespace TLN.UI.Options
 
 		private void OnResolutionChanged(ChangeEvent<string> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			Resolution? parsed = ParseResolutionLabel(evt.newValue);
-			if (parsed == null) return;
+			if (parsed == null)
+			{
+				return;
+			}
 			Resolution res = parsed.Value;
 			_settingsService.Settings.ResolutionWidth = res.width;
 			_settingsService.Settings.ResolutionHeight = res.height;
@@ -345,9 +351,15 @@ namespace TLN.UI.Options
 
 		private void OnQualityChanged(ChangeEvent<string> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			int index = _qualityLabels.IndexOf(evt.newValue);
-			if (index < 0) return;
+			if (index < 0)
+			{
+				return;
+			}
 			_settingsService.Settings.QualityLevel = index;
 			_settingsService.Apply();
 			_settingsService.Save();
@@ -355,9 +367,15 @@ namespace TLN.UI.Options
 
 		private void OnTextureQualityChanged(ChangeEvent<string> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			int index = _qualityLabels.IndexOf(evt.newValue);
-			if (index < 0) return;
+			if (index < 0)
+			{
+				return;
+			}
 			_settingsService.Settings.TextureQuality = index;
 			_settingsService.Apply();
 			_settingsService.Save();
@@ -365,7 +383,10 @@ namespace TLN.UI.Options
 
 		private void OnFieldOfViewChanged(ChangeEvent<float> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.FieldOfView = evt.newValue;
 			UpdateWholeNumberLabel(_fieldOfViewValue, evt.newValue);
 			_settingsService.Save();
@@ -373,7 +394,10 @@ namespace TLN.UI.Options
 
 		private void OnBrightnessChanged(ChangeEvent<float> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.Brightness = evt.newValue;
 			UpdateWholePercentLabel(_brightnessValue, evt.newValue);
 			_settingsService.Save();
@@ -381,7 +405,10 @@ namespace TLN.UI.Options
 
 		private void OnVSyncChanged(ChangeEvent<bool> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.VSyncEnabled = evt.newValue;
 			_settingsService.Apply();
 			_settingsService.Save();
@@ -389,7 +416,10 @@ namespace TLN.UI.Options
 
 		private void OnSensitivityChanged(ChangeEvent<float> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.MouseSensitivity = evt.newValue;
 			UpdatePercent01Label(_mouseSensitivityValue, evt.newValue);
 			_settingsService.Save();
@@ -397,7 +427,10 @@ namespace TLN.UI.Options
 
 		private void OnLookSmoothingChanged(ChangeEvent<float> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.LookSmoothing = evt.newValue;
 			UpdatePercent01Label(_lookSmoothingValue, evt.newValue);
 			_settingsService.Save();
@@ -405,19 +438,16 @@ namespace TLN.UI.Options
 
 		private void OnInvertMouseChanged(ChangeEvent<bool> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.InvertMouseY = evt.newValue;
 			_settingsService.Save();
 		}
 
 		private void OnLanguageChanged(ChangeEvent<string> evt)
 		{
-			if (_localizationService == null)
-			{
-				SyncLanguageDropdown();
-				return;
-			}
-
 			string localeCode = SettingsMenuHelper.GetLocaleCode(evt.newValue);
 
 			if (string.IsNullOrEmpty(localeCode))
@@ -426,7 +456,7 @@ namespace TLN.UI.Options
 				return;
 			}
 
-			if (_localizationService.TrySetLocale(localeCode))
+			if (LocaleCodes.TrySetLocale(localeCode))
 			{
 				_settingsService.Settings.LocaleCode = localeCode;
 				_settingsService.Save();
@@ -441,14 +471,20 @@ namespace TLN.UI.Options
 
 		private void OnAutoWalkChanged(ChangeEvent<bool> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.AutoWalkEnabled = evt.newValue;
 			_settingsService.Save();
 		}
 
 		private void OnAutoHarvestChanged(ChangeEvent<bool> evt)
 		{
-			if (_isApplyingChange) return;
+			if (_isApplyingChange)
+			{
+				return;
+			}
 			_settingsService.Settings.AutoHarvestEnabled = evt.newValue;
 			_settingsService.Save();
 		}
@@ -461,36 +497,36 @@ namespace TLN.UI.Options
 
 		private void SyncLanguageDropdown()
 		{
-			SettingsMenuHelper.SyncLanguageDropdown(_languageDropdown, _localizationService);
+			SettingsMenuHelper.SyncLanguageDropdown(_languageDropdown);
 		}
 
 		private void RefreshLocalizedText()
 		{
-			_titleLabel.text = L(LocalizationKeys.Settings.Title);
-			_tabButtons["audio"].text = L(LocalizationKeys.Settings.TabAudio);
-			_tabButtons["graphics"].text = L(LocalizationKeys.Settings.TabGraphics);
-			_tabButtons["controls"].text = L(LocalizationKeys.Settings.TabControls);
-			_tabButtons["gameplay"].text = L(LocalizationKeys.Settings.TabGameplay);
-			_defaultsButton.text = L(LocalizationKeys.Settings.Defaults);
-			_backButton.text = L(LocalizationKeys.Settings.Back);
+			_titleLabel.text = LocalizationKeys.SettingsTitle;
+			_tabButtons["audio"].text = LocalizationKeys.SettingsTabAudio;
+			_tabButtons["graphics"].text = LocalizationKeys.SettingsTabGraphics;
+			_tabButtons["controls"].text = LocalizationKeys.SettingsTabControls;
+			_tabButtons["gameplay"].text = LocalizationKeys.SettingsTabGameplay;
+			_defaultsButton.text = LocalizationKeys.SettingsDefaults;
+			_backButton.text = LocalizationKeys.SettingsBack;
 
-			SetControlLabel(_masterVolume, LocalizationKeys.Settings.AudioMaster);
-			SetControlLabel(_sfxVolume, LocalizationKeys.Settings.AudioSfx);
-			SetControlLabel(_musicVolume, LocalizationKeys.Settings.AudioMusic);
-			SetControlLabel(_ambientVolume, LocalizationKeys.Settings.AudioAmbient);
-			SetControlLabel(_displayModeDropdown, LocalizationKeys.Settings.GraphicsDisplayMode);
-			SetControlLabel(_resolutionDropdown, LocalizationKeys.Settings.GraphicsResolution);
-			SetControlLabel(_qualityDropdown, LocalizationKeys.Settings.GraphicsQuality);
-			SetControlLabel(_textureQualityDropdown, LocalizationKeys.Settings.GraphicsTextureQuality);
-			SetControlLabel(_fieldOfView, LocalizationKeys.Settings.GraphicsFieldOfView);
-			SetControlLabel(_brightness, LocalizationKeys.Settings.GraphicsBrightness);
-			SetControlLabel(_vsyncToggle, LocalizationKeys.Settings.GraphicsVSync);
-			SetControlLabel(_mouseSensitivity, LocalizationKeys.Settings.ControlsSensitivity);
-			SetControlLabel(_lookSmoothing, LocalizationKeys.Settings.ControlsLookSmoothing);
-			SetControlLabel(_invertMouseToggle, LocalizationKeys.Settings.ControlsInvertMouse);
-			SetControlLabel(_languageDropdown, LocalizationKeys.Settings.GameplayLanguage);
-			SetControlLabel(_autoWalkToggle, LocalizationKeys.Settings.GameplayAutoWalk);
-			SetControlLabel(_autoHarvestToggle, LocalizationKeys.Settings.GameplayAutoHarvest);
+			SetControlLabel(_masterVolume, LocalizationKeys.SettingsAudioMaster);
+			SetControlLabel(_sfxVolume, LocalizationKeys.SettingsAudioSfx);
+			SetControlLabel(_musicVolume, LocalizationKeys.SettingsAudioMusic);
+			SetControlLabel(_ambientVolume, LocalizationKeys.SettingsAudioAmbient);
+			SetControlLabel(_displayModeDropdown, LocalizationKeys.SettingsGraphicsDisplayMode);
+			SetControlLabel(_resolutionDropdown, LocalizationKeys.SettingsGraphicsResolution);
+			SetControlLabel(_qualityDropdown, LocalizationKeys.SettingsGraphicsQuality);
+			SetControlLabel(_textureQualityDropdown, LocalizationKeys.SettingsGraphicsTextureQuality);
+			SetControlLabel(_fieldOfView, LocalizationKeys.SettingsGraphicsFieldOfView);
+			SetControlLabel(_brightness, LocalizationKeys.SettingsGraphicsBrightness);
+			SetControlLabel(_vsyncToggle, LocalizationKeys.SettingsGraphicsVSync);
+			SetControlLabel(_mouseSensitivity, LocalizationKeys.SettingsControlsSensitivity);
+			SetControlLabel(_lookSmoothing, LocalizationKeys.SettingsControlsLookSmoothing);
+			SetControlLabel(_invertMouseToggle, LocalizationKeys.SettingsControlsInvertMouse);
+			SetControlLabel(_languageDropdown, LocalizationKeys.SettingsGameplayLanguage);
+			SetControlLabel(_autoWalkToggle, LocalizationKeys.SettingsGameplayAutoWalk);
+			SetControlLabel(_autoHarvestToggle, LocalizationKeys.SettingsGameplayAutoHarvest);
 
 			SetDropdownChoices(_displayModeDropdown, _displayModeLabels, DisplayModeKeys);
 			SetDropdownChoices(_qualityDropdown, _qualityLabels, QualityKeys);
@@ -505,7 +541,7 @@ namespace TLN.UI.Options
 			Label label = row?.Q<Label>(className: "tln-settings-label");
 			if (label != null)
 			{
-				label.text = L(key);
+				label.text = key;
 			}
 		}
 
@@ -530,15 +566,10 @@ namespace TLN.UI.Options
 			target.Clear();
 			foreach (string key in keys)
 			{
-				target.Add(L(key));
+				target.Add(key);
 			}
 
 			dropdown.choices = target;
-		}
-
-		private string L(string key)
-		{
-			return _localizationService != null ? _localizationService.Get(key) : key;
 		}
 
 		private static void UpdateVolumeLabel(Label label, float volume)
@@ -577,8 +608,8 @@ namespace TLN.UI.Options
 				};
 			}
 
-			var seen = new HashSet<string>();
-			var unique = new List<Resolution>();
+			HashSet<string> seen = new HashSet<string>();
+			List<Resolution> unique = new List<Resolution>();
 
 			for (int i = all.Length - 1; i >= 0; i--)
 			{
@@ -600,10 +631,16 @@ namespace TLN.UI.Options
 			try
 			{
 				string[] parts = label.Split(' ');
-				if (parts.Length < 1) return null;
+				if (parts.Length < 1)
+				{
+					return null;
+				}
 
 				string[] dimensions = parts[0].Split('x');
-				if (dimensions.Length != 2) return null;
+				if (dimensions.Length != 2)
+				{
+					return null;
+				}
 
 				int width = int.Parse(dimensions[0]);
 				int height = int.Parse(dimensions[1]);

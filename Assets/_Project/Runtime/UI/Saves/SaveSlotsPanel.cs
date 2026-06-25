@@ -30,7 +30,6 @@ namespace TLN.UI.Saves
 		private readonly Button _overwriteCancelButton;
 
 		private readonly ISaveRepository _saveRepository;
-		private readonly ILocalizationService _localizationService;
 		private readonly Action<int> _newGameSelected;
 		private readonly Action<int> _loadGameSelected;
 		private readonly Action _backClicked;
@@ -41,14 +40,12 @@ namespace TLN.UI.Saves
 		public SaveSlotsPanel(
 			VisualElement root,
 			ISaveRepository saveRepository,
-			ILocalizationService localizationService,
 			Action<int> newGameSelected,
 			Action<int> loadGameSelected,
 			Action backClicked
 		)
 		{
 			_saveRepository = saveRepository;
-			_localizationService = localizationService;
 			_newGameSelected = newGameSelected;
 			_loadGameSelected = loadGameSelected;
 			_backClicked = backClicked;
@@ -93,8 +90,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.NewGame;
 
-			_titleLabel.text = _localizationService.Get(LocalizationKeys.Saves.NewGame);
-			_descriptionLabel.text = _localizationService.Get(LocalizationKeys.Saves.NewGameDescription);
+			_titleLabel.text = LocalizationKeys.NewGame;
+			_descriptionLabel.text = LocalizationKeys.NewGameDescription;
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -105,8 +102,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.LoadGame;
 
-			_titleLabel.text = _localizationService.Get(LocalizationKeys.Saves.LoadGame);
-			_descriptionLabel.text = _localizationService.Get(LocalizationKeys.Saves.LoadGameDescription);
+			_titleLabel.text = LocalizationKeys.LoadGame;
+			_descriptionLabel.text = LocalizationKeys.LoadGameDescription;
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -146,9 +143,9 @@ namespace TLN.UI.Saves
 
 		private string CreateEmptySlotText(int slotId)
 		{
-			return _localizationService.Get(LocalizationKeys.Saves.SlotFormat,
+			return string.Format(LocalizationKeys.SlotFormat,
 				slotId,
-				_localizationService.Get(LocalizationKeys.Saves.Empty));
+				LocalizationKeys.Empty);
 		}
 
 		private string CreateOccupiedSlotText(
@@ -161,14 +158,14 @@ namespace TLN.UI.Saves
 			string savedAt = CreateSavedAtText(saveData.savedAtUtc);
 
 			string reason = string.IsNullOrWhiteSpace(saveData.saveReason)
-				? _localizationService.Get(LocalizationKeys.Saves.DefaultReason)
+				? LocalizationKeys.DefaultReason
 				: saveData.saveReason;
 
 			string details = string.IsNullOrEmpty(savedAt)
-				? _localizationService.Get(LocalizationKeys.Saves.DetailsFormat, gameTime, reason)
-				: _localizationService.Get(LocalizationKeys.Saves.DetailsFormatWithDate, gameTime, reason, savedAt);
+				? string.Format(LocalizationKeys.DetailsFormat, gameTime, reason)
+				: string.Format(LocalizationKeys.DetailsFormatWithDate, gameTime, reason, savedAt);
 
-			return _localizationService.Get(LocalizationKeys.Saves.SlotFormat, slotId, details);
+			return string.Format(LocalizationKeys.SlotFormat, slotId, details);
 		}
 
 		private string CreateGameTimeText(int totalMinutes)
@@ -180,7 +177,7 @@ namespace TLN.UI.Saves
 			int hour = minutesInDay / MinutesPerHour;
 			int minute = minutesInDay % MinutesPerHour;
 
-			return _localizationService.Get(LocalizationKeys.Saves.DayTimeFormat, day, hour.ToString("00"), minute.ToString("00"));
+			return string.Format(LocalizationKeys.DayTimeFormat, day, hour.ToString("00"), minute.ToString("00"));
 		}
 
 		private static string CreateSavedAtText(string savedAtUtc)
@@ -263,7 +260,7 @@ namespace TLN.UI.Saves
 		{
 			_pendingOverwriteSlotId = slotId;
 
-			_overwriteLabel.text = _localizationService.Get(LocalizationKeys.Saves.OverwriteLabel, slotId);
+			_overwriteLabel.text = string.Format(LocalizationKeys.OverwriteLabel, slotId);
 
 			_overwriteRoot.SetVisible(true);
 		}

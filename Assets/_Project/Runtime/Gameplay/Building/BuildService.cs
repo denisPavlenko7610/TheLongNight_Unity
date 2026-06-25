@@ -12,38 +12,35 @@ namespace TLN.Gameplay.Building
 		private readonly IInventoryService _inventoryService;
 		private readonly PlacementService _placementService;
 		private readonly INotificationService _notificationService;
-		private readonly ILocalizationService _localizationService;
 
 		public BuildService(
 			IInventoryService inventoryService,
 			PlacementService placementService,
-			INotificationService notificationService,
-			ILocalizationService localizationService
+			INotificationService notificationService
 		)
 		{
 			_inventoryService = inventoryService;
 			_placementService = placementService;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
 		}
 
 		public bool CanBuild(BuildRecipeDefinition recipe, out string failureReason)
 		{
 			if (recipe == null)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Build.RecipeMissing);
+				failureReason = LocalizationKeys.RecipeMissing;
 				return false;
 			}
 
 			if (recipe.PlacedPrefab == null)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Build.PrefabMissing);
+				failureReason = LocalizationKeys.PrefabMissing;
 				return false;
 			}
 
 			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Build.NoIngredients);
+				failureReason = LocalizationKeys.NoIngredients;
 				return false;
 			}
 
@@ -53,7 +50,7 @@ namespace TLN.Gameplay.Building
 
 				if (ingredient == null || ingredient.Item == null)
 				{
-					failureReason = _localizationService.Get(LocalizationKeys.Build.InvalidIngredient);
+					failureReason = LocalizationKeys.InvalidIngredient;
 					return false;
 				}
 
@@ -61,7 +58,7 @@ namespace TLN.Gameplay.Building
 
 				if (availableAmount < ingredient.Amount)
 				{
-					failureReason = _localizationService.Get(LocalizationKeys.Build.NotEnoughItems,
+					failureReason = string.Format(LocalizationKeys.NotEnoughItems,
 						ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
 
 					return false;
@@ -82,7 +79,7 @@ namespace TLN.Gameplay.Building
 			bool wasPlaced = _placementService.TryPlace(recipe.PlacedPrefab, recipe.PlaceDistance, out GameObject placedObject);
 			if (!wasPlaced)
 			{
-				return Fail(_localizationService.Get(LocalizationKeys.Build.CannotBuildHere));
+				return Fail(LocalizationKeys.CannotBuildHere);
 			}
 
 			bool consumed = TryConsumeIngredients(recipe, out string consumeFailureReason);
@@ -93,7 +90,7 @@ namespace TLN.Gameplay.Building
 				return Fail(consumeFailureReason);
 			}
 
-			string message = _localizationService.Get(LocalizationKeys.Build.Built, recipe.DisplayName);
+			string message = string.Format(LocalizationKeys.Built, recipe.DisplayName);
 			_notificationService.Show(message);
 			return BuildResult.Success(message);
 		}
@@ -179,7 +176,7 @@ namespace TLN.Gameplay.Building
 
 			if (remainingAmount > 0)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Build.NotEnoughItem, item.DisplayName);
+				failureReason = string.Format(LocalizationKeys.NotEnoughItem, item.DisplayName);
 				return false;
 			}
 

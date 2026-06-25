@@ -1,6 +1,5 @@
 using Assign;
 using TLN.Application.GameStates;
-using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Core.Logging;
@@ -28,7 +27,6 @@ namespace TLN.Gameplay.World
 		private ISurvivalService _survivalService;
 		private IPlayerFactory _playerFactory;
 		private IGameSaveService _gameSaveService;
-		private ILocalizationService _localizationService;
 		private WildlifeTargetService _wildlifeTargetService;
 		private RandomWorldSpawnerSet _randomWorldSpawnerSet;
 
@@ -43,7 +41,6 @@ namespace TLN.Gameplay.World
 			ISurvivalService survivalService,
 			IPlayerFactory playerFactory,
 			IGameSaveService gameSaveService,
-			ILocalizationService localizationService,
 			WildlifeTargetService wildlifeTargetService,
 			RandomWorldSpawnerSet randomWorldSpawnerSet
 		)
@@ -55,7 +52,6 @@ namespace TLN.Gameplay.World
 			_survivalService = survivalService;
 			_playerFactory = playerFactory;
 			_gameSaveService = gameSaveService;
-			_localizationService = localizationService;
 			_wildlifeTargetService = wildlifeTargetService;
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
 		}
@@ -79,7 +75,7 @@ namespace TLN.Gameplay.World
 		{
 			_notificationService.SetView(_uiRoot.HUD);
 
-			_uiRoot.HUD.Construct(_survivalService, _gameTimeService, _localizationService);
+			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
 		}
 
 		private bool LoadRequestedSaveIfNeeded()

@@ -1,7 +1,7 @@
 using System;
-using TLN.Application.Localization;
 using TLN.Application.Settings;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 namespace TLN.Infrastructure.Settings
 {
@@ -9,16 +9,14 @@ namespace TLN.Infrastructure.Settings
 	{
 		private const string PrefsKey = "TLN_GameSettings_v1";
 
-		private readonly ILocalizationService _localizationService;
 		private GameSettings _originalSettings;
 
 		public GameSettings Settings { get; private set; }
 
 		public event Action SettingsChanged;
 
-		public GameSettingsService(ILocalizationService localizationService)
+		public GameSettingsService()
 		{
-			_localizationService = localizationService;
 			Settings = new GameSettings();
 			_originalSettings = DeepCopy(Settings);
 			Load();
@@ -67,7 +65,7 @@ namespace TLN.Infrastructure.Settings
 
 			if (!string.IsNullOrWhiteSpace(Settings.LocaleCode))
 			{
-				_localizationService?.TrySetLocale(Settings.LocaleCode);
+				LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(Settings.LocaleCode);
 			}
 		}
 

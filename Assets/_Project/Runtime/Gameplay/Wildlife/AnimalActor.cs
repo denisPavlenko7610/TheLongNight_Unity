@@ -39,7 +39,6 @@ namespace TLN.Gameplay.Wildlife
 		private IGameStateMachine _gameStateMachine;
 		private ISurvivalService _survivalService;
 		private INotificationService _notificationService;
-		private ILocalizationService _localizationService;
 		private WildlifeTargetService _targetService;
 
         private Vector3 _homePosition;
@@ -60,13 +59,11 @@ namespace TLN.Gameplay.Wildlife
 			IGameStateMachine gameStateMachine,
 			ISurvivalService survivalService,
 			INotificationService notificationService,
-			ILocalizationService localizationService,
 			WildlifeTargetService targetService)
 		{
 			_gameStateMachine = gameStateMachine;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
 			_targetService = targetService;
 		}
 
@@ -291,7 +288,7 @@ namespace TLN.Gameplay.Wildlife
 
             _survivalService.DamageCondition(_definition.ConditionDamage);
 
-            _notificationService?.Show(_localizationService.Get(LocalizationKeys.Survival.WolfAttack, _definition.ConditionDamage));
+            _notificationService?.Show(string.Format(LocalizationKeys.WolfAttack, _definition.ConditionDamage));
         }
 
         private void ApplyState(AnimalStateId state)

@@ -33,7 +33,7 @@ namespace TLN.Gameplay.Campfire
 
 		private ICampfireWindow _campfireWindow;
 		private IGameTimeService _gameTimeService;
-		private ILocalizationService _localizationService;
+
 		private int _lastKnownTotalMinutes;
 		private int _remainingBurnMinutes;
 		private IWarmthService _warmthService;
@@ -56,12 +56,12 @@ namespace TLN.Gameplay.Campfire
 		public event Action BurnedOut;
 
 		[Inject]
-		public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService, ILocalizationService localizationService)
+		public void Construct(ICampfireWindow campfireWindow, IGameTimeService gameTimeService, IWarmthService warmthService)
 		{
 			_campfireWindow = campfireWindow;
 			_gameTimeService = gameTimeService;
 			_warmthService = warmthService;
-			_localizationService = localizationService;
+
 
 			_warmthService?.Register(this);
 
@@ -121,25 +121,25 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (fuelDefinition == null)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.FuelMissing);
+				failureReason = LocalizationKeys.FuelMissing;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.FuelAmountZero);
+				failureReason = LocalizationKeys.FuelAmountZero;
 				return false;
 			}
 
 			if (fuelDefinition.BurnMinutes <= 0)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.CannotBurn);
+				failureReason = LocalizationKeys.CannotBurn;
 				return false;
 			}
 
 			if (_remainingBurnMinutes >= _maxBurnMinutes)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.Full);
+				failureReason = LocalizationKeys.Full;
 				return false;
 			}
 
@@ -177,13 +177,13 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (IsBurning)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.AlreadyBurning);
+				failureReason = LocalizationKeys.AlreadyBurning;
 				return false;
 			}
 
 			if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.NotEnoughFuel);
+				failureReason = LocalizationKeys.NotEnoughFuel;
 				return false;
 			}
 
@@ -197,7 +197,7 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (!IsBurning)
 			{
-				failureReason = _localizationService.Get(LocalizationKeys.Campfire.NotBurning);
+				failureReason = LocalizationKeys.NotBurning;
 				return false;
 			}
 

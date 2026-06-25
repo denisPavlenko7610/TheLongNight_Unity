@@ -11,7 +11,7 @@ namespace TLN.Gameplay.Sleep
 		private readonly SleepConfig _config;
 		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
-		private readonly ILocalizationService _localizationService;
+
 		private readonly IGameTimeService _gameTimeService;
 		private readonly IGameSaveService _gameSaveService;
 
@@ -19,7 +19,7 @@ namespace TLN.Gameplay.Sleep
 			SleepConfig config,
 			ISurvivalService survivalService,
 			INotificationService notificationService,
-			ILocalizationService localizationService,
+
 			IGameTimeService gameTimeService,
 			IGameSaveService gameSaveService
 		)
@@ -27,7 +27,7 @@ namespace TLN.Gameplay.Sleep
 			_config = config;
 			_survivalService = survivalService;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
+
 			_gameTimeService = gameTimeService;
 			_gameSaveService = gameSaveService;
 		}
@@ -36,18 +36,18 @@ namespace TLN.Gameplay.Sleep
 		{
 			if (hours < _config.MinSleepHours)
 			{
-				return SleepResult.Failure(_localizationService.Get(LocalizationKeys.Sleep.MinHours, _config.MinSleepHours));
+				return SleepResult.Failure(string.Format(LocalizationKeys.MinHours, _config.MinSleepHours));
 			}
 
 			if (hours > _config.MaxSleepHours)
 			{
-				return SleepResult.Failure(_localizationService.Get(LocalizationKeys.Sleep.MaxHours, _config.MaxSleepHours));
+				return SleepResult.Failure(string.Format(LocalizationKeys.MaxHours, _config.MaxSleepHours));
 			}
 
 			ApplySleepEffects(hours);
 			_gameTimeService.AdvanceHours(hours);
 
-			string message = _localizationService.Get(LocalizationKeys.Sleep.Result, hours);
+			string message = string.Format(LocalizationKeys.Result, hours);
 			_notificationService.Show(message);
 
 			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);

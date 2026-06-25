@@ -25,7 +25,6 @@ namespace TLN.UI.Building
 		private IBuildService _buildService;
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
-		private ILocalizationService _localizationService;
 
 		private bool _isVisible;
 
@@ -34,15 +33,13 @@ namespace TLN.UI.Building
 			BuildRecipeCatalog recipeCatalog,
 			IBuildService buildService,
 			IInputModeService inputModeService,
-			INotificationService notificationService,
-			ILocalizationService localizationService
+			INotificationService notificationService
 		)
 		{
 			_recipeCatalog = recipeCatalog;
 			_buildService = buildService;
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
-			_localizationService = localizationService;
 
 			Hide();
 		}
@@ -110,7 +107,7 @@ namespace TLN.UI.Building
 
 			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Build.RecipesMissing));
+				_notificationService?.Show(LocalizationKeys.BuildRecipesMissing);
 				return;
 			}
 
@@ -137,7 +134,7 @@ namespace TLN.UI.Building
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Build.ServiceMissing));
+				_notificationService?.Show(LocalizationKeys.BuildServiceMissing);
 				return;
 			}
 

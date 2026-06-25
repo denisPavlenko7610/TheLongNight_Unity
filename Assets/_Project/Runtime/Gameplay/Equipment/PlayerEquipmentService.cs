@@ -10,16 +10,13 @@ namespace TLN.Gameplay.Equipment
 		private const int DefaultSlotCapacity = 2;
 
 		private readonly List<ClothingItemDefinition> _equippedItems = new();
-		private readonly ILocalizationService _localizationService;
-
 		public IReadOnlyList<ClothingItemDefinition> EquippedItems => _equippedItems;
 		public float WarmthBonus { get; private set; }
 
 		public event Action Changed;
 
-		public PlayerEquipmentService(ILocalizationService localizationService)
+		public PlayerEquipmentService()
 		{
-			_localizationService = localizationService;
 		}
 
 		public bool IsEquipped(ClothingItemDefinition item)
@@ -58,12 +55,12 @@ namespace TLN.Gameplay.Equipment
 		{
 			if (item == null)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.ItemMissing));
+				return OperationResult.Failure(LocalizationKeys.EquipmentItemMissing);
 			}
 
 			if (item.Slot == ClothingSlotId.None)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.SlotMissing));
+				return OperationResult.Failure(LocalizationKeys.EquipmentSlotMissing);
 			}
 
 			if (IsEquipped(item))
@@ -72,7 +69,7 @@ namespace TLN.Gameplay.Equipment
 				RecalculateWarmthBonus();
 				Changed?.Invoke();
 
-				return OperationResult.Success(_localizationService.Get(LocalizationKeys.Equipment.Unequipped, item.DisplayName));
+				return OperationResult.Success(string.Format(LocalizationKeys.Unequipped, item.DisplayName));
 			}
 
 			int equippedCount = GetEquippedCount(item.Slot);
@@ -80,14 +77,14 @@ namespace TLN.Gameplay.Equipment
 
 			if (equippedCount >= slotCapacity)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.NoFreeSlot, item.Slot));
+				return OperationResult.Failure(string.Format(LocalizationKeys.NoFreeSlot, item.Slot));
 			}
 
 			_equippedItems.Add(item);
 			RecalculateWarmthBonus();
 			Changed?.Invoke();
 
-			return OperationResult.Success(_localizationService.Get(LocalizationKeys.Equipment.Equipped, item.DisplayName));
+			return OperationResult.Success(string.Format(LocalizationKeys.Equipped, item.DisplayName));
 		}
 
 		private void RecalculateWarmthBonus()

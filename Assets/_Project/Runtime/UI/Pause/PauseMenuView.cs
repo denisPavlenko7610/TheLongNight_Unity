@@ -1,5 +1,4 @@
 ﻿using TLN.Application.GameStates;
-using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Application.Settings;
@@ -31,7 +30,6 @@ namespace TLN.UI.Pause
 
 		private IGameStateMachine _gameStateMachine;
 		private ISceneLoader _sceneLoader;
-		private ILocalizationService _localizationService;
 		private IGameSaveService _gameSaveService;
 		private ISaveRepository _saveRepository;
 		private SaveSessionService _saveSessionService;
@@ -45,7 +43,6 @@ namespace TLN.UI.Pause
 		public void Construct(
 			IGameStateMachine gameStateMachine,
 			ISceneLoader sceneLoader,
-			ILocalizationService localizationService,
 			IGameSaveService gameSaveService,
 			ISaveRepository saveRepository,
 			SaveSessionService saveSessionService,
@@ -59,7 +56,6 @@ namespace TLN.UI.Pause
 			_gameSaveService = gameSaveService;
 			_saveRepository = saveRepository;
 			_saveSessionService = saveSessionService;
-			_localizationService = localizationService;
 			_settingsService = settingsService;
 
 			EnsureInitialized();
@@ -299,15 +295,14 @@ namespace TLN.UI.Pause
 
 		private void InitializeSaveSlotsPanel()
 		{
-			if (_root == null || _saveSlotsPanel != null || _saveRepository == null || _localizationService == null)
+			if (_root == null || _saveSlotsPanel != null || _saveRepository == null)
 			{
 				return;
 			}
 
-			_saveSlotsPanel = new SaveSlotsPanel(
+		_saveSlotsPanel = new SaveSlotsPanel(
 				_root,
 				_saveRepository,
-				_localizationService,
 				null,
 				OnLoadGameSlotSelected,
 				ShowNavigationPanel
@@ -324,7 +319,6 @@ namespace TLN.UI.Pause
 			_optionsView = new OptionsView(
 				_settingsPanel,
 				_settingsService,
-				_localizationService,
 				ShowNavigationPanel
 			);
 		}

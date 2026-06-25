@@ -17,7 +17,6 @@ namespace TLN.UI.Inventory
 		private readonly Label _metaLabel;
 		private readonly Button _useButton;
 		private readonly IAddressableAssetService _addressableAssetService;
-		private readonly ILocalizationService _localizationService;
 
 		private int _itemIndex;
 		private int _iconRequestVersion;
@@ -26,11 +25,10 @@ namespace TLN.UI.Inventory
 
 		public VisualElement Root => _root;
 
-		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService, ILocalizationService localizationService)
+		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
 		{
 			_root = root;
 			_addressableAssetService = addressableAssetService;
-			_localizationService = localizationService;
 
 			_icon = root.RequiredQ<VisualElement>("item-icon");
 			_nameLabel = root.RequiredQ<Label>("item-name-label");
@@ -63,14 +61,14 @@ namespace TLN.UI.Inventory
 
 		private string CreateMetaText(ItemStack stack)
 		{
-			string weightText = _localizationService.Get(LocalizationKeys.Inventory.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
+			string weightText = string.Format(LocalizationKeys.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
 
 			if (stack.Definition is ClothingItemDefinition clothing)
 			{
-				return _localizationService.Get(LocalizationKeys.Inventory.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
+				return string.Format(LocalizationKeys.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
 			}
 
-			return _localizationService.Get(LocalizationKeys.Inventory.MetaDefault, stack.Amount, weightText);
+			return string.Format(LocalizationKeys.MetaDefault, stack.Amount, weightText);
 		}
 
 		private void SetIcon(ItemDefinition definition)
