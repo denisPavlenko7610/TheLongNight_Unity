@@ -12,11 +12,7 @@ namespace TLN.Editor.Validation
 	public static class LocalizationKeysValidator
 	{
 		private const bool BlockPlayModeOnError = true;
-
-		private static readonly KeyTableBinding[] Bindings =
-		{
-			new(LocalizationTableNames.UI, typeof(LocalizationKeys))
-		};
+		private const string MenuPath = "Tools/TLN/Validation/Localization Keys";
 
 		static LocalizationKeysValidator()
 		{
@@ -24,7 +20,7 @@ namespace TLN.Editor.Validation
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		}
 
-		[MenuItem("Tools/TLN/Validate Localization Keys")]
+		[MenuItem(MenuPath)]
 		public static void ValidateFromMenu()
 		{
 			int errorCount = ValidateAll();
@@ -63,52 +59,74 @@ namespace TLN.Editor.Validation
 		private static int ValidateAll()
 		{
 			int errorCount = 0;
+			Dictionary<string, List<LocalizationKey>> keysByTable = new();
 
-			foreach (KeyTableBinding binding in Bindings)
-			{
-				errorCount += ValidateBinding(binding);
-			}
-
-			return errorCount;
-		}
-
-		private static int ValidateBinding(KeyTableBinding binding)
-		{
-			int errorCount = 0;
-			StringTableCollection collection = LocalizationEditorSettings.GetStringTableCollection(binding.TableName);
-
-			if (collection == null)
-			{
-				TLNLogger.LogError($"[Localization] Missing String Table Collection: {binding.TableName}");
-				return 1;
-			}
-
-			if (collection.SharedData == null)
-			{
-				TLNLogger.LogError($"[Localization] String Table Collection has no shared data: {binding.TableName}", collection);
-				return 1;
-			}
-
-			foreach (LocalizationKey key in CollectKeys(binding.KeysType))
+			foreach (LocalizationKey key in CollectKeys(typeof(LocalizationKeys)))
 			{
 				if (string.IsNullOrWhiteSpace(key.Value))
 				{
 					TLNLogger.LogError(
 						$"[Localization] Empty localization key.\n" +
-						$"Table: {binding.TableName}\n" +
-						$"Field: {key.FieldPath}",
-						collection
+						$"Field: {key.FieldPath}"
 					);
 
 					errorCount++;
 					continue;
 				}
 
+				if (string.IsNullOrWhiteSpace(key.TableName))
+				{
+					TLNLogger.LogError(
+						$"[Localization] Localization key has no table mapping.\n" +
+						$"Field: {key.FieldPath}\n" +
+						$"Key: {key.Value}"
+					);
+
+					errorCount++;
+					continue;
+				}
+
+				if (!keysByTable.TryGetValue(key.TableName, out List<LocalizationKey> keys))
+				{
+					keys = new List<LocalizationKey>();
+					keysByTable.Add(key.TableName, keys);
+				}
+
+				keys.Add(key);
+			}
+
+			foreach (KeyValuePair<string, List<LocalizationKey>> entry in keysByTable)
+			{
+				errorCount += ValidateBinding(entry.Key, entry.Value);
+			}
+
+			return errorCount;
+		}
+
+		private static int ValidateBinding(string tableName, IEnumerable<LocalizationKey> keys)
+		{
+			int errorCount = 0;
+			StringTableCollection collection = LocalizationEditorSettings.GetStringTableCollection(tableName);
+
+			if (collection == null)
+			{
+				TLNLogger.LogError($"[Localization] Missing String Table Collection: {tableName}");
+				return 1;
+			}
+
+			if (collection.SharedData == null)
+			{
+				TLNLogger.LogError($"[Localization] String Table Collection has no shared data: {tableName}", collection);
+				return 1;
+			}
+
+			foreach (LocalizationKey key in keys)
+			{
 				if (collection.SharedData.GetEntry(key.Value) == null)
 				{
 					TLNLogger.LogError(
 						$"[Localization] Missing shared localization key.\n" +
-						$"Table: {binding.TableName}\n" +
+						$"Table: {tableName}\n" +
 						$"Field: {key.FieldPath}\n" +
 						$"Key: {key.Value}",
 						collection
@@ -127,7 +145,7 @@ namespace TLN.Editor.Validation
 
 					TLNLogger.LogError(
 						$"[Localization] Missing localized table entry.\n" +
-						$"Table: {binding.TableName}\n" +
+						$"Table: {tableName}\n" +
 						$"Locale: {table.LocaleIdentifier.Code}\n" +
 						$"Field: {key.FieldPath}\n" +
 						$"Key: {key.Value}",
@@ -154,7 +172,18 @@ namespace TLN.Editor.Validation
 					continue;
 				}
 
-				yield return new LocalizationKey(GetFieldPath(field), (string)field.GetRawConstantValue());
+				string value = (string)field.GetRawConstantValue();
+				string tableName;
+				try
+				{
+					tableName = LocalizationKeyRegistry.GetTableName(value);
+				}
+				catch (ArgumentException)
+				{
+					tableName = string.Empty;
+				}
+
+				yield return new LocalizationKey(GetFieldPath(field), value, tableName);
 			}
 
 			Type[] nestedTypes = type.GetNestedTypes(BindingFlags.Public);
@@ -186,30 +215,20 @@ namespace TLN.Editor.Validation
 			return typeName.Replace('+', '.');
 		}
 
-		private readonly struct KeyTableBinding
-		{
-			public KeyTableBinding(string tableName, Type keysType)
-			{
-				TableName = tableName;
-				KeysType = keysType;
-			}
-
-			public string TableName { get; }
-
-			public Type KeysType { get; }
-		}
-
 		private readonly struct LocalizationKey
 		{
-			public LocalizationKey(string fieldPath, string value)
+			public LocalizationKey(string fieldPath, string value, string tableName)
 			{
 				FieldPath = fieldPath;
 				Value = value;
+				TableName = tableName;
 			}
 
 			public string FieldPath { get; }
 
 			public string Value { get; }
+
+			public string TableName { get; }
 		}
 	}
 }

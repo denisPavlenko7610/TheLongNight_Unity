@@ -1,4 +1,4 @@
-﻿.campfire-window-root {
+.campfire-window-root {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -11,42 +11,157 @@
 }
 
 .campfire-window {
-    width: 420px;
-    background-color: rgba(7, 12, 16, 0.92);
+    width: 430px;
+    padding: 22px 24px 20px 24px;
+    background-color: rgba(5, 9, 10, 0.92);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 174, 91, 0.68);
+    border-right-color: rgba(222, 232, 228, 0.12);
+    border-top-color: rgba(222, 232, 228, 0.12);
+    border-bottom-color: rgba(222, 232, 228, 0.12);
+}
+
+.campfire-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(222, 232, 228, 0.12);
+}
+
+.campfire-mark {
+    width: 34px;
+    height: 34px;
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(180, 91, 38, 0.2);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(235, 178, 94, 0.55);
+    border-right-color: rgba(235, 178, 94, 0.24);
+    border-top-color: rgba(235, 178, 94, 0.24);
+    border-bottom-color: rgba(235, 178, 94, 0.24);
+}
+
+.campfire-mark-core {
+    width: 12px;
+    height: 20px;
+    background-color: rgba(237, 176, 85, 0.86);
     border-radius: 6px;
-    padding: 18px;
 }
 
 .campfire-title {
-    color: rgb(225, 236, 240);
-    font-size: 24px;
+    color: rgb(241, 246, 244);
+    font-size: 23px;
     unity-font-style: bold;
-    unity-text-align: middle-center;
+    letter-spacing: 1px;
+    unity-text-align: middle-left;
+    -unity-text-outline-width: 0;
+}
+
+.campfire-status-panel {
+    padding: 14px 14px 12px 14px;
     margin-bottom: 14px;
+    background-color: rgba(255, 255, 255, 0.035);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(222, 232, 228, 0.16);
+    border-right-color: rgba(222, 232, 228, 0.08);
+    border-top-color: rgba(222, 232, 228, 0.08);
+    border-bottom-color: rgba(222, 232, 228, 0.08);
 }
 
 .campfire-label {
-    color: rgba(225, 236, 240, 0.78);
+    color: rgba(232, 238, 235, 0.78);
     font-size: 15px;
-    margin-bottom: 8px;
+    letter-spacing: 0;
+    margin-bottom: 7px;
+    -unity-text-outline-width: 0;
+}
+
+.campfire-state-label {
+    color: rgb(245, 239, 223);
+    unity-font-style: bold;
+}
+
+.campfire-fuel-meter {
+    height: 5px;
+    margin-top: 5px;
+    background-color: rgba(0, 0, 0, 0.34);
+}
+
+.campfire-fuel-meter-fill {
+    width: 0%;
+    height: 5px;
+    background-color: rgba(226, 154, 64, 0.82);
+}
+
+.campfire-actions {
+    margin-top: 2px;
 }
 
 .campfire-button {
-    height: 40px;
-    margin-top: 8px;
-    color: rgb(225, 236, 240);
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
+    height: 42px;
+    margin-top: 7px;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: rgba(238, 242, 238, 0.88);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(222, 232, 228, 0.2);
+    border-right-color: rgba(222, 232, 228, 0.1);
+    border-top-color: rgba(222, 232, 228, 0.1);
+    border-bottom-color: rgba(222, 232, 228, 0.1);
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 0;
+    -unity-text-outline-width: 0;
+}
+
+.campfire-button-primary {
+    background-color: rgba(151, 84, 34, 0.28);
+    border-left-color: rgba(226, 154, 64, 0.58);
+    border-right-color: rgba(226, 154, 64, 0.22);
+    border-top-color: rgba(226, 154, 64, 0.22);
+    border-bottom-color: rgba(226, 154, 64, 0.22);
 }
 
 .campfire-button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.09);
+    border-left-color: rgba(255, 255, 255, 0.32);
 }
 
 .campfire-close-button {
-    height: 38px;
-    margin-top: 14px;
-    color: rgba(225, 236, 240, 0.8);
-    background-color: rgba(255, 255, 255, 0.045);
-    border-radius: 4px;
+    height: 36px;
+    margin-top: 16px;
+    color: rgba(226, 234, 232, 0.68);
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 1px;
+    border-right-width: 0;
+    border-top-width: 1px;
+    border-bottom-width: 0;
+    border-left-color: rgba(222, 232, 228, 0.16);
+    border-top-color: rgba(222, 232, 228, 0.08);
+    font-size: 14px;
+    letter-spacing: 0;
+    -unity-text-outline-width: 0;
+}
+
+.campfire-close-button:hover {
+    color: rgb(246, 250, 248);
+    background-color: rgba(255, 255, 255, 0.06);
+    border-left-color: rgba(255, 255, 255, 0.24);
 }

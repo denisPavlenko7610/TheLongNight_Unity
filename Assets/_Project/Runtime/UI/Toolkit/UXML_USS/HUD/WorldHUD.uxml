@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/HUD/WorldHUD.uss?fileID=7433441132597879392&amp;guid=e99ee6a6c75b4116846795f9b3ba3013&amp;type=3#WorldHUD"/>
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="WorldHUD.uss"/>
     <ui:VisualElement name="world-hud-root" class="world-hud-root">
         <ui:VisualElement name="time-overlay" class="time-overlay">
             <ui:VisualElement class="time-arc-panel">

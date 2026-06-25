@@ -4,69 +4,119 @@
     top: 50%;
     translate: -50% -50%;
     display: none;
-    opacity: 0;
 }
 
 .sleep-window-root-visible {
     display: flex;
-    opacity: 1;
 }
 
 .sleep-window {
     width: 420px;
-    background-color: rgba(7, 12, 16, 0.9);
-    border-radius: 6px;
-    padding: 18px;
+    background-color: rgba(4, 9, 12, 0.9);
+    padding: 20px;
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.42);
+    border-right-color: rgba(226, 242, 244, 0.08);
+    border-top-color: rgba(226, 242, 244, 0.08);
+    border-bottom-color: rgba(226, 242, 244, 0.08);
 }
 
 .sleep-title {
-    color: rgb(225, 236, 240);
+    color: rgb(238, 244, 246);
     font-size: 24px;
     unity-font-style: bold;
+    letter-spacing: 3px;
     unity-text-align: middle-center;
     margin-bottom: 8px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
 }
 
 .sleep-description {
-    color: rgba(225, 236, 240, 0.68);
+    color: rgba(225, 236, 240, 0.62);
     font-size: 14px;
+    letter-spacing: 1px;
     unity-text-align: middle-center;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(226, 242, 244, 0.08);
 }
 
 .sleep-button-row {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .sleep-button {
-    width: 185px;
+    flex-grow: 1;
     height: 42px;
-    color: rgb(225, 236, 240);
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
+    color: rgba(230, 240, 242, 0.85);
+    background-color: rgba(255, 255, 255, 0.045);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.18);
+    border-right-color: rgba(226, 242, 244, 0.1);
+    border-top-color: rgba(226, 242, 244, 0.1);
+    border-bottom-color: rgba(226, 242, 244, 0.1);
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 2px;
 }
 
 .sleep-button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.28);
 }
 
 .sleep-cancel-button {
     height: 38px;
-    margin-top: 8px;
-    color: rgba(225, 236, 240, 0.8);
-    background-color: rgba(255, 255, 255, 0.045);
+    margin-top: 10px;
+    color: rgba(225, 236, 240, 0.7);
+    background-color: rgba(255, 255, 255, 0.035);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.12);
+    border-right-color: rgba(226, 242, 244, 0.06);
+    border-top-color: rgba(226, 242, 244, 0.06);
+    border-bottom-color: rgba(226, 242, 244, 0.06);
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.sleep-cancel-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.2);
 }
 
 .sleep-pick-up-button {
     height: 38px;
     margin-top: 8px;
-    color: rgb(225, 236, 240);
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
+    color: rgba(230, 240, 242, 0.85);
+    background-color: rgba(255, 255, 255, 0.045);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.18);
+    border-right-color: rgba(226, 242, 244, 0.1);
+    border-top-color: rgba(226, 242, 244, 0.1);
+    border-bottom-color: rgba(226, 242, 244, 0.1);
+    font-size: 14px;
+    letter-spacing: 2px;
 }
 
 .sleep-pick-up-button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.28);
 }

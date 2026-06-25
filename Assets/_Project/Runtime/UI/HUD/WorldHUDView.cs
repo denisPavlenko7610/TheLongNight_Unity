@@ -1,4 +1,4 @@
-﻿using TLN.Application.Localization;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Player.Input;
@@ -182,8 +182,8 @@ namespace TLN.UI.HUD
 
 			GameTime time = _gameTimeService.CurrentTime;
 
-			SetLabel(_timeDayLabel, _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.HUD.Day, time.Day));
-			SetLabel(_timePeriodLabel, _localizationService.Get(LocalizationTableNames.UI, GetTimePeriodKey(time.Hour)));
+			SetLabel(_timeDayLabel, _localizationService.Get(LocalizationKeys.HUD.Day, time.Day));
+			SetLabel(_timePeriodLabel, _localizationService.Get(GetTimePeriodKey(time.Hour)));
 
 			bool isDay = IsDayTime(time.Hour);
 
@@ -311,7 +311,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_interactionPromptLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.HUD.InteractionPrompt, text);
+			_interactionPromptLabel.text = _localizationService.Get(LocalizationKeys.HUD.InteractionPrompt, text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
 

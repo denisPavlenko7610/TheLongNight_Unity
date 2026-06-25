@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TLN.Application.Assets;
 using TLN.Application.Input;
 using TLN.Application.Localization;
@@ -182,7 +182,7 @@ namespace TLN.UI.SurvivalMenu
 				return $"[{key}]";
 			}
 
-			return _localizationService.Get(LocalizationTableNames.UI, key, arguments);
+			return _localizationService.Get(key, arguments);
 		}
 
 		void IInventoryWindow.Toggle()

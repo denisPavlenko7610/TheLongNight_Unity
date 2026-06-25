@@ -3,6 +3,7 @@
     <Style src="../Common/TLNMenu.uss"/>
     <Style src="../Common/TLNSettings.uss"/>
     <Style src="../Common/TLNSaveSlots.uss"/>
+    <Style src="../Options/OptionsPanel.uss"/>
     <Style src="MainMenu.uss"/>
     <ui:VisualElement name="main-menu-root" class="main-menu-root">
         <ui:VisualElement class="main-menu-background"/>
@@ -68,35 +69,136 @@
                     </Bindings>
                 </ui:Button>
             </ui:VisualElement>
-            <ui:VisualElement name="main-menu-settings-panel" class="main-menu-settings-panel tln-settings-panel">
-                <ui:Label name="settings-title-label" text="OPTIONS"
-                          class="main-menu-settings-title tln-settings-title">
-                    <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
-                                                                  entry="Id(16837533368320)"/>
-                    </Bindings>
-                </ui:Label>
-                <ui:VisualElement class="main-menu-setting-block tln-settings-block">
-                    <ui:Label name="settings-language-label" text="LANGUAGE"
-                              class="main-menu-setting-label tln-settings-label">
-                        <Bindings>
-                            <UnityEngine.Localization.LocalizedString property="text"
-                                                                      table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
-                                                                      entry="Id(16904361213952)"/>
-                        </Bindings>
-                    </ui:Label>
-                    <ui:DropdownField name="language-dropdown"
-                                      class="main-menu-language-dropdown tln-settings-dropdown"/>
+            <ui:VisualElement name="main-menu-settings-panel" class="main-menu-settings-panel tln-settings-panel options-panel">
+                <ui:Label name="options-title" text="OPTIONS" class="options-title"/>
+
+                <ui:VisualElement class="options-body">
+                    <ui:VisualElement name="options-tab-bar" class="options-tab-bar">
+                        <ui:Button name="options-tab-audio" text="AUDIO" class="options-tab-btn"/>
+                        <ui:Button name="options-tab-graphics" text="GRAPHICS" class="options-tab-btn"/>
+                        <ui:Button name="options-tab-controls" text="CONTROLS" class="options-tab-btn"/>
+                        <ui:Button name="options-tab-gameplay" text="GAMEPLAY" class="options-tab-btn"/>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="options-content-area" class="options-content-area">
+                        <ui:VisualElement name="options-audio-content" class="options-tab-content">
+                            <ui:VisualElement class="options-setting-group">
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="MASTER VOLUME" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-master-volume" class="options-slider"/>
+                                        <ui:Label name="options-master-volume-value" text="100%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="SFX VOLUME" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-sfx-volume" class="options-slider"/>
+                                        <ui:Label name="options-sfx-volume-value" text="100%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="MUSIC VOLUME" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-music-volume" class="options-slider"/>
+                                        <ui:Label name="options-music-volume-value" text="100%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="AMBIENT VOLUME" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-ambient-volume" class="options-slider"/>
+                                        <ui:Label name="options-ambient-volume-value" text="100%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement name="options-graphics-content" class="options-tab-content">
+                            <ui:VisualElement class="options-setting-group">
+                                <ui:VisualElement class="options-dropdown-row">
+                                    <ui:Label text="DISPLAY MODE" class="tln-settings-label"/>
+                                    <ui:DropdownField name="options-display-mode" class="tln-settings-dropdown"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-dropdown-row">
+                                    <ui:Label text="RESOLUTION" class="tln-settings-label"/>
+                                    <ui:DropdownField name="options-resolution" class="tln-settings-dropdown"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-dropdown-row">
+                                    <ui:Label text="QUALITY" class="tln-settings-label"/>
+                                    <ui:DropdownField name="options-quality" class="tln-settings-dropdown"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-dropdown-row">
+                                    <ui:Label text="TEXTURE QUALITY" class="tln-settings-label"/>
+                                    <ui:DropdownField name="options-texture-quality" class="tln-settings-dropdown"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="FIELD OF VIEW" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-fov" class="options-slider" low-value="60" high-value="110" value="75"/>
+                                        <ui:Label name="options-fov-value" text="75" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="BRIGHTNESS" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-brightness" class="options-slider" low-value="0" high-value="100" value="50"/>
+                                        <ui:Label name="options-brightness-value" text="50%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-toggle-row">
+                                    <ui:Label text="V-SYNC" class="tln-settings-label"/>
+                                    <ui:Toggle name="options-vsync" class="options-toggle"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement name="options-controls-content" class="options-tab-content">
+                            <ui:VisualElement class="options-setting-group">
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="MOUSE SENSITIVITY" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-mouse-sensitivity" class="options-slider"/>
+                                        <ui:Label name="options-mouse-sensitivity-value" text="50%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-slider-row">
+                                    <ui:Label text="LOOK SMOOTHING" class="tln-settings-label"/>
+                                    <ui:VisualElement class="options-slider-container">
+                                        <ui:Slider name="options-look-smoothing" class="options-slider" low-value="0" high-value="100" value="30"/>
+                                        <ui:Label name="options-look-smoothing-value" text="30%" class="options-slider-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-toggle-row">
+                                    <ui:Label text="INVERT MOUSE Y" class="tln-settings-label"/>
+                                    <ui:Toggle name="options-invert-mouse" class="options-toggle"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement name="options-gameplay-content" class="options-tab-content">
+                            <ui:VisualElement class="options-setting-group">
+                                <ui:VisualElement class="options-dropdown-row">
+                                    <ui:Label text="LANGUAGE" class="tln-settings-label"/>
+                                    <ui:DropdownField name="options-language-dropdown" class="tln-settings-dropdown"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-toggle-row">
+                                    <ui:Label text="AUTO-WALK" class="tln-settings-label"/>
+                                    <ui:Toggle name="options-auto-walk" class="options-toggle"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="options-toggle-row">
+                                    <ui:Label text="AUTO-HARVEST" class="tln-settings-label"/>
+                                    <ui:Toggle name="options-auto-harvest" class="options-toggle"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Button name="settings-back-button" text="BACK"
-                           class="main-menu-button tln-menu-button tln-settings-back-button">
-                    <Bindings>
-                        <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
-                                                                  entry="Id(2449644584960)"/>
-                    </Bindings>
-                </ui:Button>
+
+                <ui:VisualElement class="options-bottom">
+                    <ui:Button name="options-defaults-button" text="DEFAULTS" class="tln-menu-button"/>
+                    <ui:Button name="options-back-button" text="BACK" class="tln-menu-button tln-settings-back-button"/>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

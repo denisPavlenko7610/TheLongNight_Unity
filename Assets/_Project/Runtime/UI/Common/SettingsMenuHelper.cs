@@ -8,8 +8,8 @@ namespace TLN.UI.Common
 	public static class SettingsMenuHelper
 	{
 		public const string EnglishLanguageName = "English";
-		public const string UkrainianLanguageName = "Українська";
-		public const string RussianLanguageName = "Русский";
+		public const string UkrainianLanguageName = "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430";
+		public const string RussianLanguageName = "\u0420\u0443\u0441\u0441\u043a\u0438\u0439";
 
 		public static readonly List<string> SupportedLanguages = new()
 		{

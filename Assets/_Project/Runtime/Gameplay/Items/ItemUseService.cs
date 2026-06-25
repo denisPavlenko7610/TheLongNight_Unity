@@ -1,4 +1,4 @@
-﻿using TLN.Application.Assets;
+using TLN.Application.Assets;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Results;
@@ -59,7 +59,7 @@ namespace TLN.Gameplay.Items
 
 		private ItemUseResult Fail(string key, params object[] arguments)
 		{
-			string message = _localizationService.Get(LocalizationTableNames.Gameplay, key, arguments);
+			string message = _localizationService.Get(key, arguments);
 			_notificationService.Show(message);
 			return ItemUseResult.Failure(message);
 		}
@@ -68,7 +68,7 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not ConsumableItemDefinition consumable)
 			{
-				return ItemUseResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.CannotConsume));
+				return ItemUseResult.Failure(_localizationService.Get(LocalizationKeys.Items.CannotConsume));
 			}
 
 			bool wasRemoved = _inventoryService.TryRemoveItemAt(index, 1, out string removeFailureReason);
@@ -80,7 +80,7 @@ namespace TLN.Gameplay.Items
 
 			_survivalService.ApplyConsumable(consumable);
 
-			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Used, consumable.DisplayName);
+			string message = _localizationService.Get(LocalizationKeys.Items.Used, consumable.DisplayName);
 			_notificationService.Show(message);
 
 			return ItemUseResult.Success(message);
@@ -110,7 +110,7 @@ namespace TLN.Gameplay.Items
 				}
 			);
 
-			return ItemUseResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Placing, placeable.DisplayName));
+			return ItemUseResult.Success(_localizationService.Get(LocalizationKeys.Items.Placing, placeable.DisplayName));
 		}
 
 		private void OnPlaceablePrefabLoaded(PlaceableItemDefinition placeable, GameObject prefab)
@@ -137,11 +137,11 @@ namespace TLN.Gameplay.Items
 			if (!wasRemoved)
 			{
 				Object.Destroy(placedObject);
-				Fail(removeFailureReason);
+				_notificationService.Show(removeFailureReason);
 				return;
 			}
 
-			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.Placed, placeable.DisplayName);
+			string message = _localizationService.Get(LocalizationKeys.Items.Placed, placeable.DisplayName);
 			_notificationService.Show(message);
 		}
 

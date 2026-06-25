@@ -5,12 +5,14 @@ using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
+using TLN.Application.Settings;
 using TLN.Application.Time;
 using TLN.Infrastructure.Assets;
 using TLN.Infrastructure.Input;
 using TLN.Infrastructure.Localization;
 using TLN.Infrastructure.Saves;
 using TLN.Infrastructure.Scenes;
+using TLN.Infrastructure.Settings;
 using TLN.Infrastructure.Time;
 using VContainer;
 using VContainer.Unity;
@@ -41,6 +43,7 @@ namespace TLN.Bootstrap
 
 			builder.Register<SaveSessionService>(Lifetime.Singleton);
 			builder.Register<JsonSaveRepository>(Lifetime.Singleton).As<ISaveRepository>();
+			builder.Register<GameSettingsService>(Lifetime.Singleton).As<IGameSettingsService>();
 		}
 	}
 }

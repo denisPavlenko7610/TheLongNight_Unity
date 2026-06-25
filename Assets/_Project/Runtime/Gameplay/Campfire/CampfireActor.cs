@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using TLN.Application.Localization;
 using TLN.Core.Logging;
@@ -121,25 +121,25 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (fuelDefinition == null)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FuelMissing);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.FuelMissing);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FuelAmountZero);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.FuelAmountZero);
 				return false;
 			}
 
 			if (fuelDefinition.BurnMinutes <= 0)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.CannotBurn);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.CannotBurn);
 				return false;
 			}
 
 			if (_remainingBurnMinutes >= _maxBurnMinutes)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.Full);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.Full);
 				return false;
 			}
 
@@ -177,13 +177,13 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (IsBurning)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.AlreadyBurning);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.AlreadyBurning);
 				return false;
 			}
 
 			if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.NotEnoughFuel);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.NotEnoughFuel);
 				return false;
 			}
 
@@ -197,7 +197,7 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (!IsBurning)
 			{
-				failureReason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.NotBurning);
+				failureReason = _localizationService.Get(LocalizationKeys.Campfire.NotBurning);
 				return false;
 			}
 

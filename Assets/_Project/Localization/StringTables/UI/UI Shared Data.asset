@@ -195,6 +195,295 @@ MonoBehaviour:
     m_Key: pause.quit_to_menu
     m_Metadata:
       m_Items: []
+  - m_Id: 30510940242496
+    m_Key: survival.service_missing.item_use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510941242496
+    m_Key: survival.service_missing.build
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510942242496
+    m_Key: item.interaction_pickup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510943242496
+    m_Key: item.interaction_pickup_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510944242496
+    m_Key: campfire.state_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510945242496
+    m_Key: campfire.fuel_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510946242496
+    m_Key: build.service_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510947242496
+    m_Key: build.recipes_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510948242496
+    m_Key: save.manual_unavailable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510949242496
+    m_Key: save.failed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510950242496
+    m_Key: save.saved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510951242496
+    m_Key: save.slot_empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510952242496
+    m_Key: save.loaded
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510953242496
+    m_Key: save.new_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510954242496
+    m_Key: save.new_game_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510955242496
+    m_Key: save.load_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510956242496
+    m_Key: save.load_game_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510957242496
+    m_Key: save.empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510958242496
+    m_Key: save.slot_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510959242496
+    m_Key: save.default_reason
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510960242496
+    m_Key: save.overwrite_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510961242496
+    m_Key: save.details_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510962242496
+    m_Key: save.details_format_with_date
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510963242496
+    m_Key: save.day_time_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510964242496
+    m_Key: inventory.weight_kg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510965242496
+    m_Key: inventory.meta_default
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510966242496
+    m_Key: inventory.meta_clothing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510967242496
+    m_Key: hud.day
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510968242496
+    m_Key: hud.morning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510969242496
+    m_Key: hud.afternoon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510970242496
+    m_Key: hud.evening
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510971242496
+    m_Key: hud.night
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510972242496
+    m_Key: hud.interaction_prompt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510973242496
+    m_Key: settings.tab.audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510974242496
+    m_Key: settings.tab.graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510975242496
+    m_Key: settings.tab.controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510976242496
+    m_Key: settings.tab.gameplay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510977242496
+    m_Key: settings.audio.master
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510978242496
+    m_Key: settings.audio.sfx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510979242496
+    m_Key: settings.audio.music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510980242496
+    m_Key: settings.audio.ambient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510981242496
+    m_Key: settings.graphics.display_mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510982242496
+    m_Key: settings.graphics.resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510983242496
+    m_Key: settings.graphics.quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510984242496
+    m_Key: settings.graphics.vsync
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510985242496
+    m_Key: settings.controls.sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510986242496
+    m_Key: settings.controls.invert_mouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510987242496
+    m_Key: settings.gameplay.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510988242496
+    m_Key: settings.gameplay.subtitles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510989242496
+    m_Key: settings.display_mode.fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510990242496
+    m_Key: settings.display_mode.windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510991242496
+    m_Key: settings.display_mode.borderless
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510992242496
+    m_Key: settings.quality.low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510993242496
+    m_Key: settings.quality.medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510994242496
+    m_Key: settings.quality.high
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510995242496
+    m_Key: settings.quality.ultra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510996242496
+    m_Key: settings.defaults
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510997242496
+    m_Key: settings.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510998242496
+    m_Key: settings.graphics.texture_quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30510999242496
+    m_Key: settings.graphics.field_of_view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511000242496
+    m_Key: settings.graphics.brightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511001242496
+    m_Key: settings.controls.look_smoothing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511002242496
+    m_Key: settings.gameplay.auto_walk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511003242496
+    m_Key: settings.gameplay.auto_harvest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511004242496
+    m_Key: sleep_window.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511005242496
+    m_Key: sleep_window.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511006242496
+    m_Key: sleep_window.1h
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511007242496
+    m_Key: sleep_window.2h
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511008242496
+    m_Key: sleep_window.4h
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511009242496
+    m_Key: sleep_window.8h
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511010242496
+    m_Key: sleep_window.pick_up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511011242496
+    m_Key: sleep_window.cancel
+    m_Metadata:
+      m_Items: []
+
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

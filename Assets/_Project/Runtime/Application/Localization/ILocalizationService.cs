@@ -9,7 +9,7 @@ namespace TLN.Application.Localization
 
 		event Action LocaleChanged;
 
-		string Get(string tableName, string entryKey, params object[] arguments);
+		string Get(string entryKey, params object[] arguments);
 
 		bool TrySetLocale(string localeCode);
 	}

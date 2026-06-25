@@ -22,7 +22,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("project://database/Assets/_Project/Art/UI/PauseMenu/BG_Pause_SnowForest.jpg");
+    background-image: url("project://database/Assets/_Project/Art/UI/Pause/BG_Pause_SnowForest.jpg");
     -unity-background-image-tint-color: rgba(195, 220, 225, 0.82);
 }
 
@@ -34,7 +34,7 @@
     position: absolute;
     left: 6%;
     top: 10%;
-    width: 440px;
+    width: 88%;
     height: 80%;
     padding-left: 18px;
     border-left-width: 3px;
@@ -48,8 +48,8 @@
     unity-font-style: bold;
     unity-text-align: middle-left;
     margin-bottom: 96px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .pause-list {
@@ -71,8 +71,8 @@
     unity-font-style: bold;
     unity-text-align: middle-left;
     letter-spacing: 2px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .pause-button:hover {
@@ -82,8 +82,12 @@
 }
 
 .pause-settings-panel {
-    /* Base styles from .tln-settings-panel */
     margin-top: 20px;
+}
+
+.pause-settings-panel.options-panel {
+    width: 1000px;
+    align-self: flex-start;
 }
 
 .pause-settings-title {

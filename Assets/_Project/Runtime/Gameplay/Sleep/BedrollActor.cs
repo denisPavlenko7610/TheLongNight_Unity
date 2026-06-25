@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Logging;
@@ -91,13 +91,13 @@ namespace TLN.Gameplay.Sleep
 
 			if (_packedItemDefinition == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.PickupFailed));
+				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Bedroll.PickupFailed));
 				return false;
 			}
 
 			if (_inventoryService == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.InventoryMissing));
+				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Bedroll.InventoryMissing));
 				return false;
 			}
 
@@ -113,7 +113,7 @@ namespace TLN.Gameplay.Sleep
 				return false;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Bedroll.PickedUp, _packedItemDefinition.DisplayName));
+			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Bedroll.PickedUp, _packedItemDefinition.DisplayName));
 
 			if (_persistentEntity != null &&
 				_persistentEntity.IsSceneObject)

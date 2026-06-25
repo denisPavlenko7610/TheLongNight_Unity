@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TLN.Application.Input;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
@@ -56,6 +56,9 @@ namespace TLN.UI.Building
 			_recipesScrollView = documentRoot.RequiredQ<ScrollView>("build-recipes-scroll-view");
 			_closeButton = documentRoot.RequiredQ<Button>("build-close-button");
 
+			_root.RemoveFromClassList(VisibleClassName);
+			_root.SetVisible(false);
+
 			_closeButton.clicked += Hide;
 		}
 
@@ -85,6 +88,7 @@ namespace TLN.UI.Building
 			_isVisible = false;
 
 			_root?.RemoveFromClassList(VisibleClassName);
+			_root?.SetVisible(false);
 
 			_inputModeService?.SetGameplayMode();
 		}
@@ -94,6 +98,7 @@ namespace TLN.UI.Building
 			_isVisible = true;
 			RefreshRecipes();
 
+			_root?.SetVisible(true);
 			_root?.AddToClassList(VisibleClassName);
 
 			_inputModeService?.SetUIMode();
@@ -105,7 +110,7 @@ namespace TLN.UI.Building
 
 			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Build.RecipesMissing));
+				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Build.RecipesMissing));
 				return;
 			}
 
@@ -132,7 +137,7 @@ namespace TLN.UI.Building
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Build.ServiceMissing));
+				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Build.ServiceMissing));
 				return;
 			}
 

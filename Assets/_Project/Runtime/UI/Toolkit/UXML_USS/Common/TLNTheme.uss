@@ -2,23 +2,16 @@
     --tln-panel-bg: rgba(7, 12, 16, 0.72);
     --tln-panel-border: rgba(190, 220, 235, 0.35);
     --tln-text-main: rgb(225, 236, 240);
-    --tln-text-muted: rgba(225, 236, 240, 0.7);
+    --tln-text-muted: rgba(225, 236, 240, 0.65);
     --tln-warning: rgb(230, 190, 120);
     --tln-danger: rgb(210, 95, 85);
+    --tln-accent: rgba(190, 220, 235, 0.45);
+    --tln-accent-strong: rgba(210, 230, 238, 0.65);
+    --tln-amber: rgba(230, 195, 120, 0.55);
 }
 
 .tln-panel {
     background-color: var(--tln-panel-bg);
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-color: var(--tln-panel-border);
-    border-right-color: var(--tln-panel-border);
-    border-top-color: var(--tln-panel-border);
-    border-bottom-color: var(--tln-panel-border);
-    border-radius: 4px;
-    padding: 10px;
 }
 
 .tln-label {

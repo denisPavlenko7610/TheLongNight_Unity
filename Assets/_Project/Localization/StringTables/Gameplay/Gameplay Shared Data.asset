@@ -14,7 +14,232 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
   m_TableCollectionName: Gameplay
   m_TableCollectionNameGuidString: 8ab874e6499004d4094055bee73367e7
-  m_Entries: []
+  m_Entries:
+  - m_Id: 60000001000000
+    m_Key: notification.hunger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000002000000
+    m_Key: notification.thirst
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000003000000
+    m_Key: notification.exhausted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000004000000
+    m_Key: notification.freezing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000005000000
+    m_Key: notification.condition_critical
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000006000000
+    m_Key: sleep.min_hours
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000007000000
+    m_Key: sleep.max_hours
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000008000000
+    m_Key: sleep.result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000009000000
+    m_Key: item.invalid_slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000010000000
+    m_Key: item.cannot_use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000011000000
+    m_Key: item.cannot_consume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000012000000
+    m_Key: item.cannot_place
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000013000000
+    m_Key: item.cannot_equip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000014000000
+    m_Key: item.placing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000015000000
+    m_Key: item.placed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000016000000
+    m_Key: item.used
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000017000000
+    m_Key: item.cannot_place_here
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000018000000
+    m_Key: item.addressable_service_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000019000000
+    m_Key: item.prefab_reference_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000020000000
+    m_Key: item.prefab_load_failed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000021000000
+    m_Key: item.equipment_service_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000022000000
+    m_Key: item.picked_up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000023000000
+    m_Key: bedroll.pickup_failed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000024000000
+    m_Key: bedroll.inventory_service_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000025000000
+    m_Key: bedroll.picked_up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000026000000
+    m_Key: campfire.fuel_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000027000000
+    m_Key: campfire.fuel_amount_zero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000028000000
+    m_Key: campfire.cannot_burn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000029000000
+    m_Key: campfire.full
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000030000000
+    m_Key: campfire.already_burning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000031000000
+    m_Key: campfire.not_enough_fuel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000032000000
+    m_Key: campfire.not_burning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000033000000
+    m_Key: campfire.no_fuel_in_inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000034000000
+    m_Key: campfire.fuel_added
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000035000000
+    m_Key: campfire.fire_started
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000036000000
+    m_Key: campfire.fire_extinguished
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000037000000
+    m_Key: build.recipe_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000038000000
+    m_Key: build.prefab_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000039000000
+    m_Key: build.no_ingredients
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000040000000
+    m_Key: build.invalid_ingredient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000041000000
+    m_Key: build.not_enough_items
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000042000000
+    m_Key: build.not_enough_item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000043000000
+    m_Key: build.cannot_build_here
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000044000000
+    m_Key: build.built
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000045000000
+    m_Key: equip.item_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000046000000
+    m_Key: equip.slot_missing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000047000000
+    m_Key: equip.unequipped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000048000000
+    m_Key: equip.no_free_slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000049000000
+    m_Key: equip.equipped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000050000000
+    m_Key: survival.wolf_attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000051000000
+    m_Key: inventory.invalid_item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000052000000
+    m_Key: inventory.invalid_amount
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000053000000
+    m_Key: inventory.too_heavy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000054000000
+    m_Key: inventory.invalid_slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000055000000
+    m_Key: inventory.not_enough
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000056000000
+    m_Key: inventory.not_enough_item
+    m_Metadata:
+      m_Items: []
+
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -16,7 +16,13 @@ namespace TLN.Infrastructure.Localization
 			LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
 		}
 
-		public string Get(string tableName, string entryKey, params object[] arguments)
+		public string Get(string entryKey, params object[] arguments)
+		{
+			string tableName = LocalizationKeyRegistry.GetTableName(entryKey);
+			return GetFromTable(tableName, entryKey, arguments);
+		}
+
+		private static string GetFromTable(string tableName, string entryKey, params object[] arguments)
 		{
 			if (string.IsNullOrWhiteSpace(tableName))
 			{

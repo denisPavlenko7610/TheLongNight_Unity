@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assign;
 using TLN.Application.GameStates;
 using TLN.Application.Localization;
@@ -291,7 +291,7 @@ namespace TLN.Gameplay.Wildlife
 
             _survivalService.DamageCondition(_definition.ConditionDamage);
 
-            _notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Survival.WolfAttack, _definition.ConditionDamage));
+            _notificationService?.Show(_localizationService.Get(LocalizationKeys.Survival.WolfAttack, _definition.ConditionDamage));
         }
 
         private void ApplyState(AnimalStateId state)

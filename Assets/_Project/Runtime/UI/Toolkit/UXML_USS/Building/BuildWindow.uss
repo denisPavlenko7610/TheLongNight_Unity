@@ -1,4 +1,6 @@
-﻿.build-window-root {
+@import "../Common/TLNTheme.uss"
+
+.build-window-root {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -13,52 +15,95 @@
 .build-window {
     width: 560px;
     height: 520px;
-    background-color: rgba(7, 12, 16, 0.92);
-    border-radius: 6px;
-    padding: 18px;
+    background-color: rgba(4, 9, 12, 0.9);
+    padding: 20px;
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.42);
+    border-right-color: rgba(226, 242, 244, 0.08);
+    border-top-color: rgba(226, 242, 244, 0.08);
+    border-bottom-color: rgba(226, 242, 244, 0.08);
 }
 
 .build-title {
-    color: rgb(225, 236, 240);
+    color: rgb(238, 244, 246);
     font-size: 26px;
     unity-font-style: bold;
+    letter-spacing: 3px;
     unity-text-align: middle-center;
     margin-bottom: 6px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
 }
 
 .build-description {
-    color: rgba(225, 236, 240, 0.65);
+    color: rgba(225, 236, 240, 0.58);
     font-size: 14px;
+    letter-spacing: 1px;
     unity-text-align: middle-center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .build-recipes-scroll-view {
     flex-grow: 1;
-    background-color: rgba(0, 0, 0, 0.18);
-    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 6px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.08);
+    border-right-color: rgba(226, 242, 244, 0.04);
+    border-top-color: rgba(226, 242, 244, 0.04);
+    border-bottom-color: rgba(226, 242, 244, 0.04);
 }
 
 .build-recipe-button {
     min-height: 46px;
     margin-bottom: 6px;
-    padding-left: 12px;
-    padding-right: 12px;
-    color: rgb(225, 236, 240);
-    background-color: rgba(255, 255, 255, 0.06);
-    border-radius: 4px;
+    padding-left: 14px;
+    padding-right: 14px;
+    color: rgba(230, 240, 242, 0.85);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.14);
+    border-right-color: rgba(226, 242, 244, 0.06);
+    border-top-color: rgba(226, 242, 244, 0.06);
+    border-bottom-color: rgba(226, 242, 244, 0.06);
     unity-text-align: middle-left;
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
 }
 
 .build-recipe-button:hover {
-    background-color: rgba(255, 255, 255, 0.13);
+    background-color: rgba(255, 255, 255, 0.09);
+    border-left-color: rgba(255, 255, 255, 0.22);
 }
 
 .build-close-button {
     height: 38px;
-    margin-top: 12px;
-    color: rgba(225, 236, 240, 0.8);
-    background-color: rgba(255, 255, 255, 0.045);
-    border-radius: 4px;
+    margin-top: 14px;
+    color: rgba(225, 236, 240, 0.7);
+    background-color: rgba(255, 255, 255, 0.035);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.12);
+    border-right-color: rgba(226, 242, 244, 0.06);
+    border-top-color: rgba(226, 242, 244, 0.06);
+    border-bottom-color: rgba(226, 242, 244, 0.06);
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.build-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.2);
 }

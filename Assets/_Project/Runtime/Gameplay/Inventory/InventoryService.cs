@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TLN.Application.Localization;
 using TLN.Core.Logging;
@@ -29,13 +29,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidItem);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidItem);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
@@ -44,7 +44,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (weightAfterAdd > MaxCarryWeight)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.TooHeavy);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.TooHeavy);
 				return false;
 			}
 
@@ -112,20 +112,20 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (index < 0 || index >= _items.Count)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidSlot);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidSlot);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
 			ItemStack stack = _items[index];
 			if (amount > stack.Amount)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.NotEnough);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.NotEnough);
 				return false;
 			}
 
@@ -151,13 +151,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidItem);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidItem);
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.InvalidAmount);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.InvalidAmount);
 				return false;
 			}
 
@@ -165,7 +165,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (availableAmount < amount)
 			{
-				reason = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Inventory.NotEnoughItem, definition.DisplayName);
+				reason = _localizationService.Get(LocalizationKeys.Inventory.NotEnoughItem, definition.DisplayName);
 				return false;
 			}
 

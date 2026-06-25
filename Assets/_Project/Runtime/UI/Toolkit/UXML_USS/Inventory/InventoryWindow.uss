@@ -1,13 +1,12 @@
-﻿.inventory-window-root {
+@import "../Common/TLNTheme.uss"
+
+.inventory-window-root {
     position: absolute;
     left: 50%;
     top: 50%;
     translate: -50% -50%;
     display: none;
     opacity: 0;
-    transition-property: opacity;
-    transition-duration: 180ms;
-    transition-timing-function: ease-out;
 }
 
 .inventory-window-root-visible {
@@ -16,37 +15,104 @@
 }
 
 .inventory-window {
-    width: 620px;
+    width: 640px;
     height: 560px;
-    background-color: rgba(7, 12, 16, 0.88);
-    border-radius: 6px;
-    padding: 16px;
+    background-color: rgba(4, 9, 12, 0.88);
+    padding: 18px;
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.42);
+    border-right-color: rgba(226, 242, 244, 0.08);
+    border-top-color: rgba(226, 242, 244, 0.08);
+    border-bottom-color: rgba(226, 242, 244, 0.08);
 }
+
+/* ── Header ── */
 
 .inventory-header {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 12px;
+    align-items: baseline;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(226, 242, 244, 0.1);
 }
 
 .inventory-title {
-    color: rgb(225, 236, 240);
+    color: rgb(238, 244, 246);
     font-size: 24px;
     unity-font-style: bold;
+    letter-spacing: 3px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
 }
 
 .inventory-weight-label {
-    color: rgba(225, 236, 240, 0.72);
-    font-size: 15px;
+    color: rgba(225, 236, 240, 0.62);
+    font-size: 14px;
+    letter-spacing: 1px;
     unity-text-align: middle-right;
 }
 
+/* ── Weight Bar ── */
+
+.inventory-weight-bar {
+    height: 6px;
+    flex-direction: row;
+    margin-bottom: 14px;
+    background-color: rgba(40, 55, 60, 0.3);
+}
+
+.inventory-weight-bar-fill {
+    height: 6px;
+    background-color: rgba(200, 225, 230, 0.35);
+}
+
+.inventory-weight-bar-empty {
+    flex-grow: 1;
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* ── Scroll View ── */
+
 .inventory-scroll-view {
     flex-grow: 1;
-    background-color: rgba(0, 0, 0, 0.18);
-    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 6px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.08);
+    border-right-color: rgba(226, 242, 244, 0.04);
+    border-top-color: rgba(226, 242, 244, 0.04);
+    border-bottom-color: rgba(226, 242, 244, 0.04);
 }
+
+.inventory-scroll-view .unity-scrollbar__vertical {
+    width: 4px;
+}
+
+.inventory-scroll-view .unity-scrollbar__track {
+    width: 4px;
+    background-color: rgba(180, 205, 210, 0.04);
+}
+
+.inventory-scroll-view .unity-scrollbar__thumb {
+    width: 4px;
+    min-height: 24px;
+    background-color: rgba(200, 225, 230, 0.14);
+}
+
+.inventory-scroll-view .unity-scrollbar__thumb:hover {
+    background-color: rgba(200, 225, 230, 0.25);
+}
+
+/* ── Footer ── */
 
 .inventory-footer {
     height: 34px;
@@ -54,63 +120,162 @@
 }
 
 .inventory-footer-label {
-    color: rgba(225, 236, 240, 0.55);
+    color: rgba(225, 236, 240, 0.45);
     font-size: 13px;
+    letter-spacing: 1px;
     unity-text-align: middle-center;
 }
 
+/* ── Item Row ── */
+
 .inventory-item-row {
-    height: 56px;
+    height: 60px;
     flex-direction: row;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.035);
-    border-radius: 4px;
     margin-bottom: 5px;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-left-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.08);
 }
 
 .inventory-item-row:hover {
-    background-color: rgba(255, 255, 255, 0.075);
+    background-color: rgba(255, 255, 255, 0.07);
+    border-left-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Item Icon ── */
+
+.item-icon-frame {
+    width: 42px;
+    height: 42px;
+    margin-right: 12px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.08);
+    border-right-color: rgba(226, 242, 244, 0.04);
+    border-top-color: rgba(226, 242, 244, 0.04);
+    border-bottom-color: rgba(226, 242, 244, 0.04);
 }
 
 .item-icon {
-    width: 38px;
-    height: 38px;
-    margin-right: 10px;
+    width: 32px;
+    height: 32px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     -unity-background-image-tint-color: rgb(225, 236, 240);
 }
 
+.item-quantity-badge {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    min-width: 18px;
+    height: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+    color: rgb(238, 244, 246);
+    background-color: rgba(7, 16, 20, 0.85);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-color: rgba(226, 242, 244, 0.25);
+    font-size: 11px;
+    unity-font-style: bold;
+    -unity-text-align: middle-center;
+    display: none;
+}
+
+/* ── Item Info ── */
+
 .item-info {
     flex-grow: 1;
+    justify-content: center;
 }
 
 .item-name-label {
     color: rgb(225, 236, 240);
     font-size: 15px;
     unity-font-style: bold;
+    letter-spacing: 1px;
 }
 
 .item-meta-label {
-    color: rgba(225, 236, 240, 0.58);
+    color: rgba(225, 236, 240, 0.52);
     font-size: 12px;
+    letter-spacing: 1px;
+    margin-top: 1px;
 }
 
+/* ── Item Condition Bar ── */
+
+.item-condition-bar {
+    width: 100%;
+    height: 3px;
+    margin-top: 4px;
+    background-color: rgba(60, 75, 80, 0.3);
+    display: none;
+}
+
+.item-condition-fill {
+    height: 3px;
+    background-color: rgba(200, 225, 230, 0.35);
+}
+
+/* ── Use Button ── */
+
 .item-use-button {
-    width: 68px;
-    height: 30px;
-    color: rgb(225, 236, 240);
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
+    width: 72px;
+    height: 32px;
+    color: rgba(230, 240, 242, 0.85);
+    background-color: rgba(255, 255, 255, 0.055);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 242, 244, 0.18);
+    border-right-color: rgba(226, 242, 244, 0.12);
+    border-top-color: rgba(226, 242, 244, 0.12);
+    border-bottom-color: rgba(226, 242, 244, 0.12);
+    font-size: 13px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
 }
 
 .item-use-button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.12);
+    border-left-color: rgba(255, 255, 255, 0.3);
 }
 
 .item-use-button:disabled {
     opacity: 0.35;
+}
+
+/* ── Category Header (for future item grouping) ── */
+
+.inventory-category-header {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    padding-left: 6px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(226, 242, 244, 0.06);
+}
+
+.inventory-category-header-label {
+    color: rgba(225, 236, 240, 0.45);
+    font-size: 12px;
+    unity-font-style: bold;
+    letter-spacing: 2px;
 }

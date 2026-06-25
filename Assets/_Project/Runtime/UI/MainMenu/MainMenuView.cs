@@ -1,8 +1,10 @@
 using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
+using TLN.Application.Settings;
 using TLN.Core.Logging;
 using TLN.UI.Common;
+using TLN.UI.Options;
 using TLN.UI.Saves;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -28,41 +30,32 @@ namespace TLN.UI.MainMenu
 		private Button _loadGameButton;
 		private Button _optionsButton;
 		private Button _quitButton;
-		private Button _settingsBackButton;
-
-		private DropdownField _languageDropdown;
 
 		private ISceneLoader _sceneLoader;
 		private ILocalizationService _localizationService;
 		private ISaveRepository _saveRepository;
 		private SaveSessionService _saveSessionService;
+		private IGameSettingsService _settingsService;
 		private SaveSlotsPanel _saveSlotsPanel;
+
+		private OptionsView _optionsView;
 
 		[Inject]
 		public void Construct(
 			ISceneLoader sceneLoader,
 			ILocalizationService localizationService,
 			ISaveRepository saveRepository,
-			SaveSessionService saveSessionService
+			SaveSessionService saveSessionService,
+			IGameSettingsService settingsService
 		)
 		{
 			_sceneLoader = sceneLoader;
+			_localizationService = localizationService;
 			_saveRepository = saveRepository;
 			_saveSessionService = saveSessionService;
+			_settingsService = settingsService;
 
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged -= OnLocaleChanged;
-			}
-
-			_localizationService = localizationService;
-
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged += OnLocaleChanged;
-			}
-
-			SyncLanguageDropdown();
+			InitializeOptionsView();
 			InitializeSaveSlotsPanel();
 			RefreshLoadGameButton();
 		}
@@ -78,12 +71,9 @@ namespace TLN.UI.MainMenu
 			_loadGameButton = _root.RequiredQ<Button>("load-game-button");
 			_optionsButton = _root.RequiredQ<Button>("options-button");
 			_quitButton = _root.RequiredQ<Button>("quit-button");
-			_settingsBackButton = _root.RequiredQ<Button>("settings-back-button");
-			_languageDropdown = _root.RequiredQ<DropdownField>("language-dropdown");
 
-			SettingsMenuHelper.ConfigureLanguageDropdown(_languageDropdown);
-			SyncLanguageDropdown();
 			InitializeSaveSlotsPanel();
+			InitializeOptionsView();
 			SubscribeToUI();
 
 			RefreshLoadGameButton();
@@ -96,11 +86,7 @@ namespace TLN.UI.MainMenu
 			UnsubscribeFromUI();
 
 			_saveSlotsPanel?.Dispose();
-
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged -= OnLocaleChanged;
-			}
+			_optionsView?.Dispose();
 		}
 
 		private void InitializeSaveSlotsPanel()
@@ -140,9 +126,6 @@ namespace TLN.UI.MainMenu
 			_loadGameButton.clicked += OnLoadGameClicked;
 			_optionsButton.clicked += OnOptionsClicked;
 			_quitButton.clicked += OnQuitClicked;
-			_settingsBackButton.clicked += OnSettingsBackClicked;
-
-			_languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
 		}
 
 		private void UnsubscribeFromUI()
@@ -165,16 +148,6 @@ namespace TLN.UI.MainMenu
 			if (_quitButton != null)
 			{
 				_quitButton.clicked -= OnQuitClicked;
-			}
-
-			if (_settingsBackButton != null)
-			{
-				_settingsBackButton.clicked -= OnSettingsBackClicked;
-			}
-
-			if (_languageDropdown != null)
-			{
-				_languageDropdown.UnregisterValueChangedCallback(OnLanguageChanged);
 			}
 		}
 
@@ -209,54 +182,28 @@ namespace TLN.UI.MainMenu
 
 		private void ShowSettingsPanel()
 		{
-			SyncLanguageDropdown();
-
 			_navigationPanel.SetVisible(false);
 			_settingsPanel.SetVisible(true);
+		}
+
+		private void InitializeOptionsView()
+		{
+			if (_settingsPanel == null || _settingsService == null || _optionsView != null)
+			{
+				return;
+			}
+
+			_optionsView = new OptionsView(
+				_settingsPanel,
+				_settingsService,
+				_localizationService,
+				ShowNavigationPanel
+			);
 		}
 
 		private void OnOptionsClicked()
 		{
 			ShowSettingsPanel();
-		}
-
-		private void OnSettingsBackClicked()
-		{
-			ShowNavigationPanel();
-		}
-
-		private void OnLanguageChanged(ChangeEvent<string> changeEvent)
-		{
-			if (_localizationService == null)
-			{
-				SyncLanguageDropdown();
-				return;
-			}
-
-			string localeCode = SettingsMenuHelper.GetLocaleCode(changeEvent.newValue);
-
-			if (string.IsNullOrEmpty(localeCode))
-			{
-				SyncLanguageDropdown();
-				return;
-			}
-
-			bool wasChanged = _localizationService.TrySetLocale(localeCode);
-
-			if (!wasChanged)
-			{
-				SyncLanguageDropdown();
-			}
-		}
-
-		private void OnLocaleChanged()
-		{
-			SyncLanguageDropdown();
-		}
-
-		private void SyncLanguageDropdown()
-		{
-			SettingsMenuHelper.SyncLanguageDropdown(_languageDropdown, _localizationService);
 		}
 
 		private void OnNewGameClicked()

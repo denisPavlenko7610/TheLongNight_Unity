@@ -1,4 +1,4 @@
-﻿namespace TLN.Application.Localization
+namespace TLN.Application.Localization
 {
 	public static class LocalizationKeys
 	{
@@ -58,6 +58,18 @@
 			public const string MinHours = "sleep.min_hours";
 			public const string MaxHours = "sleep.max_hours";
 			public const string Result = "sleep.result";
+		}
+
+		public static class SleepWindow
+		{
+			public const string Title = "sleep_window.title";
+			public const string Description = "sleep_window.description";
+			public const string OneHour = "sleep_window.1h";
+			public const string TwoHours = "sleep_window.2h";
+			public const string FourHours = "sleep_window.4h";
+			public const string EightHours = "sleep_window.8h";
+			public const string PickUp = "sleep_window.pick_up";
+			public const string Cancel = "sleep_window.cancel";
 		}
 
 		public static class Items
@@ -173,6 +185,42 @@
 			public const string Evening = "hud.evening";
 			public const string Night = "hud.night";
 			public const string InteractionPrompt = "hud.interaction_prompt";
+		}
+
+		public static class Settings
+		{
+			public const string Title = "settings.title";
+			public const string TabAudio = "settings.tab.audio";
+			public const string TabGraphics = "settings.tab.graphics";
+			public const string TabControls = "settings.tab.controls";
+			public const string TabGameplay = "settings.tab.gameplay";
+			public const string AudioMaster = "settings.audio.master";
+			public const string AudioSfx = "settings.audio.sfx";
+			public const string AudioMusic = "settings.audio.music";
+			public const string AudioAmbient = "settings.audio.ambient";
+			public const string GraphicsDisplayMode = "settings.graphics.display_mode";
+			public const string GraphicsResolution = "settings.graphics.resolution";
+			public const string GraphicsQuality = "settings.graphics.quality";
+			public const string GraphicsTextureQuality = "settings.graphics.texture_quality";
+			public const string GraphicsFieldOfView = "settings.graphics.field_of_view";
+			public const string GraphicsBrightness = "settings.graphics.brightness";
+			public const string GraphicsVSync = "settings.graphics.vsync";
+			public const string ControlsSensitivity = "settings.controls.sensitivity";
+			public const string ControlsLookSmoothing = "settings.controls.look_smoothing";
+			public const string ControlsInvertMouse = "settings.controls.invert_mouse";
+			public const string GameplayLanguage = "settings.gameplay.language";
+			public const string GameplaySubtitles = "settings.gameplay.subtitles";
+			public const string GameplayAutoWalk = "settings.gameplay.auto_walk";
+			public const string GameplayAutoHarvest = "settings.gameplay.auto_harvest";
+			public const string DisplayModeFullscreen = "settings.display_mode.fullscreen";
+			public const string DisplayModeWindowed = "settings.display_mode.windowed";
+			public const string DisplayModeBorderless = "settings.display_mode.borderless";
+			public const string QualityLow = "settings.quality.low";
+			public const string QualityMedium = "settings.quality.medium";
+			public const string QualityHigh = "settings.quality.high";
+			public const string QualityUltra = "settings.quality.ultra";
+			public const string Defaults = "settings.defaults";
+			public const string Back = "settings.back";
 		}
 	}
 }

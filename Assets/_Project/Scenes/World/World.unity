@@ -2113,6 +2113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Weather.SnowService
   _config: {fileID: 11400000, guid: 0e5bc1eb19f7b3440966a202f30cd4be, type: 2}
+  _snowShader: {fileID: 4800000, guid: df07bc20314b94c43bf40a6c5229c6e6, type: 3}
   _followTarget: {fileID: 0}
   _autoFollowPlayerCamera: 1
   _intensity: 0.65

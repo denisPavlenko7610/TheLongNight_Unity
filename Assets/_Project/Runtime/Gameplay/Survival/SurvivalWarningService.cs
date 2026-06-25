@@ -1,4 +1,4 @@
-﻿using TLN.Application.Localization;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 
 namespace TLN.Gameplay.Survival
@@ -90,7 +90,7 @@ namespace TLN.Gameplay.Survival
 				return;
 			}
 
-			_notificationService.Show(_localizationService.Get(LocalizationTableNames.Gameplay, key));
+			_notificationService.Show(_localizationService.Get(key));
 			nextWarningTime = unscaledTime + _warningCooldownSeconds;
 		}
 	}

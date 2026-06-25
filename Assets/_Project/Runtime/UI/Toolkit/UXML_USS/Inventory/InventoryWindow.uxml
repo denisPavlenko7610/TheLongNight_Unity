@@ -1,16 +1,20 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Inventory/InventoryWindow.uss?fileID=7433441132597879392&amp;guid=29220922932a4f8c9e256d3a6da3588b&amp;type=3#InventoryWindow"/>
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="InventoryWindow.uss"/>
     <ui:VisualElement name="inventory-window-root" class="inventory-window-root">
-        <ui:VisualElement class="inventory-window tln-panel">
-            <ui:VisualElement class="inventory-header">
-                <ui:Label text="INVENTORY" class="inventory-title"/>
-                <ui:Label name="inventory-weight-label" text="0 / 30 KG" class="inventory-weight-label"/>
-            </ui:VisualElement>
-            <ui:ScrollView name="inventory-scroll-view" class="inventory-scroll-view"/>
-            <ui:VisualElement class="inventory-footer">
-                <ui:Label text="I — Close" class="inventory-footer-label"/>
-            </ui:VisualElement>
+    <ui:VisualElement class="inventory-window tln-panel">
+        <ui:VisualElement class="inventory-header">
+            <ui:Label text="INVENTORY" class="inventory-title"/>
+            <ui:Label name="inventory-weight-label" text="0 / 30 KG" class="inventory-weight-label"/>
         </ui:VisualElement>
+        <ui:VisualElement class="inventory-weight-bar">
+            <ui:VisualElement name="inventory-weight-bar-fill" class="inventory-weight-bar-fill"/>
+            <ui:VisualElement name="inventory-weight-bar-empty" class="inventory-weight-bar-empty"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="inventory-scroll-view" class="inventory-scroll-view"/>
+        <ui:VisualElement class="inventory-footer">
+            <ui:Label text="I — Close" class="inventory-footer-label"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

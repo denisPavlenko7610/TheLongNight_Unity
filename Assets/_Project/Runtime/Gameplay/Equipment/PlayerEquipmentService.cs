@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TLN.Application.Localization;
 using TLN.Core.Results;
@@ -58,12 +58,12 @@ namespace TLN.Gameplay.Equipment
 		{
 			if (item == null)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.ItemMissing));
+				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.ItemMissing));
 			}
 
 			if (item.Slot == ClothingSlotId.None)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.SlotMissing));
+				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.SlotMissing));
 			}
 
 			if (IsEquipped(item))
@@ -72,7 +72,7 @@ namespace TLN.Gameplay.Equipment
 				RecalculateWarmthBonus();
 				Changed?.Invoke();
 
-				return OperationResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.Unequipped, item.DisplayName));
+				return OperationResult.Success(_localizationService.Get(LocalizationKeys.Equipment.Unequipped, item.DisplayName));
 			}
 
 			int equippedCount = GetEquippedCount(item.Slot);
@@ -80,14 +80,14 @@ namespace TLN.Gameplay.Equipment
 
 			if (equippedCount >= slotCapacity)
 			{
-				return OperationResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.NoFreeSlot, item.Slot));
+				return OperationResult.Failure(_localizationService.Get(LocalizationKeys.Equipment.NoFreeSlot, item.Slot));
 			}
 
 			_equippedItems.Add(item);
 			RecalculateWarmthBonus();
 			Changed?.Invoke();
 
-			return OperationResult.Success(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Equipment.Equipped, item.DisplayName));
+			return OperationResult.Success(_localizationService.Get(LocalizationKeys.Equipment.Equipped, item.DisplayName));
 		}
 
 		private void RecalculateWarmthBonus()

@@ -61,6 +61,9 @@ namespace TLN.UI.Inventory
 			_root = documentRoot.RequiredQ<VisualElement>("inventory-window-root");
 			_weightLabel = documentRoot.RequiredQ<Label>("inventory-weight-label");
 			_scrollView = documentRoot.RequiredQ<ScrollView>("inventory-scroll-view");
+
+			_root.RemoveFromClassList(VisibleClassName);
+			_root.SetVisible(false);
 		}
 
 		private void OnDestroy()
@@ -87,14 +90,16 @@ namespace TLN.UI.Inventory
 		public void Hide()
 		{
 			_isVisible = false;
-			_root.RemoveFromClassList(VisibleClassName);
+			_root?.RemoveFromClassList(VisibleClassName);
+			_root?.SetVisible(false);
 		}
 
 		private void Show()
 		{
 			_isVisible = true;
 			Refresh();
-			_root.AddToClassList(VisibleClassName);
+			_root?.SetVisible(true);
+			_root?.AddToClassList(VisibleClassName);
 		}
 
 		private void Refresh()
@@ -110,7 +115,7 @@ namespace TLN.UI.Inventory
 
 		private void RefreshWeight()
 		{
-			_weightLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.WeightKg, _inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
+			_weightLabel.text = _localizationService.Get(LocalizationKeys.Inventory.WeightKg, _inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
 		}
 
 		private void RefreshItems()

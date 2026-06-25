@@ -1,6 +1,6 @@
 ﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/SurvivalMenuWindow/SurvivalMenuWindow.uss?fileID=7433441132597879392&amp;guid=1744bb8bedf34184b5cf118a36be9c4e&amp;type=3#SurvivalMenuWindow"/>
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="SurvivalMenuWindow.uss"/>
 
     <ui:VisualElement name="survival-menu-root" class="survival-menu-root">
         <ui:VisualElement class="survival-menu-vignette"/>

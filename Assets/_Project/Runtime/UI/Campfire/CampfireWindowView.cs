@@ -1,4 +1,4 @@
-﻿using TLN.Application.Input;
+using TLN.Application.Input;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
@@ -20,6 +20,7 @@ namespace TLN.UI.Campfire
 		private VisualElement _root;
 		private Label _stateLabel;
 		private Label _fuelLabel;
+		private VisualElement _fuelMeterFill;
 		private Button _addFuelButton;
 		private Button _igniteButton;
 		private Button _extinguishButton;
@@ -58,10 +59,14 @@ namespace TLN.UI.Campfire
 			_root = documentRoot.RequiredQ<VisualElement>("campfire-window-root");
 			_stateLabel = documentRoot.RequiredQ<Label>("campfire-state-label");
 			_fuelLabel = documentRoot.RequiredQ<Label>("campfire-fuel-label");
+			_fuelMeterFill = documentRoot.RequiredQ<VisualElement>("campfire-fuel-meter-fill");
 			_addFuelButton = documentRoot.RequiredQ<Button>("campfire-add-fuel-button");
 			_igniteButton = documentRoot.RequiredQ<Button>("campfire-ignite-button");
 			_extinguishButton = documentRoot.RequiredQ<Button>("campfire-extinguish-button");
 			_closeButton = documentRoot.RequiredQ<Button>("campfire-close-button");
+
+			_root.RemoveFromClassList(VisibleClassName);
+			_root.SetVisible(false);
 
 			_addFuelButton.clicked += OnAddFuelClicked;
 			_igniteButton.clicked += OnIgniteClicked;
@@ -91,6 +96,7 @@ namespace TLN.UI.Campfire
 			}
 
 			Refresh();
+			_root.SetVisible(true);
 			_root.AddToClassList(VisibleClassName);
 			_inputModeService?.SetUIMode();
 		}
@@ -100,6 +106,7 @@ namespace TLN.UI.Campfire
 			UnsubscribeFromCurrentCampfire();
 
 			_root?.RemoveFromClassList(VisibleClassName);
+			_root?.SetVisible(false);
 
 			_inputModeService?.SetGameplayMode();
 		}
@@ -111,8 +118,12 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_stateLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Campfire.StateLabel, _currentCampfire.State);
-			_fuelLabel.text = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Campfire.FuelLabel, _currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
+			_stateLabel.text = _localizationService.Get(LocalizationKeys.Campfire.StateLabel, _currentCampfire.State);
+			_fuelLabel.text = _localizationService.Get(LocalizationKeys.Campfire.FuelLabel, _currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
+			float fuelPercent = _currentCampfire.MaxBurnMinutes > 0
+				? Mathf.Clamp01((float)_currentCampfire.RemainingBurnMinutes / _currentCampfire.MaxBurnMinutes) * 100f
+				: 0f;
+			_fuelMeterFill.style.width = Length.Percent(fuelPercent);
 
 			_igniteButton.SetEnabled(!_currentCampfire.IsBurning);
 			_extinguishButton.SetEnabled(_currentCampfire.IsBurning);
@@ -127,7 +138,7 @@ namespace TLN.UI.Campfire
 
 			if (!TryFindFuelItem(out int itemIndex, out FuelItemDefinition fuel))
 			{
-				_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.NoFuelInInventory));
+				_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.NoFuelInInventory));
 				return;
 			}
 
@@ -162,7 +173,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FuelAdded, fuel.DisplayName));
+			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FuelAdded, fuel.DisplayName));
 			Refresh();
 		}
 
@@ -181,7 +192,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FireStarted));
+			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FireStarted));
 
 			if (_gameSaveService != null)
 			{
@@ -206,7 +217,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Campfire.FireExtinguished));
+			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Campfire.FireExtinguished));
 			Refresh();
 		}
 

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Core.Logging;
@@ -32,8 +32,8 @@ namespace TLN.Gameplay.Items
 		public string SaveTypeId => SaveType;
 
 		public string InteractionText => _definition == null
-			? _localizationService?.Get(LocalizationTableNames.UI, LocalizationKeys.Items.InteractionPickup) ?? "Pick up item"
-			: _localizationService?.Get(LocalizationTableNames.UI, LocalizationKeys.Items.InteractionPickupFormat, _definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
+			? _localizationService?.Get(LocalizationKeys.Items.InteractionPickup) ?? "Pick up item"
+			: _localizationService?.Get(LocalizationKeys.Items.InteractionPickupFormat, _definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
 
 		[Inject]
 		public void Construct(
@@ -94,7 +94,7 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			_notificationService?.Show(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Items.PickedUp, _definition.DisplayName));
+			_notificationService?.Show(_localizationService.Get(LocalizationKeys.Items.PickedUp, _definition.DisplayName));
 
 			if (_persistentEntity != null && _persistentEntity.IsSceneObject)
 			{

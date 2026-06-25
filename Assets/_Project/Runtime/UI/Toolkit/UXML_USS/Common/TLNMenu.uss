@@ -1,4 +1,4 @@
-﻿.tln-menu-content {
+.tln-menu-content {
     position: absolute;
     left: 7%;
     top: 10%;
@@ -16,26 +16,24 @@
     font-size: 58px;
     unity-font-style: bold;
     letter-spacing: 7px;
-
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .tln-menu-subtitle {
     margin-top: 8px;
-    color: rgba(215, 232, 234, 0.82);
+    color: rgba(215, 232, 234, 0.78);
     font-size: 14px;
     letter-spacing: 4px;
-
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.75);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .tln-menu-rule {
     width: 310px;
     height: 2px;
     margin-bottom: 84px;
-    background-color: rgba(215, 235, 238, 0.72);
+    background-color: rgba(215, 235, 238, 0.65);
 }
 
 .tln-menu-list {
@@ -44,38 +42,35 @@
 
 .tln-menu-button {
     height: 48px;
-    margin-bottom: 7px;
-
+    margin-bottom: 6px;
     padding-left: 22px;
     padding-right: 10px;
     padding-top: 0;
     padding-bottom: 0;
-
     color: rgb(241, 248, 249);
-    background-color: rgba(4, 9, 11, 0.18);
-
-    border-left-width: 3px;
+    background-color: rgba(4, 9, 11, 0.15);
+    border-left-width: 2px;
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
-
-    border-left-color: rgba(223, 238, 240, 0.45);
-
-    font-size: 23px;
+    border-left-color: rgba(223, 238, 240, 0.35);
+    font-size: 22px;
     unity-font-style: bold;
     unity-text-align: middle-left;
     letter-spacing: 2px;
-
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
+    transition-duration: 100ms;
+    transition-property: background-color, border-left-color, color;
+    transition-timing-function: ease-out;
 }
 
 .tln-menu-button:hover {
     color: rgb(255, 255, 255);
-    background-color: rgba(223, 238, 240, 0.14);
+    background-color: rgba(223, 238, 240, 0.1);
     border-left-color: rgb(255, 255, 255);
 }
 
 .tln-menu-button:disabled {
-    opacity: 0.46;
+    opacity: 0.4;
 }

@@ -1,4 +1,4 @@
-﻿.survival-menu-root {
+.survival-menu-root {
     position: absolute;
     left: 0;
     top: 0;
@@ -61,20 +61,24 @@
     width: 116px;
     height: 38px;
     margin-top: 8px;
-    color: rgba(230, 235, 235, 0.85);
-    background-color: rgba(255, 255, 255, 0.055);
+    color: rgba(230, 240, 242, 0.85);
+    background-color: rgba(255, 255, 255, 0.045);
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-    border-left-color: rgba(220, 230, 230, 0.18);
-    border-right-color: rgba(220, 230, 230, 0.18);
-    border-top-color: rgba(220, 230, 230, 0.18);
-    border-bottom-color: rgba(220, 230, 230, 0.18);
+    border-left-color: rgba(226, 242, 244, 0.2);
+    border-right-color: rgba(226, 242, 244, 0.1);
+    border-top-color: rgba(226, 242, 244, 0.1);
+    border-bottom-color: rgba(226, 242, 244, 0.1);
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 2px;
 }
 
 .survival-close-button:hover {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.3);
 }
 
 .survival-menu-content {

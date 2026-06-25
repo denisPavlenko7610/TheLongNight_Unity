@@ -1,4 +1,4 @@
-﻿using TLN.Application.Localization;
+using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Gameplay.Survival;
@@ -36,18 +36,18 @@ namespace TLN.Gameplay.Sleep
 		{
 			if (hours < _config.MinSleepHours)
 			{
-				return SleepResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.MinHours, _config.MinSleepHours));
+				return SleepResult.Failure(_localizationService.Get(LocalizationKeys.Sleep.MinHours, _config.MinSleepHours));
 			}
 
 			if (hours > _config.MaxSleepHours)
 			{
-				return SleepResult.Failure(_localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.MaxHours, _config.MaxSleepHours));
+				return SleepResult.Failure(_localizationService.Get(LocalizationKeys.Sleep.MaxHours, _config.MaxSleepHours));
 			}
 
 			ApplySleepEffects(hours);
 			_gameTimeService.AdvanceHours(hours);
 
-			string message = _localizationService.Get(LocalizationTableNames.Gameplay, LocalizationKeys.Sleep.Result, hours);
+			string message = _localizationService.Get(LocalizationKeys.Sleep.Result, hours);
 			_notificationService.Show(message);
 
 			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);

@@ -2,7 +2,9 @@
 using TLN.Application.Localization;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
+using TLN.Application.Settings;
 using TLN.UI.Common;
+using TLN.UI.Options;
 using TLN.UI.Saves;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,9 +26,8 @@ namespace TLN.UI.Pause
 		private Button _loadButton;
 		private Button _settingsButton;
 		private Button _quitButton;
-		private Button _settingsBackButton;
 
-		private DropdownField _languageDropdown;
+		private OptionsView _optionsView;
 
 		private IGameStateMachine _gameStateMachine;
 		private ISceneLoader _sceneLoader;
@@ -34,6 +35,7 @@ namespace TLN.UI.Pause
 		private IGameSaveService _gameSaveService;
 		private ISaveRepository _saveRepository;
 		private SaveSessionService _saveSessionService;
+		private IGameSettingsService _settingsService;
 		private SaveSlotsPanel _saveSlotsPanel;
 
 		private bool _isInitialized;
@@ -46,7 +48,8 @@ namespace TLN.UI.Pause
 			ILocalizationService localizationService,
 			IGameSaveService gameSaveService,
 			ISaveRepository saveRepository,
-			SaveSessionService saveSessionService
+			SaveSessionService saveSessionService,
+			IGameSettingsService settingsService
 		)
 		{
 			UnsubscribeFromGameState();
@@ -56,20 +59,12 @@ namespace TLN.UI.Pause
 			_gameSaveService = gameSaveService;
 			_saveRepository = saveRepository;
 			_saveSessionService = saveSessionService;
-
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged -= OnLocaleChanged;
-			}
-
 			_localizationService = localizationService;
-
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged += OnLocaleChanged;
-			}
+			_settingsService = settingsService;
 
 			EnsureInitialized();
+			InitializeSaveSlotsPanel();
+			InitializeOptionsView();
 			SubscribeToGameState();
 			ApplyGameState(_gameStateMachine.CurrentState);
 		}
@@ -94,11 +89,7 @@ namespace TLN.UI.Pause
 			UnsubscribeFromUI();
 
 			_saveSlotsPanel?.Dispose();
-
-			if (_localizationService != null)
-			{
-				_localizationService.LocaleChanged -= OnLocaleChanged;
-			}
+			_optionsView?.Dispose();
 		}
 
 		private void OnLoadClicked()
@@ -108,6 +99,13 @@ namespace TLN.UI.Pause
 
 		private void ShowLoadSlotsPanel()
 		{
+			InitializeSaveSlotsPanel();
+
+			if (_saveSlotsPanel == null)
+			{
+				return;
+			}
+
 			_navigationPanel.SetVisible(false);
 			_settingsPanel.SetVisible(false);
 			_saveSlotsPanel.ShowLoadGame();
@@ -138,30 +136,15 @@ namespace TLN.UI.Pause
 			_loadButton = documentRoot.RequiredQ<Button>("load-button");
 			_settingsButton = documentRoot.RequiredQ<Button>("settings-button");
 			_quitButton = documentRoot.RequiredQ<Button>("quit-button");
-			_settingsBackButton = documentRoot.RequiredQ<Button>("pause-settings-back-button");
-			_languageDropdown = documentRoot.RequiredQ<DropdownField>("pause-language-dropdown");
-
-			_saveSlotsPanel = new SaveSlotsPanel(
-				documentRoot,
-				_saveRepository,
-				_localizationService,
-				null,
-				OnLoadGameSlotSelected,
-				ShowNavigationPanel
-			);
-
-			SettingsMenuHelper.ConfigureLanguageDropdown(_languageDropdown);
 
 			_resumeButton.clicked += OnResumeClicked;
 			_settingsButton.clicked += OnSettingsClicked;
 			_quitButton.clicked += OnQuitClicked;
-			_settingsBackButton.clicked += OnSettingsBackClicked;
 			_saveButton.clicked += OnSaveClicked;
-
-			_languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
+			_loadButton.clicked += OnLoadClicked;
 
 			RefreshSaveButtonState();
-			_loadButton.SetEnabled(false);
+			InitializeSaveSlotsPanel();
 
 			SetMenuVisible(false);
 			ShowNavigationPanel();
@@ -203,6 +186,11 @@ namespace TLN.UI.Pause
 				_saveButton.clicked -= OnSaveClicked;
 			}
 
+			if (_loadButton != null)
+			{
+				_loadButton.clicked -= OnLoadClicked;
+			}
+
 			if (_settingsButton != null)
 			{
 				_settingsButton.clicked -= OnSettingsClicked;
@@ -212,13 +200,6 @@ namespace TLN.UI.Pause
 			{
 				_quitButton.clicked -= OnQuitClicked;
 			}
-
-			if (_settingsBackButton != null)
-			{
-				_settingsBackButton.clicked -= OnSettingsBackClicked;
-			}
-
-			_languageDropdown?.UnregisterValueChangedCallback(OnLanguageChanged);
 		}
 
 		private void RefreshSaveButtonState()
@@ -226,6 +207,10 @@ namespace TLN.UI.Pause
 			bool canSave = _gameSaveService != null && _gameSaveService.CanSaveManually;
 
 			_saveButton?.SetEnabled(canSave);
+
+			bool canLoad = _saveRepository != null && _saveRepository.TryGetMostRecentSlot(out _);
+
+			_loadButton?.SetEnabled(canLoad);
 		}
 
 		private void OnSaveClicked()
@@ -248,7 +233,6 @@ namespace TLN.UI.Pause
 			if (isPaused)
 			{
 				ShowNavigationPanel();
-				SyncLanguageDropdown();
 			}
 
 			SetMenuVisible(isPaused);
@@ -291,8 +275,6 @@ namespace TLN.UI.Pause
 				return;
 			}
 
-			SyncLanguageDropdown();
-
 			_navigationPanel.SetVisible(false);
 			_settingsPanel.SetVisible(true);
 		}
@@ -307,11 +289,6 @@ namespace TLN.UI.Pause
 			ShowSettingsPanel();
 		}
 
-		private void OnSettingsBackClicked()
-		{
-			ShowNavigationPanel();
-		}
-
 		private async void OnQuitClicked()
 		{
 			if (_sceneLoader != null)
@@ -320,38 +297,36 @@ namespace TLN.UI.Pause
 			}
 		}
 
-		private void OnLanguageChanged(ChangeEvent<string> changeEvent)
+		private void InitializeSaveSlotsPanel()
 		{
-			if (_localizationService == null)
+			if (_root == null || _saveSlotsPanel != null || _saveRepository == null || _localizationService == null)
 			{
-				SyncLanguageDropdown();
 				return;
 			}
 
-			string localeCode = SettingsMenuHelper.GetLocaleCode(changeEvent.newValue);
+			_saveSlotsPanel = new SaveSlotsPanel(
+				_root,
+				_saveRepository,
+				_localizationService,
+				null,
+				OnLoadGameSlotSelected,
+				ShowNavigationPanel
+			);
+		}
 
-			if (string.IsNullOrEmpty(localeCode))
+		private void InitializeOptionsView()
+		{
+			if (_settingsPanel == null || _settingsService == null || _optionsView != null)
 			{
-				SyncLanguageDropdown();
 				return;
 			}
 
-			bool wasChanged = _localizationService.TrySetLocale(localeCode);
-
-			if (!wasChanged)
-			{
-				SyncLanguageDropdown();
-			}
-		}
-
-		private void OnLocaleChanged()
-		{
-			SyncLanguageDropdown();
-		}
-
-		private void SyncLanguageDropdown()
-		{
-			SettingsMenuHelper.SyncLanguageDropdown(_languageDropdown, _localizationService);
+			_optionsView = new OptionsView(
+				_settingsPanel,
+				_settingsService,
+				_localizationService,
+				ShowNavigationPanel
+			);
 		}
 	}
 }

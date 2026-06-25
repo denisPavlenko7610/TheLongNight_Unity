@@ -16,8 +16,256 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: 8ab874e6499004d4094055bee73367e7, type: 2}
   m_Metadata:
-    m_Items: []
-  m_TableData: []
+    m_Items:
+    - rid: 846414318321271339
+  m_TableData:
+  - m_Id: 60000001000000
+    m_Localized: "You are hungry."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000002000000
+    m_Localized: "You are thirsty."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000003000000
+    m_Localized: "You are exhausted."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000004000000
+    m_Localized: "You are freezing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000005000000
+    m_Localized: "Your condition is critical."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000006000000
+    m_Localized: "You must sleep at least {0} hour(s)."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000007000000
+    m_Localized: "You can sleep at most {0} hour(s)."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000008000000
+    m_Localized: "You slept for {0} hour(s)."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000009000000
+    m_Localized: "Invalid item slot."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000010000000
+    m_Localized: "This item cannot be used."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000011000000
+    m_Localized: "This item cannot be consumed."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000012000000
+    m_Localized: "This item cannot be placed."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000013000000
+    m_Localized: "This item cannot be equipped."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000014000000
+    m_Localized: "Placing {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000015000000
+    m_Localized: "Placed {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000016000000
+    m_Localized: "Used {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000017000000
+    m_Localized: "Cannot place item here."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000018000000
+    m_Localized: "Addressable service is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000019000000
+    m_Localized: "Item prefab reference is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000020000000
+    m_Localized: "Failed to load item prefab."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000021000000
+    m_Localized: "Equipment service is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000022000000
+    m_Localized: "Picked up {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000023000000
+    m_Localized: "Failed to pick up bedroll."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000024000000
+    m_Localized: "Inventory service is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000025000000
+    m_Localized: "Picked up {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000026000000
+    m_Localized: "Fuel item is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000027000000
+    m_Localized: "Fuel amount must be greater than zero."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000028000000
+    m_Localized: "This item cannot burn."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000029000000
+    m_Localized: "The campfire is full."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000030000000
+    m_Localized: "The campfire is already burning."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000031000000
+    m_Localized: "Not enough fuel."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000032000000
+    m_Localized: "The campfire is not burning."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000033000000
+    m_Localized: "No fuel in inventory."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000034000000
+    m_Localized: "Added fuel: {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000035000000
+    m_Localized: "Fire started."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000036000000
+    m_Localized: "Fire extinguished."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000037000000
+    m_Localized: "Build recipe is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000038000000
+    m_Localized: "Build prefab is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000039000000
+    m_Localized: "No ingredients required."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000040000000
+    m_Localized: "Invalid ingredient."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000041000000
+    m_Localized: "Not enough items: {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000042000000
+    m_Localized: "Not enough {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000043000000
+    m_Localized: "Cannot build here."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000044000000
+    m_Localized: "Built {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000045000000
+    m_Localized: "Item is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000046000000
+    m_Localized: "Equipment slot is missing."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000047000000
+    m_Localized: "Unequipped {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000048000000
+    m_Localized: "No free slot for {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000049000000
+    m_Localized: "Equipped {0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000050000000
+    m_Localized: "Wolf attack: -{0:0} condition."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000051000000
+    m_Localized: "Invalid item."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000052000000
+    m_Localized: "Invalid amount."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000053000000
+    m_Localized: "Too heavy."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000054000000
+    m_Localized: "Invalid inventory slot."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000055000000
+    m_Localized: "Not enough items."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 60000056000000
+    m_Localized: "Not enough {0}."
+    m_Metadata:
+      m_Items: []
+
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 846414318321271339
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries:
+        m_SharedEntries:
+        - id: 60000006000000
+        - id: 60000007000000
+        - id: 60000008000000
+        - id: 60000014000000
+        - id: 60000015000000
+        - id: 60000016000000
+        - id: 60000022000000
+        - id: 60000025000000
+        - id: 60000034000000
+        - id: 60000041000000
+        - id: 60000042000000
+        - id: 60000044000000
+        - id: 60000047000000
+        - id: 60000048000000
+        - id: 60000049000000
+        - id: 60000050000000
+        - id: 60000056000000

@@ -26,7 +26,7 @@
     position: absolute;
     left: 7%;
     top: 10%;
-    width: 520px;
+    width: 86%;
     height: 76%;
     justify-content: flex-start;
 }
@@ -40,8 +40,8 @@
     font-size: 58px;
     unity-font-style: bold;
     letter-spacing: 7px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .main-menu-subtitle {
@@ -49,8 +49,8 @@
     color: rgba(215, 232, 234, 0.82);
     font-size: 14px;
     letter-spacing: 4px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(220, 220, 220, 0.75);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .main-menu-rule {
@@ -79,8 +79,8 @@
     unity-font-style: bold;
     unity-text-align: middle-left;
     letter-spacing: 2px;
-    -unity-text-outline-width: 1px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
 }
 
 .main-menu-button:hover {
@@ -94,7 +94,8 @@
 }
 
 .main-menu-settings-panel {
-    /* Base styles inherited from .tln-settings-panel */
+    width: 1000px;
+    align-self: flex-start;
 }
 
 .main-menu-settings-title {

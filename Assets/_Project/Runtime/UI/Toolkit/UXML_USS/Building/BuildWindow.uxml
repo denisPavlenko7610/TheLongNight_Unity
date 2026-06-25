@@ -1,6 +1,6 @@
 ﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Common/TLNTheme.uss?fileID=7433441132597879392&amp;guid=313b72f53c456244e82be7b681544e83&amp;type=3#TLNTheme"/>
-    <Style src="project://database/Assets/_Project/Runtime/UI/Toolkit/UXML_USS/Building/BuildWindow.uss?fileID=7433441132597879392&amp;guid=49f31d11b15a447eb42126c0c285f335&amp;type=3#BuildWindow"/>
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="BuildWindow.uss"/>
 
     <ui:VisualElement name="build-window-root" class="build-window-root">
         <ui:VisualElement class="build-window tln-panel">

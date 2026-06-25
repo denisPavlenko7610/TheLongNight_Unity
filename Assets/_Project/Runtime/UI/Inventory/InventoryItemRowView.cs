@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TLN.Application.Assets;
 using TLN.Application.Localization;
 using TLN.Gameplay.Equipment;
@@ -63,14 +63,14 @@ namespace TLN.UI.Inventory
 
 		private string CreateMetaText(ItemStack stack)
 		{
-			string weightText = _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
+			string weightText = _localizationService.Get(LocalizationKeys.Inventory.WeightKg, stack.Definition.Weight * stack.Amount, 0f);
 
 			if (stack.Definition is ClothingItemDefinition clothing)
 			{
-				return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
+				return _localizationService.Get(LocalizationKeys.Inventory.MetaClothing, stack.Amount, weightText, clothing.Slot, clothing.WarmthBonus);
 			}
 
-			return _localizationService.Get(LocalizationTableNames.UI, LocalizationKeys.Inventory.MetaDefault, stack.Amount, weightText);
+			return _localizationService.Get(LocalizationKeys.Inventory.MetaDefault, stack.Amount, weightText);
 		}
 
 		private void SetIcon(ItemDefinition definition)
