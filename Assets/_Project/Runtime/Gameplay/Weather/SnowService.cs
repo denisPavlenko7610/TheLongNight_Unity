@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using TLN.Application.GameStates;
 using TLN.Core.Logging;
 using TLN.Gameplay.Player;
 using UnityEngine;
@@ -85,6 +86,7 @@ namespace TLN.Gameplay.Weather
 		private Vector3 _lastVolumeCenter;
 		private float _nextFollowSearchTime;
 		private PlayerRoot _playerRoot;
+		private IGameStateMachine _gameStateMachine;
 		private readonly uint[] _argsData = new uint[5];
 
 		private Vector3 _cachedWindForce;
@@ -139,9 +141,10 @@ namespace TLN.Gameplay.Weather
 		}
 
 		[Inject]
-		public void Construct(PlayerRoot playerRoot)
+		public void Construct(PlayerRoot playerRoot, IGameStateMachine gameStateMachine)
 		{
 			_playerRoot = playerRoot;
+			_gameStateMachine = gameStateMachine;
 		}
 
 		private void Start()
@@ -237,6 +240,11 @@ namespace TLN.Gameplay.Weather
 		private void Update()
 		{
 			if (!_initialized || !_active)
+			{
+				return;
+			}
+
+			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
 			{
 				return;
 			}

@@ -21,7 +21,7 @@ namespace TLN.Gameplay.Interaction
 		[SerializeField] private LayerMask _interactableLayerMask;
 
 		[Header("Debug")]
-		[SerializeField] private bool _drawDebugRay = true;
+		[SerializeField] private bool _drawDebugRay = false;
 		[SerializeField] private Color _debugHitColor = Color.green;
 		[SerializeField] private Color _debugMissColor = Color.red;
 		[SerializeField] private Color _debugNormalColor = Color.yellow;

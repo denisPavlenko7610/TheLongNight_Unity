@@ -36,9 +36,11 @@ namespace TLN.Application.Localization
 
 		public static bool TrySetLocale(string code)
 		{
-			var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+			Locale locale = LocalizationSettings.AvailableLocales.GetLocale(code);
 			if (locale == null)
+			{
 				return false;
+			}
 			LocalizationSettings.SelectedLocale = locale;
 			return true;
 		}
