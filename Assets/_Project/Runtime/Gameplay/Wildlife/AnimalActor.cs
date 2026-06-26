@@ -366,7 +366,7 @@ namespace TLN.Gameplay.Wildlife
 
             _survivalService.DamageCondition(_definition.ConditionDamage);
 
-            _notificationService?.Show(LocalizationKeys.WolfAttack(_definition.ConditionDamage));
+            _notificationService?.Show(Loc.WolfAttack(_definition.ConditionDamage));
         }
 
         private void ApplyState(AnimalStateId state)

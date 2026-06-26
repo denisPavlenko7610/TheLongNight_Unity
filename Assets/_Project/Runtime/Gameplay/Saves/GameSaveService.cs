@@ -56,7 +56,7 @@ namespace TLN.Gameplay.Saves
 		{
 			if (!CanSaveManually)
 			{
-				_notificationService?.Show(LocalizationKeys.ManualUnavailable);
+				_notificationService?.Show(Loc.ManualUnavailable);
 
 				return false;
 			}
@@ -79,11 +79,11 @@ namespace TLN.Gameplay.Saves
 			{
 				await Awaitable.MainThreadAsync();
 				TLNLogger.LogError($"Failed to save checkpoint. {exception}");
-				_notificationService?.Show(LocalizationKeys.Failed);
+				_notificationService?.Show(Loc.Failed);
 				return false;
 			}
 
-			_notificationService?.Show(LocalizationKeys.Saved);
+			_notificationService?.Show(Loc.Saved);
 
 			return true;
 		}
@@ -102,14 +102,14 @@ namespace TLN.Gameplay.Saves
 
 			if (data == null)
 			{
-				_notificationService?.Show(LocalizationKeys.SlotEmpty(slotId));
+				_notificationService?.Show(Loc.SlotEmpty(slotId));
 
 				return false;
 			}
 
 			ApplySaveData(data);
 
-			_notificationService?.Show(LocalizationKeys.Loaded);
+			_notificationService?.Show(Loc.Loaded);
 
 			return true;
 		}

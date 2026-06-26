@@ -55,12 +55,12 @@ namespace TLN.Gameplay.Equipment
 		{
 			if (item == null)
 			{
-				return OperationResult.Failure(LocalizationKeys.EquipmentItemMissing);
+				return OperationResult.Failure(Loc.EquipmentItemMissing);
 			}
 
 			if (item.Slot == ClothingSlotId.None)
 			{
-				return OperationResult.Failure(LocalizationKeys.EquipmentSlotMissing);
+				return OperationResult.Failure(Loc.EquipmentSlotMissing);
 			}
 
 			if (IsEquipped(item))
@@ -69,7 +69,7 @@ namespace TLN.Gameplay.Equipment
 				RecalculateWarmthBonus();
 				Changed?.Invoke();
 
-				return OperationResult.Success(LocalizationKeys.Unequipped(item.DisplayName));
+				return OperationResult.Success(Loc.Unequipped(item.DisplayName));
 			}
 
 			int equippedCount = GetEquippedCount(item.Slot);
@@ -77,14 +77,14 @@ namespace TLN.Gameplay.Equipment
 
 			if (equippedCount >= slotCapacity)
 			{
-				return OperationResult.Failure(LocalizationKeys.NoFreeSlot(item.Slot));
+				return OperationResult.Failure(Loc.NoFreeSlot(item.Slot));
 			}
 
 			_equippedItems.Add(item);
 			RecalculateWarmthBonus();
 			Changed?.Invoke();
 
-			return OperationResult.Success(LocalizationKeys.Equipped(item.DisplayName));
+			return OperationResult.Success(Loc.Equipped(item.DisplayName));
 		}
 
 		private void RecalculateWarmthBonus()

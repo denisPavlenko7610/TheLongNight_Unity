@@ -2,7 +2,7 @@ using UnityEngine.Localization.Settings;
 
 namespace TLN.Application.Localization
 {
-	public static class LocalizationKeys
+	public static class Loc
 	{
 		private static string ui(string key, params object[] args) =>
 			LocalizationSettings.StringDatabase.GetLocalizedString("UI", key, arguments: args);
@@ -10,10 +10,6 @@ namespace TLN.Application.Localization
 		private static string gameplay(string key, params object[] args) =>
 			LocalizationSettings.StringDatabase.GetLocalizedString("Gameplay", key, arguments: args);
 
-		// Simple keys (no format arguments)
-		public static string CommonBack => ui("common.back");
-		public static string CommonUse => ui("common.use");
-		public static string CommonBuild => ui("common.build");
 		public static string HeaderBackpack => ui("survival.header.backpack");
 		public static string HeaderCrafting => ui("survival.header.crafting");
 		public static string HeaderFoodWater => ui("survival.header.food_water");
@@ -21,15 +17,6 @@ namespace TLN.Application.Localization
 		public static string HeaderTools => ui("survival.header.tools");
 		public static string HeaderClothing => ui("survival.header.clothing");
 		public static string HeaderFire => ui("survival.header.fire");
-		public static string SectionItems => ui("survival.section.items");
-		public static string SortAlphabetically => ui("survival.sort.alphabetically");
-		public static string CategoryAll => ui("survival.category.all");
-		public static string CategoryFoodWater => ui("survival.category.food_water");
-		public static string CategoryMedicine => ui("survival.category.medicine");
-		public static string CategoryTools => ui("survival.category.tools");
-		public static string CategoryClothing => ui("survival.category.clothing");
-		public static string CategoryFire => ui("survival.category.fire");
-		public static string CategoryCrafting => ui("survival.category.crafting");
 		public static string EmptyBackpack => ui("survival.empty.backpack");
 		public static string EmptyCategory => ui("survival.empty.category");
 		public static string NothingSelected => ui("survival.empty.nothing_selected");
@@ -85,7 +72,6 @@ namespace TLN.Application.Localization
 		public static string SettingsControlsLookSmoothing => ui("settings.controls.look_smoothing");
 		public static string SettingsControlsInvertMouse => ui("settings.controls.invert_mouse");
 		public static string SettingsGameplayLanguage => ui("settings.gameplay.language");
-		public static string SettingsGameplaySubtitles => ui("settings.gameplay.subtitles");
 		public static string SettingsGameplayAutoWalk => ui("settings.gameplay.auto_walk");
 		public static string SettingsGameplayAutoHarvest => ui("settings.gameplay.auto_harvest");
 		public static string SettingsDisplayModeFullscreen => ui("settings.display_mode.fullscreen");
@@ -103,7 +89,6 @@ namespace TLN.Application.Localization
 		public static string ItemsInvalidSlot => gameplay("item.invalid_slot");
 		public static string CannotConsume => gameplay("item.cannot_consume");
 
-		// Keys with format arguments
 		public static string CampfireStateLabel(params object[] args) => ui("campfire.state_label", args);
 		public static string CampfireFuelLabel(params object[] args) => ui("campfire.fuel_label", args);
 		public static string FuelAdded(params object[] args) => gameplay("campfire.fuel_added", args);

@@ -112,7 +112,7 @@ namespace TLN.UI.Inventory
 
 		private void RefreshWeight()
 		{
-			_weightLabel.text = LocalizationKeys.WeightKg(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
+			_weightLabel.text = Loc.WeightKg(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
 		}
 
 		private void RefreshItems()

@@ -27,13 +27,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = LocalizationKeys.InventoryInvalidItem;
+				reason = Loc.InventoryInvalidItem;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = LocalizationKeys.InvalidAmount;
+				reason = Loc.InvalidAmount;
 				return false;
 			}
 
@@ -42,7 +42,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (weightAfterAdd > MaxCarryWeight)
 			{
-				reason = LocalizationKeys.TooHeavy;
+				reason = Loc.TooHeavy;
 				return false;
 			}
 
@@ -110,20 +110,20 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (index < 0 || index >= _items.Count)
 			{
-				reason = LocalizationKeys.InventoryInvalidSlot;
+				reason = Loc.InventoryInvalidSlot;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = LocalizationKeys.InvalidAmount;
+				reason = Loc.InvalidAmount;
 				return false;
 			}
 
 			ItemStack stack = _items[index];
 			if (amount > stack.Amount)
 			{
-				reason = LocalizationKeys.NotEnough;
+				reason = Loc.NotEnough;
 				return false;
 			}
 
@@ -149,13 +149,13 @@ namespace TLN.Gameplay.Inventory
 		{
 			if (definition == null)
 			{
-				reason = LocalizationKeys.InventoryInvalidItem;
+				reason = Loc.InventoryInvalidItem;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				reason = LocalizationKeys.InvalidAmount;
+				reason = Loc.InvalidAmount;
 				return false;
 			}
 
@@ -163,7 +163,7 @@ namespace TLN.Gameplay.Inventory
 
 			if (availableAmount < amount)
 			{
-				reason = LocalizationKeys.InventoryNotEnoughItem(definition.DisplayName);
+				reason = Loc.InventoryNotEnoughItem(definition.DisplayName);
 				return false;
 			}
 

@@ -32,7 +32,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Hunger.Value,
 				DefaultWarningThreshold,
-				LocalizationKeys.Hunger,
+				Loc.Hunger,
 				unscaledTime,
 				ref _nextHungerWarningTime
 			);
@@ -40,7 +40,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Thirst.Value,
 				DefaultWarningThreshold,
-				LocalizationKeys.Thirst,
+				Loc.Thirst,
 				unscaledTime,
 				ref _nextThirstWarningTime
 			);
@@ -48,7 +48,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Fatigue.Value,
 				DefaultWarningThreshold,
-				LocalizationKeys.Exhausted,
+				Loc.Exhausted,
 				unscaledTime,
 				ref _nextFatigueWarningTime
 			);
@@ -56,7 +56,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Cold.Value,
 				DefaultWarningThreshold,
-				LocalizationKeys.Freezing,
+				Loc.Freezing,
 				unscaledTime,
 				ref _nextColdWarningTime
 			);
@@ -64,7 +64,7 @@ namespace TLN.Gameplay.Survival
 			CheckStatWarning(
 				_survivalService.Condition.Value,
 				ConditionCriticalThreshold,
-				LocalizationKeys.ConditionCritical,
+				Loc.ConditionCritical,
 				unscaledTime,
 				ref _nextConditionWarningTime,
 				true

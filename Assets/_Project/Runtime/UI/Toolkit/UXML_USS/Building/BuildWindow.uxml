@@ -4,12 +4,30 @@
 
     <ui:VisualElement name="build-window-root" class="build-window-root">
         <ui:VisualElement class="build-window tln-panel">
-            <ui:Label text="BUILD" class="build-title"/>
-            <ui:Label text="Choose what to build." class="build-description"/>
+            <ui:Label text="BUILD" class="build-title">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
+                                                              entry="Id(2587184201728)"/>
+                </Bindings>
+            </ui:Label>
+            <ui:Label text="Choose what to build." class="build-description">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                              entry="Id(30511015242496)"/>
+                </Bindings>
+            </ui:Label>
 
             <ui:ScrollView name="build-recipes-scroll-view" class="build-recipes-scroll-view"/>
 
-            <ui:Button name="build-close-button" text="CLOSE" class="build-close-button"/>
+            <ui:Button name="build-close-button" text="CLOSE" class="build-close-button">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
+                                                              entry="Id(30511014242496)"/>
+                </Bindings>
+            </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -3,6 +3,12 @@
     <Style src="LoadingScreen.uss"/>
 
     <ui:VisualElement name="loading-screen-overlay">
-        <ui:Label name="loading-screen-label" text="Loading..."/>
+        <ui:Label name="loading-screen-label" text="Loading...">
+            <Bindings>
+                <UnityEngine.Localization.LocalizedString property="text"
+                                                          table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                          entry="Id(30511020242496)"/>
+            </Bindings>
+        </ui:Label>
     </ui:VisualElement>
 </ui:UXML>

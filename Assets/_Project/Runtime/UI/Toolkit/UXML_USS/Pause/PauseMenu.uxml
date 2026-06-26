@@ -12,7 +12,13 @@
             <ui:Label
                     name="pause-title-label"
                     text="PAUSE"
-                    class="pause-title"/>
+                    class="pause-title">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                              entry="Id(30215479885824)"/>
+                </Bindings>
+            </ui:Label>
 
             <ui:VisualElement name="save-slots-panel" class="tln-settings-panel save-slots-panel">
                 <ui:Label name="save-slots-title-label" class="tln-settings-title" text="LOAD GAME"/>
@@ -46,21 +52,21 @@
                 <ui:Button name="save-button" text="SAVE" class="pause-button">
                     <Bindings>
                         <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
                                                                   entry="Id(30338385575936)"/>
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="load-button" text="LOAD" class="pause-button">
                     <Bindings>
                         <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
                                                                   entry="Id(30396115976192)"/>
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="settings-button" text="OPTIONS" class="pause-button">
                     <Bindings>
                         <UnityEngine.Localization.LocalizedString property="text"
-                                                                  table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                                  table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
                                                                   entry="Id(30454492299264)"/>
                     </Bindings>
                 </ui:Button>

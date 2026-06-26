@@ -178,7 +178,7 @@ namespace TLN.UI.HUD
 
 			GameTime time = _gameTimeService.CurrentTime;
 
-			SetLabel(_timeDayLabel, LocalizationKeys.HUDDay(time.Day));
+			SetLabel(_timeDayLabel, Loc.HUDDay(time.Day));
 			SetLabel(_timePeriodLabel, GetTimePeriodKey(time.Hour));
 
 			bool isDay = IsDayTime(time.Hour);
@@ -279,10 +279,10 @@ namespace TLN.UI.HUD
 
 			return hour switch
 			{
-				>= 5 and < morningEnd => LocalizationKeys.HUDMorning,
-				>= morningEnd and < afternoonEnd => LocalizationKeys.HUDAfternoon,
-				>= afternoonEnd and < eveningEnd => LocalizationKeys.HUDEvening,
-				_ => LocalizationKeys.HUDNight
+				>= 5 and < morningEnd => Loc.HUDMorning,
+				>= morningEnd and < afternoonEnd => Loc.HUDAfternoon,
+				>= afternoonEnd and < eveningEnd => Loc.HUDEvening,
+				_ => Loc.HUDNight
 			};
 		}
 
@@ -307,7 +307,7 @@ namespace TLN.UI.HUD
 				return;
 			}
 
-			_interactionPromptLabel.text = LocalizationKeys.HUDInteractionPrompt(text);
+			_interactionPromptLabel.text = Loc.HUDInteractionPrompt(text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
 

@@ -31,8 +31,8 @@ namespace TLN.Gameplay.Items
 		public string SaveTypeId => SaveType;
 
 		public string InteractionText => _definition == null
-			? LocalizationKeys.InteractionPickup ?? "Pick up item"
-			: LocalizationKeys.InteractionPickupFormat(_definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
+			? Loc.InteractionPickup ?? "Pick up item"
+			: Loc.InteractionPickupFormat(_definition.DisplayName) ?? $"Pick up {_definition.DisplayName}";
 
 		[Inject]
 		public void Construct(
@@ -91,7 +91,7 @@ namespace TLN.Gameplay.Items
 				return;
 			}
 
-			_notificationService?.Show(LocalizationKeys.ItemsPickedUp(_definition.DisplayName));
+			_notificationService?.Show(Loc.ItemsPickedUp(_definition.DisplayName));
 
 			if (_persistentEntity != null && _persistentEntity.IsSceneObject)
 			{

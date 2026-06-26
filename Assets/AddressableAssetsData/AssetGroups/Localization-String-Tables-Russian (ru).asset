@@ -35,6 +35,13 @@ MonoBehaviour:
     - Locale-ru
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfbb418571ec4d5d8cc2ba29cbaaea23
+    m_Address: Common_ru
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a99c1c1bac1203048888ab62421946ee
     m_Address: Recipes_ru
     m_ReadOnly: 1

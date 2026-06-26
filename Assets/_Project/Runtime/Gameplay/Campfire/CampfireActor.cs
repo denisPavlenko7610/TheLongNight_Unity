@@ -121,25 +121,25 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (fuelDefinition == null)
 			{
-				failureReason = LocalizationKeys.FuelMissing;
+				failureReason = Loc.FuelMissing;
 				return false;
 			}
 
 			if (amount <= 0)
 			{
-				failureReason = LocalizationKeys.FuelAmountZero;
+				failureReason = Loc.FuelAmountZero;
 				return false;
 			}
 
 			if (fuelDefinition.BurnMinutes <= 0)
 			{
-				failureReason = LocalizationKeys.CannotBurn;
+				failureReason = Loc.CannotBurn;
 				return false;
 			}
 
 			if (_remainingBurnMinutes >= _maxBurnMinutes)
 			{
-				failureReason = LocalizationKeys.Full;
+				failureReason = Loc.Full;
 				return false;
 			}
 
@@ -177,13 +177,13 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (IsBurning)
 			{
-				failureReason = LocalizationKeys.AlreadyBurning;
+				failureReason = Loc.AlreadyBurning;
 				return false;
 			}
 
 			if (_remainingBurnMinutes < _minimumBurnMinutesToIgnite)
 			{
-				failureReason = LocalizationKeys.NotEnoughFuel;
+				failureReason = Loc.NotEnoughFuel;
 				return false;
 			}
 
@@ -197,7 +197,7 @@ namespace TLN.Gameplay.Campfire
 		{
 			if (!IsBurning)
 			{
-				failureReason = LocalizationKeys.NotBurning;
+				failureReason = Loc.NotBurning;
 				return false;
 			}
 

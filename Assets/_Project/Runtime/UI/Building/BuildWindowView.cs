@@ -107,7 +107,7 @@ namespace TLN.UI.Building
 
 			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
 			{
-				_notificationService?.Show(LocalizationKeys.BuildRecipesMissing);
+				_notificationService?.Show(Loc.BuildRecipesMissing);
 				return;
 			}
 
@@ -134,7 +134,7 @@ namespace TLN.UI.Building
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show(LocalizationKeys.BuildServiceMissing);
+				_notificationService?.Show(Loc.BuildServiceMissing);
 				return;
 			}
 

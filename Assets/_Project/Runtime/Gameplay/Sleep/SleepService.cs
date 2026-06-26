@@ -36,18 +36,18 @@ namespace TLN.Gameplay.Sleep
 		{
 			if (hours < _config.MinSleepHours)
 			{
-				return SleepResult.Failure(LocalizationKeys.MinHours(_config.MinSleepHours));
+				return SleepResult.Failure(Loc.MinHours(_config.MinSleepHours));
 			}
 
 			if (hours > _config.MaxSleepHours)
 			{
-				return SleepResult.Failure(LocalizationKeys.MaxHours(_config.MaxSleepHours));
+				return SleepResult.Failure(Loc.MaxHours(_config.MaxSleepHours));
 			}
 
 			ApplySleepEffects(hours);
 			_gameTimeService.AdvanceHours(hours);
 
-			string message = LocalizationKeys.Result(hours);
+			string message = Loc.Result(hours);
 			_notificationService.Show(message);
 
 			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);

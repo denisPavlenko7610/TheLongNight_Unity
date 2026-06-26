@@ -115,8 +115,8 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_stateLabel.text = LocalizationKeys.CampfireStateLabel(_currentCampfire.State);
-			_fuelLabel.text = LocalizationKeys.CampfireFuelLabel(_currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
+			_stateLabel.text = Loc.CampfireStateLabel(_currentCampfire.State);
+			_fuelLabel.text = Loc.CampfireFuelLabel(_currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
 			float fuelPercent = _currentCampfire.MaxBurnMinutes > 0
 				? Mathf.Clamp01((float)_currentCampfire.RemainingBurnMinutes / _currentCampfire.MaxBurnMinutes) * 100f
 				: 0f;
@@ -135,7 +135,7 @@ namespace TLN.UI.Campfire
 
 			if (!TryFindFuelItem(out int itemIndex, out FuelItemDefinition fuel))
 			{
-				_notificationService?.Show(LocalizationKeys.NoFuelInInventory);
+				_notificationService?.Show(Loc.NoFuelInInventory);
 				return;
 			}
 
@@ -170,7 +170,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(LocalizationKeys.FuelAdded(fuel.DisplayName));
+			_notificationService?.Show(Loc.FuelAdded(fuel.DisplayName));
 			Refresh();
 		}
 
@@ -189,7 +189,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(LocalizationKeys.FireStarted);
+			_notificationService?.Show(Loc.FireStarted);
 
 			if (_gameSaveService != null)
 			{
@@ -214,7 +214,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			_notificationService?.Show(LocalizationKeys.FireExtinguished);
+			_notificationService?.Show(Loc.FireExtinguished);
 			Refresh();
 		}
 

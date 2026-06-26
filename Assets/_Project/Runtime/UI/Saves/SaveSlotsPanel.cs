@@ -90,8 +90,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.NewGame;
 
-			_titleLabel.text = LocalizationKeys.NewGame;
-			_descriptionLabel.text = LocalizationKeys.NewGameDescription;
+			_titleLabel.text = Loc.NewGame;
+			_descriptionLabel.text = Loc.NewGameDescription;
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -102,8 +102,8 @@ namespace TLN.UI.Saves
 		{
 			_mode = SaveSlotsPanelMode.LoadGame;
 
-			_titleLabel.text = LocalizationKeys.LoadGame;
-			_descriptionLabel.text = LocalizationKeys.LoadGameDescription;
+			_titleLabel.text = Loc.LoadGame;
+			_descriptionLabel.text = Loc.LoadGameDescription;
 
 			Refresh();
 			_panelRoot.SetVisible(true);
@@ -143,7 +143,7 @@ namespace TLN.UI.Saves
 
 		private string CreateEmptySlotText(int slotId)
 		{
-			return LocalizationKeys.SlotFormat(slotId, LocalizationKeys.Empty);
+			return Loc.SlotFormat(slotId, Loc.Empty);
 		}
 
 		private string CreateOccupiedSlotText(int slotId, GameSaveData saveData)
@@ -153,14 +153,14 @@ namespace TLN.UI.Saves
 			string savedAt = CreateSavedAtText(saveData.savedAtUtc);
 
 			string reason = string.IsNullOrWhiteSpace(saveData.saveReason)
-				? LocalizationKeys.DefaultReason
+				? Loc.DefaultReason
 				: saveData.saveReason;
 
 			string details = string.IsNullOrEmpty(savedAt)
-				? LocalizationKeys.DetailsFormat(gameTime, reason)
-				: LocalizationKeys.DetailsFormatWithDate(gameTime, reason, savedAt);
+				? Loc.DetailsFormat(gameTime, reason)
+				: Loc.DetailsFormatWithDate(gameTime, reason, savedAt);
 
-			return LocalizationKeys.SlotFormat(slotId, details);
+			return Loc.SlotFormat(slotId, details);
 		}
 
 		private string CreateGameTimeText(int totalMinutes)
@@ -172,7 +172,7 @@ namespace TLN.UI.Saves
 			int hour = minutesInDay / MinutesPerHour;
 			int minute = minutesInDay % MinutesPerHour;
 
-			return LocalizationKeys.DayTimeFormat(day, hour.ToString("00"), minute.ToString("00"));
+			return Loc.DayTimeFormat(day, hour.ToString("00"), minute.ToString("00"));
 		}
 
 		private static string CreateSavedAtText(string savedAtUtc)
@@ -255,7 +255,7 @@ namespace TLN.UI.Saves
 		{
 			_pendingOverwriteSlotId = slotId;
 
-			_overwriteLabel.text = LocalizationKeys.OverwriteLabel(slotId);
+			_overwriteLabel.text = Loc.OverwriteLabel(slotId);
 
 			_overwriteRoot.SetVisible(true);
 		}

@@ -13,6 +13,12 @@
                 <ui:VisualElement name="item-condition-fill" class="item-condition-fill"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Button name="item-use-button" text="USE" class="item-use-button"/>
+        <ui:Button name="item-use-button" text="USE" class="item-use-button">
+            <Bindings>
+                <UnityEngine.Localization.LocalizedString property="text"
+                                                          table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
+                                                          entry="Id(2523640496128)"/>
+            </Bindings>
+        </ui:Button>
     </ui:VisualElement>
 </ui:UXML>

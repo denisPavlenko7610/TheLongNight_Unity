@@ -1,4 +1,5 @@
 ﻿using TLN.Application.Input;
+using TLN.Application.Localization;
 using TLN.Gameplay.Sleep;
 using TLN.UI.Common;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace TLN.UI.Sleep
 
 		private VisualElement _root;
 
+		private Label _titleLabel;
+		private Label _descriptionLabel;
 		private Button _sleep1Button;
 		private Button _sleep2Button;
 		private Button _sleep4Button;
@@ -50,6 +53,8 @@ namespace TLN.UI.Sleep
 			_pickUpButton = documentRoot.RequiredQ<Button>("sleep-pick-up-button");
 			_pickUpButton.clicked += OnPickUpClicked;
 
+			_titleLabel = documentRoot.RequiredQ<Label>("sleep-title-label");
+			_descriptionLabel = documentRoot.RequiredQ<Label>("sleep-description-label");
 			_sleep1Button = documentRoot.RequiredQ<Button>("sleep-1h-button");
 			_sleep2Button = documentRoot.RequiredQ<Button>("sleep-2h-button");
 			_sleep4Button = documentRoot.RequiredQ<Button>("sleep-4h-button");
@@ -61,10 +66,15 @@ namespace TLN.UI.Sleep
 			_sleep4Button.clicked += OnSleep4Clicked;
 			_sleep8Button.clicked += OnSleep8Clicked;
 			_cancelButton.clicked += Hide;
+
+			RefreshLocalizedText();
+			LocaleCodes.LocaleChanged += RefreshLocalizedText;
 		}
 
 		private void OnDestroy()
 		{
+			LocaleCodes.LocaleChanged -= RefreshLocalizedText;
+
 			_sleep1Button.clicked -= OnSleep1Clicked;
 			_sleep2Button.clicked -= OnSleep2Clicked;
 			_sleep4Button.clicked -= OnSleep4Clicked;
@@ -72,6 +82,18 @@ namespace TLN.UI.Sleep
 			_cancelButton.clicked -= Hide;
 
 			_pickUpButton.clicked -= OnPickUpClicked;
+		}
+
+		private void RefreshLocalizedText()
+		{
+			_titleLabel.text = Loc.SleepWindowTitle;
+			_descriptionLabel.text = Loc.Description;
+			_sleep1Button.text = Loc.OneHour;
+			_sleep2Button.text = Loc.TwoHours;
+			_sleep4Button.text = Loc.FourHours;
+			_sleep8Button.text = Loc.EightHours;
+			_pickUpButton.text = Loc.PickUp;
+			_cancelButton.text = Loc.Cancel;
 		}
 
 		public void Show(BedrollActor bedrollActor)

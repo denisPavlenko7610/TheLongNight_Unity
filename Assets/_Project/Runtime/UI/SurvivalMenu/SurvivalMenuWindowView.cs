@@ -37,7 +37,8 @@ namespace TLN.UI.SurvivalMenu
 		private Label _detailsTitleLabel;
 		private Label _detailsMetaLabel;
 		private Label _detailsDescriptionLabel;
-		private Button _actionButton;
+		private Button _useActionButton;
+		private Button _buildActionButton;
 		private Label _headerTitleLabel;
 		private Label _weightLabel;
 
@@ -55,9 +56,6 @@ namespace TLN.UI.SurvivalMenu
 		private object _selectedItem;
 		private int _iconRequestVersion;
 		private ItemCategory? _currentInventoryCategoryFilter;
-
-		private Label _itemsLabel;
-		private Label _sortLabel;
 
 		[Inject]
 		public void Construct(
@@ -119,9 +117,14 @@ namespace TLN.UI.SurvivalMenu
 				_closeButton.clicked -= Hide;
 			}
 
-			if (_actionButton != null)
+			if (_useActionButton != null)
 			{
-				_actionButton.clicked -= OnActionClicked;
+				_useActionButton.clicked -= OnActionClicked;
+			}
+
+			if (_buildActionButton != null)
+			{
+				_buildActionButton.clicked -= OnActionClicked;
 			}
 
 			if (_listView != null)
@@ -248,11 +251,9 @@ namespace TLN.UI.SurvivalMenu
 			_detailsTitleLabel = documentRoot.RequiredQ<Label>("survival-details-title-label");
 			_detailsMetaLabel = documentRoot.RequiredQ<Label>("survival-details-meta-label");
 			_detailsDescriptionLabel = documentRoot.RequiredQ<Label>("survival-details-description-label");
-			_actionButton = documentRoot.RequiredQ<Button>("survival-action-button");
+			_useActionButton = documentRoot.RequiredQ<Button>("survival-use-action-button");
+			_buildActionButton = documentRoot.RequiredQ<Button>("survival-build-action-button");
 			_fireCategoryButton = documentRoot.RequiredQ<Button>("survival-fire-category-button");
-			_itemsLabel = documentRoot.RequiredQ<Label>("survival-items-label");
-			_sortLabel = documentRoot.RequiredQ<Label>("survival-sort-label");
-
 			_inventoryTabButton.clicked += OnInventoryTabClicked;
 			_foodCategoryButton.clicked += OnFoodCategoryClicked;
 			_fireCategoryButton.clicked += OnFireCategoryClicked;
@@ -261,7 +262,8 @@ namespace TLN.UI.SurvivalMenu
 			_clothesCategoryButton.clicked += OnClothesCategoryClicked;
 			_craftingTabButton.clicked += OnCraftingTabClicked;
 			_closeButton.clicked += Hide;
-			_actionButton.clicked += OnActionClicked;
+			_useActionButton.clicked += OnActionClicked;
+			_buildActionButton.clicked += OnActionClicked;
 
 			SetupListView();
 
@@ -484,7 +486,6 @@ namespace TLN.UI.SurvivalMenu
 
 		private void Refresh()
 		{
-			RefreshLocalizedStaticText();
 			RefreshHeader();
 			ApplyTabVisualState();
 			RebuildListItems();
@@ -499,7 +500,7 @@ namespace TLN.UI.SurvivalMenu
 			{
 				_headerTitleLabel.text = _currentTab == SurvivalMenuTabId.Inventory
 					? GetInventoryHeaderTitle()
-					: LocalizationKeys.HeaderCrafting;
+					: Loc.HeaderCrafting;
 			}
 
 			if (_weightLabel == null || _inventoryService == null)
@@ -507,37 +508,23 @@ namespace TLN.UI.SurvivalMenu
 				return;
 			}
 
-			_weightLabel.text = LocalizationKeys.WeightFormat(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
-		}
-
-		private void RefreshLocalizedStaticText()
-		{
-			_closeButton.text = LocalizationKeys.CommonBack;
-			_itemsLabel.text = LocalizationKeys.SectionItems;
-			_sortLabel.text = LocalizationKeys.SortAlphabetically;
-			_inventoryTabButton.tooltip = LocalizationKeys.CategoryAll;
-			_foodCategoryButton.tooltip = LocalizationKeys.CategoryFoodWater;
-			_medicineCategoryButton.tooltip = LocalizationKeys.CategoryMedicine;
-			_toolsCategoryButton.tooltip = LocalizationKeys.CategoryTools;
-			_clothesCategoryButton.tooltip = LocalizationKeys.CategoryClothing;
-			_fireCategoryButton.tooltip = LocalizationKeys.CategoryFire;
-			_craftingTabButton.tooltip = LocalizationKeys.CategoryCrafting;
+			_weightLabel.text = Loc.WeightFormat(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
 		}
 
 		private string GetInventoryHeaderTitle()
 		{
 			if (!_currentInventoryCategoryFilter.HasValue)
 			{
-				return LocalizationKeys.HeaderBackpack;
+				return Loc.HeaderBackpack;
 			}
 
 			return _currentInventoryCategoryFilter.Value switch
 			{
-				ItemCategory.Food => LocalizationKeys.HeaderFoodWater,
-				ItemCategory.Medicine => LocalizationKeys.HeaderMedicine,
-				ItemCategory.Tool => LocalizationKeys.HeaderTools,
-				ItemCategory.Clothing => LocalizationKeys.HeaderClothing,
-				ItemCategory.Fuel => LocalizationKeys.HeaderFire,
+				ItemCategory.Food => Loc.HeaderFoodWater,
+				ItemCategory.Medicine => Loc.HeaderMedicine,
+				ItemCategory.Tool => Loc.HeaderTools,
+				ItemCategory.Clothing => Loc.HeaderClothing,
+				ItemCategory.Fuel => Loc.HeaderFire,
 				_ => _currentInventoryCategoryFilter.Value.ToString().ToUpperInvariant()
 			};
 		}
@@ -695,8 +682,8 @@ namespace TLN.UI.SurvivalMenu
 			_iconRequestVersion++;
 			_detailsIcon.style.backgroundImage = StyleKeyword.None;
 
-			_actionButton.SetVisible(false);
-			_actionButton.SetEnabled(false);
+			SetActionButtonState(_useActionButton, false, false);
+			SetActionButtonState(_buildActionButton, false, false);
 
 			switch (_selectedItem)
 			{
@@ -728,9 +715,7 @@ namespace TLN.UI.SurvivalMenu
 
 			LoadIcon(item.Definition);
 
-			_actionButton.text = LocalizationKeys.CommonUse;
-			_actionButton.SetVisible(true);
-			_actionButton.SetEnabled(item.Definition.UseKind != ItemUseKind.None);
+			SetActionButtonState(_useActionButton, true, item.Definition.UseKind != ItemUseKind.None);
 		}
 
 		private void ShowRecipeDetails(RecipeRowData item)
@@ -747,9 +732,13 @@ namespace TLN.UI.SurvivalMenu
 
 			bool canBuild = _buildService != null && _buildService.CanBuild(item.Recipe, out _);
 
-			_actionButton.text = LocalizationKeys.CommonBuild;
-			_actionButton.SetVisible(true);
-			_actionButton.SetEnabled(canBuild);
+			SetActionButtonState(_buildActionButton, true, canBuild);
+		}
+
+		private static void SetActionButtonState(Button button, bool isVisible, bool isEnabled)
+		{
+			button.SetVisible(isVisible);
+			button.SetEnabled(isEnabled);
 		}
 
 		private void ShowEmptyDetails()
@@ -758,18 +747,18 @@ namespace TLN.UI.SurvivalMenu
 			{
 				_detailsTitleLabel.text = GetInventoryHeaderTitle();
 
-				_detailsMetaLabel.text = LocalizationKeys.NothingSelected;
+				_detailsMetaLabel.text = Loc.NothingSelected;
 
 				_detailsDescriptionLabel.text = _currentInventoryCategoryFilter.HasValue
-					? LocalizationKeys.EmptyCategory
-					: LocalizationKeys.EmptyBackpack;
+					? Loc.EmptyCategory
+					: Loc.EmptyBackpack;
 
 				return;
 			}
 
-			_detailsTitleLabel.text = LocalizationKeys.HeaderCrafting;
-			_detailsMetaLabel.text = LocalizationKeys.NothingSelected;
-			_detailsDescriptionLabel.text = LocalizationKeys.NoRecipeSelected;
+			_detailsTitleLabel.text = Loc.HeaderCrafting;
+			_detailsMetaLabel.text = Loc.NothingSelected;
+			_detailsDescriptionLabel.text = Loc.NoRecipeSelected;
 		}
 
 		private static string CreateInventoryMetaText(InventoryRowData item)
@@ -790,7 +779,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
 			{
-				return LocalizationKeys.RequirementsNone;
+				return Loc.RequirementsNone;
 			}
 
 			List<string> parts = new();
@@ -807,22 +796,22 @@ namespace TLN.UI.SurvivalMenu
 
 			if (parts.Count == 0)
 			{
-				return LocalizationKeys.RequirementsNone;
+				return Loc.RequirementsNone;
 			}
 
-			return LocalizationKeys.RequirementsFormat(string.Join(", ", parts));
+			return Loc.RequirementsFormat(string.Join(", ", parts));
 		}
 
 		private string GetBuildStateText(BuildRecipeDefinition recipe)
 		{
 			if (_buildService == null)
 			{
-				return LocalizationKeys.SurvivalBuildServiceMissing;
+				return Loc.SurvivalBuildServiceMissing;
 			}
 
 			bool canBuild = _buildService.CanBuild(recipe, out string failureReason);
 			return canBuild
-				? LocalizationKeys.BuildReady
+				? Loc.BuildReady
 				: failureReason;
 		}
 
@@ -830,10 +819,10 @@ namespace TLN.UI.SurvivalMenu
 		{
 			return definition.UseKind switch
 			{
-				ItemUseKind.Consumable => LocalizationKeys.DescriptionConsumable,
-				ItemUseKind.Placeable => LocalizationKeys.DescriptionPlaceable,
-				ItemUseKind.Clothing => LocalizationKeys.DescriptionClothing,
-				_ => LocalizationKeys.DescriptionNoAction
+				ItemUseKind.Consumable => Loc.DescriptionConsumable,
+				ItemUseKind.Placeable => Loc.DescriptionPlaceable,
+				ItemUseKind.Clothing => Loc.DescriptionClothing,
+				_ => Loc.DescriptionNoAction
 			};
 		}
 
@@ -878,7 +867,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (_itemUseService == null)
 			{
-				_notificationService?.Show(LocalizationKeys.ServiceMissingItemUse);
+				_notificationService?.Show(Loc.ServiceMissingItemUse);
 				return;
 			}
 
@@ -890,7 +879,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (_buildService == null)
 			{
-				_notificationService?.Show(LocalizationKeys.ServiceMissingBuild);
+				_notificationService?.Show(Loc.ServiceMissingBuild);
 				return;
 			}
 

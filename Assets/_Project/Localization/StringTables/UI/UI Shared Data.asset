@@ -15,18 +15,6 @@ MonoBehaviour:
   m_TableCollectionName: UI
   m_TableCollectionNameGuidString: 37fc28fc516039c4aa469640f9c1e2a1
   m_Entries:
-  - m_Id: 2449644584960
-    m_Key: common.back
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2523640496128
-    m_Key: common.use
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2587184201728
-    m_Key: common.build
-    m_Metadata:
-      m_Items: []
   - m_Id: 2645493415936
     m_Key: survival.header.backpack
     m_Metadata:
@@ -177,18 +165,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 30280164442112
     m_Key: pause.resume
-    m_Metadata:
-      m_Items: []
-  - m_Id: 30338385575936
-    m_Key: common.save
-    m_Metadata:
-      m_Items: []
-  - m_Id: 30396115976192
-    m_Key: common.load
-    m_Metadata:
-      m_Items: []
-  - m_Id: 30454492299264
-    m_Key: common.options
     m_Metadata:
       m_Items: []
   - m_Id: 30510939242496
@@ -387,10 +363,6 @@ MonoBehaviour:
     m_Key: settings.gameplay.language
     m_Metadata:
       m_Items: []
-  - m_Id: 30510988242496
-    m_Key: settings.gameplay.subtitles
-    m_Metadata:
-      m_Items: []
   - m_Id: 30510989242496
     m_Key: settings.display_mode.fullscreen
     m_Metadata:
@@ -483,15 +455,46 @@ MonoBehaviour:
     m_Key: sleep_window.cancel
     m_Metadata:
       m_Items: []
-
+  - m_Id: 30511012242496
+    m_Key: inventory.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511013242496
+    m_Key: inventory.footer.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511015242496
+    m_Key: build.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511016242496
+    m_Key: campfire.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511017242496
+    m_Key: campfire.add_fuel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511018242496
+    m_Key: campfire.ignite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511019242496
+    m_Key: campfire.extinguish
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511020242496
+    m_Key: loading.title
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
-    rid: 846414318321271111
+    rid: 846414547326337263
   references:
     version: 2
     RefIds:
-    - rid: 846414318321271111
+    - rid: 846414547326337263
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
-        m_CustomEpoch: 1781603928679
+        m_CustomEpoch: 1782483860763

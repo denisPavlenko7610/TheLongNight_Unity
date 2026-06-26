@@ -91,13 +91,13 @@ namespace TLN.Gameplay.Sleep
 
 			if (_packedItemDefinition == null)
 			{
-				_notificationService?.Show(LocalizationKeys.BedrollPickupFailed);
+				_notificationService?.Show(Loc.BedrollPickupFailed);
 				return false;
 			}
 
 			if (_inventoryService == null)
 			{
-				_notificationService?.Show(LocalizationKeys.BedrollInventoryMissing);
+				_notificationService?.Show(Loc.BedrollInventoryMissing);
 				return false;
 			}
 
@@ -113,7 +113,7 @@ namespace TLN.Gameplay.Sleep
 				return false;
 			}
 
-			_notificationService?.Show(LocalizationKeys.BedrollPickedUp(_packedItemDefinition.DisplayName));
+			_notificationService?.Show(Loc.BedrollPickedUp(_packedItemDefinition.DisplayName));
 
 			if (_persistentEntity != null &&
 				_persistentEntity.IsSceneObject)

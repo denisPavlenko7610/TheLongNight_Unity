@@ -10,19 +10,19 @@ namespace TLN.UI.Options
 {
 	public sealed class OptionsView : IDisposable
 	{
-		private static readonly string[] DisplayModeKeys =
+		private static readonly Func<string>[] DisplayModeTextFactories =
 		{
-			LocalizationKeys.SettingsDisplayModeFullscreen,
-			LocalizationKeys.SettingsDisplayModeWindowed,
-			LocalizationKeys.SettingsDisplayModeBorderless
+			() => Loc.SettingsDisplayModeFullscreen,
+			() => Loc.SettingsDisplayModeWindowed,
+			() => Loc.SettingsDisplayModeBorderless
 		};
 
-		private static readonly string[] QualityKeys =
+		private static readonly Func<string>[] QualityTextFactories =
 		{
-			LocalizationKeys.SettingsQualityLow,
-			LocalizationKeys.SettingsQualityMedium,
-			LocalizationKeys.SettingsQualityHigh,
-			LocalizationKeys.SettingsQualityUltra
+			() => Loc.SettingsQualityLow,
+			() => Loc.SettingsQualityMedium,
+			() => Loc.SettingsQualityHigh,
+			() => Loc.SettingsQualityUltra
 		};
 
 		private readonly VisualElement _root;
@@ -502,34 +502,34 @@ namespace TLN.UI.Options
 
 		private void RefreshLocalizedText()
 		{
-			_titleLabel.text = LocalizationKeys.SettingsTitle;
-			_tabButtons["audio"].text = LocalizationKeys.SettingsTabAudio;
-			_tabButtons["graphics"].text = LocalizationKeys.SettingsTabGraphics;
-			_tabButtons["controls"].text = LocalizationKeys.SettingsTabControls;
-			_tabButtons["gameplay"].text = LocalizationKeys.SettingsTabGameplay;
-			_defaultsButton.text = LocalizationKeys.SettingsDefaults;
-			_backButton.text = LocalizationKeys.SettingsBack;
+			_titleLabel.text = Loc.SettingsTitle;
+			_tabButtons["audio"].text = Loc.SettingsTabAudio;
+			_tabButtons["graphics"].text = Loc.SettingsTabGraphics;
+			_tabButtons["controls"].text = Loc.SettingsTabControls;
+			_tabButtons["gameplay"].text = Loc.SettingsTabGameplay;
+			_defaultsButton.text = Loc.SettingsDefaults;
+			_backButton.text = Loc.SettingsBack;
 
-			SetControlLabel(_masterVolume, LocalizationKeys.SettingsAudioMaster);
-			SetControlLabel(_sfxVolume, LocalizationKeys.SettingsAudioSfx);
-			SetControlLabel(_musicVolume, LocalizationKeys.SettingsAudioMusic);
-			SetControlLabel(_ambientVolume, LocalizationKeys.SettingsAudioAmbient);
-			SetControlLabel(_displayModeDropdown, LocalizationKeys.SettingsGraphicsDisplayMode);
-			SetControlLabel(_resolutionDropdown, LocalizationKeys.SettingsGraphicsResolution);
-			SetControlLabel(_qualityDropdown, LocalizationKeys.SettingsGraphicsQuality);
-			SetControlLabel(_textureQualityDropdown, LocalizationKeys.SettingsGraphicsTextureQuality);
-			SetControlLabel(_fieldOfView, LocalizationKeys.SettingsGraphicsFieldOfView);
-			SetControlLabel(_brightness, LocalizationKeys.SettingsGraphicsBrightness);
-			SetControlLabel(_vsyncToggle, LocalizationKeys.SettingsGraphicsVSync);
-			SetControlLabel(_mouseSensitivity, LocalizationKeys.SettingsControlsSensitivity);
-			SetControlLabel(_lookSmoothing, LocalizationKeys.SettingsControlsLookSmoothing);
-			SetControlLabel(_invertMouseToggle, LocalizationKeys.SettingsControlsInvertMouse);
-			SetControlLabel(_languageDropdown, LocalizationKeys.SettingsGameplayLanguage);
-			SetControlLabel(_autoWalkToggle, LocalizationKeys.SettingsGameplayAutoWalk);
-			SetControlLabel(_autoHarvestToggle, LocalizationKeys.SettingsGameplayAutoHarvest);
+			SetControlLabel(_masterVolume, Loc.SettingsAudioMaster);
+			SetControlLabel(_sfxVolume, Loc.SettingsAudioSfx);
+			SetControlLabel(_musicVolume, Loc.SettingsAudioMusic);
+			SetControlLabel(_ambientVolume, Loc.SettingsAudioAmbient);
+			SetControlLabel(_displayModeDropdown, Loc.SettingsGraphicsDisplayMode);
+			SetControlLabel(_resolutionDropdown, Loc.SettingsGraphicsResolution);
+			SetControlLabel(_qualityDropdown, Loc.SettingsGraphicsQuality);
+			SetControlLabel(_textureQualityDropdown, Loc.SettingsGraphicsTextureQuality);
+			SetControlLabel(_fieldOfView, Loc.SettingsGraphicsFieldOfView);
+			SetControlLabel(_brightness, Loc.SettingsGraphicsBrightness);
+			SetControlLabel(_vsyncToggle, Loc.SettingsGraphicsVSync);
+			SetControlLabel(_mouseSensitivity, Loc.SettingsControlsSensitivity);
+			SetControlLabel(_lookSmoothing, Loc.SettingsControlsLookSmoothing);
+			SetControlLabel(_invertMouseToggle, Loc.SettingsControlsInvertMouse);
+			SetControlLabel(_languageDropdown, Loc.SettingsGameplayLanguage);
+			SetControlLabel(_autoWalkToggle, Loc.SettingsGameplayAutoWalk);
+			SetControlLabel(_autoHarvestToggle, Loc.SettingsGameplayAutoHarvest);
 
-			SetDropdownChoices(_displayModeDropdown, _displayModeLabels, DisplayModeKeys);
-			SetDropdownChoices(_qualityDropdown, _qualityLabels, QualityKeys);
+			SetDropdownChoices(_displayModeDropdown, _displayModeLabels, DisplayModeTextFactories);
+			SetDropdownChoices(_qualityDropdown, _qualityLabels, QualityTextFactories);
 			_textureQualityDropdown.choices = _qualityLabels;
 		}
 
@@ -561,12 +561,12 @@ namespace TLN.UI.Options
 			return null;
 		}
 
-		private void SetDropdownChoices(DropdownField dropdown, List<string> target, IReadOnlyList<string> keys)
+		private void SetDropdownChoices(DropdownField dropdown, List<string> target, IReadOnlyList<Func<string>> textFactories)
 		{
 			target.Clear();
-			foreach (string key in keys)
+			foreach (Func<string> textFactory in textFactories)
 			{
-				target.Add(key);
+				target.Add(textFactory());
 			}
 
 			dropdown.choices = target;

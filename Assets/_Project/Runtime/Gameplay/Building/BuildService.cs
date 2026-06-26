@@ -28,19 +28,19 @@ namespace TLN.Gameplay.Building
 		{
 			if (recipe == null)
 			{
-				failureReason = LocalizationKeys.RecipeMissing;
+				failureReason = Loc.RecipeMissing;
 				return false;
 			}
 
 			if (recipe.PlacedPrefab == null)
 			{
-				failureReason = LocalizationKeys.PrefabMissing;
+				failureReason = Loc.PrefabMissing;
 				return false;
 			}
 
 			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
 			{
-				failureReason = LocalizationKeys.NoIngredients;
+				failureReason = Loc.NoIngredients;
 				return false;
 			}
 
@@ -50,7 +50,7 @@ namespace TLN.Gameplay.Building
 
 				if (ingredient == null || ingredient.Item == null)
 				{
-					failureReason = LocalizationKeys.InvalidIngredient;
+					failureReason = Loc.InvalidIngredient;
 					return false;
 				}
 
@@ -58,7 +58,7 @@ namespace TLN.Gameplay.Building
 
 				if (availableAmount < ingredient.Amount)
 				{
-					failureReason = LocalizationKeys.NotEnoughItems(ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
+					failureReason = Loc.NotEnoughItems(ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
 
 					return false;
 				}
@@ -78,7 +78,7 @@ namespace TLN.Gameplay.Building
 			bool wasPlaced = _placementService.TryPlace(recipe.PlacedPrefab, recipe.PlaceDistance, out GameObject placedObject);
 			if (!wasPlaced)
 			{
-				return Fail(LocalizationKeys.CannotBuildHere);
+				return Fail(Loc.CannotBuildHere);
 			}
 
 			bool consumed = TryConsumeIngredients(recipe, out string consumeFailureReason);
@@ -89,7 +89,7 @@ namespace TLN.Gameplay.Building
 				return Fail(consumeFailureReason);
 			}
 
-			string message = LocalizationKeys.Built(recipe.DisplayName);
+			string message = Loc.Built(recipe.DisplayName);
 			_notificationService.Show(message);
 			return BuildResult.Success(message);
 		}
@@ -175,7 +175,7 @@ namespace TLN.Gameplay.Building
 
 			if (remainingAmount > 0)
 			{
-				failureReason = LocalizationKeys.NotEnoughItem(item.DisplayName);
+				failureReason = Loc.NotEnoughItem(item.DisplayName);
 				return false;
 			}
 

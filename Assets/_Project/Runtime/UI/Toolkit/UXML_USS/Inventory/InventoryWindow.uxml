@@ -4,7 +4,13 @@
     <ui:VisualElement name="inventory-window-root" class="inventory-window-root">
     <ui:VisualElement class="inventory-window tln-panel">
         <ui:VisualElement class="inventory-header">
-            <ui:Label text="INVENTORY" class="inventory-title"/>
+            <ui:Label text="INVENTORY" class="inventory-title">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                              entry="Id(30511012242496)"/>
+                </Bindings>
+            </ui:Label>
             <ui:Label name="inventory-weight-label" text="0 / 30 KG" class="inventory-weight-label"/>
         </ui:VisualElement>
         <ui:VisualElement class="inventory-weight-bar">
@@ -13,7 +19,13 @@
         </ui:VisualElement>
         <ui:ScrollView name="inventory-scroll-view" class="inventory-scroll-view"/>
         <ui:VisualElement class="inventory-footer">
-            <ui:Label text="I — Close" class="inventory-footer-label"/>
+            <ui:Label text="I - Close" class="inventory-footer-label">
+                <Bindings>
+                    <UnityEngine.Localization.LocalizedString property="text"
+                                                              table="GUID:37fc28fc516039c4aa469640f9c1e2a1"
+                                                              entry="Id(30511013242496)"/>
+                </Bindings>
+            </ui:Label>
         </ui:VisualElement>
     </ui:VisualElement>
     </ui:VisualElement>
