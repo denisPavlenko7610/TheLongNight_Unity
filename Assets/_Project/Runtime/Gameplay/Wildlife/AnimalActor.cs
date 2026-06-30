@@ -355,7 +355,9 @@ namespace TLN.Gameplay.Wildlife
 
             _animationController?.PlayAttack();
 
-            if (_survivalService == null)
+			ISurvivalService targetSurvivalService = GetTargetSurvivalService();
+
+            if (targetSurvivalService == null)
             {
                 TLNLogger.LogWarning(
                     "Wolf cannot damage player because SurvivalService is missing.",
@@ -364,10 +366,23 @@ namespace TLN.Gameplay.Wildlife
                 return;
             }
 
-            _survivalService.DamageCondition(_definition.ConditionDamage);
+            targetSurvivalService.DamageCondition(_definition.ConditionDamage);
 
             _notificationService?.Show(Loc.WolfAttack(_definition.ConditionDamage));
         }
+
+		private ISurvivalService GetTargetSurvivalService()
+		{
+			PlayerRoot player = GetPlayer();
+
+			if (player != null &&
+			    player.TryGetComponent(out NetworkPlayerSurvival networkSurvival))
+			{
+				return networkSurvival;
+			}
+
+			return _survivalService;
+		}
 
         private void ApplyState(AnimalStateId state)
         {

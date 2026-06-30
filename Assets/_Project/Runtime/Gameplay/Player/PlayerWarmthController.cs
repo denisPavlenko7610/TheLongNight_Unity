@@ -1,4 +1,5 @@
 ﻿using TLN.Application.GameStates;
+using TLN.Application.Multiplayer;
 using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Survival;
@@ -18,6 +19,7 @@ namespace TLN.Gameplay.Player
 		private ISurvivalService _survivalService;
 		private SurvivalConfig _survivalConfig;
 		private IGameStateMachine _gameStateMachine;
+		private IMultiplayerSessionService _multiplayerSessionService;
 
 		private float _nextWarmthRefreshTime;
 		private float _cachedFireWarmth;
@@ -30,7 +32,8 @@ namespace TLN.Gameplay.Player
 			IPlayerEquipmentService equipmentService,
 			ISurvivalService survivalService,
 			SurvivalConfig survivalConfig,
-			IGameStateMachine gameStateMachine
+			IGameStateMachine gameStateMachine,
+			IMultiplayerSessionService multiplayerSessionService
 		)
 		{
 			_warmthService = warmthService;
@@ -38,10 +41,16 @@ namespace TLN.Gameplay.Player
 			_survivalService = survivalService;
 			_survivalConfig = survivalConfig;
 			_gameStateMachine = gameStateMachine;
+			_multiplayerSessionService = multiplayerSessionService;
 		}
 
 		private void Update()
 		{
+			if (!ShouldSimulateOfflineWarmth())
+			{
+				return;
+			}
+
 			if (_survivalService == null)
 			{
 				return;
@@ -53,7 +62,7 @@ namespace TLN.Gameplay.Player
 			}
 
 			if (_gameStateMachine != null &&
-				_gameStateMachine.CurrentState != GameStateId.Playing)
+			    _gameStateMachine.CurrentState != GameStateId.Playing)
 			{
 				return;
 			}
@@ -67,6 +76,16 @@ namespace TLN.Gameplay.Player
 
 			ApplyColdExposure(_coldExposureAccumulator);
 			_coldExposureAccumulator = 0f;
+		}
+
+		private bool ShouldSimulateOfflineWarmth()
+		{
+			if (_multiplayerSessionService == null)
+			{
+				return true;
+			}
+
+			return !_multiplayerSessionService.IsMultiplayer;
 		}
 
 		private void ApplyColdExposure(float deltaTime)

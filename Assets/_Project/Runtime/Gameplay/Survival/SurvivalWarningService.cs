@@ -29,8 +29,18 @@ namespace TLN.Gameplay.Survival
 
 		public void Tick(float unscaledTime)
 		{
+			Tick(_survivalService, unscaledTime);
+		}
+
+		public void Tick(ISurvivalService survivalService, float unscaledTime)
+		{
+			if (survivalService == null)
+			{
+				return;
+			}
+
 			CheckStatWarning(
-				_survivalService.Hunger.Value,
+				survivalService.Hunger.Value,
 				DefaultWarningThreshold,
 				Loc.Hunger,
 				unscaledTime,
@@ -38,7 +48,7 @@ namespace TLN.Gameplay.Survival
 			);
 
 			CheckStatWarning(
-				_survivalService.Thirst.Value,
+				survivalService.Thirst.Value,
 				DefaultWarningThreshold,
 				Loc.Thirst,
 				unscaledTime,
@@ -46,7 +56,7 @@ namespace TLN.Gameplay.Survival
 			);
 
 			CheckStatWarning(
-				_survivalService.Fatigue.Value,
+				survivalService.Fatigue.Value,
 				DefaultWarningThreshold,
 				Loc.Exhausted,
 				unscaledTime,
@@ -54,7 +64,7 @@ namespace TLN.Gameplay.Survival
 			);
 
 			CheckStatWarning(
-				_survivalService.Cold.Value,
+				survivalService.Cold.Value,
 				DefaultWarningThreshold,
 				Loc.Freezing,
 				unscaledTime,
@@ -62,7 +72,7 @@ namespace TLN.Gameplay.Survival
 			);
 
 			CheckStatWarning(
-				_survivalService.Condition.Value,
+				survivalService.Condition.Value,
 				ConditionCriticalThreshold,
 				Loc.ConditionCritical,
 				unscaledTime,

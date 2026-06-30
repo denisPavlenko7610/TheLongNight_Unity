@@ -1,4 +1,5 @@
 using TLN.Application.GameStates;
+using TLN.Application.Multiplayer;
 using UnityEngine;
 using VContainer;
 
@@ -8,12 +9,18 @@ namespace TLN.Gameplay.Time
 	{
 		private IGameTimeService _gameTimeService;
 		private IGameStateMachine _gameStateMachine;
+		private IMultiplayerSessionService _multiplayerSessionService;
 
 		[Inject]
-		public void Construct(IGameTimeService gameTimeService, IGameStateMachine gameStateMachine)
+		public void Construct(
+			IGameTimeService gameTimeService,
+			IGameStateMachine gameStateMachine,
+			IMultiplayerSessionService multiplayerSessionService
+		)
 		{
 			_gameTimeService = gameTimeService;
 			_gameStateMachine = gameStateMachine;
+			_multiplayerSessionService = multiplayerSessionService;
 		}
 
 		private void Update()
@@ -29,14 +36,29 @@ namespace TLN.Gameplay.Time
 				return;
 			}
 
-#if UNITY_EDITOR
+			if (!ShouldSimulateWorld())
+			{
+				return;
+			}
+
+			#if UNITY_EDITOR
 			HandleEditorCheats();
-#endif
+			#endif
 
 			_gameTimeService.Tick(UnityEngine.Time.deltaTime);
 		}
 
-#if UNITY_EDITOR
+		private bool ShouldSimulateWorld()
+		{
+			if (_multiplayerSessionService == null)
+			{
+				return true;
+			}
+
+			return !_multiplayerSessionService.IsMultiplayer || _multiplayerSessionService.IsServer;
+		}
+
+		#if UNITY_EDITOR
 		private void HandleEditorCheats()
 		{
 			if (!UnityEngine.Input.GetKeyDown(KeyCode.F4))
@@ -47,6 +69,6 @@ namespace TLN.Gameplay.Time
 			_gameTimeService.AdvanceHours(1);
 			Debug.Log($"[TLN Editor Cheat] Advanced time to {_gameTimeService.CurrentTime}.");
 		}
-#endif
+		#endif
 	}
 }

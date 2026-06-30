@@ -77,22 +77,22 @@ namespace TLN.Gameplay.Survival
 
 			if (Hunger.Value >= MaxStat)
 			{
-				damage += 5f * gameHours;
+				damage += _config.HungerConditionDamagePerHour * gameHours;
 			}
 
 			if (Thirst.Value >= MaxStat)
 			{
-				damage += 10f * gameHours;
+				damage += _config.ThirstConditionDamagePerHour * gameHours;
 			}
 
 			if (Fatigue.Value >= MaxStat)
 			{
-				damage += 3f * gameHours;
+				damage += _config.FatigueConditionDamagePerHour * gameHours;
 			}
 
 			if (Cold.Value >= MaxStat)
 			{
-				damage += 15f * gameHours;
+				damage += _config.ColdConditionDamagePerHour * gameHours;
 			}
 
 			if (damage > 0f)

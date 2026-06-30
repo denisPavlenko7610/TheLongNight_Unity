@@ -1,6 +1,7 @@
 ﻿using TLN.Application.Multiplayer;
 using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
+using TLN.Gameplay.Survival;
 using TLN.Gameplay.Wildlife;
 using Unity.Netcode;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace TLN.Gameplay.Player.Networking
 		private IObjectResolver _resolver;
 		private PlacementService _placementService;
 		private WildlifeTargetService _wildlifeTargetService;
+		private LocalPlayerService _localPlayerService;
 
 		private PlayerRoot _boundPlayer;
 
@@ -23,13 +25,15 @@ namespace TLN.Gameplay.Player.Networking
 			IMultiplayerSessionService multiplayerSessionService,
 			IObjectResolver resolver,
 			PlacementService placementService,
-			WildlifeTargetService wildlifeTargetService
+			WildlifeTargetService wildlifeTargetService,
+			LocalPlayerService localPlayerService
 		)
 		{
 			_multiplayerSessionService = multiplayerSessionService;
 			_resolver = resolver;
 			_placementService = placementService;
 			_wildlifeTargetService = wildlifeTargetService;
+			_localPlayerService = localPlayerService;
 		}
 
 		private void Update()
@@ -44,18 +48,15 @@ namespace TLN.Gameplay.Player.Networking
 				return;
 			}
 
-			if (_multiplayerSessionService.IsServer)
-			{
-				return;
-			}
-
 			NetworkManager networkManager = NetworkManager.Singleton;
+
 			if (networkManager == null || !networkManager.IsClient)
 			{
 				return;
 			}
 
 			NetworkClient localClient = networkManager.LocalClient;
+
 			if (localClient == null || localClient.PlayerObject == null)
 			{
 				return;
@@ -66,16 +67,23 @@ namespace TLN.Gameplay.Player.Networking
 
 		private void BindLocalPlayer(NetworkObject playerObject)
 		{
+			_resolver.InjectGameObject(playerObject.gameObject);
+
 			if (!playerObject.TryGetComponent(out PlayerRoot playerRoot))
 			{
 				TLNLogger.LogError("Local network player object must have PlayerRoot.", playerObject);
 				return;
 			}
 
-			_resolver.InjectGameObject(playerRoot.gameObject);
+			if (!playerObject.TryGetComponent(out NetworkPlayerSurvival playerSurvival))
+			{
+				TLNLogger.LogError("Local network player object must have NetworkPlayerSurvival.", playerObject);
+				return;
+			}
 
 			_placementService.SetPlayerRoot(playerRoot);
 			_wildlifeTargetService.SetPlayerRoot(playerRoot);
+			_localPlayerService.SetLocalPlayer(playerRoot, playerSurvival);
 
 			_boundPlayer = playerRoot;
 			enabled = false;

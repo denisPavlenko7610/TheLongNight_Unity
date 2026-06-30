@@ -109,6 +109,13 @@ namespace TLN.Gameplay.World
 		{
 			_notificationService.SetView(_uiRoot.HUD);
 
+			if (_multiplayerSessionService != null &&
+				_multiplayerSessionService.IsMultiplayer)
+			{
+				_uiRoot.HUD.Construct(null, _gameTimeService);
+				return;
+			}
+
 			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
 		}
 

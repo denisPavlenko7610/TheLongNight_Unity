@@ -27,6 +27,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 {
 	[Header("UI")]
 	[SerializeField] [Required] private WorldUIRoot _uiRoot;
+	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldHudLocalPlayerBinder _worldHudLocalPlayerBinder;
 
 	[Header("Configs")]
 	[SerializeField] [Required] private InventoryConfig _inventoryConfig;
@@ -47,6 +48,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[Header("Multiplayer")]
 	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkPlayerSpawner _networkPlayerSpawner;
 	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkLocalPlayerBinder _networkLocalPlayerBinder;
+	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkWorldTimeSynchronizer _networkWorldTimeSynchronizer;
 
 	[Header("Spawning")]
 	[SerializeField] [Assign(Mode.Scene)] private RandomWorldSpawner[] _randomWorldSpawners;
@@ -93,6 +95,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.Register<PlacementService>(Lifetime.Scoped);
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
 		builder.Register<IBuildService, BuildService>(Lifetime.Scoped);
+		builder.Register<LocalPlayerService>(Lifetime.Scoped);
 
 		builder.Register<WarmthService>(Lifetime.Scoped).As<IWarmthService>();
 		builder.Register<WildlifeTargetService>(Lifetime.Scoped);
@@ -116,6 +119,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.RegisterComponent(_networkPlayerSpawner);
 		builder.RegisterComponent(_networkLocalPlayerBinder);
+		builder.RegisterComponent(_networkWorldTimeSynchronizer);
 	}
 
 	private void RegisterRandomSpawners(IContainerBuilder builder)
@@ -151,5 +155,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 
 		builder.RegisterComponent(_uiRoot.PauseMenu);
+		builder.RegisterComponent(_worldHudLocalPlayerBinder);
 	}
 }

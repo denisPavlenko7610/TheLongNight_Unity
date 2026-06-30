@@ -1,6 +1,8 @@
 using TLN.Application.Localization;
+using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
+using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 
@@ -10,6 +12,8 @@ namespace TLN.Gameplay.Sleep
 	{
 		private readonly SleepConfig _config;
 		private readonly ISurvivalService _survivalService;
+		private readonly IMultiplayerSessionService _multiplayerSessionService;
+		private readonly LocalPlayerService _localPlayerService;
 		private readonly INotificationService _notificationService;
 
 		private readonly IGameTimeService _gameTimeService;
@@ -18,6 +22,8 @@ namespace TLN.Gameplay.Sleep
 		public SleepService(
 			SleepConfig config,
 			ISurvivalService survivalService,
+			IMultiplayerSessionService multiplayerSessionService,
+			LocalPlayerService localPlayerService,
 			INotificationService notificationService,
 
 			IGameTimeService gameTimeService,
@@ -26,6 +32,8 @@ namespace TLN.Gameplay.Sleep
 		{
 			_config = config;
 			_survivalService = survivalService;
+			_multiplayerSessionService = multiplayerSessionService;
+			_localPlayerService = localPlayerService;
 			_notificationService = notificationService;
 
 			_gameTimeService = gameTimeService;
@@ -44,6 +52,11 @@ namespace TLN.Gameplay.Sleep
 				return SleepResult.Failure(Loc.MaxHours(_config.MaxSleepHours));
 			}
 
+			if (TrySleepMultiplayer(hours, out SleepResult multiplayerResult))
+			{
+				return multiplayerResult;
+			}
+
 			ApplySleepEffects(hours);
 			_gameTimeService.AdvanceHours(hours);
 
@@ -57,11 +70,40 @@ namespace TLN.Gameplay.Sleep
 
 		private void ApplySleepEffects(int hours)
 		{
-			_survivalService.ReduceFatigue(_config.FatigueRecoveryPerHour * hours);
-			_survivalService.AddHunger(_config.HungerIncreasePerHour * hours);
-			_survivalService.AddThirst(_config.ThirstIncreasePerHour * hours);
-			_survivalService.AddCold(_config.ColdIncreasePerHour * hours);
-			_survivalService.RestoreCondition(_config.ConditionRecoveryPerHour * hours);
+			ApplySleepEffects(_survivalService, hours);
+		}
+
+		private bool TrySleepMultiplayer(int hours, out SleepResult result)
+		{
+			result = default;
+
+			if (_multiplayerSessionService is not { IsMultiplayer: true })
+			{
+				return false;
+			}
+
+			if (_localPlayerService?.SurvivalService is not NetworkPlayerSurvival networkSurvival ||
+			    !networkSurvival.RequestSleep(hours))
+			{
+				string failureMessage = Loc.CannotUse;
+				_notificationService.Show(failureMessage);
+				result = SleepResult.Failure(failureMessage);
+				return true;
+			}
+
+			string message = Loc.Result(hours);
+			_notificationService.Show(message);
+			result = SleepResult.Success(message);
+			return true;
+		}
+
+		private void ApplySleepEffects(ISurvivalService survivalService, int hours)
+		{
+			survivalService.ReduceFatigue(_config.FatigueRecoveryPerHour * hours);
+			survivalService.AddHunger(_config.HungerIncreasePerHour * hours);
+			survivalService.AddThirst(_config.ThirstIncreasePerHour * hours);
+			survivalService.AddCold(_config.ColdIncreasePerHour * hours);
+			survivalService.RestoreCondition(_config.ConditionRecoveryPerHour * hours);
 		}
 	}
 }

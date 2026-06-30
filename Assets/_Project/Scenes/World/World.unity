@@ -119,6 +119,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &3994926
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3994927}
+  - component: {fileID: 3994928}
+  m_Layer: 0
+  m_Name: WorldHudLocalPlayerBinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3994927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994926}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 907140872}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3994928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcb20038cafb46fc88e78cb9b4bef016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.WorldHudLocalPlayerBinder
 --- !u!1 &8496636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1028,6 +1072,50 @@ MonoBehaviour:
   m_DeprecatedInstances: []
   m_AutoRefresh: 1
   m_Seed: -216396
+--- !u!1 &316315963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 316315964}
+  - component: {fileID: 316315965}
+  m_Layer: 0
+  m_Name: NetworkLocalPlayerBinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &316315964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316315963}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 907140872}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &316315965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316315963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e3009bdb494a8aa595e28e266fe474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Player.Networking.NetworkLocalPlayerBinder
 --- !u!4 &325205487 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8843537757811330700, guid: e02ebbc0b37b5234a8d15811e42ee3fc, type: 3}
@@ -1428,7 +1516,7 @@ GameObject:
   - component: {fileID: 722304487}
   - component: {fileID: 722304488}
   m_Layer: 0
-  m_Name: RabbitSpawnZone_Forest_01 (1)
+  m_Name: RabbitSpawnZone_Forest_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1876,6 +1964,9 @@ Transform:
   - {fileID: 577968085}
   - {fileID: 1028685812}
   - {fileID: 510768210}
+  - {fileID: 316315964}
+  - {fileID: 1933714690}
+  - {fileID: 3994927}
   m_Father: {fileID: 1279822451}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &915622527
@@ -2936,6 +3027,78 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!1 &1933714689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1933714690}
+  - component: {fileID: 1933714691}
+  - component: {fileID: 1933714692}
+  m_Layer: 0
+  m_Name: NetworkWorldTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1933714690
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933714689}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 907140872}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1933714691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933714689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3403881251
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  <InScenePlaced>k__BackingField: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1933714692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933714689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4749ca687464f81893593d7ad7ba6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Time.NetworkWorldTimeSynchronizer
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1984469431
 GameObject:
   m_ObjectHideFlags: 0
@@ -3069,6 +3232,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 8496636}
   _uiRoot: {fileID: 212741484}
+  _worldHudLocalPlayerBinder: {fileID: 0}
   _inventoryConfig: {fileID: 11400000, guid: bd6ecfd7686980d48a9bafb1d4818afe, type: 2}
   _gameTimeConfig: {fileID: 11400000, guid: 60b0f87575b09ba40aa740437e355e5a, type: 2}
   _dayNightConfig: {fileID: 11400000, guid: 7b7c5a31e33ee4e438eb3f9925fdff4d, type: 2}
@@ -3081,11 +3245,13 @@ MonoBehaviour:
   _worldTimeController: {fileID: 577968086}
   _dayNightController: {fileID: 565384057}
   _worldSurvivalController: {fileID: 577968084}
+  _networkPlayerSpawner: {fileID: 0}
+  _networkLocalPlayerBinder: {fileID: 0}
+  _networkWorldTimeSynchronizer: {fileID: 0}
   _randomWorldSpawners:
   - {fileID: 353570849}
   - {fileID: 722304488}
   - {fileID: 1427149963}
-  _networkPlayerSpawner: {fileID: 0}
   _survivalWarningCooldownSeconds: 30
 --- !u!1 &2013410473
 GameObject:

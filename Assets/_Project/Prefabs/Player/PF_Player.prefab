@@ -581,6 +581,7 @@ GameObject:
   - component: {fileID: 3322084707423393736}
   - component: {fileID: 2217412638034983966}
   - component: {fileID: 8911591772939844199}
+  - component: {fileID: 460371552263764808}
   m_Layer: 0
   m_Name: PF_Player
   m_TagString: Untagged
@@ -817,7 +818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 633361381
+  GlobalObjectIdHash: 322658175
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -901,6 +902,19 @@ MonoBehaviour:
   _buildController: {fileID: 6070588436189272575}
   _timeOverlayController: {fileID: 2088924916554084483}
   _warmthController: {fileID: 4729064103163924821}
+--- !u!114 &460371552263764808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352849978073610698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb7edd5039341f3a466c3f1c4832f9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Survival.NetworkPlayerSurvival
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &8742609627363697270
 GameObject:
   m_ObjectHideFlags: 0
