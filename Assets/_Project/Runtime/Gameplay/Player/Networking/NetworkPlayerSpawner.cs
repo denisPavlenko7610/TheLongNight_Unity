@@ -87,6 +87,10 @@ namespace TLN.Gameplay.Player.Networking
 			}
 
 			Transform spawnPoint = GetSpawnPoint(clientId);
+			if (spawnPoint == null)
+			{
+				return;
+			}
 
 			PlayerRoot player = _resolver.Instantiate(
 				_playerPrefab,
@@ -116,13 +120,20 @@ namespace TLN.Gameplay.Player.Networking
 		{
 			if (_spawnPoints == null || _spawnPoints.Length == 0)
 			{
-				return transform;
+				TLNLogger.LogError("At least one network player spawn point is required.", this);
+				return null;
 			}
 
 			int index = (int)(clientId % (ulong)_spawnPoints.Length);
 			Transform spawnPoint = _spawnPoints[index];
 
-			return spawnPoint != null ? spawnPoint : transform;
+			if (spawnPoint == null)
+			{
+				TLNLogger.LogError($"Network player spawn point at index {index} is missing.", this);
+				return null;
+			}
+
+			return spawnPoint;
 		}
 	}
 }
