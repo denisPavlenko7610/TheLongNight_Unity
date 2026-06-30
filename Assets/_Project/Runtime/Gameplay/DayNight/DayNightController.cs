@@ -20,6 +20,8 @@ namespace TLN.Gameplay.DayNight
 
 		private Exposure _exposure;
 		private ColorAdjustments _colorAdjustments;
+		private PhysicallyBasedSky _physicallyBasedSky;
+		private Fog _fog;
 
 		private HDAdditionalLightData _sunLightData;
 		private bool _isInitialized;
@@ -56,6 +58,8 @@ namespace TLN.Gameplay.DayNight
 				VolumeProfile profile = _skyVolume.profile;
 				profile.TryGet(out _exposure);
 				profile.TryGet(out _colorAdjustments);
+				profile.TryGet(out _physicallyBasedSky);
+				profile.TryGet(out _fog);
 
 				SetupVolumeOverrides();
 			}
@@ -75,6 +79,18 @@ namespace TLN.Gameplay.DayNight
 			if (_colorAdjustments != null)
 			{
 				_colorAdjustments.colorFilter.overrideState = true;
+			}
+
+			if (_physicallyBasedSky != null)
+			{
+				_physicallyBasedSky.horizonTint.overrideState = true;
+				_physicallyBasedSky.zenithTint.overrideState = true;
+				_physicallyBasedSky.groundTint.overrideState = true;
+			}
+
+			if (_fog != null)
+			{
+				_fog.color.overrideState = true;
 			}
 		}
 
@@ -119,6 +135,11 @@ namespace TLN.Gameplay.DayNight
 
 			ApplyExposure(Mathf.Lerp(currentPhase.Exposure, nextPhase.Exposure, t));
 			ApplyColorFilter(Color.Lerp(currentPhase.ColorFilter, nextPhase.ColorFilter, t));
+			ApplySky(
+				Color.Lerp(currentPhase.SkyTint, nextPhase.SkyTint, t),
+				Color.Lerp(currentPhase.GroundTint, nextPhase.GroundTint, t)
+			);
+			ApplyFog(Color.Lerp(currentPhase.FogColor, nextPhase.FogColor, t));
 		}
 
 		private void ApplySun(Color color, float intensity, float shadowStrength)
@@ -175,6 +196,28 @@ namespace TLN.Gameplay.DayNight
 			}
 
 			_colorAdjustments.colorFilter.value = colorFilter;
+		}
+
+		private void ApplySky(Color skyTint, Color groundTint)
+		{
+			if (_physicallyBasedSky == null)
+			{
+				return;
+			}
+
+			_physicallyBasedSky.horizonTint.value = skyTint;
+			_physicallyBasedSky.zenithTint.value = skyTint;
+			_physicallyBasedSky.groundTint.value = groundTint;
+		}
+
+		private void ApplyFog(Color fogColor)
+		{
+			if (_fog == null)
+			{
+				return;
+			}
+
+			_fog.color.value = fogColor;
 		}
 
 		private PhaseSettings GetCurrentPhaseSettings()

@@ -15,4 +15,4 @@ MonoBehaviour:
   _startDay: 1
   _startHour: 8
   _startMinute: 0
-  _gameMinutesPerRealSecond: 1
+  _gameMinutesPerRealSecond: 0.2

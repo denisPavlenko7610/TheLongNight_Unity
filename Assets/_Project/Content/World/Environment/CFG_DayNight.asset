@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7325ca05b0717614fac72410f9d7c26e, type: 3}
   m_Name: CFG_DayNight
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.DayNight.DayNightConfig
-  _sunriseHour: 6
+  _sunriseHour: 5.5
   _sunsetHour: 20
   _sunElevationCurve:
     serializedVersion: 2
@@ -151,14 +151,14 @@ MonoBehaviour:
     StarVisibility: 0.45
   _night:
     StartHour: 22
-    SunColor: {r: 0.2, g: 0.28, b: 0.55, a: 1}
-    SunIntensity: 0.35
+    SunColor: {r: 0.44, g: 0.56, b: 0.9, a: 1}
+    SunIntensity: 75
     SunShadowStrength: 0
-    SkyTint: {r: 0.015, g: 0.025, b: 0.075, a: 1}
-    GroundTint: {r: 0.018, g: 0.025, b: 0.055, a: 1}
-    FogColor: {r: 0.018, g: 0.026, b: 0.06, a: 1}
+    SkyTint: {r: 0.065, g: 0.09, b: 0.19, a: 1}
+    GroundTint: {r: 0.085, g: 0.105, b: 0.18, a: 1}
+    FogColor: {r: 0.065, g: 0.085, b: 0.165, a: 1}
     FogDensity: 0.000035
-    Exposure: 6.8
-    ColorFilter: {r: 0.72, g: 0.82, b: 1, a: 1}
+    Exposure: 6.6
+    ColorFilter: {r: 0.82, g: 0.9, b: 1, a: 1}
     TemperatureModifier: -3.5
     StarVisibility: 1

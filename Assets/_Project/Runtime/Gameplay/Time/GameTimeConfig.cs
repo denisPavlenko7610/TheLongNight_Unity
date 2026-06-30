@@ -16,7 +16,7 @@ namespace TLN.Gameplay.Time
 		[SerializeField] private int _maxRandomHour = 22;
 
 		[Header("Scale")]
-		[SerializeField] private float _gameMinutesPerRealSecond = 1f;
+		[SerializeField] private float _gameMinutesPerRealSecond = 0.2f;
 
 		public int StartDay => _startDay;
 		public int StartHour => _startHour;

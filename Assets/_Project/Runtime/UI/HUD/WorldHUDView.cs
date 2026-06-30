@@ -28,6 +28,8 @@ namespace TLN.UI.HUD
 		private const float TimeArcWidth = 220f;
 		private const float TimeArcHeight = 70f;
 		private const float TimeIconSize = 34f;
+		private const float SunriseHour = 5.5f;
+		private const float SunsetHour = 20f;
 
 		private VisualElement _timeArcRoot;
 
@@ -181,15 +183,16 @@ namespace TLN.UI.HUD
 			SetLabel(_timeDayLabel, Loc.HUDDay(time.Day));
 			SetLabel(_timePeriodLabel, GetTimePeriodKey(time.Hour));
 
-			bool isDay = IsDayTime(time.Hour);
+			float dayTime = time.Hour + time.Minute / (float)GameTime.MinutesPerHour;
+			bool isDay = IsDayTime(dayTime);
 
 			SetSunMoonIcon(isDay);
-			SetTimeIconPosition(time.Hour, time.Minute, isDay);
+			SetTimeIconPosition(dayTime, isDay);
 		}
 
-		private static bool IsDayTime(int hour)
+		private static bool IsDayTime(float hour)
 		{
-			return hour >= 6 && hour < 20;
+			return hour >= SunriseHour && hour < SunsetHour;
 		}
 
 		private void SetSunMoonIcon(bool isDay)
@@ -210,14 +213,12 @@ namespace TLN.UI.HUD
 			_timeSunMoonIcon.AddToClassList("icon-moon");
 		}
 
-		private void SetTimeIconPosition(int hour, int minute, bool isDay)
+		private void SetTimeIconPosition(float dayTime, bool isDay)
 		{
 			if (_timeSunMoonIcon == null)
 			{
 				return;
 			}
-
-			float dayTime = hour + minute / (float)GameTime.MinutesPerHour;
 
 			float progress = isDay
 				? CalculateDayProgress(dayTime)
@@ -231,25 +232,21 @@ namespace TLN.UI.HUD
 
 		private static float CalculateDayProgress(float hour)
 		{
-			const float sunriseHour = 6f;
-			const float sunsetHour = 20f;
-
-			return Mathf.InverseLerp(sunriseHour, sunsetHour, hour);
+			return Mathf.InverseLerp(SunriseHour, SunsetHour, hour);
 		}
 
 		private static float CalculateNightProgress(float hour)
 		{
-			const float nightStartHour = 20f;
-			const float nightEndHourNextDay = 30f;
+			float nightEndHourNextDay = SunriseHour + GameTime.HoursPerDay;
 
 			float normalizedHour = hour;
 
-			if (normalizedHour < nightStartHour)
+			if (normalizedHour < SunsetHour)
 			{
 				normalizedHour += GameTime.HoursPerDay;
 			}
 
-			return Mathf.InverseLerp(nightStartHour, nightEndHourNextDay, normalizedHour);
+			return Mathf.InverseLerp(SunsetHour, nightEndHourNextDay, normalizedHour);
 		}
 
 		private static Vector2 CalculateArcPosition(float progress)

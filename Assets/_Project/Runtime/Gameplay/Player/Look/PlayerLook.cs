@@ -1,4 +1,5 @@
-﻿using TLN.Application.Input;
+﻿using Assign;
+using TLN.Application.Input;
 using TLN.Gameplay.Player.Input;
 using UnityEngine;
 using VContainer;
@@ -9,14 +10,14 @@ namespace TLN.Gameplay.Player.Look
 	public sealed class PlayerLook : MonoBehaviour
 	{
 		[Header("References")]
-		[SerializeField] private PlayerInputReader _inputReader;
+		[SerializeField, Assign] private PlayerInputReader _inputReader;
 		[SerializeField] private Transform _cameraRoot;
 
 		[Header("Look")]
 		[SerializeField] private float _mouseSensitivity = 0.08f;
 		[SerializeField] private float _gamepadSensitivity = 120f;
-		[SerializeField] private float _minPitch = -80f;
-		[SerializeField] private float _maxPitch = 80f;
+		[SerializeField] private float _minPitch = -25f;
+		[SerializeField] private float _maxPitch = 55f;
 
 		private float _pitch;
 		private IInputModeService _inputModeService;
@@ -25,14 +26,6 @@ namespace TLN.Gameplay.Player.Look
 		public void Construct(IInputModeService inputModeService)
 		{
 			_inputModeService = inputModeService;
-		}
-
-		private void Awake()
-		{
-			if (_inputReader == null)
-			{
-				_inputReader = GetComponent<PlayerInputReader>();
-			}
 		}
 
 		private void Update()

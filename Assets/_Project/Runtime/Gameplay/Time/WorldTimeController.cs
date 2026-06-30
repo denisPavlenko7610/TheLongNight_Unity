@@ -29,7 +29,24 @@ namespace TLN.Gameplay.Time
 				return;
 			}
 
+#if UNITY_EDITOR
+			HandleEditorCheats();
+#endif
+
 			_gameTimeService.Tick(UnityEngine.Time.deltaTime);
 		}
+
+#if UNITY_EDITOR
+		private void HandleEditorCheats()
+		{
+			if (!UnityEngine.Input.GetKeyDown(KeyCode.F4))
+			{
+				return;
+			}
+
+			_gameTimeService.AdvanceHours(1);
+			Debug.Log($"[TLN Editor Cheat] Advanced time to {_gameTimeService.CurrentTime}.");
+		}
+#endif
 	}
 }

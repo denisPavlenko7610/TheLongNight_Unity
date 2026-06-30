@@ -7,7 +7,7 @@ namespace TLN.Gameplay.DayNight
 	public sealed class DayNightConfig : ScriptableObject
 	{
 		[Header("Sun Arc")]
-		[SerializeField] private float _sunriseHour = 6f;
+		[SerializeField] private float _sunriseHour = 5.5f;
 		[SerializeField] private float _sunsetHour = 20f;
 		[SerializeField] private AnimationCurve _sunElevationCurve = AnimationCurve.EaseInOut(0f, -10f, 1f, 90f);
 		[SerializeField] private float _northAngle = 0f;
@@ -101,15 +101,15 @@ namespace TLN.Gameplay.DayNight
 		[SerializeField] private PhaseSettings _night = new PhaseSettings
 		{
 			StartHour = 22f,
-			SunColor = new Color(0.2f, 0.28f, 0.55f),
-			SunIntensity = 0.35f,
+			SunColor = new Color(0.44f, 0.56f, 0.9f),
+			SunIntensity = 75f,
 			SunShadowStrength = 0f,
-			SkyTint = new Color(0.015f, 0.025f, 0.075f),
-			GroundTint = new Color(0.018f, 0.025f, 0.055f),
-			FogColor = new Color(0.018f, 0.026f, 0.06f),
+			SkyTint = new Color(0.065f, 0.09f, 0.19f),
+			GroundTint = new Color(0.085f, 0.105f, 0.18f),
+			FogColor = new Color(0.065f, 0.085f, 0.165f),
 			FogDensity = 0.000035f,
-			Exposure = 6.8f,
-			ColorFilter = new Color(0.72f, 0.82f, 1f),
+			Exposure = 6.6f,
+			ColorFilter = new Color(0.82f, 0.9f, 1f),
 			TemperatureModifier = -3.5f,
 			StarVisibility = 1f
 		};
