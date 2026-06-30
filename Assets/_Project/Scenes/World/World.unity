@@ -3085,6 +3085,7 @@ MonoBehaviour:
   - {fileID: 353570849}
   - {fileID: 722304488}
   - {fileID: 1427149963}
+  _networkPlayerSpawner: {fileID: 0}
   _survivalWarningCooldownSeconds: 30
 --- !u!1 &2013410473
 GameObject:

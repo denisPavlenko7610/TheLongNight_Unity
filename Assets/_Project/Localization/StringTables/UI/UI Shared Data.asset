@@ -151,6 +151,38 @@ MonoBehaviour:
     m_Key: main_menu.quit
     m_Metadata:
       m_Items: []
+  - m_Id: 30511021242496
+    m_Key: main_menu.mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511022242496
+    m_Key: main_menu.single_player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511023242496
+    m_Key: main_menu.single_player_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511024242496
+    m_Key: main_menu.multiplayer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511025242496
+    m_Key: main_menu.multiplayer_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511026242496
+    m_Key: main_menu.host_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511027242496
+    m_Key: main_menu.join_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511028242496
+    m_Key: main_menu.join_code
+    m_Metadata:
+      m_Items: []
   - m_Id: 16837533368320
     m_Key: settings.title
     m_Metadata:

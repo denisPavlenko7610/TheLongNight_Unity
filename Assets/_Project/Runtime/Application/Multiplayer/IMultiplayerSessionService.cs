@@ -1,4 +1,6 @@
-﻿using TLN.Core.Lifetime;
+﻿using System.Threading.Tasks;
+using TLN.Core.Lifetime;
+using TLN.Core.Results;
 
 namespace TLN.Application.Multiplayer
 {
@@ -9,8 +11,11 @@ namespace TLN.Application.Multiplayer
 		bool IsClient { get; }
 		bool IsHost { get; }
 
-		bool StartHost();
-		bool StartClient(string address);
+		string JoinCode { get; }
+
+		Task<OperationResult<string>> CreateHostSession();
+		Task<OperationResult> JoinSessionByCode(string joinCode);
+
 		void Shutdown();
 	}
 }

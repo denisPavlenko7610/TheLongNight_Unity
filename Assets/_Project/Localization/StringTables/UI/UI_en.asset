@@ -158,6 +158,38 @@ MonoBehaviour:
     m_Localized: QUIT
     m_Metadata:
       m_Items: []
+  - m_Id: 30511021242496
+    m_Localized: CHOOSE MODE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511022242496
+    m_Localized: SINGLE PLAYER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511023242496
+    m_Localized: Choose a saved run or begin again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511024242496
+    m_Localized: MULTIPLAYER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511025242496
+    m_Localized: Host a run or join by code.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511026242496
+    m_Localized: HOST GAME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511027242496
+    m_Localized: JOIN GAME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30511028242496
+    m_Localized: JOIN CODE
+    m_Metadata:
+      m_Items: []
   - m_Id: 16837533368320
     m_Localized: OPTIONS
     m_Metadata:
