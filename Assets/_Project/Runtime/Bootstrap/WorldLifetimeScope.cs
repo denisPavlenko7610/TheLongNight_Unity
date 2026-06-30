@@ -10,6 +10,7 @@ using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
+using TLN.Gameplay.Player.Networking;
 using TLN.Gameplay.Saves;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
@@ -39,6 +40,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField][Assign(Mode.Scene)][Required] private DayNightController _dayNightController;
 	[SerializeField][Assign(Mode.Scene)][Required] private WorldSurvivalController _worldSurvivalController;
 	[SerializeField][Assign(Mode.Scene)] private RandomWorldSpawner[] _randomWorldSpawners;
+	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkPlayerSpawner _networkPlayerSpawner;
 
 	[SerializeField] private float _survivalWarningCooldownSeconds = 30f;
 
@@ -83,6 +85,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_worldTimeController);
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
+		builder.RegisterComponent(_networkPlayerSpawner);
 
 		if (_randomWorldSpawners != null)
 		{

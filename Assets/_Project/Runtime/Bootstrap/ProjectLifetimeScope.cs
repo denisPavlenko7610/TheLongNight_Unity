@@ -1,18 +1,22 @@
 using TLN.Application.Assets;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
+using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Application.Settings;
 using TLN.Application.Time;
+using TLN.Core.Validation;
 using TLN.Infrastructure.Assets;
 using TLN.Infrastructure.Input;
+using TLN.Infrastructure.Multiplayer;
 using TLN.Infrastructure.Saves;
 using TLN.Infrastructure.Scenes;
 using TLN.Infrastructure.Settings;
 using TLN.Infrastructure.Time;
 using TLN.UI.LoadingScreen;
+using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -22,6 +26,7 @@ namespace TLN.Bootstrap
 	public sealed class ProjectLifetimeScope : LifetimeScope
 	{
 		[SerializeField] private GameObject _loadingScreenPrefab;
+		[SerializeField, Required] private NetworkManager _networkManager;
 
 		protected override void Configure(IContainerBuilder builder)
 		{
@@ -37,6 +42,9 @@ namespace TLN.Bootstrap
 
 			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
+			builder.RegisterInstance(_networkManager);
+			builder.Register<NgoMultiplayerSessionService>(Lifetime.Singleton).As<IMultiplayerSessionService>();
+
 			builder.RegisterEntryPoint<GameStateInputModeController>();
 			builder.RegisterEntryPoint<GameStatePauseController>();
 			builder.RegisterEntryPoint(

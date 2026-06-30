@@ -11,6 +11,8 @@ using TLN.Gameplay.Wildlife;
 using TLN.UI;
 using UnityEngine;
 using VContainer;
+using TLN.Application.Multiplayer;
+using TLN.Gameplay.Player.Networking;
 
 namespace TLN.Gameplay.World
 {
@@ -32,6 +34,9 @@ namespace TLN.Gameplay.World
 
 		private PlayerRoot _playerInstance;
 
+		private IMultiplayerSessionService _multiplayerSessionService;
+		private NetworkPlayerSpawner _networkPlayerSpawner;
+
 		[Inject]
 		public void Construct(
 			IGameStateMachine gameStateMachine,
@@ -42,7 +47,9 @@ namespace TLN.Gameplay.World
 			IPlayerFactory playerFactory,
 			IGameSaveService gameSaveService,
 			WildlifeTargetService wildlifeTargetService,
-			RandomWorldSpawnerSet randomWorldSpawnerSet
+			RandomWorldSpawnerSet randomWorldSpawnerSet,
+			IMultiplayerSessionService multiplayerSessionService,
+			NetworkPlayerSpawner networkPlayerSpawner
 		)
 		{
 			_gameStateMachine = gameStateMachine;
@@ -54,6 +61,8 @@ namespace TLN.Gameplay.World
 			_gameSaveService = gameSaveService;
 			_wildlifeTargetService = wildlifeTargetService;
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
+			_multiplayerSessionService = multiplayerSessionService;
+			_networkPlayerSpawner = networkPlayerSpawner;
 		}
 
 		private void Start()
@@ -65,9 +74,34 @@ namespace TLN.Gameplay.World
 			}
 
 			ConstructHUD();
+
+
+			if (_multiplayerSessionService != null && _multiplayerSessionService.IsMultiplayer)
+			{
+				StartMultiplayerWorld();
+				return;
+			}
+
+			StartOfflineWorld();
+		}
+
+		private void StartOfflineWorld()
+		{
 			SpawnPlayer();
+
 			bool wasSaveLoaded = LoadRequestedSaveIfNeeded();
 			SpawnRandomWorldObjects(wasSaveLoaded);
+
+			EnsureGameplayState();
+		}
+
+		private void StartMultiplayerWorld()
+		{
+			if (_multiplayerSessionService.IsServer)
+			{
+				_networkPlayerSpawner.StartServerSpawning();
+			}
+
 			EnsureGameplayState();
 		}
 
