@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5560414482050531315}
+  - component: {fileID: 882572884242975756}
   - component: {fileID: 2695528187752430520}
   - component: {fileID: 7513953081195308760}
   - component: {fileID: 1444054733713550285}
@@ -35,6 +36,32 @@ Transform:
   - {fileID: 8435308536349622679}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &882572884242975756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855412870696026853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1525972474
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  <InScenePlaced>k__BackingField: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 0
+  SyncOwnerTransformWhenParented: 0
+  AllowOwnerToParent: 0
 --- !u!114 &2695528187752430520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,8 +74,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d55b548b774a8c880c58240366cb62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Items.WorldItemActor
+  ShowTopMostFoldoutHeaderGroup: 1
   _definition: {fileID: 0}
   _amount: 1
+  _maxPickupDistance: 3.5
 --- !u!135 &7513953081195308760
 SphereCollider:
   m_ObjectHideFlags: 0

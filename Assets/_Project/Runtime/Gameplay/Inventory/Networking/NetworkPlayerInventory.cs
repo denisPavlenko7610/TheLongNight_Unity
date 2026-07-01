@@ -130,6 +130,92 @@ namespace TLN.Gameplay.Inventory.Networking
 			return true;
 		}
 
+		public bool RequestPickup(WorldItemActor itemActor)
+		{
+			if (itemActor == null)
+			{
+				return false;
+			}
+
+			if (!IsSpawned || IsServer)
+			{
+				return TryPickupItemServer(itemActor);
+			}
+
+			if (!IsOwner)
+			{
+				return false;
+			}
+
+			if (!itemActor.TryGetComponent(out NetworkObject itemNetworkObject))
+			{
+				return false;
+			}
+
+			NetworkObjectReference itemReference = itemNetworkObject;
+			RequestPickupServerRpc(itemReference);
+
+			return true;
+		}
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+		private void RequestPickupServerRpc(NetworkObjectReference itemReference)
+		{
+			if (!_isConstructed)
+			{
+				return;
+			}
+
+			if (!IsServer)
+			{
+				return;
+			}
+
+			if (!itemReference.TryGet(out NetworkObject itemNetworkObject))
+			{
+				return;
+			}
+
+			if (!itemNetworkObject.TryGetComponent(out WorldItemActor itemActor))
+			{
+				return;
+			}
+
+			TryPickupItemServer(itemActor);
+		}
+
+		private bool TryPickupItemServer(WorldItemActor itemActor)
+		{
+			if (!CanMutateInventory())
+			{
+				return false;
+			}
+
+			if (itemActor == null || !itemActor.CanBePickedUp)
+			{
+				return false;
+			}
+
+			if (!itemActor.CanBePickedUpBy(transform))
+			{
+				NotifyOwner(Loc.CannotUse);
+				return false;
+			}
+
+			InventoryAddResult result = AddItem(itemActor.Definition, itemActor.Amount);
+
+			if (!result.IsSuccess)
+			{
+				NotifyOwner(result.FailureReason);
+				return false;
+			}
+
+			NotifyOwner(Loc.ItemsPickedUp(itemActor.Definition.DisplayName));
+			itemActor.CompletePickupServer();
+
+			return true;
+		}
+
 		public bool TryRemoveItemAt(int index, int amount, out string reason)
 		{
 			if (!CanMutateInventory())

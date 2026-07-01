@@ -1,325 +1,406 @@
 ﻿using System.Collections.Generic;
 using TLN.Application.GameStates;
+using TLN.Application.Multiplayer;
 using TLN.Application.Saves;
 using TLN.Core.Logging;
 using TLN.Core.Validation;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using VContainer;
 
 namespace TLN.Gameplay.World
 {
-    public sealed class RandomWorldSpawner : MonoBehaviour
-    {
-        [Header("Spawn")]
-        [SerializeField] [Required] private RandomWorldSpawnEntry[] _entries;
-        [SerializeField] private bool _spawnOnStart;
-        [SerializeField] private bool _spawnOnLoadedGame;
+	public sealed class RandomWorldSpawner : MonoBehaviour
+	{
+		private const float FullCircleDegrees = 360f;
 
-        [Header("Ground")]
-        [SerializeField] private LayerMask _groundMask = ~0;
-        [SerializeField] private float _rayStartHeight = 20f;
-        [SerializeField] private float _rayDistance = 60f;
+		[Header("Spawn")]
+		[SerializeField] [Required] private RandomWorldSpawnEntry[] _entries;
+		[SerializeField] private bool _spawnOnStart;
+		[SerializeField] private bool _spawnOnLoadedGame;
 
-        [Header("Random")]
-        [SerializeField] private bool _useFixedSeed;
-        [SerializeField] private int _seed = 12345;
+		[Header("Ground")]
+		[SerializeField] private LayerMask _groundMask = ~0;
+		[SerializeField] private float _rayStartHeight = 20f;
+		[SerializeField] private float _rayDistance = 60f;
 
-        [Header("Safety")]
-        [SerializeField] private int _maxAttemptsPerInstance = 30;
+		[Header("Random")]
+		[SerializeField] private bool _useFixedSeed;
+		[SerializeField] private int _seed = 12345;
 
+		[Header("Safety")]
+		[SerializeField] private int _maxAttemptsPerInstance = 30;
 
-        private readonly List<Vector3> _spawnedPositions = new();
+		private readonly List<Vector3> _spawnedPositions = new();
 
-        private IWorldObjectFactory _worldObjectFactory;
-        private IGameStateMachine _gameStateMachine;
-        private SaveSessionService _saveSessionService;
-        private bool _hasSpawned;
+		private IWorldObjectFactory _worldObjectFactory;
+		private IGameStateMachine _gameStateMachine;
+		private SaveSessionService _saveSessionService;
+		private IMultiplayerSessionService _multiplayerSessionService;
 
-        [Inject]
-        public void Construct(
-            IWorldObjectFactory worldObjectFactory,
-            IGameStateMachine gameStateMachine,
-            SaveSessionService saveSessionService
-            )
-        {
-            _worldObjectFactory = worldObjectFactory;
-            _gameStateMachine = gameStateMachine;
-            _saveSessionService = saveSessionService;
-        }
+		private bool _hasSpawned;
 
-        private void Start()
-        {
-            if (_spawnOnStart)
-            {
-                TrySpawn();
-            }
-        }
+		[Inject]
+		public void Construct(
+			IWorldObjectFactory worldObjectFactory,
+			IGameStateMachine gameStateMachine,
+			SaveSessionService saveSessionService,
+			IMultiplayerSessionService multiplayerSessionService
+		)
+		{
+			_worldObjectFactory = worldObjectFactory;
+			_gameStateMachine = gameStateMachine;
+			_saveSessionService = saveSessionService;
+			_multiplayerSessionService = multiplayerSessionService;
+		}
 
-        public void TrySpawn()
-        {
-            if (_hasSpawned)
-            {
-                return;
-            }
+		private void Start()
+		{
+			if (_spawnOnStart)
+			{
+				TrySpawn();
+			}
+		}
 
-            if (_gameStateMachine != null &&
-                _gameStateMachine.CurrentState == GameStateId.Loading)
-            {
-                return;
-            }
+		public void TrySpawn()
+		{
+			if (IsMultiplayerClientOnly())
+			{
+				return;
+			}
 
-            if (_worldObjectFactory == null)
-            {
-                TLNLogger.LogWarning(
-                    "RandomWorldSpawner cannot spawn because IWorldObjectFactory is missing.",
-                    this);
+			if (_hasSpawned)
+			{
+				return;
+			}
 
-                return;
-            }
+			if (_gameStateMachine != null &&
+			    _gameStateMachine.CurrentState == GameStateId.Loading)
+			{
+				return;
+			}
 
-            if (_saveSessionService != null && _saveSessionService.ShouldLoadActiveSlot)
-            {
-                return;
-            }
+			if (_worldObjectFactory == null)
+			{
+				TLNLogger.LogWarning(
+					"RandomWorldSpawner cannot spawn because IWorldObjectFactory is missing.",
+					this
+				);
 
-            _hasSpawned = true;
+				return;
+			}
 
-            Random.State previousState = default;
+			if (!IsMultiplayer() &&
+			    _saveSessionService != null &&
+			    _saveSessionService.ShouldLoadActiveSlot)
+			{
+				return;
+			}
 
-            if (_useFixedSeed)
-            {
-                previousState = Random.state;
-                Random.InitState(_seed);
-            }
+			_hasSpawned = true;
 
-            try
-            {
-                SpawnEntries();
-            }
-            finally
-            {
-                if (_useFixedSeed)
-                {
-                    Random.state = previousState;
-                }
-            }
-        }
+			Random.State previousState = default;
 
-        public void TrySpawnForWorldStart(bool wasSaveLoaded)
-        {
-            if (wasSaveLoaded && !_spawnOnLoadedGame)
-            {
-                return;
-            }
+			if (_useFixedSeed)
+			{
+				previousState = Random.state;
+				Random.InitState(_seed);
+			}
 
-            TrySpawn();
-        }
+			try
+			{
+				SpawnEntries();
+			}
+			finally
+			{
+				if (_useFixedSeed)
+				{
+					Random.state = previousState;
+				}
+			}
+		}
 
-        private void SpawnEntries()
-        {
-            if (_entries == null)
-            {
-                return;
-            }
+		public void TrySpawnForWorldStart(bool wasSaveLoaded)
+		{
+			if (!IsMultiplayer() &&
+			    wasSaveLoaded &&
+			    !_spawnOnLoadedGame)
+			{
+				return;
+			}
 
-            for (int i = 0; i < _entries.Length; i++)
-            {
-                SpawnEntry(_entries[i]);
-            }
-        }
+			TrySpawn();
+		}
 
-        private void SpawnEntry(RandomWorldSpawnEntry entry)
-        {
-            if (entry == null || entry.Prefab == null)
-            {
-                return;
-            }
+		private void SpawnEntries()
+		{
+			if (_entries == null)
+			{
+				return;
+			}
 
-            int count = Random.Range(
-                entry.MinCount,
-                entry.MaxCount + 1);
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				SpawnEntry(_entries[i]);
+			}
+		}
 
-            for (int i = 0; i < count; i++)
-            {
-                if (!TryFindSpawnPose(
-                        entry,
-                        out Vector3 position,
-                        out Quaternion rotation))
-                {
-                    TLNLogger.LogWarning(
-                        $"RandomWorldSpawner failed to find spawn position for prefab: {entry.Prefab.name}",
-                        this);
+		private void SpawnEntry(RandomWorldSpawnEntry entry)
+		{
+			if (entry == null || entry.Prefab == null)
+			{
+				return;
+			}
 
-                    continue;
-                }
+			int count = Random.Range(
+				entry.MinCount,
+				entry.MaxCount + 1
+			);
 
-                GameObject instance =
-                    _worldObjectFactory.Create(
-                        entry.Prefab,
-                        position,
-                        rotation);
+			for (int i = 0; i < count; i++)
+			{
+				if (!TryFindSpawnPose(
+					    entry,
+					    out Vector3 position,
+					    out Quaternion rotation))
+				{
+					TLNLogger.LogWarning(
+						$"RandomWorldSpawner failed to find spawn position for prefab: {entry.Prefab.name}",
+						this
+					);
 
-                if (instance == null)
-                {
-                    continue;
-                }
+					continue;
+				}
 
-                _spawnedPositions.Add(position);
-            }
-        }
+				GameObject instance = _worldObjectFactory.Create(
+					entry.Prefab,
+					position,
+					rotation
+				);
 
-        private bool TryFindSpawnPose(
-            RandomWorldSpawnEntry entry,
-            out Vector3 position,
-            out Quaternion rotation)
-        {
-            for (int attempt = 0; attempt < _maxAttemptsPerInstance; attempt++)
-            {
-                Vector2 randomCircle =
-                    Random.insideUnitCircle * entry.SpawnRadius;
+				if (instance == null)
+				{
+					continue;
+				}
 
-                Vector3 candidate =
-                    transform.position +
-                    new Vector3(randomCircle.x, 0f, randomCircle.y);
+				if (!TrySpawnNetworkObjectIfNeeded(instance))
+				{
+					Destroy(instance);
+					continue;
+				}
 
-                if (!TryProjectToGround(
-                        candidate,
-                        out Vector3 groundPosition,
-                        out Vector3 groundNormal))
-                {
-                    continue;
-                }
+				_spawnedPositions.Add(position);
+			}
+		}
 
-                if (entry.RequireNavMesh &&
-                    !TryProjectToNavMesh(
-                        groundPosition,
-                        entry.NavMeshSearchRadius,
-                        out groundPosition))
-                {
-                    continue;
-                }
+		private bool TrySpawnNetworkObjectIfNeeded(GameObject instance)
+		{
+			if (!IsMultiplayer())
+			{
+				return true;
+			}
 
-                if (!IsFarEnoughFromSpawnedPositions(
-                        groundPosition,
-                        entry.MinDistanceBetweenInstances))
-                {
-                    continue;
-                }
+			if (_multiplayerSessionService is not { IsServer: true })
+			{
+				return false;
+			}
 
-                position = groundPosition + Vector3.up * entry.SpawnYOffset;
-                rotation = CreateRotation(entry, groundNormal);
+			if (!instance.TryGetComponent(out NetworkObject networkObject))
+			{
+				TLNLogger.LogError(
+					$"Multiplayer spawned prefab must have NetworkObject: {instance.name}",
+					instance
+				);
 
-                return true;
-            }
+				return false;
+			}
 
-            position = default;
-            rotation = default;
-            return false;
-        }
+			if (!networkObject.IsSpawned)
+			{
+				networkObject.Spawn(true);
+			}
 
-        private bool TryProjectToGround(
-            Vector3 candidate,
-            out Vector3 position,
-            out Vector3 normal)
-        {
-            Vector3 rayOrigin =
-                candidate + Vector3.up * _rayStartHeight;
+			return true;
+		}
 
-            if (Physics.Raycast(
-                    rayOrigin,
-                    Vector3.down,
-                    out RaycastHit hit,
-                    _rayDistance,
-                    _groundMask,
-                    QueryTriggerInteraction.Ignore))
-            {
-                position = hit.point;
-                normal = hit.normal;
-                return true;
-            }
+		private bool TryFindSpawnPose(
+			RandomWorldSpawnEntry entry,
+			out Vector3 position,
+			out Quaternion rotation
+		)
+		{
+			for (int attempt = 0; attempt < _maxAttemptsPerInstance; attempt++)
+			{
+				Vector2 randomCircle =
+					Random.insideUnitCircle * entry.SpawnRadius;
 
-            position = default;
-            normal = Vector3.up;
-            return false;
-        }
+				Vector3 candidate =
+					transform.position +
+					new Vector3(randomCircle.x, 0f, randomCircle.y);
 
-        private static bool TryProjectToNavMesh(Vector3 candidate, float searchRadius, out Vector3 position)
-        {
-            if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, searchRadius, NavMesh.AllAreas))
-            {
-                position = hit.position;
-                return true;
-            }
+				if (!TryProjectToGround(
+					    candidate,
+					    out Vector3 groundPosition,
+					    out Vector3 groundNormal))
+				{
+					continue;
+				}
 
-            position = default;
-            return false;
-        }
+				if (entry.RequireNavMesh &&
+				    !TryProjectToNavMesh(
+					    groundPosition,
+					    entry.NavMeshSearchRadius,
+					    out groundPosition))
+				{
+					continue;
+				}
 
-        private bool IsFarEnoughFromSpawnedPositions(
-            Vector3 position,
-            float minDistance)
-        {
-            if (minDistance <= 0f)
-            {
-                return true;
-            }
+				if (!IsFarEnoughFromSpawnedPositions(
+					    groundPosition,
+					    entry.MinDistanceBetweenInstances))
+				{
+					continue;
+				}
 
-            float minSqrDistance = minDistance * minDistance;
+				position = groundPosition + Vector3.up * entry.SpawnYOffset;
+				rotation = CreateRotation(entry, groundNormal);
 
-            for (int i = 0; i < _spawnedPositions.Count; i++)
-            {
-                if ((position - _spawnedPositions[i]).sqrMagnitude < minSqrDistance)
-                {
-                    return false;
-                }
-            }
+				return true;
+			}
 
-            return true;
-        }
+			position = default;
+			rotation = default;
 
-        private const float FullCircleDegrees = 360f;
+			return false;
+		}
 
-        private static Quaternion CreateRotation(
-            RandomWorldSpawnEntry entry,
-            Vector3 groundNormal)
-        {
-            Quaternion yaw =
-                Quaternion.Euler(0f, Random.Range(0f, FullCircleDegrees), 0f);
+		private bool TryProjectToGround(
+			Vector3 candidate,
+			out Vector3 position,
+			out Vector3 normal
+		)
+		{
+			Vector3 rayOrigin =
+				candidate + Vector3.up * _rayStartHeight;
 
-            if (!entry.AlignToGroundNormal)
-            {
-                return yaw;
-            }
+			if (Physics.Raycast(
+				    rayOrigin,
+				    Vector3.down,
+				    out RaycastHit hit,
+				    _rayDistance,
+				    _groundMask,
+				    QueryTriggerInteraction.Ignore))
+			{
+				position = hit.point;
+				normal = hit.normal;
 
-            Quaternion groundAlignment =
-                Quaternion.FromToRotation(Vector3.up, groundNormal);
+				return true;
+			}
 
-            return groundAlignment * yaw;
-        }
+			position = default;
+			normal = Vector3.up;
+
+			return false;
+		}
+
+		private static bool TryProjectToNavMesh(
+			Vector3 candidate,
+			float searchRadius,
+			out Vector3 position
+		)
+		{
+			if (NavMesh.SamplePosition(
+				    candidate,
+				    out NavMeshHit hit,
+				    searchRadius,
+				    NavMesh.AllAreas))
+			{
+				position = hit.position;
+				return true;
+			}
+
+			position = default;
+			return false;
+		}
+
+		private bool IsFarEnoughFromSpawnedPositions(
+			Vector3 position,
+			float minDistance
+		)
+		{
+			if (minDistance <= 0f)
+			{
+				return true;
+			}
+
+			float minSqrDistance = minDistance * minDistance;
+
+			for (int i = 0; i < _spawnedPositions.Count; i++)
+			{
+				if ((position - _spawnedPositions[i]).sqrMagnitude < minSqrDistance)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static Quaternion CreateRotation(
+			RandomWorldSpawnEntry entry,
+			Vector3 groundNormal
+		)
+		{
+			Quaternion yaw =
+				Quaternion.Euler(0f, Random.Range(0f, FullCircleDegrees), 0f);
+
+			if (!entry.AlignToGroundNormal)
+			{
+				return yaw;
+			}
+
+			Quaternion groundAlignment =
+				Quaternion.FromToRotation(Vector3.up, groundNormal);
+
+			return groundAlignment * yaw;
+		}
+
+		private bool IsMultiplayer()
+		{
+			return _multiplayerSessionService is { IsMultiplayer: true };
+		}
+
+		private bool IsMultiplayerClientOnly()
+		{
+			return _multiplayerSessionService is
+			{
+				IsMultiplayer: true,
+				IsServer: false
+			};
+		}
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            if (_entries == null)
-            {
-                return;
-            }
+		private void OnDrawGizmosSelected()
+		{
+			if (_entries == null)
+			{
+				return;
+			}
 
-            for (int i = 0; i < _entries.Length; i++)
-            {
-                RandomWorldSpawnEntry entry = _entries[i];
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				RandomWorldSpawnEntry entry = _entries[i];
 
-                if (entry == null)
-                {
-                    continue;
-                }
+				if (entry == null)
+				{
+					continue;
+				}
 
-                Gizmos.color = entry.DebugColor;
-
-                Gizmos.DrawWireSphere(transform.position, entry.SpawnRadius);
-            }
-        }
+				Gizmos.color = entry.DebugColor;
+				Gizmos.DrawWireSphere(transform.position, entry.SpawnRadius);
+			}
+		}
 #endif
-    }
+	}
 }

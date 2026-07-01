@@ -105,6 +105,7 @@ namespace TLN.Gameplay.World
 					return;
 				}
 
+				SpawnRandomWorldObjects(false);
 				_networkPlayerSpawner.StartServerSpawning();
 			}
 
@@ -168,8 +169,6 @@ namespace TLN.Gameplay.World
 				);
 				return false;
 			}
-
-			ResolveSceneReferences();
 
 			if (_uiRoot == null)
 			{
@@ -245,13 +244,6 @@ namespace TLN.Gameplay.World
 			}
 
 			return true;
-		}
-
-		private void ResolveSceneReferences()
-		{
-			_networkPlayerSpawner ??= UnityEngine.Object.FindAnyObjectByType<NetworkPlayerSpawner>(
-				FindObjectsInactive.Include
-			);
 		}
 	}
 }

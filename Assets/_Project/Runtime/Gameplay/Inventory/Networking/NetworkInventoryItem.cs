@@ -11,11 +11,12 @@ namespace TLN.Gameplay.Inventory.Networking
 
 		public NetworkInventoryItem(string itemId, int amount)
 		{
-			ItemId = itemId;
+			ItemId = new FixedString64Bytes(itemId);
 			Amount = amount;
 		}
 
-		public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+		public void NetworkSerialize<T>(BufferSerializer<T> serializer)
+			where T : IReaderWriter
 		{
 			serializer.SerializeValue(ref ItemId);
 			serializer.SerializeValue(ref Amount);
@@ -23,17 +24,8 @@ namespace TLN.Gameplay.Inventory.Networking
 
 		public bool Equals(NetworkInventoryItem other)
 		{
-			return ItemId.Equals(other.ItemId) && Amount == other.Amount;
-		}
-
-		public override bool Equals(object obj)
-		{
-			return obj is NetworkInventoryItem other && Equals(other);
-		}
-
-		public override int GetHashCode()
-		{
-			return HashCode.Combine(ItemId, Amount);
+			return ItemId.Equals(other.ItemId) &&
+				Amount == other.Amount;
 		}
 	}
 }
