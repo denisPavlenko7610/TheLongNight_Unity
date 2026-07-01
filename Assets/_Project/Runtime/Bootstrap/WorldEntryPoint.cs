@@ -21,7 +21,6 @@ namespace TLN.Gameplay.World
 		[SerializeField] [Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
 		[SerializeField] [Assign(Mode.Scene)] private PlayerRoot _playerPrefab;
 		[SerializeField] [Assign(Mode.Scene)] private Transform _spawnPoint;
-		[SerializeField] [Assign(Mode.Scene)] private NetworkPlayerSpawner _networkPlayerSpawner;
 
 		private IGameStateMachine _gameStateMachine;
 		private INotificationService _notificationService;
@@ -32,6 +31,7 @@ namespace TLN.Gameplay.World
 		private IGameSaveService _gameSaveService;
 		private WildlifeTargetService _wildlifeTargetService;
 		private RandomWorldSpawnerSet _randomWorldSpawnerSet;
+		private NetworkPlayerSpawner _networkPlayerSpawner;
 
 		private PlayerRoot _playerInstance;
 
@@ -49,7 +49,8 @@ namespace TLN.Gameplay.World
 			IGameSaveService gameSaveService,
 			WildlifeTargetService wildlifeTargetService,
 			RandomWorldSpawnerSet randomWorldSpawnerSet,
-			IMultiplayerSessionService multiplayerSessionService
+			IMultiplayerSessionService multiplayerSessionService,
+			NetworkPlayerSpawner networkPlayerSpawner
 		)
 		{
 			_gameStateMachine = gameStateMachine;
@@ -62,6 +63,7 @@ namespace TLN.Gameplay.World
 			_wildlifeTargetService = wildlifeTargetService;
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
 			_multiplayerSessionService = multiplayerSessionService;
+			_networkPlayerSpawner = networkPlayerSpawner;
 			_isConstructed = true;
 		}
 

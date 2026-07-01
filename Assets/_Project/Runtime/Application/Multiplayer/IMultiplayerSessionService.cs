@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TLN.Core.Lifetime;
 using TLN.Core.Results;
 
@@ -14,8 +15,11 @@ namespace TLN.Application.Multiplayer
 		string JoinCode { get; }
 
 		Task<OperationResult<string>> CreateHostSession();
+		Task<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions();
+		Task<OperationResult> JoinSessionById(string sessionId);
 		Task<OperationResult> JoinSessionByCode(string joinCode);
 
 		void Shutdown();
+		Task ShutdownAsync();
 	}
 }

@@ -29,10 +29,15 @@ namespace TLN.Gameplay.World
 		[SerializeField] private bool _useFixedSeed;
 		[SerializeField] private int _seed = 12345;
 
+		[Header("Hierarchy")]
+		[SerializeField] private Transform _spawnParentRoot;
+		[SerializeField] private bool _groupSpawnsByPrefab = true;
+
 		[Header("Safety")]
 		[SerializeField] private int _maxAttemptsPerInstance = 30;
 
 		private readonly List<Vector3> _spawnedPositions = new();
+		private readonly Dictionary<GameObject, Transform> _spawnParentsByPrefab = new();
 
 		private IWorldObjectFactory _worldObjectFactory;
 		private IGameStateMachine _gameStateMachine;
@@ -184,6 +189,8 @@ namespace TLN.Gameplay.World
 					continue;
 				}
 
+				ParentSpawnedInstance(instance, entry);
+
 				if (!TrySpawnNetworkObjectIfNeeded(instance))
 				{
 					Destroy(instance);
@@ -192,6 +199,55 @@ namespace TLN.Gameplay.World
 
 				_spawnedPositions.Add(position);
 			}
+		}
+
+		private void ParentSpawnedInstance(GameObject instance, RandomWorldSpawnEntry entry)
+		{
+			Transform parent = GetSpawnParent(entry);
+			if (parent == null)
+			{
+				return;
+			}
+
+			instance.transform.SetParent(parent, true);
+		}
+
+		private Transform GetSpawnParent(RandomWorldSpawnEntry entry)
+		{
+			Transform root = GetSpawnRoot();
+			if (root == null)
+			{
+				return null;
+			}
+
+			if (!_groupSpawnsByPrefab || entry.Prefab == null)
+			{
+				return root;
+			}
+
+			if (_spawnParentsByPrefab.TryGetValue(entry.Prefab, out Transform existingParent) &&
+			    existingParent != null)
+			{
+				return existingParent;
+			}
+
+			GameObject parentObject = new GameObject(CreateSpawnParentName(entry.Prefab));
+			parentObject.transform.SetParent(root, false);
+
+			Transform parent = parentObject.transform;
+			_spawnParentsByPrefab[entry.Prefab] = parent;
+
+			return parent;
+		}
+
+		private Transform GetSpawnRoot()
+		{
+			return _spawnParentRoot != null ? _spawnParentRoot : transform;
+		}
+
+		private static string CreateSpawnParentName(GameObject prefab)
+		{
+			return $"{prefab.name} Spawns";
 		}
 
 		private bool TrySpawnNetworkObjectIfNeeded(GameObject instance)

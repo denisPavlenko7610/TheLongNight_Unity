@@ -31,10 +31,13 @@ namespace TLN.Bootstrap
 		protected override void Configure(IContainerBuilder builder)
 		{
 			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
+			builder.RegisterInstance(_networkManager);
+			builder.Register<NgoMultiplayerSessionService>(Lifetime.Singleton).As<IMultiplayerSessionService>();
 			builder.Register<ISceneLoader>(
 				container =>
 					new SceneLoaderService(
 						container.Resolve<IGameStateMachine>(),
+						container.Resolve<IMultiplayerSessionService>(),
 						container.Resolve<NetworkManager>()
 					),
 				Lifetime.Singleton
@@ -45,8 +48,6 @@ namespace TLN.Bootstrap
 
 			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
-			builder.RegisterInstance(_networkManager);
-			builder.Register<NgoMultiplayerSessionService>(Lifetime.Singleton).As<IMultiplayerSessionService>();
 
 			builder.RegisterEntryPoint<GameStateInputModeController>();
 			builder.RegisterEntryPoint<GameStatePauseController>();

@@ -2,7 +2,6 @@
 using TLN.Core.Logging;
 using TLN.Gameplay.Inventory.Networking;
 using TLN.Gameplay.Placement;
-using TLN.Gameplay.Survival;
 using TLN.Gameplay.Survival.Networking;
 using TLN.Gameplay.Wildlife;
 using Unity.Netcode;
@@ -69,6 +68,11 @@ namespace TLN.Gameplay.Player.Networking
 
 		private void BindLocalPlayer(NetworkObject playerObject)
 		{
+			if (!playerObject.IsOwner)
+			{
+				return;
+			}
+
 			_resolver.InjectGameObject(playerObject.gameObject);
 
 			if (!playerObject.TryGetComponent(out PlayerRoot playerRoot))

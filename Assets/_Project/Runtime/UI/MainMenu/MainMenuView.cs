@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TLN.Application.Localization;
 using TLN.Application.Multiplayer;
 using TLN.Application.Saves;
@@ -35,6 +38,8 @@ namespace TLN.UI.MainMenu
 		private Label _singlePlayerDescriptionLabel;
 		private Label _multiplayerTitleLabel;
 		private Label _multiplayerDescriptionLabel;
+		private Label _sessionsTitleLabel;
+		private Label _sessionsStatusLabel;
 		private Label _joinCodeLabel;
 
 		private Button _singlePlayerButton;
@@ -54,12 +59,15 @@ namespace TLN.UI.MainMenu
 		private OptionsView _optionsView;
 
 		private Button _hostGameButton;
+		private Button _refreshGamesButton;
 		private Button _joinGameButton;
 		private Button _multiplayerBackButton;
 		private TextField _joinCodeField;
+		private VisualElement _sessionsList;
 		private IMultiplayerSessionService _multiplayerSessionService;
 		private IGameStateMachine _gameStateMachine;
 		private bool _isMultiplayerOperationInProgress;
+		private bool _isSessionBrowseInProgress;
 
 		[Inject]
 		public void Construct(
@@ -97,6 +105,8 @@ namespace TLN.UI.MainMenu
 			_singlePlayerDescriptionLabel = _root.RequiredQ<Label>("single-player-description-label");
 			_multiplayerTitleLabel = _root.RequiredQ<Label>("multiplayer-title-label");
 			_multiplayerDescriptionLabel = _root.RequiredQ<Label>("multiplayer-description-label");
+			_sessionsTitleLabel = _root.RequiredQ<Label>("sessions-title-label");
+			_sessionsStatusLabel = _root.RequiredQ<Label>("sessions-status-label");
 			_joinCodeLabel = _root.RequiredQ<Label>("join-code-label");
 			_singlePlayerButton = _root.RequiredQ<Button>("single-player-button");
 			_multiplayerButton = _root.RequiredQ<Button>("multiplayer-button");
@@ -106,9 +116,11 @@ namespace TLN.UI.MainMenu
 			_optionsButton = _root.RequiredQ<Button>("options-button");
 			_quitButton = _root.RequiredQ<Button>("quit-button");
 			_hostGameButton = _root.RequiredQ<Button>("host-game-button");
+			_refreshGamesButton = _root.RequiredQ<Button>("refresh-games-button");
 			_joinGameButton = _root.RequiredQ<Button>("join-game-button");
 			_multiplayerBackButton = _root.RequiredQ<Button>("multiplayer-back-button");
 			_joinCodeField = _root.RequiredQ<TextField>("join-code-field");
+			_sessionsList = _root.RequiredQ<VisualElement>("sessions-list");
 
 			InitializeSaveSlotsPanel();
 			InitializeOptionsView();
@@ -169,6 +181,7 @@ namespace TLN.UI.MainMenu
 			_optionsButton.clicked += OnOptionsClicked;
 			_quitButton.clicked += OnQuitClicked;
 			_hostGameButton.clicked += OnHostGameClicked;
+			_refreshGamesButton.clicked += OnRefreshGamesClicked;
 			_joinGameButton.clicked += OnJoinGameClicked;
 			_multiplayerBackButton.clicked += ShowNavigationPanel;
 			_joinCodeField.RegisterValueChangedCallback(OnJoinCodeChanged);
@@ -219,6 +232,11 @@ namespace TLN.UI.MainMenu
 				_hostGameButton.clicked -= OnHostGameClicked;
 			}
 
+			if (_refreshGamesButton != null)
+			{
+				_refreshGamesButton.clicked -= OnRefreshGamesClicked;
+			}
+
 			if (_joinGameButton != null)
 			{
 				_joinGameButton.clicked -= OnJoinGameClicked;
@@ -250,6 +268,9 @@ namespace TLN.UI.MainMenu
 			_multiplayerTitleLabel.text = Loc.MainMenuMultiplayer;
 			_multiplayerDescriptionLabel.text = Loc.MainMenuMultiplayerDescription;
 			_hostGameButton.text = Loc.MainMenuHostGame;
+			_refreshGamesButton.text = "REFRESH GAMES";
+			_sessionsTitleLabel.text = "AVAILABLE GAMES";
+			_sessionsStatusLabel.text = "Refresh to search public games.";
 			_joinCodeLabel.text = Loc.MainMenuJoinCode;
 			_joinGameButton.text = Loc.MainMenuJoinGame;
 			_multiplayerBackButton.text = Loc.SettingsBack;
@@ -274,6 +295,143 @@ namespace TLN.UI.MainMenu
 			bool isEnabled = hasJoinCode && !_isMultiplayerOperationInProgress;
 			_joinGameButton.SetEnabled(isEnabled);
 			_joinGameButton.EnableInClassList(DisabledClassName, !isEnabled);
+		}
+
+		private async void OnRefreshGamesClicked()
+		{
+			await RefreshAvailableSessions();
+		}
+
+		private async Task RefreshAvailableSessions()
+		{
+			if (_isMultiplayerOperationInProgress ||
+			    _isSessionBrowseInProgress)
+			{
+				return;
+			}
+
+			if (_multiplayerSessionService == null)
+			{
+				SetSessionsStatus("Multiplayer service is missing.");
+				return;
+			}
+
+			SetSessionBrowseInProgress(true);
+			SetSessionsStatus("Searching public games...");
+			_sessionsList?.Clear();
+
+			try
+			{
+				OperationResult<IReadOnlyList<MultiplayerSessionInfo>> result =
+					await _multiplayerSessionService.BrowseSessions();
+
+				if (!result.IsSuccess)
+				{
+					TLNLogger.LogError(result.Message);
+					SetSessionsStatus(result.Message);
+					return;
+				}
+
+				PopulateSessionList(result.Value);
+			}
+			finally
+			{
+				SetSessionBrowseInProgress(false);
+			}
+		}
+
+		private void PopulateSessionList(IReadOnlyList<MultiplayerSessionInfo> sessions)
+		{
+			_sessionsList?.Clear();
+
+			if (_sessionsList == null)
+			{
+				return;
+			}
+
+			if (sessions == null || sessions.Count == 0)
+			{
+				SetSessionsStatus("No public games found.");
+				return;
+			}
+
+			SetSessionsStatus(string.Empty);
+
+			for (int i = 0; i < sessions.Count; i++)
+			{
+				MultiplayerSessionInfo session = sessions[i];
+				Button sessionButton = new Button(() => OnSessionClicked(session))
+				{
+					text = CreateSessionButtonText(session)
+				};
+
+				sessionButton.AddToClassList("main-menu-session-button");
+				sessionButton.SetEnabled(!_isMultiplayerOperationInProgress);
+				sessionButton.EnableInClassList(DisabledClassName, _isMultiplayerOperationInProgress);
+
+				_sessionsList.Add(sessionButton);
+			}
+		}
+
+		private async void OnSessionClicked(MultiplayerSessionInfo session)
+		{
+			if (_isMultiplayerOperationInProgress)
+			{
+				return;
+			}
+
+			if (_multiplayerSessionService == null)
+			{
+				TLNLogger.LogError("Cannot join game because multiplayer session service is missing.");
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(session.Id))
+			{
+				TLNLogger.LogError("Cannot join game because selected session id is empty.");
+				return;
+			}
+
+			SetMultiplayerOperationInProgress(true);
+
+			try
+			{
+				OperationResult result = await _multiplayerSessionService.JoinSessionById(session.Id);
+				if (!result.IsSuccess)
+				{
+					TLNLogger.LogError(result.Message);
+					RestoreMainMenuAfterMultiplayerOperationFailure();
+					return;
+				}
+
+				await _sceneLoader.LoadWorld();
+			}
+			finally
+			{
+				if (_gameStateMachine != null &&
+				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				{
+					SetMultiplayerOperationInProgress(false);
+				}
+			}
+		}
+
+		private static string CreateSessionButtonText(MultiplayerSessionInfo session)
+		{
+			string passwordSuffix = session.HasPassword ? " - PASSWORD" : string.Empty;
+
+			return $"{session.Name}\n{session.PlayerCount}/{session.MaxPlayers} players{passwordSuffix}";
+		}
+
+		private void SetSessionsStatus(string status)
+		{
+			if (_sessionsStatusLabel == null)
+			{
+				return;
+			}
+
+			_sessionsStatusLabel.text = status ?? string.Empty;
+			_sessionsStatusLabel.SetVisible(!string.IsNullOrWhiteSpace(status));
 		}
 
 		private async void OnHostGameClicked()
@@ -375,6 +533,15 @@ namespace TLN.UI.MainMenu
 				_joinCodeField.SetEnabled(!isInProgress);
 			}
 
+			if (_refreshGamesButton != null)
+			{
+				bool canRefresh = !isInProgress && !_isSessionBrowseInProgress;
+				_refreshGamesButton.SetEnabled(canRefresh);
+				_refreshGamesButton.EnableInClassList(DisabledClassName, !canRefresh);
+			}
+
+			SetSessionButtonsEnabled(!isInProgress);
+
 			if (_multiplayerBackButton != null)
 			{
 				_multiplayerBackButton.SetEnabled(!isInProgress);
@@ -382,6 +549,37 @@ namespace TLN.UI.MainMenu
 			}
 
 			RefreshJoinGameButton();
+		}
+
+		private void SetSessionBrowseInProgress(bool isInProgress)
+		{
+			_isSessionBrowseInProgress = isInProgress;
+
+			if (_refreshGamesButton != null)
+			{
+				bool canRefresh = !isInProgress && !_isMultiplayerOperationInProgress;
+				_refreshGamesButton.SetEnabled(canRefresh);
+				_refreshGamesButton.EnableInClassList(DisabledClassName, !canRefresh);
+			}
+		}
+
+		private void SetSessionButtonsEnabled(bool isEnabled)
+		{
+			if (_sessionsList == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _sessionsList.childCount; i++)
+			{
+				if (_sessionsList[i] is not Button sessionButton)
+				{
+					continue;
+				}
+
+				sessionButton.SetEnabled(isEnabled);
+				sessionButton.EnableInClassList(DisabledClassName, !isEnabled);
+			}
 		}
 
 		private void RestoreMainMenuAfterMultiplayerOperationFailure()
@@ -438,6 +636,7 @@ namespace TLN.UI.MainMenu
 			_settingsPanel.SetVisible(false);
 			_saveSlotsPanel?.Hide();
 			RefreshJoinGameButton();
+			_ = RefreshAvailableSessions();
 		}
 
 		private void ShowSettingsPanel()

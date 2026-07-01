@@ -7,6 +7,7 @@ using TLN.Gameplay.Survival.Networking;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
+using TLN.Gameplay.Campfire;
 
 namespace TLN.Gameplay.Inventory.Networking
 {
@@ -560,6 +561,287 @@ namespace TLN.Gameplay.Inventory.Networking
 			_isCacheDirty = true;
 			RebuildCacheIfNeeded();
 			Changed?.Invoke();
+		}
+
+		public bool RequestAddFuelToCampfire(
+			CampfireActor campfire,
+			int inventoryIndex
+		)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!IsSpawned || IsServer)
+			{
+				return TryAddFuelToCampfireServer(campfire, inventoryIndex);
+			}
+
+			if (!IsOwner)
+			{
+				return false;
+			}
+
+			if (!campfire.TryGetComponent(out NetworkObject campfireNetworkObject))
+			{
+				return false;
+			}
+
+			NetworkObjectReference campfireReference = campfireNetworkObject;
+			RequestAddFuelToCampfireServerRpc(campfireReference, inventoryIndex);
+
+			return true;
+		}
+
+		public bool RequestIgniteCampfire(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!IsSpawned || IsServer)
+			{
+				return TryIgniteCampfireServer(campfire);
+			}
+
+			if (!IsOwner)
+			{
+				return false;
+			}
+
+			if (!campfire.TryGetComponent(out NetworkObject campfireNetworkObject))
+			{
+				return false;
+			}
+
+			NetworkObjectReference campfireReference = campfireNetworkObject;
+			RequestIgniteCampfireServerRpc(campfireReference);
+
+			return true;
+		}
+
+		public bool RequestExtinguishCampfire(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!IsSpawned || IsServer)
+			{
+				return TryExtinguishCampfireServer(campfire);
+			}
+
+			if (!IsOwner)
+			{
+				return false;
+			}
+
+			if (!campfire.TryGetComponent(out NetworkObject campfireNetworkObject))
+			{
+				return false;
+			}
+
+			NetworkObjectReference campfireReference = campfireNetworkObject;
+			RequestExtinguishCampfireServerRpc(campfireReference);
+
+			return true;
+		}
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+		private void RequestAddFuelToCampfireServerRpc(
+			NetworkObjectReference campfireReference,
+			int inventoryIndex
+		)
+		{
+			if (!_isConstructed)
+			{
+				return;
+			}
+
+			if (!IsServer)
+			{
+				return;
+			}
+
+			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			{
+				return;
+			}
+
+			TryAddFuelToCampfireServer(campfire, inventoryIndex);
+		}
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+		private void RequestIgniteCampfireServerRpc(NetworkObjectReference campfireReference)
+		{
+			if (!_isConstructed)
+			{
+				return;
+			}
+
+			if (!IsServer)
+			{
+				return;
+			}
+
+			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			{
+				return;
+			}
+
+			TryIgniteCampfireServer(campfire);
+		}
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+		private void RequestExtinguishCampfireServerRpc(NetworkObjectReference campfireReference)
+		{
+			if (!_isConstructed)
+			{
+				return;
+			}
+
+			if (!IsServer)
+			{
+				return;
+			}
+
+			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			{
+				return;
+			}
+
+			TryExtinguishCampfireServer(campfire);
+		}
+
+		private bool TryAddFuelToCampfireServer(
+			CampfireActor campfire,
+			int inventoryIndex
+		)
+		{
+			if (!CanMutateInventory())
+			{
+				return false;
+			}
+
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!campfire.CanBeUsedBy(transform))
+			{
+				NotifyOwner(Loc.CannotUse);
+				return false;
+			}
+
+			RebuildCacheIfNeeded();
+
+			if (inventoryIndex < 0 || inventoryIndex >= _items.Count)
+			{
+				NotifyOwner(Loc.ItemsInvalidSlot);
+				return false;
+			}
+
+			ItemStack stack = _items[inventoryIndex];
+
+			if (stack.Definition is not FuelItemDefinition fuel)
+			{
+				NotifyOwner(Loc.CannotBurn);
+				return false;
+			}
+
+			if (!campfire.CanAddFuel(fuel, SingleItemAmount, out string fuelFailureReason))
+			{
+				NotifyOwner(fuelFailureReason);
+				return false;
+			}
+
+			if (!TryRemoveItemAt(
+					inventoryIndex,
+					SingleItemAmount,
+					out string removeFailureReason
+				))
+			{
+				NotifyOwner(removeFailureReason);
+				return false;
+			}
+
+			if (!campfire.AddFuel(
+					fuel,
+					SingleItemAmount,
+					out string addFuelFailureReason
+				))
+			{
+				NotifyOwner(addFuelFailureReason);
+				return false;
+			}
+
+			NotifyOwner(Loc.FuelAdded(fuel.DisplayName));
+			return true;
+		}
+
+		private bool TryIgniteCampfireServer(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!campfire.CanBeUsedBy(transform))
+			{
+				NotifyOwner(Loc.CannotUse);
+				return false;
+			}
+
+			if (!campfire.Ignite(out string failureReason))
+			{
+				NotifyOwner(failureReason);
+				return false;
+			}
+
+			NotifyOwner(Loc.FireStarted);
+			return true;
+		}
+
+		private bool TryExtinguishCampfireServer(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!campfire.CanBeUsedBy(transform))
+			{
+				NotifyOwner(Loc.CannotUse);
+				return false;
+			}
+
+			if (!campfire.Extinguish(out string failureReason))
+			{
+				NotifyOwner(failureReason);
+				return false;
+			}
+
+			NotifyOwner(Loc.FireExtinguished);
+			return true;
+		}
+
+		private static bool TryGetCampfire(
+			NetworkObjectReference campfireReference,
+			out CampfireActor campfire
+		)
+		{
+			campfire = null;
+
+			if (!campfireReference.TryGet(out NetworkObject campfireNetworkObject))
+			{
+				return false;
+			}
+
+			return campfireNetworkObject.TryGetComponent(out campfire);
 		}
 
 		private void RebuildCacheIfNeeded()

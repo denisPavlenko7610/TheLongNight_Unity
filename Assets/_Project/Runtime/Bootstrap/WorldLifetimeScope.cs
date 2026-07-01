@@ -60,8 +60,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	protected override void Configure(IContainerBuilder builder)
 	{
-		ResolveSceneReferences();
-
 		RegisterConfigs(builder);
 		RegisterGameplayServices(builder);
 		RegisterWorldComponents(builder);
@@ -116,14 +114,14 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	private void RegisterWorldComponents(IContainerBuilder builder)
 	{
+		RegisterSceneComponentIfPresent(builder, _networkPlayerSpawner, nameof(_networkPlayerSpawner));
+		RegisterSceneComponentIfPresent(builder, _networkLocalPlayerBinder, nameof(_networkLocalPlayerBinder));
+		RegisterSceneComponentIfPresent(builder, _networkWorldTimeSynchronizer, nameof(_networkWorldTimeSynchronizer));
+
 		builder.RegisterComponent(_worldEntryPoint);
 		builder.RegisterComponent(_worldTimeController);
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
-
-		RegisterSceneComponentIfPresent(builder, _networkPlayerSpawner, nameof(_networkPlayerSpawner));
-		RegisterSceneComponentIfPresent(builder, _networkLocalPlayerBinder, nameof(_networkLocalPlayerBinder));
-		RegisterSceneComponentIfPresent(builder, _networkWorldTimeSynchronizer, nameof(_networkWorldTimeSynchronizer));
 	}
 
 	private void RegisterRandomSpawners(IContainerBuilder builder)
@@ -160,19 +158,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.RegisterComponent(_uiRoot.PauseMenu);
 		RegisterSceneComponentIfPresent(builder, _worldLocalPlayerUiBinder, nameof(_worldLocalPlayerUiBinder));
-	}
-
-	private void ResolveSceneReferences()
-	{
-		_worldLocalPlayerUiBinder ??= FindSceneComponent<WorldLocalPlayerUiBinder>();
-		_networkPlayerSpawner ??= FindSceneComponent<NetworkPlayerSpawner>();
-		_networkLocalPlayerBinder ??= FindSceneComponent<NetworkLocalPlayerBinder>();
-		_networkWorldTimeSynchronizer ??= FindSceneComponent<NetworkWorldTimeSynchronizer>();
-	}
-
-	private static T FindSceneComponent<T>() where T : Component
-	{
-		return UnityEngine.Object.FindAnyObjectByType<T>(FindObjectsInactive.Include);
 	}
 
 	private static void RegisterSceneComponentIfPresent<T>(

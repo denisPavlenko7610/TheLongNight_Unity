@@ -53,7 +53,6 @@ namespace TLN.Gameplay.Survival.Networking
 
 		private SurvivalConfig _config;
 		private SleepConfig _sleepConfig;
-		private ItemCatalog _itemCatalog;
 		private IGameStateMachine _gameStateMachine;
 		private IGameTimeService _gameTimeService;
 		private IWarmthService _warmthService;
@@ -63,6 +62,27 @@ namespace TLN.Gameplay.Survival.Networking
 		private bool _hasPendingNetworkValues;
 
 		private float _survivalTickAccumulator;
+
+		[Inject]
+		public void Construct(
+			SurvivalConfig config,
+			SleepConfig sleepConfig,
+			IGameStateMachine gameStateMachine,
+			IGameTimeService gameTimeService,
+			IWarmthService warmthService
+		)
+		{
+			_config = config ?? throw new ArgumentNullException(nameof(config));
+			_sleepConfig = sleepConfig ?? throw new ArgumentNullException(nameof(sleepConfig));
+			_gameStateMachine = gameStateMachine ?? throw new ArgumentNullException(nameof(gameStateMachine));
+			_gameTimeService = gameTimeService ?? throw new ArgumentNullException(nameof(gameTimeService));
+			_warmthService = warmthService ?? throw new ArgumentNullException(nameof(warmthService));
+
+			_isConstructed = true;
+
+			EnsureInitializedStats();
+			InitializeNetworkStateIfNeeded();
+		}
 
 		public SurvivalStat Hunger
 		{
@@ -110,29 +130,6 @@ namespace TLN.Gameplay.Survival.Networking
 		}
 
 		public event Action Changed;
-
-		[Inject]
-		public void Construct(
-			SurvivalConfig config,
-			SleepConfig sleepConfig,
-			ItemCatalog itemCatalog,
-			IGameStateMachine gameStateMachine,
-			IGameTimeService gameTimeService,
-			IWarmthService warmthService
-		)
-		{
-			_config = config ?? throw new ArgumentNullException(nameof(config));
-			_sleepConfig = sleepConfig ?? throw new ArgumentNullException(nameof(sleepConfig));
-			_itemCatalog = itemCatalog ?? throw new ArgumentNullException(nameof(itemCatalog));
-			_gameStateMachine = gameStateMachine ?? throw new ArgumentNullException(nameof(gameStateMachine));
-			_gameTimeService = gameTimeService ?? throw new ArgumentNullException(nameof(gameTimeService));
-			_warmthService = warmthService ?? throw new ArgumentNullException(nameof(warmthService));
-
-			_isConstructed = true;
-
-			EnsureInitializedStats();
-			InitializeNetworkStateIfNeeded();
-		}
 
 		public override void OnNetworkSpawn()
 		{
@@ -223,7 +220,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestApplyConsumable(consumable);
 				return;
 			}
 
@@ -234,7 +230,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Cold, -amount);
 				return;
 			}
 
@@ -247,7 +242,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Fatigue, amount);
 				return;
 			}
 
@@ -260,7 +254,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Fatigue, -amount);
 				return;
 			}
 
@@ -273,7 +266,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Hunger, amount);
 				return;
 			}
 
@@ -286,7 +278,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Thirst, amount);
 				return;
 			}
 
@@ -299,7 +290,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Cold, amount);
 				return;
 			}
 
@@ -312,7 +302,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Condition, amount);
 				return;
 			}
 
@@ -325,7 +314,6 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			if (!CanMutateSurvival())
 			{
-				RequestStatDelta(SurvivalStatId.Condition, -amount);
 				return;
 			}
 
@@ -353,56 +341,6 @@ namespace TLN.Gameplay.Survival.Networking
 
 			RequestSleepServerRpc(hours);
 			return true;
-		}
-
-		private void RequestApplyConsumable(ConsumableItemDefinition consumable)
-		{
-			if (!CanSendOwnerServerRequest())
-			{
-				return;
-			}
-
-			if (consumable == null || string.IsNullOrWhiteSpace(consumable.Id))
-			{
-				return;
-			}
-
-			ApplyConsumableServerRpc(consumable.Id);
-		}
-
-		private void RequestStatDelta(SurvivalStatId statId, float delta)
-		{
-			if (!CanSendOwnerServerRequest())
-			{
-				return;
-			}
-
-			if (!IsValidStatDelta(delta))
-			{
-				return;
-			}
-		}
-
-		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-		private void ApplyConsumableServerRpc(string itemId)
-		{
-			if (!CanProcessServerPlayerRequest())
-			{
-				return;
-			}
-
-			if (string.IsNullOrWhiteSpace(itemId))
-			{
-				return;
-			}
-
-			if (!_itemCatalog.TryGetItem(itemId, out ItemDefinition item) ||
-			    item is not ConsumableItemDefinition consumable)
-			{
-				return;
-			}
-
-			ApplyConsumableLocally(consumable);
 		}
 
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
@@ -561,48 +499,10 @@ namespace TLN.Gameplay.Survival.Networking
 			return true;
 		}
 
-		private bool ApplyStatDelta(SurvivalStatId statId, float delta)
-		{
-			if (!IsValidStatDelta(delta))
-			{
-				return false;
-			}
-
-			EnsureInitializedStats();
-
-			switch (statId)
-			{
-				case SurvivalStatId.Hunger:
-					ApplyDelta(ref _hunger, delta);
-					return true;
-				case SurvivalStatId.Thirst:
-					ApplyDelta(ref _thirst, delta);
-					return true;
-				case SurvivalStatId.Fatigue:
-					ApplyDelta(ref _fatigue, delta);
-					return true;
-				case SurvivalStatId.Cold:
-					ApplyDelta(ref _cold, delta);
-					return true;
-				case SurvivalStatId.Condition:
-					ApplyDelta(ref _condition, delta);
-					return true;
-				default:
-					return false;
-			}
-		}
-
 		private bool IsValidSleepHours(int hours)
 		{
 			return hours >= _sleepConfig.MinSleepHours &&
 			       hours <= _sleepConfig.MaxSleepHours;
-		}
-
-		private static bool IsValidStatDelta(float delta)
-		{
-			return delta != 0f &&
-			       !float.IsNaN(delta) &&
-			       !float.IsInfinity(delta);
 		}
 
 		private void ApplyColdExposure(float gameHours)
@@ -781,20 +681,6 @@ namespace TLN.Gameplay.Survival.Networking
 			}
 
 			stat.Add(amount);
-		}
-
-		private static void ApplyDelta(ref SurvivalStat stat, float delta)
-		{
-			if (delta > 0f)
-			{
-				AddToStat(ref stat, delta);
-				return;
-			}
-
-			if (delta < 0f)
-			{
-				SubtractFromStat(ref stat, -delta);
-			}
 		}
 
 		private static void SubtractFromStat(ref SurvivalStat stat, float amount)

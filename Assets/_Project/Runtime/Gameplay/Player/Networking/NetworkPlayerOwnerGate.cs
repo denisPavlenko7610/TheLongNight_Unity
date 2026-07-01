@@ -1,4 +1,5 @@
 ﻿using Assign;
+using TLN.Core.Utilities;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Player.Look;
@@ -23,23 +24,37 @@ namespace TLN.Gameplay.Player.Networking
 		[SerializeField, Assign] private PlayerTimeOverlayController _timeOverlayController;
 		[SerializeField, Assign] private PlayerWarmthController _warmthController;
 
+		private void Awake()
+		{
+			if (IsNetworkSessionActive())
+			{
+				ApplyLocalOwnership(false);
+			}
+		}
+
 		public override void OnNetworkSpawn()
 		{
-			bool isLocalPlayer = IsOwner;
-			ApplyLocalOwnership(isLocalPlayer);
+			ApplyLocalOwnership(IsOwner);
+		}
+
+		public override void OnNetworkDespawn()
+		{
+			ApplyLocalOwnership(false);
+		}
+
+		public override void OnGainedOwnership()
+		{
+			ApplyLocalOwnership(true);
+		}
+
+		public override void OnLostOwnership()
+		{
+			ApplyLocalOwnership(false);
 		}
 
 		private void ApplyLocalOwnership(bool isLocalPlayer)
 		{
-			if (_camera != null)
-			{
-				_camera.enabled = isLocalPlayer;
-			}
-
-			if (_audioListener != null)
-			{
-				_audioListener.enabled = isLocalPlayer;
-			}
+			SetLocalCamera(isLocalPlayer);
 
 			SetBehaviour(_inputReader, isLocalPlayer);
 			SetBehaviour(_motor, isLocalPlayer);
@@ -53,12 +68,34 @@ namespace TLN.Gameplay.Player.Networking
 			SetBehaviour(_warmthController, isLocalPlayer);
 		}
 
+		private void SetLocalCamera(bool isLocalPlayer)
+		{
+			if (_audioListener != null)
+			{
+				_audioListener.enabled = isLocalPlayer;
+			}
+
+			if (_camera != null)
+			{
+				_camera.enabled = isLocalPlayer;
+				_camera.gameObject.SetActive(isLocalPlayer);
+			}
+
+			CameraUtility.InvalidateCache();
+		}
+
 		private static void SetBehaviour(Behaviour behaviour, bool enabled)
 		{
 			if (behaviour != null)
 			{
 				behaviour.enabled = enabled;
 			}
+		}
+
+		private static bool IsNetworkSessionActive()
+		{
+			NetworkManager networkManager = NetworkManager.Singleton;
+			return networkManager != null && networkManager.IsListening;
 		}
 	}
 }

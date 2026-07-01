@@ -8,7 +8,7 @@ namespace TLN.Core.Utilities
 
 		public static Camera GetMainCamera()
 		{
-			if (_mainCamera == null || !_mainCamera.gameObject.activeInHierarchy)
+			if (_mainCamera == null || !_mainCamera.isActiveAndEnabled)
 			{
 				_mainCamera = Camera.main;
 			}

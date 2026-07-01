@@ -152,6 +152,59 @@
     background-color: rgba(4, 9, 11, 0.62);
 }
 
+.main-menu-sessions-scroll {
+    height: 144px;
+    margin-bottom: 8px;
+    background-color: rgba(4, 9, 11, 0.32);
+    border-left-width: 3px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(223, 238, 240, 0.35);
+    border-right-color: rgba(223, 238, 240, 0.12);
+    border-top-color: rgba(223, 238, 240, 0.12);
+    border-bottom-color: rgba(223, 238, 240, 0.12);
+}
+
+.main-menu-sessions-list {
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+}
+
+.main-menu-session-button {
+    min-height: 58px;
+    margin-bottom: 5px;
+    padding-left: 14px;
+    padding-right: 12px;
+    color: rgb(241, 248, 249);
+    background-color: rgba(4, 9, 11, 0.34);
+    border-left-width: 2px;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-color: rgba(223, 238, 240, 0.38);
+    font-size: 15px;
+    unity-font-style: bold;
+    unity-text-align: middle-left;
+    white-space: normal;
+}
+
+.main-menu-session-button:hover {
+    color: white;
+    background-color: rgba(223, 238, 240, 0.12);
+    border-left-color: rgb(255, 255, 255);
+}
+
+.main-menu-session-status {
+    margin-top: -4px;
+    margin-bottom: 8px;
+    color: rgba(215, 232, 234, 0.72);
+    font-size: 13px;
+    white-space: normal;
+}
+
 .main-menu-button:hover {
     color: white;
     background-color: rgba(223, 238, 240, 0.14);

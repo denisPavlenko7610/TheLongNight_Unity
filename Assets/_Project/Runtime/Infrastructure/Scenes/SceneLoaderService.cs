@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using TLN.Application.GameStates;
+using TLN.Application.Multiplayer;
 using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using Unity.Netcode;
@@ -12,6 +13,7 @@ namespace TLN.Infrastructure.Scenes
 	public sealed class SceneLoaderService : ISceneLoader
 	{
 		private readonly IGameStateMachine _gameStateMachine;
+		private readonly IMultiplayerSessionService _multiplayerSessionService;
 		private readonly NetworkManager _networkManager;
 
 		private bool _isLoading;
@@ -25,16 +27,18 @@ namespace TLN.Infrastructure.Scenes
 
 		public SceneLoaderService(
 			IGameStateMachine gameStateMachine,
+			IMultiplayerSessionService multiplayerSessionService,
 			NetworkManager networkManager
 		)
 		{
 			_gameStateMachine = gameStateMachine ?? throw new ArgumentNullException(nameof(gameStateMachine));
+			_multiplayerSessionService = multiplayerSessionService;
 			_networkManager = networkManager;
 		}
 
 		public async Awaitable LoadMainMenu()
 		{
-			ShutdownNetworkIfNeeded();
+			await ShutdownNetworkIfNeeded();
 			await LoadRegularScene(SceneNames.MainMenu, GameStateId.MainMenu);
 		}
 
@@ -251,8 +255,14 @@ namespace TLN.Infrastructure.Scenes
 			CompleteLoading(_pendingNetworkStateAfterLoading);
 		}
 
-		private void ShutdownNetworkIfNeeded()
+		private async Task ShutdownNetworkIfNeeded()
 		{
+			if (_multiplayerSessionService != null && _multiplayerSessionService.IsMultiplayer)
+			{
+				await _multiplayerSessionService.ShutdownAsync();
+				return;
+			}
+
 			if (_networkManager == null)
 			{
 				return;
@@ -264,6 +274,20 @@ namespace TLN.Infrastructure.Scenes
 			}
 
 			_networkManager.Shutdown();
+			await WaitForNetworkShutdown();
+		}
+
+		private async Task WaitForNetworkShutdown()
+		{
+			if (_networkManager == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < 120 && _networkManager.IsListening; i++)
+			{
+				await Task.Yield();
+			}
 		}
 	}
 }

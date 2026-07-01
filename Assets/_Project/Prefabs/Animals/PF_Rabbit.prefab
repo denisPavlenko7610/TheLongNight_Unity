@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Rabbit
       objectReference: {fileID: 0}
+    - target: {fileID: 6602552631648739001, guid: a1cf745ef22565742822f540e54594f6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3286501202
+      objectReference: {fileID: 0}
     - target: {fileID: 6717015366943915189, guid: a1cf745ef22565742822f540e54594f6, type: 3}
       propertyPath: m_Radius
       value: 0.2

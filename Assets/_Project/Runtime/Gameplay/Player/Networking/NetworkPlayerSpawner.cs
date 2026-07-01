@@ -16,6 +16,12 @@ namespace TLN.Gameplay.Player.Networking
 		[SerializeField] [Required] private PlayerRoot _playerPrefab;
 		[SerializeField] [Assign(Mode.Scene)] [Required] private Transform[] _spawnPoints;
 
+		[Header("Grounding")]
+		[SerializeField] private LayerMask _spawnGroundMask = ~0;
+		[SerializeField] private float _spawnRayStartHeight = 20f;
+		[SerializeField] private float _spawnRayDistance = 80f;
+		[SerializeField] private float _spawnGroundOffset = 0.05f;
+
 		private readonly HashSet<ulong> _spawnedClientIds = new();
 
 		private IObjectResolver _resolver;
@@ -92,9 +98,11 @@ namespace TLN.Gameplay.Player.Networking
 				return;
 			}
 
+			Vector3 spawnPosition = ResolveSpawnPosition(spawnPoint);
+
 			PlayerRoot player = _resolver.Instantiate(
 				_playerPrefab,
-				spawnPoint.position,
+				spawnPosition,
 				spawnPoint.rotation
 			);
 
@@ -134,6 +142,63 @@ namespace TLN.Gameplay.Player.Networking
 			}
 
 			return spawnPoint;
+		}
+
+		private Vector3 ResolveSpawnPosition(Transform spawnPoint)
+		{
+			Vector3 fallbackPosition = spawnPoint.position;
+
+			if (!TryProjectSpawnPositionToGround(fallbackPosition, out Vector3 groundPosition))
+			{
+				TLNLogger.LogWarning(
+					$"Network player spawn point '{spawnPoint.name}' has no ground below it. Using transform position.",
+					spawnPoint
+				);
+
+				return fallbackPosition;
+			}
+
+			return groundPosition + Vector3.up * GetCharacterControllerGroundOffset();
+		}
+
+		private bool TryProjectSpawnPositionToGround(
+			Vector3 spawnPosition,
+			out Vector3 groundPosition
+		)
+		{
+			Vector3 rayOrigin = spawnPosition + Vector3.up * _spawnRayStartHeight;
+			float rayDistance = _spawnRayStartHeight + _spawnRayDistance;
+
+			if (Physics.Raycast(
+				    rayOrigin,
+				    Vector3.down,
+				    out RaycastHit hit,
+				    rayDistance,
+				    _spawnGroundMask,
+				    QueryTriggerInteraction.Ignore))
+			{
+				groundPosition = hit.point;
+				return true;
+			}
+
+			groundPosition = default;
+			return false;
+		}
+
+		private float GetCharacterControllerGroundOffset()
+		{
+			if (_playerPrefab != null &&
+			    _playerPrefab.TryGetComponent(out CharacterController characterController))
+			{
+				float bottomOffset =
+					characterController.center.y - characterController.height * 0.5f;
+
+				return -bottomOffset +
+				       characterController.skinWidth +
+				       Mathf.Max(0f, _spawnGroundOffset);
+			}
+
+			return Mathf.Max(0f, _spawnGroundOffset);
 		}
 	}
 }

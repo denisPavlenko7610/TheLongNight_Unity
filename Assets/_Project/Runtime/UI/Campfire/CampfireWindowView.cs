@@ -1,10 +1,14 @@
+using System.Collections.Generic;
 using TLN.Application.Input;
 using TLN.Application.Localization;
+using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Inventory;
+using TLN.Gameplay.Inventory.Networking;
 using TLN.Gameplay.Items;
+using TLN.Gameplay.Player;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -20,30 +24,36 @@ namespace TLN.UI.Campfire
 		private VisualElement _root;
 		private Label _stateLabel;
 		private Label _fuelLabel;
-		private VisualElement _fuelMeterFill;
 		private Button _addFuelButton;
 		private Button _igniteButton;
 		private Button _extinguishButton;
 		private Button _closeButton;
 
 		private CampfireActor _currentCampfire;
+
 		private IInventoryService _inventoryService;
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
 		private IGameSaveService _gameSaveService;
+		private IMultiplayerSessionService _multiplayerSessionService;
+		private LocalPlayerService _localPlayerService;
 
 		[Inject]
 		public void Construct(
 			IInventoryService inventoryService,
 			IInputModeService inputModeService,
 			INotificationService notificationService,
-			IGameSaveService gameSaveService
+			IGameSaveService gameSaveService,
+			IMultiplayerSessionService multiplayerSessionService,
+			LocalPlayerService localPlayerService
 		)
 		{
 			_inventoryService = inventoryService;
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
 			_gameSaveService = gameSaveService;
+			_multiplayerSessionService = multiplayerSessionService;
+			_localPlayerService = localPlayerService;
 
 			Hide();
 		}
@@ -56,14 +66,10 @@ namespace TLN.UI.Campfire
 			_root = documentRoot.RequiredQ<VisualElement>("campfire-window-root");
 			_stateLabel = documentRoot.RequiredQ<Label>("campfire-state-label");
 			_fuelLabel = documentRoot.RequiredQ<Label>("campfire-fuel-label");
-			_fuelMeterFill = documentRoot.RequiredQ<VisualElement>("campfire-fuel-meter-fill");
 			_addFuelButton = documentRoot.RequiredQ<Button>("campfire-add-fuel-button");
 			_igniteButton = documentRoot.RequiredQ<Button>("campfire-ignite-button");
 			_extinguishButton = documentRoot.RequiredQ<Button>("campfire-extinguish-button");
 			_closeButton = documentRoot.RequiredQ<Button>("campfire-close-button");
-
-			_root.RemoveFromClassList(VisibleClassName);
-			_root.SetVisible(false);
 
 			_addFuelButton.clicked += OnAddFuelClicked;
 			_igniteButton.clicked += OnIgniteClicked;
@@ -93,7 +99,7 @@ namespace TLN.UI.Campfire
 			}
 
 			Refresh();
-			_root.SetVisible(true);
+
 			_root.AddToClassList(VisibleClassName);
 			_inputModeService?.SetUIMode();
 		}
@@ -103,8 +109,6 @@ namespace TLN.UI.Campfire
 			UnsubscribeFromCurrentCampfire();
 
 			_root?.RemoveFromClassList(VisibleClassName);
-			_root?.SetVisible(false);
-
 			_inputModeService?.SetGameplayMode();
 		}
 
@@ -116,11 +120,10 @@ namespace TLN.UI.Campfire
 			}
 
 			_stateLabel.text = Loc.CampfireStateLabel(_currentCampfire.State);
-			_fuelLabel.text = Loc.CampfireFuelLabel(_currentCampfire.RemainingBurnMinutes, _currentCampfire.MaxBurnMinutes);
-			float fuelPercent = _currentCampfire.MaxBurnMinutes > 0
-				? Mathf.Clamp01((float)_currentCampfire.RemainingBurnMinutes / _currentCampfire.MaxBurnMinutes) * 100f
-				: 0f;
-			_fuelMeterFill.style.width = Length.Percent(fuelPercent);
+			_fuelLabel.text = Loc.CampfireFuelLabel(
+				_currentCampfire.RemainingBurnMinutes,
+				_currentCampfire.MaxBurnMinutes
+			);
 
 			_igniteButton.SetEnabled(!_currentCampfire.IsBurning);
 			_extinguishButton.SetEnabled(_currentCampfire.IsBurning);
@@ -128,50 +131,35 @@ namespace TLN.UI.Campfire
 
 		private void OnAddFuelClicked()
 		{
-			if (_currentCampfire == null || _inventoryService == null)
+			if (_currentCampfire == null)
 			{
 				return;
 			}
 
-			if (!TryFindFuelItem(out int itemIndex, out FuelItemDefinition fuel))
+			IInventoryService inventoryService = GetActiveInventoryService();
+
+			if (inventoryService == null)
+			{
+				_notificationService?.Show(Loc.BedrollInventoryMissing);
+				return;
+			}
+
+			if (!TryFindFuelItem(
+				    inventoryService,
+				    out int itemIndex,
+				    out FuelItemDefinition fuel))
 			{
 				_notificationService?.Show(Loc.NoFuelInInventory);
 				return;
 			}
 
-			if (!_currentCampfire.CanAddFuel(fuel, 1, out string campfireFailureReason))
+			if (IsMultiplayer())
 			{
-				_notificationService?.Show(campfireFailureReason);
+				AddFuelMultiplayer(inventoryService, itemIndex);
 				return;
 			}
 
-			bool wasRemoved = _inventoryService.TryRemoveItemAt(
-				itemIndex,
-				1,
-				out string removeFailureReason
-			);
-
-			if (!wasRemoved)
-			{
-				_notificationService?.Show(removeFailureReason);
-				return;
-			}
-
-			bool wasAdded = _currentCampfire.AddFuel(
-				fuel,
-				1,
-				out string addFailureReason
-			);
-
-			if (!wasAdded)
-			{
-				_inventoryService.AddItem(fuel, 1);
-				_notificationService?.Show(addFailureReason);
-				return;
-			}
-
-			_notificationService?.Show(Loc.FuelAdded(fuel.DisplayName));
-			Refresh();
+			AddFuelOffline(inventoryService, itemIndex, fuel);
 		}
 
 		private void OnIgniteClicked()
@@ -181,21 +169,19 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			bool wasIgnited = _currentCampfire.Ignite(out string failureReason);
+			if (IsMultiplayer())
+			{
+				RequestIgniteMultiplayer();
+				return;
+			}
 
-			if (!wasIgnited)
+			if (!_currentCampfire.Ignite(out string failureReason))
 			{
 				_notificationService?.Show(failureReason);
 				return;
 			}
 
 			_notificationService?.Show(Loc.FireStarted);
-
-			if (_gameSaveService != null)
-			{
-				_ = _gameSaveService.SaveCheckpoint(SaveTrigger.CampfireIgnited);
-			}
-
 			Refresh();
 		}
 
@@ -206,9 +192,13 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			bool wasExtinguished = _currentCampfire.Extinguish(out string failureReason);
+			if (IsMultiplayer())
+			{
+				RequestExtinguishMultiplayer();
+				return;
+			}
 
-			if (!wasExtinguished)
+			if (!_currentCampfire.Extinguish(out string failureReason))
 			{
 				_notificationService?.Show(failureReason);
 				return;
@@ -218,26 +208,128 @@ namespace TLN.UI.Campfire
 			Refresh();
 		}
 
-		private bool TryFindFuelItem(out int itemIndex, out FuelItemDefinition fuel)
+		private void AddFuelOffline(
+			IInventoryService inventoryService,
+			int itemIndex,
+			FuelItemDefinition fuel
+		)
+		{
+			if (!_currentCampfire.CanAddFuel(
+				    fuel,
+				    1,
+				    out string fuelFailureReason))
+			{
+				_notificationService?.Show(fuelFailureReason);
+				return;
+			}
+
+			if (!inventoryService.TryRemoveItemAt(
+				    itemIndex,
+				    1,
+				    out string removeFailureReason))
+			{
+				_notificationService?.Show(removeFailureReason);
+				return;
+			}
+
+			if (!_currentCampfire.AddFuel(
+				    fuel,
+				    1,
+				    out string addFuelFailureReason))
+			{
+				_notificationService?.Show(addFuelFailureReason);
+				return;
+			}
+
+			_notificationService?.Show(Loc.FuelAdded(fuel.DisplayName));
+			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.CampfireIgnited);
+
+			Refresh();
+		}
+
+		private void AddFuelMultiplayer(
+			IInventoryService inventoryService,
+			int itemIndex
+		)
+		{
+			if (inventoryService is not NetworkPlayerInventory networkInventory)
+			{
+				_notificationService?.Show(Loc.CannotUse);
+				return;
+			}
+
+			networkInventory.RequestAddFuelToCampfire(
+				_currentCampfire,
+				itemIndex
+			);
+		}
+
+		private void RequestIgniteMultiplayer()
+		{
+			if (GetActiveInventoryService() is not NetworkPlayerInventory networkInventory)
+			{
+				_notificationService?.Show(Loc.CannotUse);
+				return;
+			}
+
+			networkInventory.RequestIgniteCampfire(_currentCampfire);
+		}
+
+		private void RequestExtinguishMultiplayer()
+		{
+			if (GetActiveInventoryService() is not NetworkPlayerInventory networkInventory)
+			{
+				_notificationService?.Show(Loc.CannotUse);
+				return;
+			}
+
+			networkInventory.RequestExtinguishCampfire(_currentCampfire);
+		}
+
+		private IInventoryService GetActiveInventoryService()
+		{
+			if (IsMultiplayer())
+			{
+				return _localPlayerService?.InventoryService;
+			}
+
+			return _inventoryService;
+		}
+
+		private bool IsMultiplayer()
+		{
+			return _multiplayerSessionService is { IsMultiplayer: true };
+		}
+
+		private static bool TryFindFuelItem(
+			IInventoryService inventoryService,
+			out int itemIndex,
+			out FuelItemDefinition fuel
+		)
 		{
 			itemIndex = -1;
 			fuel = null;
 
-			if (_inventoryService == null)
+			if (inventoryService == null)
 			{
 				return false;
 			}
 
-			for (int i = 0; i < _inventoryService.Items.Count; i++)
-			{
-				ItemStack stack = _inventoryService.Items[i];
+			IReadOnlyList<ItemStack> items = inventoryService.Items;
 
-				if (stack.Definition is FuelItemDefinition fuelDefinition)
+			for (int i = 0; i < items.Count; i++)
+			{
+				ItemStack stack = items[i];
+
+				if (stack.Definition is not FuelItemDefinition fuelItem)
 				{
-					itemIndex = i;
-					fuel = fuelDefinition;
-					return true;
+					continue;
 				}
+
+				itemIndex = i;
+				fuel = fuelItem;
+
+				return true;
 			}
 
 			return false;
