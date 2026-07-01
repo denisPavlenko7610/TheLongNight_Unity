@@ -3,6 +3,7 @@ using TLN.Application.Multiplayer;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Application.Settings;
+using TLN.Application.GameStates;
 using TLN.Core.Logging;
 using TLN.Core.Results;
 using TLN.UI.Common;
@@ -57,6 +58,8 @@ namespace TLN.UI.MainMenu
 		private Button _multiplayerBackButton;
 		private TextField _joinCodeField;
 		private IMultiplayerSessionService _multiplayerSessionService;
+		private IGameStateMachine _gameStateMachine;
+		private bool _isMultiplayerOperationInProgress;
 
 		[Inject]
 		public void Construct(
@@ -64,7 +67,8 @@ namespace TLN.UI.MainMenu
 			ISaveRepository saveRepository,
 			SaveSessionService saveSessionService,
 			IGameSettingsService settingsService,
-			IMultiplayerSessionService multiplayerSessionService
+			IMultiplayerSessionService multiplayerSessionService,
+			IGameStateMachine gameStateMachine
 		)
 		{
 			_sceneLoader = sceneLoader;
@@ -72,6 +76,7 @@ namespace TLN.UI.MainMenu
 			_saveSessionService = saveSessionService;
 			_settingsService = settingsService;
 			_multiplayerSessionService = multiplayerSessionService;
+			_gameStateMachine = gameStateMachine;
 
 			InitializeOptionsView();
 			InitializeSaveSlotsPanel();
@@ -266,33 +271,58 @@ namespace TLN.UI.MainMenu
 				_joinCodeField != null &&
 				!string.IsNullOrWhiteSpace(_joinCodeField.value);
 
-			_joinGameButton.SetEnabled(hasJoinCode);
-			_joinGameButton.EnableInClassList(DisabledClassName, !hasJoinCode);
+			bool isEnabled = hasJoinCode && !_isMultiplayerOperationInProgress;
+			_joinGameButton.SetEnabled(isEnabled);
+			_joinGameButton.EnableInClassList(DisabledClassName, !isEnabled);
 		}
 
 		private async void OnHostGameClicked()
 		{
+			if (_isMultiplayerOperationInProgress)
+			{
+				return;
+			}
+
 			if (_multiplayerSessionService == null)
 			{
 				TLNLogger.LogError("Cannot host game because multiplayer session service is missing.");
 				return;
 			}
 
-			OperationResult<string> result = await _multiplayerSessionService.CreateHostSession();
-			if (!result.IsSuccess)
+			SetMultiplayerOperationInProgress(true);
+
+			try
 			{
-				TLNLogger.LogError(result.Message);
-				return;
+				OperationResult<string> result = await _multiplayerSessionService.CreateHostSession();
+				if (!result.IsSuccess)
+				{
+					TLNLogger.LogError(result.Message);
+					RestoreMainMenuAfterMultiplayerOperationFailure();
+					return;
+				}
+
+				TLNLogger.Log($"Hosted online session. Join code: {result.Value}");
+
+				_saveSessionService.StartNewGame(1);
+				await _sceneLoader.LoadWorld();
 			}
-
-			TLNLogger.Log($"Hosted online session. Join code: {result.Value}");
-
-			_saveSessionService.StartNewGame(1);
-			await _sceneLoader.LoadWorld();
+			finally
+			{
+				if (_gameStateMachine != null &&
+				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				{
+					SetMultiplayerOperationInProgress(false);
+				}
+			}
 		}
 
 		private async void OnJoinGameClicked()
 		{
+			if (_isMultiplayerOperationInProgress)
+			{
+				return;
+			}
+
 			if (_multiplayerSessionService == null)
 			{
 				TLNLogger.LogError("Cannot join game because multiplayer session service is missing.");
@@ -301,14 +331,63 @@ namespace TLN.UI.MainMenu
 
 			string joinCode = _joinCodeField.value?.Trim();
 
-			OperationResult result = await _multiplayerSessionService.JoinSessionByCode(joinCode);
-			if (!result.IsSuccess)
+			SetMultiplayerOperationInProgress(true);
+
+			try
 			{
-				TLNLogger.LogError(result.Message);
-				return;
+				OperationResult result = await _multiplayerSessionService.JoinSessionByCode(joinCode);
+				if (!result.IsSuccess)
+				{
+					TLNLogger.LogError(result.Message);
+					RestoreMainMenuAfterMultiplayerOperationFailure();
+					return;
+				}
+
+				await _sceneLoader.LoadWorld();
+			}
+			finally
+			{
+				if (_gameStateMachine != null &&
+				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				{
+					SetMultiplayerOperationInProgress(false);
+				}
+			}
+		}
+
+		private void SetMultiplayerOperationInProgress(bool isInProgress)
+		{
+			_isMultiplayerOperationInProgress = isInProgress;
+
+			if (isInProgress)
+			{
+				_gameStateMachine?.Enter(GameStateId.Loading);
 			}
 
-			await _sceneLoader.LoadWorld();
+			if (_hostGameButton != null)
+			{
+				_hostGameButton.SetEnabled(!isInProgress);
+				_hostGameButton.EnableInClassList(DisabledClassName, isInProgress);
+			}
+
+			if (_joinCodeField != null)
+			{
+				_joinCodeField.SetEnabled(!isInProgress);
+			}
+
+			if (_multiplayerBackButton != null)
+			{
+				_multiplayerBackButton.SetEnabled(!isInProgress);
+				_multiplayerBackButton.EnableInClassList(DisabledClassName, isInProgress);
+			}
+
+			RefreshJoinGameButton();
+		}
+
+		private void RestoreMainMenuAfterMultiplayerOperationFailure()
+		{
+			_gameStateMachine?.Enter(GameStateId.MainMenu);
+			SetMultiplayerOperationInProgress(false);
 		}
 
 		private void RefreshLoadGameButton()

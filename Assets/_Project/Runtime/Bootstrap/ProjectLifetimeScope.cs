@@ -33,7 +33,10 @@ namespace TLN.Bootstrap
 			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
 			builder.Register<ISceneLoader>(
 				container =>
-					new SceneLoaderService(container.Resolve<IGameStateMachine>()),
+					new SceneLoaderService(
+						container.Resolve<IGameStateMachine>(),
+						container.Resolve<NetworkManager>()
+					),
 				Lifetime.Singleton
 			);
 			builder.Register<ICursorService, CursorService>(Lifetime.Singleton);

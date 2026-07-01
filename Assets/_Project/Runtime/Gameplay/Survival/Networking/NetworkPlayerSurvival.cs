@@ -8,7 +8,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-namespace TLN.Gameplay.Survival
+namespace TLN.Gameplay.Survival.Networking
 {
 	[RequireComponent(typeof(NetworkObject))]
 	public sealed class NetworkPlayerSurvival : NetworkBehaviour, ISurvivalService
@@ -381,8 +381,6 @@ namespace TLN.Gameplay.Survival
 			{
 				return;
 			}
-
-			ApplyStatDeltaServerRpc(statId, delta);
 		}
 
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
@@ -405,25 +403,6 @@ namespace TLN.Gameplay.Survival
 			}
 
 			ApplyConsumableLocally(consumable);
-		}
-
-		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-		private void ApplyStatDeltaServerRpc(SurvivalStatId statId, float delta)
-		{
-			if (!CanProcessServerPlayerRequest())
-			{
-				return;
-			}
-
-			if (!IsValidStatDelta(delta))
-			{
-				return;
-			}
-
-			if (ApplyStatDelta(statId, delta))
-			{
-				PublishServerChange();
-			}
 		}
 
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]

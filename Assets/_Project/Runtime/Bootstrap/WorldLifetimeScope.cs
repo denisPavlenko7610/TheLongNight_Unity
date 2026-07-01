@@ -1,6 +1,7 @@
 using Assign;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
+using TLN.Core.Logging;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Campfire;
@@ -15,6 +16,7 @@ using TLN.Gameplay.Saves;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
+using TLN.Gameplay.Time.Networking;
 using TLN.Gameplay.Wildlife;
 using TLN.Gameplay.World;
 using TLN.Infrastructure.World;
@@ -27,7 +29,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 {
 	[Header("UI")]
 	[SerializeField] [Required] private WorldUIRoot _uiRoot;
-	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldHudLocalPlayerBinder _worldHudLocalPlayerBinder;
+	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldLocalPlayerUiBinder _worldLocalPlayerUiBinder;
 
 	[Header("Configs")]
 	[SerializeField] [Required] private InventoryConfig _inventoryConfig;
@@ -58,6 +60,8 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	protected override void Configure(IContainerBuilder builder)
 	{
+		ResolveSceneReferences();
+
 		RegisterConfigs(builder);
 		RegisterGameplayServices(builder);
 		RegisterWorldComponents(builder);
@@ -117,9 +121,9 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
 
-		builder.RegisterComponent(_networkPlayerSpawner);
-		builder.RegisterComponent(_networkLocalPlayerBinder);
-		builder.RegisterComponent(_networkWorldTimeSynchronizer);
+		RegisterSceneComponentIfPresent(builder, _networkPlayerSpawner, nameof(_networkPlayerSpawner));
+		RegisterSceneComponentIfPresent(builder, _networkLocalPlayerBinder, nameof(_networkLocalPlayerBinder));
+		RegisterSceneComponentIfPresent(builder, _networkWorldTimeSynchronizer, nameof(_networkWorldTimeSynchronizer));
 	}
 
 	private void RegisterRandomSpawners(IContainerBuilder builder)
@@ -155,6 +159,34 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
 
 		builder.RegisterComponent(_uiRoot.PauseMenu);
-		builder.RegisterComponent(_worldHudLocalPlayerBinder);
+		RegisterSceneComponentIfPresent(builder, _worldLocalPlayerUiBinder, nameof(_worldLocalPlayerUiBinder));
+	}
+
+	private void ResolveSceneReferences()
+	{
+		_worldLocalPlayerUiBinder ??= FindSceneComponent<WorldLocalPlayerUiBinder>();
+		_networkPlayerSpawner ??= FindSceneComponent<NetworkPlayerSpawner>();
+		_networkLocalPlayerBinder ??= FindSceneComponent<NetworkLocalPlayerBinder>();
+		_networkWorldTimeSynchronizer ??= FindSceneComponent<NetworkWorldTimeSynchronizer>();
+	}
+
+	private static T FindSceneComponent<T>() where T : Component
+	{
+		return UnityEngine.Object.FindAnyObjectByType<T>(FindObjectsInactive.Include);
+	}
+
+	private static void RegisterSceneComponentIfPresent<T>(
+		IContainerBuilder builder,
+		T component,
+		string componentName
+	) where T : Component
+	{
+		if (component == null)
+		{
+			TLNLogger.LogWarning($"{componentName} is missing in WorldLifetimeScope.");
+			return;
+		}
+
+		builder.RegisterComponent(component);
 	}
 }

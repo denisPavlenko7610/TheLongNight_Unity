@@ -582,6 +582,7 @@ GameObject:
   - component: {fileID: 2217412638034983966}
   - component: {fileID: 8911591772939844199}
   - component: {fileID: 460371552263764808}
+  - component: {fileID: 2780786620955822341}
   m_Layer: 0
   m_Name: PF_Player
   m_TagString: Untagged
@@ -914,6 +915,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb7edd5039341f3a466c3f1c4832f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Survival.NetworkPlayerSurvival
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2780786620955822341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352849978073610698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c8ec29387b464186e1df29b4603968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Inventory.Networking.NetworkPlayerInventory
   ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &8742609627363697270
 GameObject:

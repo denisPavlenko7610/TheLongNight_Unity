@@ -1,7 +1,9 @@
 ﻿using TLN.Application.Multiplayer;
 using TLN.Core.Logging;
+using TLN.Gameplay.Inventory.Networking;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Survival;
+using TLN.Gameplay.Survival.Networking;
 using TLN.Gameplay.Wildlife;
 using Unity.Netcode;
 using UnityEngine;
@@ -81,9 +83,21 @@ namespace TLN.Gameplay.Player.Networking
 				return;
 			}
 
+			if (!playerObject.TryGetComponent(out NetworkPlayerInventory playerInventory))
+			{
+				TLNLogger.LogError("Local network player object must have NetworkPlayerInventory.", playerObject);
+				return;
+			}
+
 			_placementService.SetPlayerRoot(playerRoot);
 			_wildlifeTargetService.SetPlayerRoot(playerRoot);
-			_localPlayerService.SetLocalPlayer(playerRoot, playerSurvival);
+
+			_localPlayerService.SetLocalPlayer(
+				playerRoot,
+				playerSurvival,
+				playerInventory,
+				playerInventory
+			);
 
 			_boundPlayer = playerRoot;
 			enabled = false;

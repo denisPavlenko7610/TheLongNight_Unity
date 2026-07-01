@@ -7,6 +7,7 @@ using TLN.Core.Logging;
 using TLN.Core.Validation;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
+using TLN.Gameplay.Survival.Networking;
 using UnityEngine;
 using UnityEngine.AI;
 using VContainer;

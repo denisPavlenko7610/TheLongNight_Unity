@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 3994927}
   - component: {fileID: 3994928}
   m_Layer: 0
-  m_Name: WorldHudLocalPlayerBinder
+  m_Name: WorldLocalPlayerUiBinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,9 +160,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3994926}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcb20038cafb46fc88e78cb9b4bef016, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c8cecc60f9a426fa916660b39a7eaf0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: TLN.UI::TLN.UI.WorldHudLocalPlayerBinder
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.WorldLocalPlayerUiBinder
 --- !u!1 &8496636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,6 +1582,7 @@ GameObject:
   - component: {fileID: 863057036}
   - component: {fileID: 863057035}
   - component: {fileID: 863057037}
+  - component: {fileID: 863057038}
   m_Layer: 0
   m_Name: SurvivalMenuWindow
   m_TagString: Untagged
@@ -1653,6 +1654,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca2924dd14c4f8aa3a61d7cc9de6ec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TLN.UI::TLN.UI.SurvivalMenu.SurvivalMenuWindowView
+--- !u!1931382934 &863057038
+PanelRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863057033}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  serializedVersion: 1
+  m_PanelSettings: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_ParentUI: {fileID: 0}
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_Position: 0
 --- !u!1 &863185210
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,6 +2423,7 @@ MonoBehaviour:
   _uiRoot: {fileID: 212741484}
   _playerPrefab: {fileID: 3957199438328058230, guid: 7d20d098999ad054a9edbce4e90d246b, type: 3}
   _spawnPoint: {fileID: 1495778694}
+  _networkPlayerSpawner: {fileID: 510768211}
 --- !u!4 &1152185510
 Transform:
   m_ObjectHideFlags: 0
@@ -3232,7 +3292,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 8496636}
   _uiRoot: {fileID: 212741484}
-  _worldHudLocalPlayerBinder: {fileID: 0}
+  _worldLocalPlayerUiBinder: {fileID: 3994928}
   _inventoryConfig: {fileID: 11400000, guid: bd6ecfd7686980d48a9bafb1d4818afe, type: 2}
   _gameTimeConfig: {fileID: 11400000, guid: 60b0f87575b09ba40aa740437e355e5a, type: 2}
   _dayNightConfig: {fileID: 11400000, guid: 7b7c5a31e33ee4e438eb3f9925fdff4d, type: 2}
@@ -3245,9 +3305,9 @@ MonoBehaviour:
   _worldTimeController: {fileID: 577968086}
   _dayNightController: {fileID: 565384057}
   _worldSurvivalController: {fileID: 577968084}
-  _networkPlayerSpawner: {fileID: 0}
-  _networkLocalPlayerBinder: {fileID: 0}
-  _networkWorldTimeSynchronizer: {fileID: 0}
+  _networkPlayerSpawner: {fileID: 510768211}
+  _networkLocalPlayerBinder: {fileID: 316315965}
+  _networkWorldTimeSynchronizer: {fileID: 1933714692}
   _randomWorldSpawners:
   - {fileID: 353570849}
   - {fileID: 722304488}

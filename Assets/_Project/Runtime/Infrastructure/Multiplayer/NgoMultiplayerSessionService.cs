@@ -18,8 +18,10 @@ namespace TLN.Infrastructure.Multiplayer
 		private readonly UnityTransport _transport;
 
 		private ISession _session;
+		private bool _isSessionOperationInProgress;
 
 		public bool IsMultiplayer =>
+			_session != null ||
 			_networkManager != null &&
 			(_networkManager.IsServer || _networkManager.IsClient);
 
@@ -42,10 +44,17 @@ namespace TLN.Infrastructure.Multiplayer
 
 		public async Task<OperationResult<string>> CreateHostSession()
 		{
+			if (_isSessionOperationInProgress)
+			{
+				return OperationResult<string>.Failure("Multiplayer session operation is already in progress.");
+			}
+
 			if (IsMultiplayer)
 			{
 				return OperationResult<string>.Failure("Multiplayer session is already running.");
 			}
+
+			_isSessionOperationInProgress = true;
 
 			try
 			{
@@ -67,10 +76,19 @@ namespace TLN.Infrastructure.Multiplayer
 				Shutdown();
 				return OperationResult<string>.Failure($"Failed to create multiplayer session. {exception.Message}");
 			}
+			finally
+			{
+				_isSessionOperationInProgress = false;
+			}
 		}
 
 		public async Task<OperationResult> JoinSessionByCode(string joinCode)
 		{
+			if (_isSessionOperationInProgress)
+			{
+				return OperationResult.Failure("Multiplayer session operation is already in progress.");
+			}
+
 			if (IsMultiplayer)
 			{
 				return OperationResult.Failure("Multiplayer session is already running.");
@@ -80,6 +98,8 @@ namespace TLN.Infrastructure.Multiplayer
 			{
 				return OperationResult.Failure("Join code is empty.");
 			}
+
+			_isSessionOperationInProgress = true;
 
 			try
 			{
@@ -95,6 +115,10 @@ namespace TLN.Infrastructure.Multiplayer
 			{
 				Shutdown();
 				return OperationResult.Failure($"Failed to join multiplayer session. {exception.Message}");
+			}
+			finally
+			{
+				_isSessionOperationInProgress = false;
 			}
 		}
 

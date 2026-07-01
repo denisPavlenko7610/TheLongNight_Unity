@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-namespace TLN.Gameplay.Time
+namespace TLN.Gameplay.Time.Networking
 {
 	[RequireComponent(typeof(NetworkObject))]
 	public sealed class NetworkWorldTimeSynchronizer : NetworkBehaviour

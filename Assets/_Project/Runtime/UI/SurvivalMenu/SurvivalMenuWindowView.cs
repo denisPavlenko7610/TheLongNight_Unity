@@ -159,6 +159,29 @@ namespace TLN.UI.SurvivalMenu
 
 		}
 
+		public void BindInventory(IInventoryService inventoryService, IItemUseService itemUseService)
+		{
+			if (_inventoryService != null)
+			{
+				_inventoryService.Changed -= OnInventoryChanged;
+			}
+
+			_inventoryService = inventoryService;
+			_itemUseService = itemUseService;
+
+			if (_inventoryService != null)
+			{
+				_inventoryService.Changed += OnInventoryChanged;
+			}
+
+			_selectedItem = null;
+
+			if (_isInitialized)
+			{
+				Refresh();
+			}
+		}
+
 		private void OnLocaleChanged()
 		{
 			if (!_isInitialized)

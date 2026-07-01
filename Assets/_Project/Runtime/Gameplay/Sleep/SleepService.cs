@@ -4,6 +4,7 @@ using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
+using TLN.Gameplay.Survival.Networking;
 using TLN.Gameplay.Time;
 
 namespace TLN.Gameplay.Sleep

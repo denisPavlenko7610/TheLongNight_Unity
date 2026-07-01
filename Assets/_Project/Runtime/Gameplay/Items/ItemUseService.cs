@@ -46,6 +46,11 @@ namespace TLN.Gameplay.Items
 
 		public ItemUseResult UseItemAt(int index)
 		{
+			if (_multiplayerSessionService is { IsMultiplayer: true })
+			{
+				return Fail(Loc.CannotUse);
+			}
+			
 			if (index < 0 || index >= _inventoryService.Items.Count)
 			{
 				return Fail(Loc.ItemsInvalidSlot);

@@ -6,7 +6,7 @@ using VContainer;
 
 namespace TLN.UI
 {
-	public sealed class WorldHudLocalPlayerBinder : MonoBehaviour
+	public sealed class WorldLocalPlayerUiBinder : MonoBehaviour
 	{
 		private WorldUIRoot _uiRoot;
 		private IGameTimeService _gameTimeService;
@@ -28,7 +28,7 @@ namespace TLN.UI
 
 			_localPlayerService.Changed += OnLocalPlayerChanged;
 
-			TryBindHudToLocalPlayer();
+			TryBindLocalPlayerUi();
 		}
 
 		private void OnDestroy()
@@ -41,22 +41,33 @@ namespace TLN.UI
 
 		private void OnLocalPlayerChanged()
 		{
-			TryBindHudToLocalPlayer();
+			TryBindLocalPlayerUi();
 		}
 
-		private void TryBindHudToLocalPlayer()
+		private void TryBindLocalPlayerUi()
 		{
 			if (_multiplayerSessionService is not { IsMultiplayer: true })
 			{
 				return;
 			}
 
-			if (_uiRoot == null || _uiRoot.HUD == null)
+			if (_uiRoot == null)
 			{
 				return;
 			}
 
-			if (_localPlayerService is not { HasLocalPlayer: true } ||
+			if (_localPlayerService is not { HasLocalPlayer: true })
+			{
+				return;
+			}
+
+			BindHud();
+			BindSurvivalMenu();
+		}
+
+		private void BindHud()
+		{
+			if (_uiRoot.HUD == null ||
 				_localPlayerService.SurvivalService == null)
 			{
 				return;
@@ -65,6 +76,21 @@ namespace TLN.UI
 			_uiRoot.HUD.Construct(
 				_localPlayerService.SurvivalService,
 				_gameTimeService
+			);
+		}
+
+		private void BindSurvivalMenu()
+		{
+			if (_uiRoot.SurvivalMenu == null ||
+				_localPlayerService.InventoryService == null ||
+				_localPlayerService.ItemUseService == null)
+			{
+				return;
+			}
+
+			_uiRoot.SurvivalMenu.BindInventory(
+				_localPlayerService.InventoryService,
+				_localPlayerService.ItemUseService
 			);
 		}
 	}

@@ -21,6 +21,7 @@ namespace TLN.Gameplay.World
 		[SerializeField] [Assign(Mode.Scene)] private WorldUIRoot _uiRoot;
 		[SerializeField] [Assign(Mode.Scene)] private PlayerRoot _playerPrefab;
 		[SerializeField] [Assign(Mode.Scene)] private Transform _spawnPoint;
+		[SerializeField] [Assign(Mode.Scene)] private NetworkPlayerSpawner _networkPlayerSpawner;
 
 		private IGameStateMachine _gameStateMachine;
 		private INotificationService _notificationService;
@@ -35,7 +36,7 @@ namespace TLN.Gameplay.World
 		private PlayerRoot _playerInstance;
 
 		private IMultiplayerSessionService _multiplayerSessionService;
-		private NetworkPlayerSpawner _networkPlayerSpawner;
+		private bool _isConstructed;
 
 		[Inject]
 		public void Construct(
@@ -48,8 +49,7 @@ namespace TLN.Gameplay.World
 			IGameSaveService gameSaveService,
 			WildlifeTargetService wildlifeTargetService,
 			RandomWorldSpawnerSet randomWorldSpawnerSet,
-			IMultiplayerSessionService multiplayerSessionService,
-			NetworkPlayerSpawner networkPlayerSpawner
+			IMultiplayerSessionService multiplayerSessionService
 		)
 		{
 			_gameStateMachine = gameStateMachine;
@@ -62,7 +62,7 @@ namespace TLN.Gameplay.World
 			_wildlifeTargetService = wildlifeTargetService;
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
 			_multiplayerSessionService = multiplayerSessionService;
-			_networkPlayerSpawner = networkPlayerSpawner;
+			_isConstructed = true;
 		}
 
 		private void Start()
@@ -99,6 +99,12 @@ namespace TLN.Gameplay.World
 		{
 			if (_multiplayerSessionService.IsServer)
 			{
+				if (_networkPlayerSpawner == null)
+				{
+					TLNLogger.LogError("Cannot start multiplayer world because NetworkPlayerSpawner is missing.", this);
+					return;
+				}
+
 				_networkPlayerSpawner.StartServerSpawning();
 			}
 
@@ -107,7 +113,7 @@ namespace TLN.Gameplay.World
 
 		private void ConstructHUD()
 		{
-			_notificationService.SetView(_uiRoot.HUD);
+			_notificationService?.SetView(_uiRoot.HUD);
 
 			if (_multiplayerSessionService != null &&
 				_multiplayerSessionService.IsMultiplayer)
@@ -154,6 +160,17 @@ namespace TLN.Gameplay.World
 
 		private bool ValidateRequiredReferences()
 		{
+			if (!_isConstructed)
+			{
+				TLNLogger.LogError(
+					"WorldEntryPoint was not injected. Start from the Boot scene or check WorldLifetimeScope configuration.",
+					this
+				);
+				return false;
+			}
+
+			ResolveSceneReferences();
+
 			if (_uiRoot == null)
 			{
 				TLNLogger.LogError("WorldUIRoot is required.");
@@ -163,6 +180,55 @@ namespace TLN.Gameplay.World
 			if (!_uiRoot.HasAllRequiredReferences())
 			{
 				TLNLogger.LogError("Some UI references in WorldUIRoot are missing.");
+				return false;
+			}
+
+			if (_notificationService == null)
+			{
+				TLNLogger.LogError("NotificationService is required.", this);
+				return false;
+			}
+
+			if (_gameTimeService == null)
+			{
+				TLNLogger.LogError("GameTimeService is required.", this);
+				return false;
+			}
+
+			bool isMultiplayer = _multiplayerSessionService is { IsMultiplayer: true };
+
+			if (isMultiplayer)
+			{
+				if (_multiplayerSessionService.IsServer && _networkPlayerSpawner == null)
+				{
+					TLNLogger.LogError("NetworkPlayerSpawner is required for multiplayer host/server.", this);
+					return false;
+				}
+
+				return true;
+			}
+
+			if (_survivalService == null)
+			{
+				TLNLogger.LogError("SurvivalService is required for offline world.", this);
+				return false;
+			}
+
+			if (_playerFactory == null)
+			{
+				TLNLogger.LogError("PlayerFactory is required for offline world.", this);
+				return false;
+			}
+
+			if (_placementService == null)
+			{
+				TLNLogger.LogError("PlacementService is required for offline world.", this);
+				return false;
+			}
+
+			if (_wildlifeTargetService == null)
+			{
+				TLNLogger.LogError("WildlifeTargetService is required for offline world.", this);
 				return false;
 			}
 
@@ -179,6 +245,13 @@ namespace TLN.Gameplay.World
 			}
 
 			return true;
+		}
+
+		private void ResolveSceneReferences()
+		{
+			_networkPlayerSpawner ??= UnityEngine.Object.FindAnyObjectByType<NetworkPlayerSpawner>(
+				FindObjectsInactive.Include
+			);
 		}
 	}
 }
