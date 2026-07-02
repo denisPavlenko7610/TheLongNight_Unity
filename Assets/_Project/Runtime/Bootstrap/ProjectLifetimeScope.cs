@@ -1,4 +1,5 @@
 using TLN.Application.Assets;
+using TLN.Application.Feedback;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
 using TLN.Application.Multiplayer;
@@ -8,7 +9,9 @@ using TLN.Application.Scenes;
 using TLN.Application.Settings;
 using TLN.Application.Time;
 using TLN.Core.Validation;
+using TLN.Gameplay.Feedback;
 using TLN.Infrastructure.Assets;
+using TLN.Infrastructure.Feedback;
 using TLN.Infrastructure.Input;
 using TLN.Infrastructure.Multiplayer;
 using TLN.Infrastructure.Saves;
@@ -27,9 +30,12 @@ namespace TLN.Bootstrap
 	{
 		[SerializeField] private GameObject _loadingScreenPrefab;
 		[SerializeField, Required] private NetworkManager _networkManager;
+		[SerializeField, Required] private FeedbackCatalog _feedbackCatalog;
 
 		protected override void Configure(IContainerBuilder builder)
 		{
+			builder.RegisterInstance(_feedbackCatalog);
+			builder.Register<UnityFeedbackService>(Lifetime.Singleton).As<IFeedbackService>();
 			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
 			builder.RegisterInstance(_networkManager);
 			builder.Register<NgoMultiplayerSessionService>(Lifetime.Singleton).As<IMultiplayerSessionService>();

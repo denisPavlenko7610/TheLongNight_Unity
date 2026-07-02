@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3368275e0cb14b98bcf503ab5535a68c, type: 3}
+  m_Name: FD_CampfireIgnited
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Feedback.FeedbackDefinition
+  _eventId: 210
+  _audioClips:
+  - {fileID: 8300000, guid: f50eac147d2d88749affd5f55cac557a, type: 3}
+  _volume: 1
+  _minPitch: 0.95
+  _maxPitch: 1.05
+  _spatialBlend: 1
+  _minDistance: 1
+  _maxDistance: 20
+  _effectPrefab: {fileID: 2651777886876907629, guid: 053d74a1491e29f4ca70e6f5fcc416b0, type: 3}
+  _effectLifetimeSeconds: 5

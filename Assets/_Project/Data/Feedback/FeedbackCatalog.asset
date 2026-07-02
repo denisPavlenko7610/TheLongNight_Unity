@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8375d8a34db2450caed2adf101eb792d, type: 3}
+  m_Name: FeedbackCatalog
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Feedback.FeedbackCatalog
+  _definitions:
+  - {fileID: 11400000, guid: 37a7ddcdd0c24a56b3cf3fed880d5601, type: 2}
+  - {fileID: 11400000, guid: 4a3e3d108e23468e9b46ff1d6aa3cb67, type: 2}
+  - {fileID: 11400000, guid: 5f0fa08dded44f8f8e8e27c04e7d6fb2, type: 2}
+  - {fileID: 11400000, guid: 6c95374bcc0e47db9c26696772dde37e, type: 2}
+  - {fileID: 11400000, guid: 7df0946630aa45739fb8565b5f5c2691, type: 2}

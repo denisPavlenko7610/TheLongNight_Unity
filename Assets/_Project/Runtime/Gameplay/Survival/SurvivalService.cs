@@ -39,9 +39,9 @@ namespace TLN.Gameplay.Survival
 
 			float gameHours = ConvertRealDeltaTimeToGameHours(deltaTime);
 
-			Hunger.Add(_config.HungerPerHour * gameHours);
-			Thirst.Add(_config.ThirstPerHour * gameHours);
-			Fatigue.Add(_config.FatiguePerHour * gameHours);
+			Hunger = AddToStat(Hunger, _config.HungerPerHour * gameHours);
+			Thirst = AddToStat(Thirst, _config.ThirstPerHour * gameHours);
+			Fatigue = AddToStat(Fatigue, _config.FatiguePerHour * gameHours);
 
 			ApplyConditionDamage(gameHours);
 
@@ -97,7 +97,7 @@ namespace TLN.Gameplay.Survival
 
 			if (damage > 0f)
 			{
-				Condition.Subtract(damage);
+				Condition = SubtractFromStat(Condition, damage);
 			}
 		}
 
