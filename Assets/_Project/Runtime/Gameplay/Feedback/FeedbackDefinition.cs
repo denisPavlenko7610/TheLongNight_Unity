@@ -1,4 +1,5 @@
 ﻿using TLN.Application.Feedback;
+using TLN.Application.Audio;
 using UnityEngine;
 
 namespace TLN.Gameplay.Feedback
@@ -10,6 +11,7 @@ namespace TLN.Gameplay.Feedback
 		[SerializeField] private FeedbackEventId _eventId;
 
 		[Header("Audio")]
+		[SerializeField] private AudioBusId _audioBusId = AudioBusId.Sfx;
 		[SerializeField] private AudioClip[] _audioClips;
 		[SerializeField, Range(0f, 1f)] private float _volume = 1f;
 		[SerializeField] private float _minPitch = 0.95f;
@@ -23,6 +25,7 @@ namespace TLN.Gameplay.Feedback
 		[SerializeField] private float _effectLifetimeSeconds = 5f;
 
 		public FeedbackEventId EventId => _eventId;
+		public AudioBusId AudioBusId => _audioBusId;
 		public AudioClip[] AudioClips => _audioClips;
 		public float Volume => _volume;
 		public float MinPitch => _minPitch;

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using TLN.Gameplay.Feedback;
 using UnityEngine;
+using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace TLN.Infrastructure.Feedback
 {
 	public sealed class PooledEffectPlayer : IDisposable
 	{
+		private const int DefaultCapacity = 4;
 		private const int MaxInstancesPerPrefab = 32;
 		private const float MinLifetimeSeconds = 0.1f;
 
 		private readonly Transform _root;
-		private readonly Dictionary<GameObject, Queue<PooledEffectInstance>> _availableByPrefab = new();
-		private readonly Dictionary<GameObject, List<PooledEffectInstance>> _allByPrefab = new();
+		private readonly Dictionary<GameObject, ObjectPool<PooledEffectInstance>> _poolsByPrefab = new();
 
 		private bool _isDisposed;
 
@@ -43,103 +44,67 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
-			PooledEffectInstance instance = GetInstance(prefab);
+			ObjectPool<PooledEffectInstance> pool = GetPool(prefab);
+			PooledEffectInstance instance = pool.Get();
 
-			if (instance == null)
-			{
-				return;
-			}
+			instance.Initialize(pool);
 
 			Transform instanceTransform = instance.transform;
 			instanceTransform.SetParent(_root, true);
-			instanceTransform.SetPositionAndRotation(
-				position,
-				Quaternion.identity
-			);
+			instanceTransform.SetPositionAndRotation(position, Quaternion.identity);
 
-			GameObject instanceObject = instance.gameObject;
-			instanceObject.SetActive(true);
-
+			instance.gameObject.SetActive(true);
 			instance.MarkSpawned();
 
-			RestartParticleSystems(instanceObject);
+			RestartParticleSystems(instance.gameObject);
 
 			float lifetime = Mathf.Max(
 				MinLifetimeSeconds,
 				definition.EffectLifetimeSeconds
 			);
 
-			_ = ReturnToPoolAfterDelay(
-				prefab,
-				instance,
-				instance.Version,
-				lifetime
-			);
+			_ = ReleaseAfterDelay(instance, instance.Version, lifetime);
 		}
 
 		public void Dispose()
 		{
 			_isDisposed = true;
 
-			foreach (KeyValuePair<GameObject, List<PooledEffectInstance>> pair in _allByPrefab)
+			foreach (ObjectPool<PooledEffectInstance> pool in _poolsByPrefab.Values)
 			{
-				List<PooledEffectInstance> instances = pair.Value;
-
-				if (instances == null)
-				{
-					continue;
-				}
-
-				for (int i = 0; i < instances.Count; i++)
-				{
-					PooledEffectInstance instance = instances[i];
-
-					if (instance != null)
-					{
-						Object.Destroy(instance.gameObject);
-					}
-				}
+				pool.Clear();
 			}
 
-			_availableByPrefab.Clear();
-			_allByPrefab.Clear();
+			_poolsByPrefab.Clear();
 		}
 
-		private PooledEffectInstance GetInstance(GameObject prefab)
+		private ObjectPool<PooledEffectInstance> GetPool(GameObject prefab)
 		{
-			Queue<PooledEffectInstance> availableQueue =
-				GetAvailableQueue(prefab);
-
-			while (availableQueue.Count > 0)
+			if (_poolsByPrefab.TryGetValue(
+				    prefab,
+				    out ObjectPool<PooledEffectInstance> pool))
 			{
-				PooledEffectInstance candidate = availableQueue.Dequeue();
-
-				if (candidate != null)
-				{
-					return candidate;
-				}
+				return pool;
 			}
 
-			List<PooledEffectInstance> allInstances = GetAllInstances(prefab);
-
-			if (allInstances.Count < MaxInstancesPerPrefab)
-			{
-				return CreateInstance(prefab, allInstances);
-			}
-
-			return GetReusableBusyInstance(allInstances);
-		}
-
-		private PooledEffectInstance CreateInstance(
-			GameObject prefab,
-			List<PooledEffectInstance> allInstances
-		)
-		{
-			GameObject instanceObject = Object.Instantiate(
-				prefab,
-				_root
+			pool = new ObjectPool<PooledEffectInstance>(
+				createFunc: () => CreateInstance(prefab),
+				actionOnGet: OnGetInstance,
+				actionOnRelease: OnReleaseInstance,
+				actionOnDestroy: OnDestroyInstance,
+				collectionCheck: false,
+				defaultCapacity: DefaultCapacity,
+				maxSize: MaxInstancesPerPrefab
 			);
 
+			_poolsByPrefab[prefab] = pool;
+
+			return pool;
+		}
+
+		private PooledEffectInstance CreateInstance(GameObject prefab)
+		{
+			GameObject instanceObject = Object.Instantiate(prefab, _root);
 			instanceObject.name = $"{prefab.name} (Pooled)";
 			instanceObject.SetActive(false);
 
@@ -151,60 +116,37 @@ namespace TLN.Infrastructure.Feedback
 				instance = instanceObject.AddComponent<PooledEffectInstance>();
 			}
 
-			allInstances.Add(instance);
-
 			return instance;
 		}
 
-		private static PooledEffectInstance GetReusableBusyInstance(
-			List<PooledEffectInstance> allInstances
-		)
+		private static void OnGetInstance(PooledEffectInstance instance)
 		{
-			for (int i = 0; i < allInstances.Count; i++)
+			if (instance != null)
 			{
-				PooledEffectInstance instance = allInstances[i];
-
-				if (instance != null)
-				{
-					return instance;
-				}
+				instance.gameObject.SetActive(true);
 			}
-
-			return null;
 		}
 
-		private Queue<PooledEffectInstance> GetAvailableQueue(
-			GameObject prefab
-		)
+		private static void OnReleaseInstance(PooledEffectInstance instance)
 		{
-			if (!_availableByPrefab.TryGetValue(
-				    prefab,
-				    out Queue<PooledEffectInstance> queue
-			    ))
+			if (instance == null)
 			{
-				queue = new Queue<PooledEffectInstance>();
-				_availableByPrefab[prefab] = queue;
+				return;
 			}
 
-			return queue;
+			StopParticleSystems(instance.gameObject);
+			instance.gameObject.SetActive(false);
 		}
 
-		private List<PooledEffectInstance> GetAllInstances(GameObject prefab)
+		private static void OnDestroyInstance(PooledEffectInstance instance)
 		{
-			if (!_allByPrefab.TryGetValue(
-				    prefab,
-				    out List<PooledEffectInstance> instances
-			    ))
+			if (instance != null)
 			{
-				instances = new List<PooledEffectInstance>();
-				_allByPrefab[prefab] = instances;
+				Object.Destroy(instance.gameObject);
 			}
-
-			return instances;
 		}
 
-		private async Awaitable ReturnToPoolAfterDelay(
-			GameObject prefab,
+		private async Awaitable ReleaseAfterDelay(
 			PooledEffectInstance instance,
 			int expectedVersion,
 			float delaySeconds
@@ -232,23 +174,11 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
-			GameObject instanceObject = instance.gameObject;
-
-			StopParticleSystems(instanceObject);
-
-			instance.transform.SetParent(_root, true);
-			instanceObject.SetActive(false);
-
-			GetAvailableQueue(prefab).Enqueue(instance);
+			instance.Release();
 		}
 
 		private static void RestartParticleSystems(GameObject root)
 		{
-			if (root == null)
-			{
-				return;
-			}
-
 			ParticleSystem[] particleSystems =
 				root.GetComponentsInChildren<ParticleSystem>(true);
 
@@ -272,11 +202,6 @@ namespace TLN.Infrastructure.Feedback
 
 		private static void StopParticleSystems(GameObject root)
 		{
-			if (root == null)
-			{
-				return;
-			}
-
 			ParticleSystem[] particleSystems =
 				root.GetComponentsInChildren<ParticleSystem>(true);
 

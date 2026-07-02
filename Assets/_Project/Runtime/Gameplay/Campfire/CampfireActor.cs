@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using TLN.Application.Audio;
 using TLN.Application.Localization;
 using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
@@ -8,6 +9,7 @@ using TLN.Gameplay.Time;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
+using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Campfire
 {
@@ -51,6 +53,8 @@ namespace TLN.Gameplay.Campfire
 		private ICampfireWindow _campfireWindow;
 		private IGameTimeService _gameTimeService;
 		private IWarmthService _warmthService;
+		private IAudioMixerService _audioMixerService;
+		private IFeedbackService _feedbackService;
 
 		private int _lastKnownTotalMinutes;
 		private int _remainingBurnMinutes;
@@ -83,14 +87,19 @@ namespace TLN.Gameplay.Campfire
 		public void Construct(
 			ICampfireWindow campfireWindow,
 			IGameTimeService gameTimeService,
-			IWarmthService warmthService
+			IWarmthService warmthService,
+			IAudioMixerService audioMixerService,
+			IFeedbackService feedbackService
 		)
 		{
 			_campfireWindow = campfireWindow;
 			_gameTimeService = gameTimeService;
 			_warmthService = warmthService;
+			_audioMixerService = audioMixerService;
+			_feedbackService = feedbackService;
 
 			_warmthService?.Register(this);
+			RouteAudioSources();
 
 			if (_gameTimeService != null)
 			{
@@ -112,6 +121,11 @@ namespace TLN.Gameplay.Campfire
 				: CampfireState.Unlit;
 
 			ApplyVisualState();
+		}
+
+		private void RouteAudioSources()
+		{
+			_audioMixerService?.Route(_fireLoopAudio, AudioBusId.Ambient);
 		}
 
 		public override void OnNetworkSpawn()
@@ -358,9 +372,12 @@ namespace TLN.Gameplay.Campfire
 				return;
 			}
 
+			CampfireState previousState = _state;
+
 			_state = state;
 
 			ApplyVisualState();
+			PlayStateFeedback(previousState, _state);
 			PublishChanged();
 		}
 
@@ -413,7 +430,10 @@ namespace TLN.Gameplay.Campfire
 			}
 
 			_state = nextValue;
+
 			ApplyVisualState();
+			PlayStateFeedback(previousValue, nextValue);
+
 			Changed?.Invoke();
 		}
 
@@ -424,6 +444,37 @@ namespace TLN.Gameplay.Campfire
 
 			ApplyVisualState();
 			Changed?.Invoke();
+		}
+
+		private void PlayStateFeedback(CampfireState previousState, CampfireState nextState)
+		{
+			if (_feedbackService == null)
+			{
+				return;
+			}
+
+			if (previousState == nextState)
+			{
+				return;
+			}
+
+			if (nextState == CampfireState.Burning)
+			{
+				_feedbackService.PlayAt(
+					FeedbackEventId.CampfireIgnited,
+					transform.position
+				);
+
+				return;
+			}
+
+			if (previousState == CampfireState.Burning)
+			{
+				_feedbackService.PlayAt(
+					FeedbackEventId.CampfireExtinguished,
+					transform.position
+				);
+			}
 		}
 
 		private bool CanMutateCampfire()

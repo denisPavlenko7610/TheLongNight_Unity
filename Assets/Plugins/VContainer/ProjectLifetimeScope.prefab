@@ -53,6 +53,7 @@ MonoBehaviour:
   _loadingScreenPrefab: {fileID: 100000, guid: 8abd1bbef1b644319a3fe42b1d4cb93b, type: 3}
   _networkManager: {fileID: 2495209624872197642}
   _feedbackCatalog: {fileID: 11400000, guid: ee45cfe4c2434dc8b52c535b928d0ad9, type: 2}
+  _audioMixerConfig: {fileID: 11400000, guid: 0a58c5f2d18249b095a59351290a4fd3, type: 2}
 --- !u!114 &2495209624872197642
 MonoBehaviour:
   m_ObjectHideFlags: 0

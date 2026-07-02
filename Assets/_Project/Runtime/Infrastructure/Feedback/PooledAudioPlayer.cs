@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TLN.Application.Audio;
 using TLN.Gameplay.Feedback;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,13 +13,18 @@ namespace TLN.Infrastructure.Feedback
 		private const int MaxAudioSourceCount = 32;
 
 		private readonly Transform _root;
+		private readonly IAudioMixerService _audioMixerService;
 		private readonly List<AudioSource> _sources = new();
 
-		public PooledAudioPlayer(Transform root)
+		public PooledAudioPlayer(
+			Transform root,
+			IAudioMixerService audioMixerService = null
+		)
 		{
 			_root = root != null
 				? root
 				: throw new ArgumentNullException(nameof(root));
+			_audioMixerService = audioMixerService;
 
 			for (int i = 0; i < InitialAudioSourceCount; i++)
 			{
@@ -53,6 +59,7 @@ namespace TLN.Infrastructure.Feedback
 			source.spatialBlend = spatial ? definition.SpatialBlend : 0f;
 			source.minDistance = definition.MinDistance;
 			source.maxDistance = definition.MaxDistance;
+			_audioMixerService?.Route(source, definition.AudioBusId);
 
 			source.Play();
 		}

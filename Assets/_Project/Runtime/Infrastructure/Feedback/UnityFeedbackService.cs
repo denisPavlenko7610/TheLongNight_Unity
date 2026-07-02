@@ -1,8 +1,11 @@
 ﻿using System;
+using TLN.Application.Audio;
 using TLN.Application.Feedback;
 using TLN.Gameplay.Feedback;
+using Awaitable = UnityEngine.Awaitable;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityTime = UnityEngine.Time;
 
 namespace TLN.Infrastructure.Feedback
 {
@@ -15,14 +18,17 @@ namespace TLN.Infrastructure.Feedback
 		private readonly PooledAudioPlayer _audioPlayer;
 		private readonly PooledEffectPlayer _effectPlayer;
 
-		public UnityFeedbackService(FeedbackCatalog catalog)
+		public UnityFeedbackService(
+			FeedbackCatalog catalog,
+			IAudioMixerService audioMixerService = null
+		)
 		{
 			_catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
 
 			_root = new GameObject(RootName);
 			Object.DontDestroyOnLoad(_root);
 
-			_audioPlayer = new PooledAudioPlayer(_root.transform);
+			_audioPlayer = new PooledAudioPlayer(_root.transform, audioMixerService);
 			_effectPlayer = new PooledEffectPlayer(_root.transform);
 		}
 
@@ -96,9 +102,9 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
-			float endTime = UnityEngine.Time.realtimeSinceStartup + seconds;
+			float endTime = UnityTime.realtimeSinceStartup + seconds;
 
-			while (UnityEngine.Time.realtimeSinceStartup < endTime)
+			while (UnityTime.realtimeSinceStartup < endTime)
 			{
 				await Awaitable.NextFrameAsync();
 			}

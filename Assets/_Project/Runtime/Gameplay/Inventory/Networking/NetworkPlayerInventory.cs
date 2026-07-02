@@ -804,7 +804,6 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			NotifyOwner(Loc.FireStarted);
-			NotifyOwnerFeedback(FeedbackEventId.CampfireIgnited);
 
 			return true;
 		}
@@ -829,7 +828,6 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			NotifyOwner(Loc.FireExtinguished);
-			NotifyOwnerFeedback(FeedbackEventId.CampfireExtinguished);
 
 			return true;
 		}

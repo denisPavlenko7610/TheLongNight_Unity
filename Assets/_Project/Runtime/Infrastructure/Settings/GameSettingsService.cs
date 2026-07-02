@@ -1,4 +1,5 @@
 using System;
+using TLN.Application.Audio;
 using TLN.Application.Settings;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
@@ -9,14 +10,16 @@ namespace TLN.Infrastructure.Settings
 	{
 		private const string PrefsKey = "TLN_GameSettings_v1";
 
+		private readonly IAudioMixerService _audioMixerService;
 		private GameSettings _originalSettings;
 
 		public GameSettings Settings { get; private set; }
 
 		public event Action SettingsChanged;
 
-		public GameSettingsService()
+		public GameSettingsService(IAudioMixerService audioMixerService = null)
 		{
+			_audioMixerService = audioMixerService;
 			Settings = new GameSettings();
 			_originalSettings = DeepCopy(Settings);
 			Load();
@@ -24,6 +27,8 @@ namespace TLN.Infrastructure.Settings
 
 		public void Save()
 		{
+			ApplyAudioSettings();
+
 			string json = JsonUtility.ToJson(Settings);
 			PlayerPrefs.SetString(PrefsKey, json);
 			PlayerPrefs.Save();
@@ -54,6 +59,8 @@ namespace TLN.Infrastructure.Settings
 
 		public void Apply()
 		{
+			ApplyAudioSettings();
+
 			QualitySettings.SetQualityLevel(Settings.QualityLevel, true);
 			QualitySettings.globalTextureMipmapLimit = Mathf.Clamp(3 - Settings.TextureQuality, 0, 3);
 			QualitySettings.vSyncCount = Settings.VSyncEnabled ? 1 : 0;
@@ -90,6 +97,11 @@ namespace TLN.Infrastructure.Settings
 
 		public void Dispose()
 		{
+		}
+
+		private void ApplyAudioSettings()
+		{
+			_audioMixerService?.Apply(Settings);
 		}
 
 		private static GameSettings DeepCopy(GameSettings source)
