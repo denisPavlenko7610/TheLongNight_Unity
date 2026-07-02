@@ -9,6 +9,7 @@ using TLN.Gameplay.Player;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Survival;
 using UnityEngine;
+using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Items
 {
@@ -22,6 +23,7 @@ namespace TLN.Gameplay.Items
 		private readonly PlacementService _placementService;
 		private readonly IPlayerEquipmentService _equipmentService;
 		private readonly IAddressableAssetService _addressableAssetService;
+		private readonly IFeedbackService _feedbackService;
 
 		public ItemUseService(
 			IInventoryService inventoryService,
@@ -31,7 +33,8 @@ namespace TLN.Gameplay.Items
 			INotificationService notificationService,
 			PlacementService placementService,
 			IPlayerEquipmentService equipmentService,
-			IAddressableAssetService addressableAssetService
+			IAddressableAssetService addressableAssetService,
+			IFeedbackService feedbackService
 		)
 		{
 			_inventoryService = inventoryService;
@@ -42,6 +45,7 @@ namespace TLN.Gameplay.Items
 			_placementService = placementService;
 			_equipmentService = equipmentService;
 			_addressableAssetService = addressableAssetService;
+			_feedbackService = feedbackService;
 		}
 
 		public ItemUseResult UseItemAt(int index)
@@ -98,6 +102,7 @@ namespace TLN.Gameplay.Items
 
 			string message = Loc.Used(consumable.DisplayName);
 			_notificationService.Show(message);
+			_feedbackService?.Play(FeedbackEventId.ItemUsed);
 
 			return ItemUseResult.Success(message);
 		}

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TLN.Core.Lifetime;
 using TLN.Core.Results;
+using UnityEngine;
 
 namespace TLN.Application.Multiplayer
 {
@@ -14,12 +14,12 @@ namespace TLN.Application.Multiplayer
 
 		string JoinCode { get; }
 
-		Task<OperationResult<string>> CreateHostSession();
-		Task<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions();
-		Task<OperationResult> JoinSessionById(string sessionId);
-		Task<OperationResult> JoinSessionByCode(string joinCode);
+		Awaitable<OperationResult<string>> CreateHostSession();
+		Awaitable<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions();
+		Awaitable<OperationResult> JoinSessionById(string sessionId);
+		Awaitable<OperationResult> JoinSessionByCode(string joinCode);
 
 		void Shutdown();
-		Task ShutdownAsync();
+		Awaitable ShutdownAsync();
 	}
 }

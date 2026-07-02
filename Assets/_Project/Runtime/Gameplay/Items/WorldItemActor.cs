@@ -11,6 +11,7 @@ using TLN.Gameplay.Saves;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
+using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Items
 {
@@ -33,6 +34,7 @@ namespace TLN.Gameplay.Items
 		private WorldSaveRegistry _worldSaveRegistry;
 		private PersistentWorldEntity _persistentEntity;
 		private IMultiplayerSessionService _multiplayerSessionService;
+		private IFeedbackService _feedbackService;
 
 		public string SaveTypeId => SaveType;
 
@@ -54,7 +56,8 @@ namespace TLN.Gameplay.Items
 			INotificationService notificationService,
 			ItemCatalog itemCatalog,
 			WorldSaveRegistry worldSaveRegistry,
-			IMultiplayerSessionService multiplayerSessionService
+			IMultiplayerSessionService multiplayerSessionService,
+			IFeedbackService feedbackService
 		)
 		{
 			_inventoryService = inventoryService;
@@ -62,6 +65,7 @@ namespace TLN.Gameplay.Items
 			_itemCatalog = itemCatalog;
 			_worldSaveRegistry = worldSaveRegistry;
 			_multiplayerSessionService = multiplayerSessionService;
+			_feedbackService = feedbackService;
 		}
 
 		private void Awake()
@@ -189,6 +193,7 @@ namespace TLN.Gameplay.Items
 			}
 
 			_notificationService?.Show(Loc.ItemsPickedUp(_definition.DisplayName));
+			_feedbackService?.PlayAt(FeedbackEventId.ItemPickedUp, transform.position);
 
 			if (_persistentEntity != null && _persistentEntity.IsSceneObject)
 			{

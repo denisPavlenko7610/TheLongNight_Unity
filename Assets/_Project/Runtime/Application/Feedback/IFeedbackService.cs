@@ -7,5 +7,8 @@ namespace TLN.Application.Feedback
 	{
 		void Play(FeedbackEventId eventId);
 		void PlayAt(FeedbackEventId eventId, Vector3 position);
+
+		Awaitable PlayDelayed(FeedbackEventId eventId, float delaySeconds);
+		Awaitable PlayAtDelayed(FeedbackEventId eventId, Vector3 position, float delaySeconds);
 	}
 }

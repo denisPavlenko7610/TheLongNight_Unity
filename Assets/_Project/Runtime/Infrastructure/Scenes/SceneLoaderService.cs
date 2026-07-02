@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using TLN.Application.GameStates;
 using TLN.Application.Multiplayer;
 using TLN.Application.Scenes;
@@ -21,7 +20,7 @@ namespace TLN.Infrastructure.Scenes
 
 		private string _pendingNetworkSceneName;
 		private GameStateId _pendingNetworkStateAfterLoading;
-		private TaskCompletionSource<bool> _networkSceneCompletion;
+		private AwaitableCompletionSource<bool> _networkSceneCompletion;
 
 		public bool IsLoading => _isLoading;
 
@@ -97,7 +96,7 @@ namespace TLN.Infrastructure.Scenes
 
 				_pendingNetworkSceneName = sceneName;
 				_pendingNetworkStateAfterLoading = stateAfterLoading;
-				_networkSceneCompletion = new TaskCompletionSource<bool>();
+				_networkSceneCompletion = new AwaitableCompletionSource<bool>();
 
 				SceneEventProgressStatus status =
 					_networkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
@@ -109,7 +108,7 @@ namespace TLN.Infrastructure.Scenes
 					);
 				}
 
-				await _networkSceneCompletion.Task;
+				await _networkSceneCompletion.Awaitable;
 			}
 			catch (Exception exception)
 			{
@@ -240,7 +239,7 @@ namespace TLN.Infrastructure.Scenes
 				return;
 			}
 
-			_networkSceneCompletion?.TrySetResult(true);
+			_networkSceneCompletion?.SetResult(true);
 			CompleteLoading(_pendingNetworkStateAfterLoading);
 		}
 
@@ -255,7 +254,7 @@ namespace TLN.Infrastructure.Scenes
 			CompleteLoading(_pendingNetworkStateAfterLoading);
 		}
 
-		private async Task ShutdownNetworkIfNeeded()
+		private async Awaitable ShutdownNetworkIfNeeded()
 		{
 			if (_multiplayerSessionService != null && _multiplayerSessionService.IsMultiplayer)
 			{
@@ -277,7 +276,7 @@ namespace TLN.Infrastructure.Scenes
 			await WaitForNetworkShutdown();
 		}
 
-		private async Task WaitForNetworkShutdown()
+		private async Awaitable WaitForNetworkShutdown()
 		{
 			if (_networkManager == null)
 			{
@@ -286,7 +285,7 @@ namespace TLN.Infrastructure.Scenes
 
 			for (int i = 0; i < 120 && _networkManager.IsListening; i++)
 			{
-				await Task.Yield();
+				await Awaitable.NextFrameAsync();
 			}
 		}
 	}

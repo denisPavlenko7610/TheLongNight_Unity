@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TLN.Application.Multiplayer;
 using TLN.Core.Results;
 using Unity.Netcode;
@@ -8,6 +7,7 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
+using UnityEngine;
 
 namespace TLN.Infrastructure.Multiplayer
 {
@@ -48,7 +48,7 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		public async Task<OperationResult<string>> CreateHostSession()
+		public async Awaitable<OperationResult<string>> CreateHostSession()
 		{
 			if (_isSessionOperationInProgress)
 			{
@@ -85,7 +85,7 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		public async Task<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions()
+		public async Awaitable<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions()
 		{
 			if (_isSessionOperationInProgress)
 			{
@@ -131,7 +131,7 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		public async Task<OperationResult> JoinSessionById(string sessionId)
+		public async Awaitable<OperationResult> JoinSessionById(string sessionId)
 		{
 			if (_isSessionOperationInProgress)
 			{
@@ -174,7 +174,7 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		public async Task<OperationResult> JoinSessionByCode(string joinCode)
+		public async Awaitable<OperationResult> JoinSessionByCode(string joinCode)
 		{
 			if (_isSessionOperationInProgress)
 			{
@@ -222,7 +222,7 @@ namespace TLN.Infrastructure.Multiplayer
 			_ = ShutdownWithoutThrowing();
 		}
 
-		public async Task ShutdownAsync()
+		public async Awaitable ShutdownAsync()
 		{
 			JoinCode = string.Empty;
 
@@ -339,7 +339,7 @@ namespace TLN.Infrastructure.Multiplayer
 			return false;
 		}
 
-		private static async Task EnsureUnityServicesReady()
+		private static async Awaitable EnsureUnityServicesReady()
 		{
 			if (UnityServices.State == ServicesInitializationState.Uninitialized)
 			{
@@ -360,7 +360,7 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		private async Task WaitForNetworkManagerShutdown()
+		private async Awaitable WaitForNetworkManagerShutdown()
 		{
 			if (_networkManager == null)
 			{
@@ -369,11 +369,11 @@ namespace TLN.Infrastructure.Multiplayer
 
 			for (int i = 0; i < NetworkShutdownWaitFrames && _networkManager.IsListening; i++)
 			{
-				await Task.Yield();
+				await Awaitable.NextFrameAsync();
 			}
 		}
 
-		private async Task ShutdownWithoutThrowing()
+		private async Awaitable ShutdownWithoutThrowing()
 		{
 			try
 			{

@@ -8,6 +8,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 using TLN.Gameplay.Campfire;
+using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Inventory.Networking
 {
@@ -25,6 +26,7 @@ namespace TLN.Gameplay.Inventory.Networking
 		private ItemCatalog _itemCatalog;
 		private INotificationService _notificationService;
 		private NetworkPlayerSurvival _survivalService;
+		private IFeedbackService _feedbackService;
 
 		private bool _isConstructed;
 		private bool _isCacheDirty = true;
@@ -54,12 +56,14 @@ namespace TLN.Gameplay.Inventory.Networking
 		public void Construct(
 			InventoryConfig config,
 			ItemCatalog itemCatalog,
-			INotificationService notificationService
+			INotificationService notificationService,
+			IFeedbackService feedbackService
 		)
 		{
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 			_itemCatalog = itemCatalog ?? throw new ArgumentNullException(nameof(itemCatalog));
 			_notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+			_feedbackService = feedbackService ?? throw new ArgumentNullException(nameof(feedbackService));
 
 			EnsureNetworkItemsInitialized();
 
@@ -212,6 +216,8 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			NotifyOwner(Loc.ItemsPickedUp(itemActor.Definition.DisplayName));
+			NotifyOwnerFeedback(FeedbackEventId.ItemPickedUp);
+
 			itemActor.CompletePickupServer();
 
 			return true;
@@ -456,6 +462,7 @@ namespace TLN.Gameplay.Inventory.Networking
 
 			string message = Loc.Used(consumable.DisplayName);
 			NotifyOwner(message);
+			NotifyOwnerFeedback(FeedbackEventId.ItemUsed);
 
 			return ItemUseResult.Success(message);
 		}
@@ -759,27 +766,21 @@ namespace TLN.Gameplay.Inventory.Networking
 				return false;
 			}
 
-			if (!TryRemoveItemAt(
-					inventoryIndex,
-					SingleItemAmount,
-					out string removeFailureReason
-				))
+			if (!TryRemoveItemAt(inventoryIndex, SingleItemAmount, out string removeFailureReason))
 			{
 				NotifyOwner(removeFailureReason);
 				return false;
 			}
 
-			if (!campfire.AddFuel(
-					fuel,
-					SingleItemAmount,
-					out string addFuelFailureReason
-				))
+			if (!campfire.AddFuel(fuel, SingleItemAmount, out string addFuelFailureReason))
 			{
 				NotifyOwner(addFuelFailureReason);
 				return false;
 			}
 
 			NotifyOwner(Loc.FuelAdded(fuel.DisplayName));
+			NotifyOwnerFeedback(FeedbackEventId.CampfireFuelAdded);
+
 			return true;
 		}
 
@@ -803,6 +804,8 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			NotifyOwner(Loc.FireStarted);
+			NotifyOwnerFeedback(FeedbackEventId.CampfireIgnited);
+
 			return true;
 		}
 
@@ -826,6 +829,8 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			NotifyOwner(Loc.FireExtinguished);
+			NotifyOwnerFeedback(FeedbackEventId.CampfireExtinguished);
+
 			return true;
 		}
 
@@ -924,6 +929,35 @@ namespace TLN.Gameplay.Inventory.Networking
 		private void ShowOwnerNotificationRpc(string message)
 		{
 			_notificationService?.Show(message);
+		}
+
+		private void NotifyOwnerFeedback(FeedbackEventId eventId)
+		{
+			if (eventId == FeedbackEventId.None)
+			{
+				return;
+			}
+
+			if (IsSpawned && IsServer)
+			{
+				PlayOwnerFeedbackRpc((int)eventId);
+				return;
+			}
+
+			_feedbackService?.Play(eventId);
+		}
+
+		[Rpc(SendTo.Owner)]
+		private void PlayOwnerFeedbackRpc(int eventIdValue)
+		{
+			FeedbackEventId eventId = (FeedbackEventId)eventIdValue;
+
+			if (eventId == FeedbackEventId.None)
+			{
+				return;
+			}
+
+			_feedbackService?.Play(eventId);
 		}
 	}
 }

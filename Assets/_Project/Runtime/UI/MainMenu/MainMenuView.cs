@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TLN.Application.Localization;
 using TLN.Application.Multiplayer;
 using TLN.Application.Saves;
@@ -302,7 +301,7 @@ namespace TLN.UI.MainMenu
 			await RefreshAvailableSessions();
 		}
 
-		private async Task RefreshAvailableSessions()
+		private async Awaitable RefreshAvailableSessions()
 		{
 			if (_isMultiplayerOperationInProgress ||
 			    _isSessionBrowseInProgress)
