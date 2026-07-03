@@ -7,7 +7,7 @@ namespace TLN.Bootstrap
 {
 	public sealed class ProjectStartupEntryPoint : IStartable
 	{
-	private const int DefaultTargetFrameRate = -1;
+	private const int DefaultTargetFrameRate = 60;
 	private const int DisableVSync = 0;
 
 		private readonly IGameStateMachine _gameStateMachine;

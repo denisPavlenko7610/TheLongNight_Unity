@@ -54,7 +54,7 @@ QualitySettings:
     terrainDetailDensityScale: 1
     terrainBasemapDistance: 1000
     terrainDetailDistance: 80
-    terrainTreeDistance: 5000
+    terrainTreeDistance: 1000
     terrainBillboardStart: 50
     terrainFadeLength: 5
     terrainMaxTrees: 50
@@ -107,7 +107,7 @@ QualitySettings:
     terrainDetailDensityScale: 1
     terrainBasemapDistance: 1000
     terrainDetailDistance: 80
-    terrainTreeDistance: 5000
+    terrainTreeDistance: 1000
     terrainBillboardStart: 50
     terrainFadeLength: 5
     terrainMaxTrees: 50
@@ -160,7 +160,7 @@ QualitySettings:
     terrainDetailDensityScale: 1
     terrainBasemapDistance: 1000
     terrainDetailDistance: 80
-    terrainTreeDistance: 5000
+    terrainTreeDistance: 1000
     terrainBillboardStart: 50
     terrainFadeLength: 5
     terrainMaxTrees: 50

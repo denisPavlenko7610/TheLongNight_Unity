@@ -45,6 +45,8 @@ namespace TLN.UI.HUD
 
 		private Label _interactionPromptLabel;
 		private Label _notificationLabel;
+		private string _currentInteractionPromptText;
+		private bool _isInteractionPromptVisible;
 
 		private ISurvivalService _survivalService;
 		private IGameTimeService _gameTimeService;
@@ -304,6 +306,13 @@ namespace TLN.UI.HUD
 				return;
 			}
 
+			if (_isInteractionPromptVisible && _currentInteractionPromptText == text)
+			{
+				return;
+			}
+
+			_currentInteractionPromptText = text;
+			_isInteractionPromptVisible = true;
 			_interactionPromptLabel.text = Loc.HUDInteractionPrompt(text);
 			_interactionPromptLabel.RemoveFromClassList(HiddenClassName);
 		}
@@ -315,6 +324,13 @@ namespace TLN.UI.HUD
 				return;
 			}
 
+			if (!_isInteractionPromptVisible)
+			{
+				return;
+			}
+
+			_currentInteractionPromptText = null;
+			_isInteractionPromptVisible = false;
 			_interactionPromptLabel.text = string.Empty;
 			_interactionPromptLabel.AddToClassList(HiddenClassName);
 		}

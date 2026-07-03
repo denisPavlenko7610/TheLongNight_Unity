@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TLN.Core.Logging;
 using TLN.Gameplay.Feedback;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -13,11 +12,8 @@ namespace TLN.Infrastructure.Feedback
 		private const int DefaultCapacity = 4;
 		private const int MaxInstancesPerPrefab = 32;
 
-		private const int CurveSampleCount = 16;
-
 		private readonly Transform _root;
 		private readonly Dictionary<GameObject, ObjectPool<PooledVfxInstance>> _poolsByPrefab = new();
-		private readonly Dictionary<GameObject, float?> _lifetimesByPrefab = new();
 
 		private bool _isDisposed;
 
@@ -46,7 +42,6 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
-			float? lifetime = GetLifetimeSeconds(prefab);
 			ObjectPool<PooledVfxInstance> pool = GetPool(prefab);
 			PooledVfxInstance instance = pool.Get();
 
@@ -58,12 +53,10 @@ namespace TLN.Infrastructure.Feedback
 
 			instance.MarkSpawned();
 
-			RestartParticleSystems(instance.gameObject);
+			ParticleSystem[] particleSystems = instance.ParticleSystems;
+			RestartParticleSystems(particleSystems);
 
-			if (lifetime.HasValue)
-			{
-				_ = ReleaseAfterDelay(instance, instance.Version, lifetime.Value);
-			}
+			_ = ReleaseWhenFinished(instance, instance.Version, particleSystems);
 		}
 
 		public void Dispose()
@@ -76,20 +69,6 @@ namespace TLN.Infrastructure.Feedback
 			}
 
 			_poolsByPrefab.Clear();
-			_lifetimesByPrefab.Clear();
-		}
-
-		private float? GetLifetimeSeconds(GameObject prefab)
-		{
-			if (_lifetimesByPrefab.TryGetValue(prefab, out float? lifetime))
-			{
-				return lifetime;
-			}
-
-			lifetime = CalculateLifetimeSeconds(prefab);
-			_lifetimesByPrefab[prefab] = lifetime;
-
-			return lifetime;
 		}
 
 		private ObjectPool<PooledVfxInstance> GetPool(GameObject prefab)
@@ -131,6 +110,7 @@ namespace TLN.Infrastructure.Feedback
 				instance = instanceObject.AddComponent<PooledVfxInstance>();
 			}
 
+			instance.CacheParticleSystems();
 			return instance;
 		}
 
@@ -149,7 +129,7 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
-			StopParticleSystems(instance.gameObject);
+			StopParticleSystems(instance.ParticleSystems);
 			instance.gameObject.SetActive(false);
 		}
 
@@ -161,10 +141,15 @@ namespace TLN.Infrastructure.Feedback
 			}
 		}
 
-		private async Awaitable ReleaseAfterDelay(PooledVfxInstance instance, uint expectedVersion, float delaySeconds)
+		private async Awaitable ReleaseWhenFinished(
+			PooledVfxInstance instance,
+			uint expectedVersion,
+			ParticleSystem[] particleSystems)
 		{
-			float endTime = UnityEngine.Time.time + delaySeconds;
-			while (UnityEngine.Time.time < endTime)
+			while (!_isDisposed &&
+			       instance != null &&
+			       instance.Version == expectedVersion &&
+			       IsAnyParticleSystemAlive(particleSystems))
 			{
 				await Awaitable.NextFrameAsync();
 			}
@@ -187,12 +172,8 @@ namespace TLN.Infrastructure.Feedback
 			instance.Release();
 		}
 
-		private static float? CalculateLifetimeSeconds(GameObject root)
+		private static bool IsAnyParticleSystemAlive(ParticleSystem[] particleSystems)
 		{
-			ParticleSystem[] particleSystems = root.GetComponentsInChildren<ParticleSystem>(true);
-
-			float lifetime = 0f;
-
 			for (int i = 0; i < particleSystems.Length; i++)
 			{
 				ParticleSystem particleSystem = particleSystems[i];
@@ -201,75 +182,17 @@ namespace TLN.Infrastructure.Feedback
 					continue;
 				}
 
-				ParticleSystem.MainModule main = particleSystem.main;
-				if (main.loop)
+				if (particleSystem.IsAlive(true))
 				{
-					TLNLogger.LogWarning(
-						$"Looping ParticleSystem '{particleSystem.name}' is used in pooled one-shot VFX '{root.name}'. " +
-						"Looping VFX will not be automatically returned to pool."
-					);
-
-					return null;
+					return true;
 				}
-
-				float startDelay = GetMaxCurveValue(main.startDelay);
-				float startLifetime = GetMaxCurveValue(main.startLifetime);
-
-				float particleLifetime = startDelay + main.duration + startLifetime;
-				lifetime = Mathf.Max(lifetime, particleLifetime);
 			}
 
-			return Mathf.Max(Mathf.Epsilon, lifetime);
+			return false;
 		}
 
-		private static float GetMaxCurveValue(ParticleSystem.MinMaxCurve curve)
+		private static void RestartParticleSystems(ParticleSystem[] particleSystems)
 		{
-			switch (curve.mode)
-			{
-				case ParticleSystemCurveMode.Constant:
-					return curve.constant;
-
-				case ParticleSystemCurveMode.TwoConstants:
-					return curve.constantMax;
-
-				case ParticleSystemCurveMode.Curve:
-					return GetMaxAnimationCurveValue(curve.curve) * curve.curveMultiplier;
-
-				case ParticleSystemCurveMode.TwoCurves:
-					float minCurveMax = GetMaxAnimationCurveValue(curve.curveMin);
-					float maxCurveMax = GetMaxAnimationCurveValue(curve.curveMax);
-
-					return Mathf.Max(minCurveMax, maxCurveMax) * curve.curveMultiplier;
-
-				default:
-					return 0f;
-			}
-		}
-
-		private static float GetMaxAnimationCurveValue(AnimationCurve curve)
-		{
-			if (curve == null || curve.length == 0)
-			{
-				return 0f;
-			}
-
-			float maxValue = 0f;
-
-			for (int i = 0; i <= CurveSampleCount; i++)
-			{
-				float time = (float)i / CurveSampleCount;
-				float value = curve.Evaluate(time);
-
-				maxValue = Mathf.Max(maxValue, value);
-			}
-
-			return maxValue;
-		}
-
-		private static void RestartParticleSystems(GameObject root)
-		{
-			ParticleSystem[] particleSystems = root.GetComponentsInChildren<ParticleSystem>(true);
-
 			for (int i = 0; i < particleSystems.Length; i++)
 			{
 				ParticleSystem particleSystem = particleSystems[i];
@@ -283,11 +206,8 @@ namespace TLN.Infrastructure.Feedback
 			}
 		}
 
-		private static void StopParticleSystems(GameObject root)
+		private static void StopParticleSystems(ParticleSystem[] particleSystems)
 		{
-			ParticleSystem[] particleSystems =
-				root.GetComponentsInChildren<ParticleSystem>(true);
-
 			for (int i = 0; i < particleSystems.Length; i++)
 			{
 				ParticleSystem particleSystem = particleSystems[i];

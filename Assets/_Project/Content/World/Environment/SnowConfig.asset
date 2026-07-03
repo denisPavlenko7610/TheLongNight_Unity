@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edc3d061c091684fbb1b942e3941865, type: 3}
   m_Name: SnowConfig
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Weather.SnowConfig
-  _maxParticles: 20000
-  _radius: 42
+  _maxParticles: 12000
+  _radius: 36
   _height: 32
   _fallDepth: 8
   _gravity: 0.7
@@ -24,4 +24,4 @@ MonoBehaviour:
   _maxSize: 0.083
   _softness: 0.68
   _sparkleIntensity: 0.18
-  _fadeDistance: 58
+  _fadeDistance: 45

@@ -9,6 +9,7 @@ namespace TLN.Infrastructure.Audio
 	public sealed class AudioMixerConfig : ScriptableObject
 	{
 		private const float MinVolumeDecibels = -80f;
+		private const float UnappliedVolume = -1f;
 
 		[SerializeField] private AudioMixer _mixer;
 		[SerializeField] private AudioMixerGroup _masterGroup;
@@ -21,6 +22,11 @@ namespace TLN.Infrastructure.Audio
 		[SerializeField] private string _musicVolumeParameter = "MusicVolume";
 		[SerializeField] private string _ambientVolumeParameter = "AmbientVolume";
 		[SerializeField] private string _sfxVolumeParameter = "SfxVolume";
+
+		private float _lastMasterVolume = UnappliedVolume;
+		private float _lastMusicVolume = UnappliedVolume;
+		private float _lastAmbientVolume = UnappliedVolume;
+		private float _lastSfxVolume = UnappliedVolume;
 
 		public AudioMixer Mixer => _mixer;
 		public AudioMixerGroup MasterGroup => _masterGroup;
@@ -45,23 +51,30 @@ namespace TLN.Infrastructure.Audio
 				return;
 			}
 
-			SetLinearVolume(_masterVolumeParameter, settings.MasterVolume);
-			SetLinearVolume(_musicVolumeParameter, settings.MusicVolume);
-			SetLinearVolume(_ambientVolumeParameter, settings.AmbientVolume);
-			SetLinearVolume(_sfxVolumeParameter, settings.SfxVolume);
+			SetLinearVolume(_masterVolumeParameter, settings.MasterVolume, ref _lastMasterVolume);
+			SetLinearVolume(_musicVolumeParameter, settings.MusicVolume, ref _lastMusicVolume);
+			SetLinearVolume(_ambientVolumeParameter, settings.AmbientVolume, ref _lastAmbientVolume);
+			SetLinearVolume(_sfxVolumeParameter, settings.SfxVolume, ref _lastSfxVolume);
 		}
 
-		private void SetLinearVolume(string exposedParameter, float linearVolume)
+		private void SetLinearVolume(string exposedParameter, float linearVolume, ref float lastLinearVolume)
 		{
 			if (string.IsNullOrWhiteSpace(exposedParameter))
 			{
 				return;
 			}
 
-			_mixer.SetFloat(
-				exposedParameter,
-				LinearToDecibels(Mathf.Clamp01(linearVolume))
-			);
+			linearVolume = Mathf.Clamp01(linearVolume);
+
+			if (Mathf.Approximately(lastLinearVolume, linearVolume))
+			{
+				return;
+			}
+
+			if (_mixer.SetFloat(exposedParameter, LinearToDecibels(linearVolume)))
+			{
+				lastLinearVolume = linearVolume;
+			}
 		}
 
 		private static float LinearToDecibels(float linearVolume)

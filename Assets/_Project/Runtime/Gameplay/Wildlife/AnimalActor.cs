@@ -22,6 +22,7 @@ namespace TLN.Gameplay.Wildlife
         private const float MovingVelocityThreshold = 0.02f;
         private const float AnimationRefreshInterval = 0.1f;
         private const float FleeRepathInterval = 0.3f;
+        private const float ChaseRepathInterval = 0.2f;
         private const float AttackAnimationLockSeconds = 0.95f;
         private const string FurNameFragment = "fur";
         private const string HairNameFragment = "hair";
@@ -52,6 +53,7 @@ namespace TLN.Gameplay.Wildlife
         private float _nextDecisionTime;
         private float _nextAttackTime;
         private float _nextFleeTime;
+        private float _nextChaseTime;
         private float _nextAnimationTime;
         private float _attackAnimationLockUntil;
 
@@ -308,6 +310,15 @@ namespace TLN.Gameplay.Wildlife
             ApplyState(AnimalStateId.Chase);
 
             _agent.speed = _definition.RunSpeed;
+
+            if (currentTime < _nextChaseTime &&
+                _agent.hasPath &&
+                _agent.remainingDistance > RemainingDistanceThreshold)
+            {
+                return;
+            }
+
+            _nextChaseTime = currentTime + ChaseRepathInterval;
             _agent.SetDestination(targetPosition);
         }
 

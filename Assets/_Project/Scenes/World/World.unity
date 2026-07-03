@@ -2365,7 +2365,7 @@ MonoBehaviour:
   _snowShader: {fileID: 4800000, guid: df07bc20314b94c43bf40a6c5229c6e6, type: 3}
   _followTarget: {fileID: 0}
   _autoFollowPlayerCamera: 1
-  _intensity: 0.65
+  _intensity: 0.5
   _windDirection: {x: 0.5, y: 0, z: 0.3}
   _windStrength: 0.5
   _active: 1

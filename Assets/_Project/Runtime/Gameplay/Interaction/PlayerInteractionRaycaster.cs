@@ -64,7 +64,9 @@ namespace TLN.Gameplay.Interaction
 
 			if (Physics.Raycast(ray2, out RaycastHit hit2, _maxDistance, _layerMask, QueryTriggerInteraction.Ignore))
 			{
-				IInteractable interactable = hit2.collider.GetComponentInParent<IInteractable>();
+				IInteractable interactable = hit2.collider == _lastHitCollider
+					? _lastHitInteractable
+					: hit2.collider.GetComponentInParent<IInteractable>();
 
 				if (interactable != null)
 				{
