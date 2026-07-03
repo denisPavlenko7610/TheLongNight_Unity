@@ -33,9 +33,9 @@
 .pause-content {
     position: absolute;
     left: 6%;
-    top: 10%;
+    top: 6%;
     width: 88%;
-    height: 80%;
+    height: 88%;
     padding-left: 18px;
     border-left-width: 3px;
     border-left-color: rgba(230, 242, 244, 0.38);
@@ -82,12 +82,16 @@
 }
 
 .pause-settings-panel {
-    margin-top: 20px;
+    margin-top: 0;
 }
 
 .pause-settings-panel.options-panel {
-    width: 1000px;
-    align-self: flex-start;
+    position: absolute;
+    left: 0;
+    top: 18%;
+    width: 100%;
+    height: 82%;
+    align-self: center;
 }
 
 .pause-settings-title {

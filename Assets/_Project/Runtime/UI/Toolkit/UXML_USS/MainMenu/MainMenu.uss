@@ -25,9 +25,9 @@
 .main-menu-content {
     position: absolute;
     left: 7%;
-    top: 10%;
+    top: 5%;
     width: 86%;
-    height: 76%;
+    height: 88%;
     justify-content: flex-start;
 }
 
@@ -216,8 +216,12 @@
 }
 
 .main-menu-settings-panel {
-    width: 1000px;
-    align-self: flex-start;
+    position: absolute;
+    left: 0;
+    top: 20%;
+    width: 100%;
+    height: 80%;
+    align-self: center;
 }
 
 .main-menu-settings-title {

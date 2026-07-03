@@ -1,9 +1,10 @@
 .options-panel {
     flex-grow: 0;
     flex-shrink: 0;
-    width: 1000px;
+    width: 100%;
     max-width: 100%;
-    min-height: 610px;
+    min-width: 0;
+    min-height: 0;
     padding: 28px 32px 22px 32px;
     background-color: rgba(6, 10, 11, 0.82);
     border-left-width: 2px;
@@ -19,7 +20,7 @@
 .options-title {
     margin-bottom: 22px;
     color: rgb(238, 241, 234);
-    font-size: 28px;
+    font-size: 32px;
     unity-font-style: bold;
     letter-spacing: 0;
     -unity-text-outline-width: 0;
@@ -28,21 +29,22 @@
 
 .options-body {
     flex-direction: row;
-    height: 440px;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .options-tab-bar {
-    width: 176px;
+    width: 208px;
     flex-direction: column;
-    margin-right: 22px;
+    margin-right: 26px;
     margin-top: 4px;
-    padding-right: 18px;
+    padding-right: 20px;
     border-right-width: 1px;
     border-right-color: rgba(214, 224, 222, 0.16);
 }
 
 .options-tab-btn {
-    height: 42px;
+    height: 48px;
     margin-bottom: 2px;
     padding-left: 16px;
     padding-right: 8px;
@@ -55,7 +57,7 @@
     border-top-width: 0;
     border-bottom-width: 0;
     border-left-color: rgba(225, 237, 239, 0);
-    font-size: 15px;
+    font-size: 17px;
     unity-font-style: bold;
     unity-text-align: middle-left;
     letter-spacing: 0;
@@ -93,6 +95,7 @@
 .options-content-area {
     flex-grow: 1;
     min-width: 0;
+    min-height: 0;
     overflow-y: auto;
     padding-left: 4px;
     padding-right: 6px;
@@ -124,8 +127,8 @@
 .options-toggle-row {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    min-height: 54px;
+    justify-content: flex-start;
+    min-height: 64px;
     margin-bottom: 2px;
     padding-bottom: 4px;
     border-bottom-width: 1px;
@@ -141,18 +144,19 @@
 
 .options-slider-row .tln-settings-label,
 .options-dropdown-row .tln-settings-label {
-    width: 270px;
+    width: 240px;
     margin-bottom: 0;
     color: rgba(234, 238, 232, 0.82);
-    font-size: 15px;
+    font-size: 17px;
     letter-spacing: 0;
 }
 
 .options-toggle-row .tln-settings-label {
     margin-bottom: 0;
-    flex-grow: 1;
+    width: 240px;
+    flex-grow: 0;
     color: rgba(234, 238, 232, 0.82);
-    font-size: 15px;
+    font-size: 17px;
     letter-spacing: 0;
 }
 
@@ -161,39 +165,40 @@
     align-items: center;
     flex-grow: 1;
     min-width: 0;
+    margin-right: 20%;
 }
 
 .options-slider {
     flex-grow: 1;
-    min-width: 240px;
-    height: 28px;
+    min-width: 300px;
+    height: 34px;
     padding-left: 0;
     padding-right: 0;
 }
 
 .options-slider .unity-slider__input {
-    height: 28px;
+    height: 34px;
     background-color: rgba(0, 0, 0, 0);
 }
 
 .options-slider .unity-slider__track {
-    height: 3px;
-    margin-top: -1px;
+    height: 4px;
+    margin-top: -2px;
     background-color: rgba(156, 166, 164, 0.22);
     border-radius: 0;
 }
 
 .options-slider .unity-slider__fill {
-    height: 3px;
+    height: 4px;
     background-color: rgba(222, 164, 86, 0.58);
     border-radius: 0;
 }
 
 .options-slider .unity-slider__dragger {
-    width: 12px;
-    height: 18px;
-    margin-left: -6px;
-    margin-top: -8px;
+    width: 16px;
+    height: 22px;
+    margin-left: -8px;
+    margin-top: -10px;
     background-color: rgba(234, 236, 229, 0.86);
     border-radius: 0;
     border-left-width: 1px;
@@ -217,10 +222,10 @@
 }
 
 .options-slider-value {
-    width: 56px;
-    margin-left: 14px;
+    width: 64px;
+    margin-left: 16px;
     color: rgba(238, 241, 234, 0.9);
-    font-size: 14px;
+    font-size: 16px;
     unity-font-style: bold;
     letter-spacing: 0;
     -unity-text-outline-width: 0;
@@ -311,7 +316,7 @@
     width: 220px;
     flex-grow: 0;
     max-width: none;
-    height: 42px;
+    height: 48px;
     margin-bottom: 0;
     padding-left: 18px;
     padding-right: 18px;
@@ -325,7 +330,7 @@
     border-right-color: rgba(222, 232, 228, 0.1);
     border-top-color: rgba(222, 232, 228, 0.1);
     border-bottom-color: rgba(222, 232, 228, 0.1);
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: 0;
     unity-text-align: middle-center;
     -unity-text-outline-width: 0;
@@ -346,12 +351,14 @@
 
 .options-dropdown-row .tln-settings-dropdown {
     flex-grow: 1;
-    min-width: 320px;
+    min-width: 360px;
     width: auto;
-    max-width: 560px;
+    max-width: 680px;
+    height: 46px;
 }
 
 .options-dropdown-row .tln-settings-dropdown .unity-base-field__input {
+    min-height: 46px;
     background-color: rgba(12, 15, 15, 0.76);
     border-left-color: rgba(222, 164, 86, 0.36);
 }
