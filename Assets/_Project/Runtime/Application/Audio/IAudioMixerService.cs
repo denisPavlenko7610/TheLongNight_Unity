@@ -7,6 +7,6 @@ namespace TLN.Application.Audio
 	{
 		void Apply(GameSettings settings);
 
-		void Route(AudioSource source, AudioBusId busId);
+		void AssignMixerGroup(AudioSource source, AudioBusId busId);
 	}
 }

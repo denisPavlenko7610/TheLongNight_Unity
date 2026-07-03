@@ -333,6 +333,8 @@ MonoBehaviour:
   _rayDistance: 60
   _useFixedSeed: 0
   _seed: 12345
+  _spawnParentRoot: {fileID: 0}
+  _groupSpawnsByPrefab: 1
   _maxAttemptsPerInstance: 30
 --- !u!1 &157207112
 GameObject:
@@ -1211,6 +1213,8 @@ MonoBehaviour:
   _rayDistance: 60
   _useFixedSeed: 0
   _seed: 12345
+  _spawnParentRoot: {fileID: 0}
+  _groupSpawnsByPrefab: 1
   _maxAttemptsPerInstance: 30
 --- !u!114 &396446099
 MonoBehaviour:
@@ -1344,6 +1348,12 @@ MonoBehaviour:
   - {fileID: 1747586344}
   - {fileID: 1428779353}
   - {fileID: 1355292597}
+  _spawnGroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _spawnRayStartHeight: 20
+  _spawnRayDistance: 80
+  _spawnGroundOffset: 0.05
 --- !u!1 &565384055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,6 +1603,8 @@ MonoBehaviour:
   _rayDistance: 60
   _useFixedSeed: 0
   _seed: 12345
+  _spawnParentRoot: {fileID: 0}
+  _groupSpawnsByPrefab: 1
   _maxAttemptsPerInstance: 30
 --- !u!1 &863057033
 GameObject:
@@ -2790,6 +2802,8 @@ MonoBehaviour:
   _rayDistance: 60
   _useFixedSeed: 0
   _seed: 12345
+  _spawnParentRoot: {fileID: 0}
+  _groupSpawnsByPrefab: 1
   _maxAttemptsPerInstance: 30
 --- !u!1 &1428779352
 GameObject:
@@ -3681,6 +3695,10 @@ PrefabInstance:
       propertyPath: m_ShapeRadius
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 7627391496527207004, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300004, guid: 9ba4bd2504534847bcc219ebedf34157, type: 2}
     - target: {fileID: 7786694538252668051, guid: 2a72e51b847421e40bbf6a8cc4979b1a, type: 3}
       propertyPath: _id
       value: 88036ade187f4136a50de567d583f567

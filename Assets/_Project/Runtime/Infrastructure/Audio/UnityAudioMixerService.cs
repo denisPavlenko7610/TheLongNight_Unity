@@ -18,7 +18,7 @@ namespace TLN.Infrastructure.Audio
 			_config?.Apply(settings);
 		}
 
-		public void Route(AudioSource source, AudioBusId busId)
+		public void AssignMixerGroup(AudioSource source, AudioBusId busId)
 		{
 			if (source == null || _config == null)
 			{

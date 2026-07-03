@@ -21,4 +21,3 @@ MonoBehaviour:
   _minDistance: 1
   _maxDistance: 20
   _effectPrefab: {fileID: 0}
-  _effectLifetimeSeconds: 5

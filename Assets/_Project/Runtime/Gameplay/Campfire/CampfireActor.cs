@@ -116,16 +116,14 @@ namespace TLN.Gameplay.Campfire
 				_maxBurnMinutes
 			);
 
-			_state = _remainingBurnMinutes > 0
-				? CampfireState.Unlit
-				: CampfireState.Unlit;
+			_state = CampfireState.Unlit;
 
 			ApplyVisualState();
 		}
 
 		private void RouteAudioSources()
 		{
-			_audioMixerService?.Route(_fireLoopAudio, AudioBusId.Ambient);
+			_audioMixerService?.AssignMixerGroup(_fireLoopAudio, AudioBusId.Ambient);
 		}
 
 		public override void OnNetworkSpawn()

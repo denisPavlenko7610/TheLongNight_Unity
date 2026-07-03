@@ -7,8 +7,17 @@ namespace TLN.Gameplay.Feedback
 	[CreateAssetMenu(fileName = "FeedbackDefinition", menuName = "TLN/Feedback/Feedback Definition")]
 	public sealed class FeedbackDefinition : ScriptableObject
 	{
+		public enum UnityAudioPriority
+		{
+			Critical = 0,
+			High = 64,
+			Normal = 128,
+			Low = 192
+		}
+
 		[Header("Identity")]
 		[SerializeField] private FeedbackEventId _eventId;
+		[SerializeField] private UnityAudioPriority _priority = UnityAudioPriority.Normal;
 
 		[Header("Audio")]
 		[SerializeField] private AudioBusId _audioBusId = AudioBusId.Sfx;
@@ -22,9 +31,9 @@ namespace TLN.Gameplay.Feedback
 
 		[Header("VFX")]
 		[SerializeField] private GameObject _effectPrefab;
-		[SerializeField] private float _effectLifetimeSeconds = 5f;
 
 		public FeedbackEventId EventId => _eventId;
+		public UnityAudioPriority Priority => _priority;
 		public AudioBusId AudioBusId => _audioBusId;
 		public AudioClip[] AudioClips => _audioClips;
 		public float Volume => _volume;
@@ -34,7 +43,6 @@ namespace TLN.Gameplay.Feedback
 		public float MinDistance => _minDistance;
 		public float MaxDistance => _maxDistance;
 		public GameObject EffectPrefab => _effectPrefab;
-		public float EffectLifetimeSeconds => _effectLifetimeSeconds;
 		public bool HasAudio => _audioClips != null && _audioClips.Length > 0;
 		public bool HasEffect => _effectPrefab != null;
 	}

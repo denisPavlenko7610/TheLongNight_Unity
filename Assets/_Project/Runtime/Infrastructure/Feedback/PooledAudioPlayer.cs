@@ -16,14 +16,12 @@ namespace TLN.Infrastructure.Feedback
 		private readonly IAudioMixerService _audioMixerService;
 		private readonly List<AudioSource> _sources = new();
 
-		public PooledAudioPlayer(
-			Transform root,
-			IAudioMixerService audioMixerService = null
-		)
+		public PooledAudioPlayer(Transform root, IAudioMixerService audioMixerService = null)
 		{
 			_root = root != null
 				? root
 				: throw new ArgumentNullException(nameof(root));
+
 			_audioMixerService = audioMixerService;
 
 			for (int i = 0; i < InitialAudioSourceCount; i++)
@@ -40,26 +38,27 @@ namespace TLN.Infrastructure.Feedback
 			}
 
 			AudioClip clip = GetRandomClip(definition.AudioClips);
-
 			if (clip == null)
 			{
 				return;
 			}
 
-			AudioSource source = GetSourceForPlayback();
+			AudioSource source = GetSourceForPlayback(definition.Priority);
+			if (source == null)
+			{
+				return;
+			}
 
 			source.Stop();
 			source.transform.position = position;
 			source.clip = clip;
 			source.volume = definition.Volume;
-			source.pitch = Random.Range(
-				definition.MinPitch,
-				definition.MaxPitch
-			);
+			source.pitch = Random.Range(definition.MinPitch, definition.MaxPitch);
 			source.spatialBlend = spatial ? definition.SpatialBlend : 0f;
 			source.minDistance = definition.MinDistance;
 			source.maxDistance = definition.MaxDistance;
-			_audioMixerService?.Route(source, definition.AudioBusId);
+			source.priority = (int)definition.Priority;
+			_audioMixerService?.AssignMixerGroup(source, definition.AudioBusId);
 
 			source.Play();
 		}
@@ -69,13 +68,13 @@ namespace TLN.Infrastructure.Feedback
 			_sources.Clear();
 		}
 
-		private AudioSource GetSourceForPlayback()
+		private AudioSource GetSourceForPlayback(FeedbackDefinition.UnityAudioPriority priority)
 		{
 			for (int i = 0; i < _sources.Count; i++)
 			{
 				AudioSource source = _sources[i];
 
-				if (source != null && !source.isPlaying)
+				if (!source.isPlaying)
 				{
 					return source;
 				}
@@ -86,60 +85,79 @@ namespace TLN.Infrastructure.Feedback
 				return CreateSource();
 			}
 
-			return GetMostReplaceableSource();
+			return FindReplacementSource(priority);
 		}
 
-		private AudioSource GetMostReplaceableSource()
+		private AudioSource FindReplacementSource(FeedbackDefinition.UnityAudioPriority incomingPriority)
 		{
 			AudioSource bestSource = null;
+			FeedbackDefinition.UnityAudioPriority bestPriority = FeedbackDefinition.UnityAudioPriority.Critical;
 			float bestProgress = -1f;
 
 			for (int i = 0; i < _sources.Count; i++)
 			{
 				AudioSource source = _sources[i];
-
 				if (source == null)
 				{
 					continue;
 				}
 
-				float progress = GetPlaybackProgress01(source);
+				FeedbackDefinition.UnityAudioPriority sourcePriority = (FeedbackDefinition.UnityAudioPriority)source.priority;
+				if (sourcePriority < incomingPriority)
+				{
+					continue;
+				}
 
-				if (progress > bestProgress)
+				float progress = GetPlaybackProgress(source);
+				if (
+					bestSource == null
+					|| sourcePriority > bestPriority
+					|| sourcePriority == bestPriority && progress > bestProgress
+				)
 				{
 					bestProgress = progress;
+					bestPriority = sourcePriority;
 					bestSource = source;
 				}
 			}
 
-			return bestSource ?? CreateSource();
+			return bestSource;
 		}
 
-		private static float GetPlaybackProgress01(AudioSource source)
+		private static float GetPlaybackProgress(AudioSource source)
 		{
-			if (source == null)
+			AudioClip clip = source.clip;
+			if (clip == null)
 			{
 				return 1f;
 			}
 
-			if (source.clip == null || source.clip.length <= 0f)
+			if (clip.length <= 0f)
 			{
-				return 1f;
+				throw new InvalidOperationException(
+					$"AudioClip '{clip.name}' has invalid length: {clip.length}."
+				);
 			}
 
-			return Mathf.Clamp01(source.time / source.clip.length);
+			return Mathf.Clamp01(source.time / clip.length);
 		}
 
 		private AudioSource CreateSource()
 		{
+			AudioSource source = CreateAudioSource();
+			_sources.Add(source);
+
+			return source;
+		}
+
+		private AudioSource CreateAudioSource()
+		{
 			GameObject sourceObject = new GameObject("Feedback Audio Source");
-			sourceObject.transform.SetParent(_root);
+			sourceObject.transform.SetParent(_root, false);
 
 			AudioSource source = sourceObject.AddComponent<AudioSource>();
 			source.playOnAwake = false;
 			source.loop = false;
-
-			_sources.Add(source);
 
 			return source;
 		}

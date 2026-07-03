@@ -8,8 +8,7 @@ namespace TLN.Infrastructure.Audio
 	[CreateAssetMenu(fileName = "AudioMixerConfig", menuName = "TLN/Audio/Audio Mixer Config")]
 	public sealed class AudioMixerConfig : ScriptableObject
 	{
-		private const float MinDecibels = -80f;
-		private const float MinAudibleLinear = 0.0001f;
+		private const float MinVolumeDecibels = -80f;
 
 		[SerializeField] private AudioMixer _mixer;
 		[SerializeField] private AudioMixerGroup _masterGroup;
@@ -67,8 +66,8 @@ namespace TLN.Infrastructure.Audio
 
 		private static float LinearToDecibels(float linearVolume)
 		{
-			return linearVolume <= MinAudibleLinear
-				? MinDecibels
+			return linearVolume <= Mathf.Epsilon
+				? MinVolumeDecibels
 				: Mathf.Log10(linearVolume) * 20f;
 		}
 	}

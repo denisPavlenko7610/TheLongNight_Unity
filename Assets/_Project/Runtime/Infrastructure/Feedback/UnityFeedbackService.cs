@@ -14,22 +14,19 @@ namespace TLN.Infrastructure.Feedback
 		private const string RootName = "[TLN Feedback Service]";
 
 		private readonly FeedbackCatalog _catalog;
-		private readonly GameObject _root;
-		private readonly PooledAudioPlayer _audioPlayer;
-		private readonly PooledEffectPlayer _effectPlayer;
+		private readonly IAudioMixerService _audioMixerService;
 
-		public UnityFeedbackService(
-			FeedbackCatalog catalog,
-			IAudioMixerService audioMixerService = null
-		)
+		private GameObject _root;
+		private PooledAudioPlayer _audioPlayer;
+		private PooledVfxPlayer _vfxPlayer;
+		private bool _isDisposed;
+
+		public UnityFeedbackService(FeedbackCatalog catalog, IAudioMixerService audioMixerService = null)
 		{
 			_catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
+			_audioMixerService = audioMixerService;
 
-			_root = new GameObject(RootName);
-			Object.DontDestroyOnLoad(_root);
-
-			_audioPlayer = new PooledAudioPlayer(_root.transform, audioMixerService);
-			_effectPlayer = new PooledEffectPlayer(_root.transform);
+			CreatePlayers();
 		}
 
 		public void Play(FeedbackEventId eventId)
@@ -39,10 +36,15 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
+			if (!EnsurePlayers())
+			{
+				return;
+			}
+
 			Vector3 position = _root.transform.position;
 
 			_audioPlayer.Play(definition, position, false);
-			_effectPlayer.Play(definition, position);
+			_vfxPlayer.Play(definition, position);
 		}
 
 		public void PlayAt(FeedbackEventId eventId, Vector3 position)
@@ -52,8 +54,13 @@ namespace TLN.Infrastructure.Feedback
 				return;
 			}
 
+			if (!EnsurePlayers())
+			{
+				return;
+			}
+
 			_audioPlayer.Play(definition, position, true);
-			_effectPlayer.Play(definition, position);
+			_vfxPlayer.Play(definition, position);
 		}
 
 		public async Awaitable PlayDelayed(
@@ -77,14 +84,54 @@ namespace TLN.Infrastructure.Feedback
 
 		public void Dispose()
 		{
-			_audioPlayer.Dispose();
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_isDisposed = true;
+			DisposePlayers();
+		}
+
+		private bool EnsurePlayers()
+		{
+			if (_isDisposed)
+			{
+				return false;
+			}
+
+			if (_root != null && _audioPlayer != null && _vfxPlayer != null)
+			{
+				return true;
+			}
+
+			DisposePlayers();
+			CreatePlayers();
+			return true;
+		}
+
+		private void CreatePlayers()
+		{
+			_root = new GameObject(RootName);
+			Object.DontDestroyOnLoad(_root);
+
+			_audioPlayer = new PooledAudioPlayer(_root.transform, _audioMixerService);
+			_vfxPlayer = new PooledVfxPlayer(_root.transform);
+		}
+
+		private void DisposePlayers()
+		{
+			_audioPlayer?.Dispose();
+			_vfxPlayer?.Dispose();
 
 			if (_root != null)
 			{
 				Object.Destroy(_root);
 			}
 
-			_effectPlayer.Dispose();
+			_root = null;
+			_audioPlayer = null;
+			_vfxPlayer = null;
 		}
 
 		private bool TryGetDefinition(

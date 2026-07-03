@@ -5,14 +5,14 @@ namespace TLN.Infrastructure.Feedback
 {
 	[DisallowMultipleComponent]
 	[AddComponentMenu("")]
-	public sealed class PooledEffectInstance : MonoBehaviour
+	public sealed class PooledVfxInstance : MonoBehaviour
 	{
-		private IObjectPool<PooledEffectInstance> _pool;
+		private IObjectPool<PooledVfxInstance> _pool;
 		private bool _isReleased = true;
 
-		public int Version { get; private set; }
+		public uint Version { get; private set; }
 
-		public void Initialize(IObjectPool<PooledEffectInstance> pool)
+		public void Initialize(IObjectPool<PooledVfxInstance> pool)
 		{
 			_pool = pool;
 			_isReleased = false;

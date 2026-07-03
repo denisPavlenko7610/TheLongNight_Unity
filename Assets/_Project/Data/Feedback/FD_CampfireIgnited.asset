@@ -22,4 +22,3 @@ MonoBehaviour:
   _minDistance: 1
   _maxDistance: 20
   _effectPrefab: {fileID: 2651777886876907629, guid: 053d74a1491e29f4ca70e6f5fcc416b0, type: 3}
-  _effectLifetimeSeconds: 5
