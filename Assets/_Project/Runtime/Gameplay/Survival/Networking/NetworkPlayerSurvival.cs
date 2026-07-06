@@ -59,7 +59,6 @@ namespace TLN.Gameplay.Survival.Networking
 
 		private bool _isConstructed;
 		private bool _hasInitializedStats;
-		private bool _hasPendingNetworkValues;
 
 		private float _survivalTickAccumulator;
 
@@ -372,11 +371,6 @@ namespace TLN.Gameplay.Survival.Networking
 				return;
 			}
 
-			if (_hasPendingNetworkValues)
-			{
-				_hasPendingNetworkValues = false;
-			}
-
 			ApplyNetworkValuesToLocalStats();
 		}
 
@@ -394,42 +388,23 @@ namespace TLN.Gameplay.Survival.Networking
 				);
 			}
 
-			_hunger = new SurvivalStat(
-				SurvivalStatId.Hunger,
-				_config.InitialHunger,
-				SurvivalService.MinStat,
-				SurvivalService.MaxStat
-			);
-
-			_thirst = new SurvivalStat(
-				SurvivalStatId.Thirst,
-				_config.InitialThirst,
-				SurvivalService.MinStat,
-				SurvivalService.MaxStat
-			);
-
-			_fatigue = new SurvivalStat(
-				SurvivalStatId.Fatigue,
-				_config.InitialFatigue,
-				SurvivalService.MinStat,
-				SurvivalService.MaxStat
-			);
-
-			_cold = new SurvivalStat(
-				SurvivalStatId.Cold,
-				_config.InitialCold,
-				SurvivalService.MinStat,
-				SurvivalService.MaxStat
-			);
-
-			_condition = new SurvivalStat(
-				SurvivalStatId.Condition,
-				_config.InitialCondition,
-				SurvivalService.MinStat,
-				SurvivalService.MaxStat
-			);
+			_hunger = CreateStat(SurvivalStatId.Hunger, _config.InitialHunger);
+			_thirst = CreateStat(SurvivalStatId.Thirst, _config.InitialThirst);
+			_fatigue = CreateStat(SurvivalStatId.Fatigue, _config.InitialFatigue);
+			_cold = CreateStat(SurvivalStatId.Cold, _config.InitialCold);
+			_condition = CreateStat(SurvivalStatId.Condition, _config.InitialCondition);
 
 			_hasInitializedStats = true;
+		}
+
+		private static SurvivalStat CreateStat(SurvivalStatId id, float value)
+		{
+			return new SurvivalStat(
+				id,
+				value,
+				SurvivalService.MinStat,
+				SurvivalService.MaxStat
+			);
 		}
 
 		private bool CanMutateSurvival()
@@ -603,7 +578,6 @@ namespace TLN.Gameplay.Survival.Networking
 
 			if (!_isConstructed)
 			{
-				_hasPendingNetworkValues = true;
 				return;
 			}
 

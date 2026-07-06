@@ -123,60 +123,14 @@ namespace TLN.Gameplay.Building
 			{
 				BuildRecipeIngredient ingredient = recipe.Ingredients[i];
 
-				bool consumed = TryConsumeItem(
+				if (!_inventoryService.TryRemoveItem(
 					ingredient.Item,
 					ingredient.Amount,
 					out failureReason
-				);
-
-				if (!consumed)
+				))
 				{
 					return false;
 				}
-			}
-
-			failureReason = string.Empty;
-			return true;
-		}
-
-		private bool TryConsumeItem(ItemDefinition item, int amount, out string failureReason)
-		{
-			int remainingAmount = amount;
-
-			for (int i = _inventoryService.Items.Count - 1; i >= 0; i--)
-			{
-				if (remainingAmount <= 0)
-				{
-					break;
-				}
-
-				ItemStack stack = _inventoryService.Items[i];
-
-				if (stack.Definition.Id != item.Id)
-				{
-					continue;
-				}
-
-				int amountToRemove = Mathf.Min(remainingAmount, stack.Amount);
-
-				bool removed = _inventoryService.TryRemoveItemAt(
-					i,
-					amountToRemove,
-					out failureReason
-				);
-
-				if (!removed)
-				{
-					return false;
-				}
-
-				remainingAmount -= amountToRemove;
-			}
-
-			if (remainingAmount > 0)
-			{
-				failureReason = Loc.NotEnoughItem(item.DisplayName);
-				return false;
 			}
 
 			failureReason = string.Empty;

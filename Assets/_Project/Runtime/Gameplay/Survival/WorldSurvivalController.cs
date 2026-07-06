@@ -85,12 +85,7 @@ namespace TLN.Gameplay.Survival
 
 		private bool ShouldSimulateOfflineSurvival()
 		{
-			if (_multiplayerSessionService == null)
-			{
-				return true;
-			}
-
-			return !_multiplayerSessionService.IsMultiplayer;
+			return _multiplayerSessionService is not { IsMultiplayer: true };
 		}
 
 		private ISurvivalService GetWarningSurvivalService()

@@ -7,11 +7,11 @@ namespace TLN.UI.Common
 {
 	public static class SettingsMenuHelper
 	{
-		public const string EnglishLanguageName = "English";
-		public const string UkrainianLanguageName = "Українська";
-		public const string RussianLanguageName = "Русский";
+		private const string EnglishLanguageName = "English";
+		private const string UkrainianLanguageName = "Українська";
+		private const string RussianLanguageName = "Русский";
 
-		public static readonly List<string> SupportedLanguages = new()
+		private static readonly List<string> SupportedLanguages = new()
 		{
 			EnglishLanguageName,
 			UkrainianLanguageName,
@@ -25,7 +25,7 @@ namespace TLN.UI.Common
 				return;
 			}
 
-			dropdown.choices = SupportedLanguages;
+			dropdown.choices = new List<string>(SupportedLanguages);
 			dropdown.SetValueWithoutNotify(EnglishLanguageName);
 		}
 

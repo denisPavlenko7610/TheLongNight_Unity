@@ -50,12 +50,8 @@ namespace TLN.Gameplay.Time
 
 		private bool ShouldSimulateWorld()
 		{
-			if (_multiplayerSessionService == null)
-			{
-				return true;
-			}
-
-			return !_multiplayerSessionService.IsMultiplayer || _multiplayerSessionService.IsServer;
+			return _multiplayerSessionService is not { IsMultiplayer: true } ||
+			       _multiplayerSessionService.IsServer;
 		}
 
 		#if UNITY_EDITOR

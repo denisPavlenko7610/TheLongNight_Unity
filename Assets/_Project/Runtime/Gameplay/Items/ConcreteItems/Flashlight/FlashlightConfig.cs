@@ -9,7 +9,7 @@ namespace _Project.Runtime.Gameplay.Items.ConcreteItems.Flashlight
 		[SerializeField] private float _maxBattery = 100f;
 		[SerializeField] private float _drainPerSecond = 2f;
 
-		public float MaxBattery => _maxBattery;
-		public float DrainPerSecond => _drainPerSecond;
+		public float MaxBattery => Mathf.Max(0f, _maxBattery);
+		public float DrainPerSecond => Mathf.Max(0f, _drainPerSecond);
 	}
 }

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 namespace TLN.Application.Localization
@@ -11,36 +9,31 @@ namespace TLN.Application.Localization
 		public const string Ukrainian = "uk";
 		public const string Russian = "ru";
 
-		private static readonly Dictionary<Action, Action<Locale>> _localeChangedWrappers = new();
+		private static event Action LocaleChangedHandlers;
+
+		static LocaleCodes()
+		{
+			LocalizationSettings.SelectedLocaleChanged += _ => LocaleChangedHandlers?.Invoke();
+		}
 
 		public static string Current =>
 			LocalizationSettings.SelectedLocale?.Identifier.Code ?? string.Empty;
 
 		public static event Action LocaleChanged
 		{
-			add
-			{
-				Action<Locale> wrapper = _ => value();
-				_localeChangedWrappers[value] = wrapper;
-				LocalizationSettings.SelectedLocaleChanged += wrapper;
-			}
-			remove
-			{
-				if (_localeChangedWrappers.TryGetValue(value, out Action<Locale> wrapper))
-				{
-					LocalizationSettings.SelectedLocaleChanged -= wrapper;
-					_localeChangedWrappers.Remove(value);
-				}
-			}
+			add => LocaleChangedHandlers += value;
+			remove => LocaleChangedHandlers -= value;
 		}
 
 		public static bool TrySetLocale(string code)
 		{
-			Locale locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+			var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+
 			if (locale == null)
 			{
 				return false;
 			}
+
 			LocalizationSettings.SelectedLocale = locale;
 			return true;
 		}

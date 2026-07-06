@@ -33,10 +33,7 @@ namespace TLN.Gameplay.Player
 
 		public void Clear()
 		{
-			if (PlayerRoot == null &&
-				SurvivalService == null &&
-				InventoryService == null &&
-				ItemUseService == null)
+			if (!HasLocalPlayer)
 			{
 				return;
 			}

@@ -42,8 +42,7 @@ namespace TLN.Gameplay.Saves
 			worldData.entities.Clear();
 
 			PersistentWorldEntity[] entities = Object.FindObjectsByType<PersistentWorldEntity>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None
+				FindObjectsInactive.Include
 			);
 
 			for (int i = 0; i < entities.Length; i++)
@@ -145,7 +144,7 @@ namespace TLN.Gameplay.Saves
 
 			if (!_prefabCatalog.TryGetPrefab(data.prefabId, out GameObject prefab))
 			{
-				TLNLogger.LogWarning($"Cannot restore world entity. " + $"Unknown prefab id: {data.prefabId}");
+				TLNLogger.LogWarning($"Cannot restore world entity. Unknown prefab id: {data.prefabId}");
 				return false;
 			}
 
@@ -191,7 +190,7 @@ namespace TLN.Gameplay.Saves
 			WorldSaveData worldData
 		)
 		{
-			HashSet<string> savedIds = new HashSet<string>();
+			HashSet<string> savedIds = new();
 
 			if (worldData.entities != null)
 			{
@@ -208,7 +207,7 @@ namespace TLN.Gameplay.Saves
 				}
 			}
 
-			List<string> removedIds = new List<string>();
+			List<string> removedIds = new();
 
 			foreach (KeyValuePair<string, PersistentWorldEntity> pair in entitiesById)
 			{
@@ -239,8 +238,7 @@ namespace TLN.Gameplay.Saves
 			Dictionary<string, PersistentWorldEntity> result = new();
 
 			PersistentWorldEntity[] entities = Object.FindObjectsByType<PersistentWorldEntity>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None
+				FindObjectsInactive.Include
 			);
 
 			for (int i = 0; i < entities.Length; i++)

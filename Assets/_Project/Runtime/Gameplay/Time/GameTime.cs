@@ -20,6 +20,28 @@ namespace TLN.Gameplay.Time
 			Minute = Math.Clamp(minute, 0, MinutesPerHour - 1);
 		}
 
+		public static GameTime FromTotalMinutes(int totalMinutes)
+		{
+			int safeTotalMinutes = Math.Max(0, totalMinutes);
+			int day = safeTotalMinutes / MinutesPerDay + 1;
+			int minutesInCurrentDay = safeTotalMinutes % MinutesPerDay;
+
+			return new GameTime(
+				day,
+				minutesInCurrentDay / MinutesPerHour,
+				minutesInCurrentDay % MinutesPerHour
+			);
+		}
+
+		public static int ToTotalMinutes(int day, int hour, int minute)
+		{
+			int safeDay = Math.Max(1, day);
+			int safeHour = Math.Clamp(hour, 0, HoursPerDay - 1);
+			int safeMinute = Math.Clamp(minute, 0, MinutesPerHour - 1);
+
+			return (safeDay - 1) * MinutesPerDay + safeHour * MinutesPerHour + safeMinute;
+		}
+
 		public override string ToString()
 		{
 			return $"Day {Day}, {Hour:00}:{Minute:00}";

@@ -97,12 +97,7 @@ namespace TLN.Gameplay.Wildlife
             {
                 Behaviour behaviour = _behavioursToDisableOnDeath[i];
 
-                if (behaviour == null)
-                {
-                    continue;
-                }
-
-                if (behaviour == this)
+                if (behaviour == null || behaviour == this)
                 {
                     continue;
                 }

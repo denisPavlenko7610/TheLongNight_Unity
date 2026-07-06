@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using TLN.Application.Feedback;
 using TLN.Application.Localization;
 using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
@@ -11,7 +12,6 @@ using TLN.Gameplay.Saves;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
-using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Items
 {
@@ -40,11 +40,12 @@ namespace TLN.Gameplay.Items
 
 		public ItemDefinition Definition => _definition;
 		public int Amount => Mathf.Max(1, _amount);
-		public float MaxPickupDistance => Mathf.Max(0f, _maxPickupDistance);
 
 		public bool CanBePickedUp =>
 			_definition != null &&
 			_amount > 0;
+
+		private float MaxPickupDistance => Mathf.Max(0f, _maxPickupDistance);
 
 		public string InteractionText => _definition == null
 			? Loc.InteractionPickup
@@ -141,39 +142,23 @@ namespace TLN.Gameplay.Items
 
 		private bool IsMultiplayer()
 		{
-			if (_multiplayerSessionService is { IsMultiplayer: true })
-			{
-				return true;
-			}
-
 			NetworkManager networkManager = NetworkManager.Singleton;
 
-			return networkManager != null && networkManager.IsListening;
+			return _multiplayerSessionService is { IsMultiplayer: true } ||
+			       networkManager != null && networkManager.IsListening;
 		}
 
 		private bool CanInteractOffline()
 		{
-			if (_inventoryService == null)
-			{
-				return false;
-			}
-
-			return _inventoryService.CanAddItem(_definition, Amount, out _);
+			return _inventoryService != null &&
+			       _inventoryService.CanAddItem(_definition, Amount, out _);
 		}
 
 		private bool CanInteractMultiplayer(InteractionContext context)
 		{
-			if (!IsSpawned)
-			{
-				return false;
-			}
-
-			if (context.Player == null)
-			{
-				return false;
-			}
-
-			return context.Player.TryGetComponent(out NetworkPlayerInventory _);
+			return IsSpawned &&
+			       context.Player != null &&
+			       context.Player.TryGetComponent(out NetworkPlayerInventory _);
 		}
 
 		private void InteractOffline()

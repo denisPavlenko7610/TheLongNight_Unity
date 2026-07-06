@@ -80,12 +80,7 @@ namespace TLN.Gameplay.Player
 
 		private bool ShouldSimulateOfflineWarmth()
 		{
-			if (_multiplayerSessionService == null)
-			{
-				return true;
-			}
-
-			return !_multiplayerSessionService.IsMultiplayer;
+			return _multiplayerSessionService is not { IsMultiplayer: true };
 		}
 
 		private void ApplyColdExposure(float deltaTime)

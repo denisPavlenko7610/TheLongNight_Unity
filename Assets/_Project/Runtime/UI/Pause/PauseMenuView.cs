@@ -230,7 +230,7 @@ namespace TLN.UI.Pause
 			}
 		}
 
-		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)
+		private void OnGameStateChanged(GameStateId _, GameStateId nextState)
 		{
 			ApplyGameState(nextState);
 		}

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TLN.Core.Logging;
 using UnityEngine;
 
 namespace TLN.Gameplay.Items
@@ -9,65 +8,42 @@ namespace TLN.Gameplay.Items
 	{
 		[SerializeField] private ItemDefinition[] _items;
 
-		private Dictionary<string, ItemDefinition> _itemsById;
-
-		public IReadOnlyList<ItemDefinition> Items => _items;
+		public IReadOnlyList<ItemDefinition> Items => _items ?? System.Array.Empty<ItemDefinition>();
 
 		public bool TryGetItem(string id, out ItemDefinition item)
 		{
-			EnsureCache();
-
 			if (string.IsNullOrWhiteSpace(id))
 			{
 				item = null;
 				return false;
 			}
 
-			return _itemsById.TryGetValue(id, out item);
-		}
+			IReadOnlyList<ItemDefinition> items = Items;
 
-		private void EnsureCache()
-		{
-			if (_itemsById != null)
+			for (int i = 0; i < items.Count; i++)
 			{
-				return;
-			}
+				ItemDefinition currentItem = items[i];
 
-			_itemsById = new Dictionary<string, ItemDefinition>();
-
-			if (_items == null)
-			{
-				return;
-			}
-
-			for (int i = 0; i < _items.Length; i++)
-			{
-				ItemDefinition item = _items[i];
-
-				if (item == null)
+				if (currentItem == null)
 				{
 					continue;
 				}
 
-				if (string.IsNullOrWhiteSpace(item.Id))
+				if (string.Equals(currentItem.Id, id, System.StringComparison.Ordinal))
 				{
-					TLNLogger.LogWarning("ItemCatalog contains item with empty id.", item);
-
-					continue;
-				}
-
-				if (!_itemsById.TryAdd(item.Id, item))
-				{
-					TLNLogger.LogWarning($"Duplicate item id in ItemCatalog: {item.Id}", item);
+					item = currentItem;
+					return true;
 				}
 			}
+
+			item = null;
+			return false;
 		}
 
 		#if UNITY_EDITOR
 		public void EditorSetItems(ItemDefinition[] items)
 		{
-			_items = items;
-			_itemsById = null;
+			_items = items == null ? System.Array.Empty<ItemDefinition>() : (ItemDefinition[])items.Clone();
 			UnityEditor.EditorUtility.SetDirty(this);
 		}
 		#endif

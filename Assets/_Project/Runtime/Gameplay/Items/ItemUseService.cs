@@ -1,15 +1,14 @@
 using TLN.Application.Assets;
+using TLN.Application.Feedback;
 using TLN.Application.Localization;
 using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Core.Results;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
-using TLN.Gameplay.Player;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Survival;
 using UnityEngine;
-using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Items
 {
@@ -18,7 +17,6 @@ namespace TLN.Gameplay.Items
 		private readonly IInventoryService _inventoryService;
 		private readonly ISurvivalService _survivalService;
 		private readonly IMultiplayerSessionService _multiplayerSessionService;
-		private readonly LocalPlayerService _localPlayerService;
 		private readonly INotificationService _notificationService;
 		private readonly PlacementService _placementService;
 		private readonly IPlayerEquipmentService _equipmentService;
@@ -29,7 +27,6 @@ namespace TLN.Gameplay.Items
 			IInventoryService inventoryService,
 			ISurvivalService survivalService,
 			IMultiplayerSessionService multiplayerSessionService,
-			LocalPlayerService localPlayerService,
 			INotificationService notificationService,
 			PlacementService placementService,
 			IPlayerEquipmentService equipmentService,
@@ -40,7 +37,6 @@ namespace TLN.Gameplay.Items
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
 			_multiplayerSessionService = multiplayerSessionService;
-			_localPlayerService = localPlayerService;
 			_notificationService = notificationService;
 			_placementService = placementService;
 			_equipmentService = equipmentService;
@@ -54,7 +50,7 @@ namespace TLN.Gameplay.Items
 			{
 				return Fail(Loc.CannotUse);
 			}
-			
+
 			if (index < 0 || index >= _inventoryService.Items.Count)
 			{
 				return Fail(Loc.ItemsInvalidSlot);
@@ -65,7 +61,7 @@ namespace TLN.Gameplay.Items
 			return stack.Definition.UseKind switch
 			{
 				ItemUseKind.Consumable => UseConsumableAt(index, stack),
-				ItemUseKind.Placeable => UsePlaceableAt(index, stack),
+				ItemUseKind.Placeable => UsePlaceable(stack),
 				ItemUseKind.Clothing => UseClothing(stack),
 				_ => Fail(Loc.CannotUse)
 			};
@@ -73,7 +69,7 @@ namespace TLN.Gameplay.Items
 
 		private ItemUseResult Fail(string key, params object[] arguments)
 		{
-			string message = string.Format(key, arguments);
+			string message = arguments.Length > 0 ? string.Format(key, arguments) : key;
 			_notificationService.Show(message);
 			return ItemUseResult.Failure(message);
 		}
@@ -82,11 +78,10 @@ namespace TLN.Gameplay.Items
 		{
 			if (stack.Definition is not ConsumableItemDefinition consumable)
 			{
-				return ItemUseResult.Failure(Loc.CannotConsume);
+				return Fail(Loc.CannotConsume);
 			}
 
-			ISurvivalService survivalService = GetActiveSurvivalService();
-			if (survivalService == null)
+			if (_survivalService == null)
 			{
 				return Fail(Loc.ServiceMissingItemUse);
 			}
@@ -95,10 +90,10 @@ namespace TLN.Gameplay.Items
 
 			if (!wasRemoved)
 			{
-				return ItemUseResult.Failure(removeFailureReason);
+				return Fail(removeFailureReason);
 			}
 
-			survivalService.ApplyConsumable(consumable);
+			_survivalService.ApplyConsumable(consumable);
 
 			string message = Loc.Used(consumable.DisplayName);
 			_notificationService.Show(message);
@@ -107,7 +102,7 @@ namespace TLN.Gameplay.Items
 			return ItemUseResult.Success(message);
 		}
 
-		private ItemUseResult UsePlaceableAt(int index, ItemStack stack)
+		private ItemUseResult UsePlaceable(ItemStack stack)
 		{
 			if (stack.Definition is not PlaceableItemDefinition placeable)
 			{
@@ -119,16 +114,20 @@ namespace TLN.Gameplay.Items
 				return Fail(Loc.AddressableServiceMissing);
 			}
 
+			if (_placementService == null)
+			{
+				return Fail(Loc.ServiceMissingItemUse);
+			}
+
 			if (placeable.PlacedPrefabReference == null ||
 				!placeable.PlacedPrefabReference.RuntimeKeyIsValid())
 			{
 				return Fail(Loc.PrefabReferenceMissing, placeable.DisplayName);
 			}
 
-			_addressableAssetService.LoadPrefab(placeable.PlacedPrefabReference, prefab =>
-				{
-					OnPlaceablePrefabLoaded(placeable, prefab);
-				}
+			_addressableAssetService.LoadPrefab(
+				placeable.PlacedPrefabReference,
+				prefab => OnPlaceablePrefabLoaded(placeable, prefab)
 			);
 
 			return ItemUseResult.Success(Loc.Placing(placeable.DisplayName));
@@ -182,16 +181,6 @@ namespace TLN.Gameplay.Items
 			_notificationService.Show(result.Message);
 
 			return !result.IsSuccess ? ItemUseResult.Failure(result.Message) : ItemUseResult.Success(result.Message);
-		}
-
-		private ISurvivalService GetActiveSurvivalService()
-		{
-			if (_multiplayerSessionService is { IsMultiplayer: true })
-			{
-				return _localPlayerService?.SurvivalService;
-			}
-
-			return _survivalService;
 		}
 	}
 }

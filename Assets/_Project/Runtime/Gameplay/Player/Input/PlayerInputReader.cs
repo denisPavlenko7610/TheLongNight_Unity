@@ -71,10 +71,7 @@ namespace TLN.Gameplay.Player.Input
 
 		private void LateUpdate()
 		{
-			WasBuildPressedThisFrame = false;
-			WasInteractPressedThisFrame = false;
-			WasPausePressedThisFrame = false;
-			WasInventoryPressedThisFrame = false;
+			ClearFrameInput();
 		}
 
 		private void OnDestroy()
@@ -90,6 +87,11 @@ namespace TLN.Gameplay.Player.Input
 			IsSprintHeld = false;
 			IsStatusHeld = false;
 
+			ClearFrameInput();
+		}
+
+		private void ClearFrameInput()
+		{
 			WasInteractPressedThisFrame = false;
 			WasPausePressedThisFrame = false;
 			WasInventoryPressedThisFrame = false;

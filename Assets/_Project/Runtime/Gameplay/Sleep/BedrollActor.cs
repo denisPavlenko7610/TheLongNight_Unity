@@ -34,10 +34,10 @@ namespace TLN.Gameplay.Sleep
 
 		public string InteractionText => _interactionText;
 		public bool CanPickUp => _canPickUp;
-		public ItemDefinition PackedItemDefinition => _packedItemDefinition;
-		public int PackedAmount => Mathf.Max(1, _packedAmount);
 
 		public string SaveTypeId => SaveType;
+
+		private int PackedAmount => Mathf.Max(1, _packedAmount);
 
 		[Inject]
 		public void Construct(
@@ -62,7 +62,7 @@ namespace TLN.Gameplay.Sleep
 			_persistentEntity = GetComponent<PersistentWorldEntity>();
 		}
 
-		public bool CanInteract(InteractionContext context)
+		public bool CanInteract(InteractionContext _)
 		{
 			return true;
 		}

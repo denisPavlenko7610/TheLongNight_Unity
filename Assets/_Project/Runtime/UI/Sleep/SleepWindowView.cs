@@ -12,9 +12,6 @@ namespace TLN.UI.Sleep
 	public sealed class SleepWindowView : MonoBehaviour, ISleepWindow
 	{
 		private const string VisibleClassName = "sleep-window-root-visible";
-		private static readonly int[] SleepHourOptions = { 1, 2, 4, 8 };
-
-		private UIDocument _document;
 
 		private VisualElement _root;
 
@@ -44,8 +41,8 @@ namespace TLN.UI.Sleep
 
 		private void Awake()
 		{
-			_document = GetComponent<UIDocument>();
-			VisualElement documentRoot = _document.rootVisualElement;
+			UIDocument document = GetComponent<UIDocument>();
+			VisualElement documentRoot = document.rootVisualElement;
 
 			_root = documentRoot.RequiredQ<VisualElement>("sleep-window-root");
 			_root.SetVisible(false);
@@ -157,12 +154,12 @@ namespace TLN.UI.Sleep
 			Hide();
 		}
 
-		private void OnSleep1Clicked() => SleepAndClose(SleepHourOptions[0]);
+		private void OnSleep1Clicked() => SleepAndClose(1);
 
-		private void OnSleep2Clicked() => SleepAndClose(SleepHourOptions[1]);
+		private void OnSleep2Clicked() => SleepAndClose(2);
 
-		private void OnSleep4Clicked() => SleepAndClose(SleepHourOptions[2]);
+		private void OnSleep4Clicked() => SleepAndClose(4);
 
-		private void OnSleep8Clicked() => SleepAndClose(SleepHourOptions[3]);
+		private void OnSleep8Clicked() => SleepAndClose(8);
 	}
 }

@@ -11,6 +11,5 @@ namespace TLN.Application.Assets
 
 		void LoadSprite(AssetReferenceSprite spriteReference, Action<Sprite> completed);
 		void LoadPrefab(AssetReferenceGameObject prefabReference, Action<GameObject> completed);
-		void ReleaseAll();
 	}
 }

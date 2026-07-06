@@ -21,7 +21,7 @@ namespace TLN.Application.Input
 
 			if (_gameStateMachine.CurrentState != GameStateId.None)
 			{
-				OnGameStateChanged(GameStateId.None, _gameStateMachine.CurrentState);
+				ApplyState(_gameStateMachine.CurrentState);
 			}
 		}
 
@@ -30,9 +30,14 @@ namespace TLN.Application.Input
 			_gameStateMachine.StateChanged -= OnGameStateChanged;
 		}
 
-		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)
+		private void OnGameStateChanged(GameStateId _, GameStateId nextState)
 		{
-			switch (nextState)
+			ApplyState(nextState);
+		}
+
+		private void ApplyState(GameStateId state)
+		{
+			switch (state)
 			{
 				case GameStateId.Boot:
 				case GameStateId.Loading:

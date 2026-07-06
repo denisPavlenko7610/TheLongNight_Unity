@@ -158,10 +158,10 @@ namespace TLN.UI.Options
 			_sfxVolume.SetValueWithoutNotify(gameSettings.SfxVolume);
 			_musicVolume.SetValueWithoutNotify(gameSettings.MusicVolume);
 			_ambientVolume.SetValueWithoutNotify(gameSettings.AmbientVolume);
-			UpdateVolumeLabel(_masterVolumeValue, gameSettings.MasterVolume);
-			UpdateVolumeLabel(_sfxVolumeValue, gameSettings.SfxVolume);
-			UpdateVolumeLabel(_musicVolumeValue, gameSettings.MusicVolume);
-			UpdateVolumeLabel(_ambientVolumeValue, gameSettings.AmbientVolume);
+			UpdatePercent01Label(_masterVolumeValue, gameSettings.MasterVolume);
+			UpdatePercent01Label(_sfxVolumeValue, gameSettings.SfxVolume);
+			UpdatePercent01Label(_musicVolumeValue, gameSettings.MusicVolume);
+			UpdatePercent01Label(_ambientVolumeValue, gameSettings.AmbientVolume);
 
 			int displayModeIndex = Mathf.Clamp(gameSettings.DisplayMode, 0, _displayModeLabels.Count - 1);
 			_displayModeDropdown.SetValueWithoutNotify(_displayModeLabels[displayModeIndex]);
@@ -219,7 +219,7 @@ namespace TLN.UI.Options
 
 			foreach (Resolution res in _availableResolutions)
 			{
-				resolutionLabels.Add($"{res.width}x{res.height} ({res.refreshRate}Hz)");
+				resolutionLabels.Add(FormatResolutionLabel(res));
 			}
 
 			_resolutionDropdown.choices = resolutionLabels;
@@ -238,19 +238,14 @@ namespace TLN.UI.Options
 
 				if (res.width == width && res.height == height)
 				{
-					_resolutionDropdown.SetValueWithoutNotify(
-						$"{res.width}x{res.height} ({res.refreshRate}Hz)"
-					);
+					_resolutionDropdown.SetValueWithoutNotify(FormatResolutionLabel(res));
 					return;
 				}
 			}
 
 			if (_availableResolutions.Count > 0)
 			{
-				Resolution first = _availableResolutions[0];
-				_resolutionDropdown.SetValueWithoutNotify(
-					$"{first.width}x{first.height} ({first.refreshRate}Hz)"
-				);
+				_resolutionDropdown.SetValueWithoutNotify(FormatResolutionLabel(_availableResolutions[0]));
 			}
 		}
 
@@ -306,10 +301,10 @@ namespace TLN.UI.Options
 			s.MusicVolume = _musicVolume.value;
 			s.AmbientVolume = _ambientVolume.value;
 
-			UpdateVolumeLabel(_masterVolumeValue, s.MasterVolume);
-			UpdateVolumeLabel(_sfxVolumeValue, s.SfxVolume);
-			UpdateVolumeLabel(_musicVolumeValue, s.MusicVolume);
-			UpdateVolumeLabel(_ambientVolumeValue, s.AmbientVolume);
+			UpdatePercent01Label(_masterVolumeValue, s.MasterVolume);
+			UpdatePercent01Label(_sfxVolumeValue, s.SfxVolume);
+			UpdatePercent01Label(_musicVolumeValue, s.MusicVolume);
+			UpdatePercent01Label(_ambientVolumeValue, s.AmbientVolume);
 
 			_settingsService.Save();
 		}
@@ -572,12 +567,6 @@ namespace TLN.UI.Options
 			dropdown.choices = target;
 		}
 
-		private static void UpdateVolumeLabel(Label label, float volume)
-		{
-			int percent = Mathf.RoundToInt(volume * 100f);
-			label.text = $"{percent}%";
-		}
-
 		private static void UpdatePercent01Label(Label label, float value)
 		{
 			int percent = Mathf.RoundToInt(value * 100f);
@@ -626,43 +615,47 @@ namespace TLN.UI.Options
 			return unique;
 		}
 
+		private static string FormatResolutionLabel(Resolution resolution)
+		{
+			return $"{resolution.width}x{resolution.height} ({resolution.refreshRate}Hz)";
+		}
+
 		private static Resolution? ParseResolutionLabel(string label)
 		{
-			try
-			{
-				string[] parts = label.Split(' ');
-				if (parts.Length < 1)
-				{
-					return null;
-				}
-
-				string[] dimensions = parts[0].Split('x');
-				if (dimensions.Length != 2)
-				{
-					return null;
-				}
-
-				int width = int.Parse(dimensions[0]);
-				int height = int.Parse(dimensions[1]);
-
-				int refreshRate = 60;
-				if (parts.Length >= 2)
-				{
-					string hz = parts[1].Trim('(', ')', 'H', 'z');
-					refreshRate = int.Parse(hz);
-				}
-
-				return new Resolution
-				{
-					width = width,
-					height = height,
-					refreshRate = refreshRate
-				};
-			}
-			catch
+			string[] parts = label.Split(' ');
+			if (parts.Length < 1)
 			{
 				return null;
 			}
+
+			string[] dimensions = parts[0].Split('x');
+			if (dimensions.Length != 2)
+			{
+				return null;
+			}
+
+			if (!int.TryParse(dimensions[0], out int width) ||
+			    !int.TryParse(dimensions[1], out int height))
+			{
+				return null;
+			}
+
+			int refreshRate = 60;
+			if (parts.Length >= 2)
+			{
+				string hz = parts[1].Trim('(', ')', 'H', 'z');
+				if (!int.TryParse(hz, out refreshRate))
+				{
+					return null;
+				}
+			}
+
+			return new Resolution
+			{
+				width = width,
+				height = height,
+				refreshRate = refreshRate
+			};
 		}
 	}
 }

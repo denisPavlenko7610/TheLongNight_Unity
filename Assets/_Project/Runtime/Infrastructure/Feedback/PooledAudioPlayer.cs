@@ -18,10 +18,7 @@ namespace TLN.Infrastructure.Feedback
 
 		public PooledAudioPlayer(Transform root, IAudioMixerService audioMixerService = null)
 		{
-			_root = root != null
-				? root
-				: throw new ArgumentNullException(nameof(root));
-
+			_root = root != null ? root : throw new ArgumentNullException(nameof(root));
 			_audioMixerService = audioMixerService;
 
 			for (int i = 0; i < InitialAudioSourceCount; i++)
@@ -134,23 +131,13 @@ namespace TLN.Infrastructure.Feedback
 
 			if (clip.length <= 0f)
 			{
-				throw new InvalidOperationException(
-					$"AudioClip '{clip.name}' has invalid length: {clip.length}."
-				);
+				return 1f;
 			}
 
 			return Mathf.Clamp01(source.time / clip.length);
 		}
 
 		private AudioSource CreateSource()
-		{
-			AudioSource source = CreateAudioSource();
-			_sources.Add(source);
-
-			return source;
-		}
-
-		private AudioSource CreateAudioSource()
 		{
 			GameObject sourceObject = new GameObject("Feedback Audio Source");
 			sourceObject.transform.SetParent(_root, false);
@@ -159,6 +146,7 @@ namespace TLN.Infrastructure.Feedback
 			source.playOnAwake = false;
 			source.loop = false;
 
+			_sources.Add(source);
 			return source;
 		}
 

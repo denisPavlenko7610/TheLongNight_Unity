@@ -1,18 +1,18 @@
 using Assign;
 using TLN.Application.GameStates;
+using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
+using TLN.Gameplay.Player.Networking;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 using TLN.Gameplay.Wildlife;
 using TLN.UI;
 using UnityEngine;
 using VContainer;
-using TLN.Application.Multiplayer;
-using TLN.Gameplay.Player.Networking;
 
 namespace TLN.Gameplay.World
 {
@@ -32,8 +32,6 @@ namespace TLN.Gameplay.World
 		private WildlifeTargetService _wildlifeTargetService;
 		private RandomWorldSpawnerSet _randomWorldSpawnerSet;
 		private NetworkPlayerSpawner _networkPlayerSpawner;
-
-		private PlayerRoot _playerInstance;
 
 		private IMultiplayerSessionService _multiplayerSessionService;
 		private bool _isConstructed;
@@ -77,8 +75,7 @@ namespace TLN.Gameplay.World
 
 			ConstructHUD();
 
-
-			if (_multiplayerSessionService != null && _multiplayerSessionService.IsMultiplayer)
+			if (IsMultiplayer())
 			{
 				StartMultiplayerWorld();
 				return;
@@ -118,8 +115,7 @@ namespace TLN.Gameplay.World
 		{
 			_notificationService?.SetView(_uiRoot.HUD);
 
-			if (_multiplayerSessionService != null &&
-				_multiplayerSessionService.IsMultiplayer)
+			if (IsMultiplayer())
 			{
 				_uiRoot.HUD.Construct(null, _gameTimeService);
 				return;
@@ -140,10 +136,10 @@ namespace TLN.Gameplay.World
 
 		private void SpawnPlayer()
 		{
-			_playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
+			PlayerRoot playerInstance = _playerFactory.CreatePlayer(_playerPrefab, _spawnPoint);
 
-			_placementService.SetPlayerRoot(_playerInstance);
-			_wildlifeTargetService.SetPlayerRoot(_playerInstance);
+			_placementService.SetPlayerRoot(playerInstance);
+			_wildlifeTargetService.SetPlayerRoot(playerInstance);
 		}
 
 		private void EnsureGameplayState()
@@ -196,9 +192,7 @@ namespace TLN.Gameplay.World
 				return false;
 			}
 
-			bool isMultiplayer = _multiplayerSessionService is { IsMultiplayer: true };
-
-			if (isMultiplayer)
+			if (IsMultiplayer())
 			{
 				if (_multiplayerSessionService.IsServer && _networkPlayerSpawner == null)
 				{
@@ -246,6 +240,11 @@ namespace TLN.Gameplay.World
 			}
 
 			return true;
+		}
+
+		private bool IsMultiplayer()
+		{
+			return _multiplayerSessionService is { IsMultiplayer: true };
 		}
 	}
 }

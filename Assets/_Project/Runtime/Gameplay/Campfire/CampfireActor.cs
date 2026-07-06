@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using TLN.Application.Audio;
+using TLN.Application.Feedback;
 using TLN.Application.Localization;
 using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
@@ -9,7 +10,6 @@ using TLN.Gameplay.Time;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
-using TLN.Application.Feedback;
 
 namespace TLN.Gameplay.Campfire
 {
@@ -146,7 +146,7 @@ namespace TLN.Gameplay.Campfire
 			_networkState.OnValueChanged -= OnNetworkStateChanged;
 		}
 
-		private void OnDestroy()
+		public override void OnDestroy()
 		{
 			if (_gameTimeService != null)
 			{
@@ -154,6 +154,7 @@ namespace TLN.Gameplay.Campfire
 			}
 
 			_warmthService?.Unregister(this);
+			base.OnDestroy();
 		}
 
 #if UNITY_EDITOR
@@ -164,7 +165,7 @@ namespace TLN.Gameplay.Campfire
 		}
 #endif
 
-		public bool CanInteract(InteractionContext context)
+		public bool CanInteract(InteractionContext _)
 		{
 			return true;
 		}

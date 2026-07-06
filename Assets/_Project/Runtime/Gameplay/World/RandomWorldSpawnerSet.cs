@@ -6,16 +6,11 @@
 
 		public RandomWorldSpawnerSet(RandomWorldSpawner[] spawners)
 		{
-			_spawners = spawners;
+			_spawners = spawners ?? System.Array.Empty<RandomWorldSpawner>();
 		}
 
 		public void TrySpawnForWorldStart(bool wasSaveLoaded)
 		{
-			if (_spawners == null)
-			{
-				return;
-			}
-
 			for (int i = 0; i < _spawners.Length; i++)
 			{
 				RandomWorldSpawner spawner = _spawners[i];

@@ -10,8 +10,8 @@ namespace TLN.Application.Input
 		public InputModeId CurrentMode { get; private set; } = InputModeId.None;
 
 		public bool CanUseGameplayInput => CurrentMode == InputModeId.Gameplay;
-		public bool CanUseMovementInput => CurrentMode == InputModeId.Gameplay;
-		public bool CanUseLookInput => CurrentMode == InputModeId.Gameplay;
+		public bool CanUseMovementInput => CanUseGameplayInput;
+		public bool CanUseLookInput => CanUseGameplayInput;
 
 		public event Action<InputModeId, InputModeId> ModeChanged;
 

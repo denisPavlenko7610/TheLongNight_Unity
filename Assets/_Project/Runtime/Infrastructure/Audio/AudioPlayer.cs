@@ -20,16 +20,14 @@ namespace TLN.Infrastructure.Audio
 		private IAudioMixerService _audioMixerService;
 		private AudioSource _source;
 
-		public AudioSource Source
+		public bool IsPlaying
 		{
 			get
 			{
 				EnsureSource();
-				return _source;
+				return _source != null && _source.isPlaying;
 			}
 		}
-
-		public bool IsPlaying => Source != null && Source.isPlaying;
 
 		[Inject]
 		public void Construct(IAudioMixerService audioMixerService)

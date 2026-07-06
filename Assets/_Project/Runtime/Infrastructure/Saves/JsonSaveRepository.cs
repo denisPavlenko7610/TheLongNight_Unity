@@ -13,11 +13,11 @@ namespace TLN.Infrastructure.Saves
 		private const string SaveFolderName = "Saves";
 		private const string SaveFileFormat = "slot_{0}.json";
 
-		private readonly object _ioLock = new object();
+		private readonly object _ioLock = new();
 		private string _saveDirectory;
 
 		private static readonly JsonSerializerSettings SerializerSettings =
-			new JsonSerializerSettings
+			new()
 			{
 				Formatting = Formatting.Indented,
 				MissingMemberHandling = MissingMemberHandling.Ignore,
@@ -89,7 +89,7 @@ namespace TLN.Infrastructure.Saves
 					throw new ArgumentOutOfRangeException(nameof(data.slotId), data.slotId, "Invalid save slot.");
 				}
 
-				Directory.CreateDirectory(GetSaveDirectory());
+				Directory.CreateDirectory(EnsureSaveDirectoryPath());
 
 				string json = JsonConvert.SerializeObject(data, SerializerSettings);
 
@@ -153,36 +153,34 @@ namespace TLN.Infrastructure.Saves
 					return false;
 				}
 
-				bool deleted = false;
+				bool deletedSlot = DeleteFileIfExists(GetSlotPath(slotId));
+				bool deletedTemporarySlot = DeleteFileIfExists(GetSlotPath(slotId) + ".tmp");
 
-				DeleteFileIfExists(GetSlotPath(slotId), ref deleted);
-
-				DeleteFileIfExists(GetSlotPath(slotId) + ".tmp", ref deleted);
-
-				return deleted;
+				return deletedSlot || deletedTemporarySlot;
 			}
 		}
 
-		private static void DeleteFileIfExists(string path, ref bool deleted)
+		private static bool DeleteFileIfExists(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path))
 			{
-				return;
+				return false;
 			}
 
 			if (!File.Exists(path))
 			{
-				return;
+				return false;
 			}
 
 			try
 			{
 				File.Delete(path);
-				deleted = true;
+				return true;
 			}
 			catch (Exception exception)
 			{
 				TLNLogger.LogError($"Failed to delete save file: {path}. {exception}");
+				return false;
 			}
 		}
 
@@ -195,12 +193,7 @@ namespace TLN.Infrastructure.Saves
 		{
 			string fileName = string.Format(SaveFileFormat, slotId);
 
-			return Path.Combine(GetSaveDirectory(), fileName);
-		}
-
-		private string GetSaveDirectory()
-		{
-			return EnsureSaveDirectoryPath();
+			return Path.Combine(EnsureSaveDirectoryPath(), fileName);
 		}
 
 		private string EnsureSaveDirectoryPath()

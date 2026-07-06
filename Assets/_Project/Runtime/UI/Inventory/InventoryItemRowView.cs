@@ -11,7 +11,6 @@ namespace TLN.UI.Inventory
 {
 	public sealed class InventoryItemRowView
 	{
-		private readonly VisualElement _root;
 		private readonly VisualElement _icon;
 		private readonly Label _nameLabel;
 		private readonly Label _metaLabel;
@@ -23,11 +22,8 @@ namespace TLN.UI.Inventory
 		private bool _isDisposed;
 		private Action<int> _useClicked;
 
-		public VisualElement Root => _root;
-
 		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
 		{
-			_root = root;
 			_addressableAssetService = addressableAssetService;
 
 			_icon = root.RequiredQ<VisualElement>("item-icon");

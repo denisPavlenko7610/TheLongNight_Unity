@@ -84,9 +84,10 @@ namespace TLN.Gameplay.Inventory.Networking
 			_networkItems.OnListChanged -= OnNetworkItemsChanged;
 		}
 
-		private void OnDestroy()
+		public override void OnDestroy()
 		{
 			_networkItems?.Dispose();
+			base.OnDestroy();
 		}
 
 		public InventoryAddResult AddItem(ItemDefinition definition, int amount)
@@ -585,17 +586,11 @@ namespace TLN.Gameplay.Inventory.Networking
 				return TryAddFuelToCampfireServer(campfire, inventoryIndex);
 			}
 
-			if (!IsOwner)
+			if (!TryGetCampfireRequestReference(campfire, out NetworkObjectReference campfireReference))
 			{
 				return false;
 			}
 
-			if (!campfire.TryGetComponent(out NetworkObject campfireNetworkObject))
-			{
-				return false;
-			}
-
-			NetworkObjectReference campfireReference = campfireNetworkObject;
 			RequestAddFuelToCampfireServerRpc(campfireReference, inventoryIndex);
 
 			return true;
@@ -613,17 +608,11 @@ namespace TLN.Gameplay.Inventory.Networking
 				return TryIgniteCampfireServer(campfire);
 			}
 
-			if (!IsOwner)
+			if (!TryGetCampfireRequestReference(campfire, out NetworkObjectReference campfireReference))
 			{
 				return false;
 			}
 
-			if (!campfire.TryGetComponent(out NetworkObject campfireNetworkObject))
-			{
-				return false;
-			}
-
-			NetworkObjectReference campfireReference = campfireNetworkObject;
 			RequestIgniteCampfireServerRpc(campfireReference);
 
 			return true;
@@ -641,6 +630,23 @@ namespace TLN.Gameplay.Inventory.Networking
 				return TryExtinguishCampfireServer(campfire);
 			}
 
+			if (!TryGetCampfireRequestReference(campfire, out NetworkObjectReference campfireReference))
+			{
+				return false;
+			}
+
+			RequestExtinguishCampfireServerRpc(campfireReference);
+
+			return true;
+		}
+
+		private bool TryGetCampfireRequestReference(
+			CampfireActor campfire,
+			out NetworkObjectReference campfireReference
+		)
+		{
+			campfireReference = default;
+
 			if (!IsOwner)
 			{
 				return false;
@@ -651,9 +657,7 @@ namespace TLN.Gameplay.Inventory.Networking
 				return false;
 			}
 
-			NetworkObjectReference campfireReference = campfireNetworkObject;
-			RequestExtinguishCampfireServerRpc(campfireReference);
-
+			campfireReference = campfireNetworkObject;
 			return true;
 		}
 
@@ -663,17 +667,7 @@ namespace TLN.Gameplay.Inventory.Networking
 			int inventoryIndex
 		)
 		{
-			if (!_isConstructed)
-			{
-				return;
-			}
-
-			if (!IsServer)
-			{
-				return;
-			}
-
-			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			if (!TryGetRequestedCampfire(campfireReference, out CampfireActor campfire))
 			{
 				return;
 			}
@@ -684,17 +678,7 @@ namespace TLN.Gameplay.Inventory.Networking
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
 		private void RequestIgniteCampfireServerRpc(NetworkObjectReference campfireReference)
 		{
-			if (!_isConstructed)
-			{
-				return;
-			}
-
-			if (!IsServer)
-			{
-				return;
-			}
-
-			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			if (!TryGetRequestedCampfire(campfireReference, out CampfireActor campfire))
 			{
 				return;
 			}
@@ -705,17 +689,7 @@ namespace TLN.Gameplay.Inventory.Networking
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
 		private void RequestExtinguishCampfireServerRpc(NetworkObjectReference campfireReference)
 		{
-			if (!_isConstructed)
-			{
-				return;
-			}
-
-			if (!IsServer)
-			{
-				return;
-			}
-
-			if (!TryGetCampfire(campfireReference, out CampfireActor campfire))
+			if (!TryGetRequestedCampfire(campfireReference, out CampfireActor campfire))
 			{
 				return;
 			}
@@ -733,14 +707,8 @@ namespace TLN.Gameplay.Inventory.Networking
 				return false;
 			}
 
-			if (campfire == null)
+			if (!CanUseCampfire(campfire))
 			{
-				return false;
-			}
-
-			if (!campfire.CanBeUsedBy(transform))
-			{
-				NotifyOwner(Loc.CannotUse);
 				return false;
 			}
 
@@ -786,14 +754,8 @@ namespace TLN.Gameplay.Inventory.Networking
 
 		private bool TryIgniteCampfireServer(CampfireActor campfire)
 		{
-			if (campfire == null)
+			if (!CanUseCampfire(campfire))
 			{
-				return false;
-			}
-
-			if (!campfire.CanBeUsedBy(transform))
-			{
-				NotifyOwner(Loc.CannotUse);
 				return false;
 			}
 
@@ -810,14 +772,8 @@ namespace TLN.Gameplay.Inventory.Networking
 
 		private bool TryExtinguishCampfireServer(CampfireActor campfire)
 		{
-			if (campfire == null)
+			if (!CanUseCampfire(campfire))
 			{
-				return false;
-			}
-
-			if (!campfire.CanBeUsedBy(transform))
-			{
-				NotifyOwner(Loc.CannotUse);
 				return false;
 			}
 
@@ -830,6 +786,37 @@ namespace TLN.Gameplay.Inventory.Networking
 			NotifyOwner(Loc.FireExtinguished);
 
 			return true;
+		}
+
+		private bool CanUseCampfire(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (campfire.CanBeUsedBy(transform))
+			{
+				return true;
+			}
+
+			NotifyOwner(Loc.CannotUse);
+			return false;
+		}
+
+		private bool TryGetRequestedCampfire(
+			NetworkObjectReference campfireReference,
+			out CampfireActor campfire
+		)
+		{
+			campfire = null;
+
+			if (!_isConstructed || !IsServer)
+			{
+				return false;
+			}
+
+			return TryGetCampfire(campfireReference, out campfire);
 		}
 
 		private static bool TryGetCampfire(
@@ -931,11 +918,6 @@ namespace TLN.Gameplay.Inventory.Networking
 
 		private void NotifyOwnerFeedback(FeedbackEventId eventId)
 		{
-			if (eventId == FeedbackEventId.None)
-			{
-				return;
-			}
-
 			if (IsSpawned && IsServer)
 			{
 				PlayOwnerFeedbackRpc((int)eventId);
@@ -948,14 +930,7 @@ namespace TLN.Gameplay.Inventory.Networking
 		[Rpc(SendTo.Owner)]
 		private void PlayOwnerFeedbackRpc(int eventIdValue)
 		{
-			FeedbackEventId eventId = (FeedbackEventId)eventIdValue;
-
-			if (eventId == FeedbackEventId.None)
-			{
-				return;
-			}
-
-			_feedbackService?.Play(eventId);
+			_feedbackService?.Play((FeedbackEventId)eventIdValue);
 		}
 	}
 }

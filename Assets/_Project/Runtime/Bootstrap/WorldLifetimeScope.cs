@@ -104,7 +104,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.Register(
 			container => new SurvivalWarningService(
-				container.Resolve<ISurvivalService>(),
 				container.Resolve<INotificationService>(),
 				_survivalWarningCooldownSeconds
 			),

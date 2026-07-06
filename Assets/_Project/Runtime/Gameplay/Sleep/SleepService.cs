@@ -58,7 +58,7 @@ namespace TLN.Gameplay.Sleep
 				return multiplayerResult;
 			}
 
-			ApplySleepEffects(hours);
+			ApplySleepEffects(_survivalService, hours);
 			_gameTimeService.AdvanceHours(hours);
 
 			string message = Loc.Result(hours);
@@ -67,11 +67,6 @@ namespace TLN.Gameplay.Sleep
 			_ = _gameSaveService.SaveCheckpoint(SaveTrigger.Sleep);
 
 			return SleepResult.Success(message);
-		}
-
-		private void ApplySleepEffects(int hours)
-		{
-			ApplySleepEffects(_survivalService, hours);
 		}
 
 		private bool TrySleepMultiplayer(int hours, out SleepResult result)

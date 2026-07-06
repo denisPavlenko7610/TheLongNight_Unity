@@ -31,7 +31,7 @@ namespace TLN.Infrastructure.Feedback
 
 		public void Play(FeedbackEventId eventId)
 		{
-			if (!TryGetDefinition(eventId, out FeedbackDefinition definition))
+			if (!_catalog.TryGet(eventId, out FeedbackDefinition definition))
 			{
 				return;
 			}
@@ -49,7 +49,7 @@ namespace TLN.Infrastructure.Feedback
 
 		public void PlayAt(FeedbackEventId eventId, Vector3 position)
 		{
-			if (!TryGetDefinition(eventId, out FeedbackDefinition definition))
+			if (!_catalog.TryGet(eventId, out FeedbackDefinition definition))
 			{
 				return;
 			}
@@ -132,14 +132,6 @@ namespace TLN.Infrastructure.Feedback
 			_root = null;
 			_audioPlayer = null;
 			_vfxPlayer = null;
-		}
-
-		private bool TryGetDefinition(
-			FeedbackEventId eventId,
-			out FeedbackDefinition definition
-		)
-		{
-			return _catalog.TryGet(eventId, out definition);
 		}
 
 		private static async Awaitable WaitUnscaled(float seconds)

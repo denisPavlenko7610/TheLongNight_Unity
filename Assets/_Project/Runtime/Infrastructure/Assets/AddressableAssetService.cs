@@ -72,7 +72,12 @@ namespace TLN.Infrastructure.Assets
 			};
 		}
 
-		public void ReleaseAll()
+		public void Dispose()
+		{
+			ReleaseAll();
+		}
+
+		private void ReleaseAll()
 		{
 			foreach (CachedOperation operation in _cachedOperations.Values)
 			{
@@ -80,11 +85,6 @@ namespace TLN.Infrastructure.Assets
 			}
 
 			_cachedOperations.Clear();
-		}
-
-		public void Dispose()
-		{
-			ReleaseAll();
 		}
 
 		private void OnAssetLoaded<TAsset>(string key, AsyncOperationHandle<TAsset> handle)

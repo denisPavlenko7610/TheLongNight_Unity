@@ -7,7 +7,6 @@ namespace TLN.Application.Time
 {
 	public sealed class GameStatePauseController : IInitializable, IDisposable
 	{
-		private const float NormalTimeScale = 1f;
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly IGameTimeScaleService _timeScaleService;
 
@@ -31,11 +30,11 @@ namespace TLN.Application.Time
 		{
 			_gameStateMachine.StateChanged -= OnGameStateChanged;
 
-			UnityEngine.Time.timeScale = NormalTimeScale;
+			_timeScaleService.SetNormal();
 			AudioListener.pause = false;
 		}
 
-		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)
+		private void OnGameStateChanged(GameStateId _, GameStateId nextState)
 		{
 			ApplyState(nextState);
 		}

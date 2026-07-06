@@ -15,10 +15,6 @@ namespace TLN.Gameplay.Equipment
 
 		public event Action Changed;
 
-		public PlayerEquipmentService()
-		{
-		}
-
 		public bool IsEquipped(ClothingItemDefinition item)
 		{
 			return item != null && _equippedItems.Contains(item);
@@ -31,11 +27,6 @@ namespace TLN.Gameplay.Equipment
 			for (int i = 0; i < _equippedItems.Count; i++)
 			{
 				ClothingItemDefinition item = _equippedItems[i];
-
-				if (item == null)
-				{
-					continue;
-				}
 
 				if (item.Slot == slot)
 				{
@@ -66,25 +57,26 @@ namespace TLN.Gameplay.Equipment
 			if (IsEquipped(item))
 			{
 				_equippedItems.Remove(item);
-				RecalculateWarmthBonus();
-				Changed?.Invoke();
+				ApplyEquipmentChanged();
 
 				return OperationResult.Success(Loc.Unequipped(item.DisplayName));
 			}
 
-			int equippedCount = GetEquippedCount(item.Slot);
-			int slotCapacity = GetSlotCapacity(item.Slot);
-
-			if (equippedCount >= slotCapacity)
+			if (GetEquippedCount(item.Slot) >= GetSlotCapacity(item.Slot))
 			{
 				return OperationResult.Failure(Loc.NoFreeSlot(item.Slot));
 			}
 
 			_equippedItems.Add(item);
-			RecalculateWarmthBonus();
-			Changed?.Invoke();
+			ApplyEquipmentChanged();
 
 			return OperationResult.Success(Loc.Equipped(item.DisplayName));
+		}
+
+		private void ApplyEquipmentChanged()
+		{
+			RecalculateWarmthBonus();
+			Changed?.Invoke();
 		}
 
 		private void RecalculateWarmthBonus()
@@ -94,12 +86,6 @@ namespace TLN.Gameplay.Equipment
 			for (int i = 0; i < _equippedItems.Count; i++)
 			{
 				ClothingItemDefinition item = _equippedItems[i];
-
-				if (item == null)
-				{
-					continue;
-				}
-
 				totalWarmthBonus += item.WarmthBonus;
 			}
 

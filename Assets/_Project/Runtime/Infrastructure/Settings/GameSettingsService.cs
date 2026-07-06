@@ -14,7 +14,6 @@ namespace TLN.Infrastructure.Settings
 		private const int UnappliedInt = int.MinValue;
 
 		private readonly IAudioMixerService _audioMixerService;
-		private GameSettings _originalSettings;
 		private int _prefsSaveVersion;
 		private bool _hasPendingPrefsSave;
 		private bool _isDisposed;
@@ -35,7 +34,6 @@ namespace TLN.Infrastructure.Settings
 		{
 			_audioMixerService = audioMixerService;
 			Settings = new GameSettings();
-			_originalSettings = DeepCopy(Settings);
 			Load();
 		}
 
@@ -46,7 +44,6 @@ namespace TLN.Infrastructure.Settings
 			string json = JsonUtility.ToJson(Settings);
 			PlayerPrefs.SetString(PrefsKey, json);
 			SchedulePrefsSave();
-			_originalSettings = DeepCopy(Settings);
 			SettingsChanged?.Invoke();
 		}
 
@@ -68,7 +65,6 @@ namespace TLN.Infrastructure.Settings
 			}
 
 			Apply();
-			_originalSettings = DeepCopy(Settings);
 		}
 
 		public void Apply()
@@ -147,11 +143,6 @@ namespace TLN.Infrastructure.Settings
 			Save();
 		}
 
-		public bool HasUnsavedChanges()
-		{
-			return !AreEqual(Settings, _originalSettings);
-		}
-
 		public void Dispose()
 		{
 			_isDisposed = true;
@@ -197,17 +188,6 @@ namespace TLN.Infrastructure.Settings
 			{
 				await Awaitable.NextFrameAsync();
 			}
-		}
-
-		private static GameSettings DeepCopy(GameSettings source)
-		{
-			string json = JsonUtility.ToJson(source);
-			return JsonUtility.FromJson<GameSettings>(json);
-		}
-
-		private static bool AreEqual(GameSettings a, GameSettings b)
-		{
-			return JsonUtility.ToJson(a) == JsonUtility.ToJson(b);
 		}
 
 		private static FullScreenMode ToFullScreenMode(int displayMode)

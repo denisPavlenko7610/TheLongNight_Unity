@@ -19,9 +19,9 @@ namespace TLN.UI.SurvivalMenu
 	{
 		private const string VisibleClassName = "survival-menu-root-visible";
 		private const string SelectedTabClassName = "survival-menu-tab-selected";
-	private const float ListItemHeight = 62f;
+		private const float ListItemHeight = 62f;
 
-		private readonly List<object> _listItems = new List<object>();
+		private readonly List<object> _listItems = new();
 
 		private VisualElement _root;
 		private Button _inventoryTabButton;

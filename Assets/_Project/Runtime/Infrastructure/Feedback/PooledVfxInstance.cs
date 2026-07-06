@@ -29,17 +29,12 @@ namespace TLN.Infrastructure.Feedback
 		{
 			_pool = pool;
 			_isReleased = false;
+			Version++;
 		}
 
 		public void CacheParticleSystems()
 		{
 			_particleSystems = GetComponentsInChildren<ParticleSystem>(true);
-		}
-
-		public void MarkSpawned()
-		{
-			Version++;
-			_isReleased = false;
 		}
 
 		public void Release()

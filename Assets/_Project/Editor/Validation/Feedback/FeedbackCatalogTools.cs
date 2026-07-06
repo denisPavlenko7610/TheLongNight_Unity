@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TLN.Application.Feedback;
 using TLN.Gameplay.Feedback;
 using UnityEditor;
 using UnityEngine;
@@ -13,8 +13,13 @@ namespace TLN.Editor.Feedback
 		[MenuItem("Tools/TLN/Feedback/Rebuild Feedback Catalogs")]
 		public static void RebuildFeedbackCatalogs()
 		{
-			FeedbackDefinition[] definitions = LoadAllDefinitions();
-			FeedbackCatalog[] catalogs = LoadAllCatalogs();
+			FeedbackDefinition[] definitions = LoadDefinitions();
+			FeedbackCatalog[] catalogs = LoadAssets<FeedbackCatalog>();
+
+			if (definitions.Length == 0)
+			{
+				Debug.LogWarning("No FeedbackDefinition assets found.");
+			}
 
 			if (catalogs.Length == 0)
 			{
@@ -22,16 +27,11 @@ namespace TLN.Editor.Feedback
 				return;
 			}
 
+			ValidateDefinitions(definitions);
+
 			for (int i = 0; i < catalogs.Length; i++)
 			{
-				FeedbackCatalog catalog = catalogs[i];
-
-				if (catalog == null)
-				{
-					continue;
-				}
-
-				catalog.EditorSetDefinitions(definitions);
+				catalogs[i].EditorSetDefinitions(definitions);
 			}
 
 			AssetDatabase.SaveAssets();
@@ -41,79 +41,64 @@ namespace TLN.Editor.Feedback
 			);
 		}
 
-		private static FeedbackDefinition[] LoadAllDefinitions()
+		private static FeedbackDefinition[] LoadDefinitions()
 		{
-			string[] guids = AssetDatabase.FindAssets(
-				"t:FeedbackDefinition",
-				new[] { ProjectRoot }
-			);
+			FeedbackDefinition[] definitions = LoadAssets<FeedbackDefinition>();
+			System.Array.Sort(definitions, (left, right) => left.EventId.CompareTo(right.EventId));
 
-			List<FeedbackDefinition> definitions = new List<FeedbackDefinition>();
+			return definitions;
+		}
+
+		private static TAsset[] LoadAssets<TAsset>() where TAsset : Object
+		{
+			string[] guids = AssetDatabase.FindAssets($"t:{typeof(TAsset).Name}", new[] { ProjectRoot });
+
+			List<TAsset> assets = new();
 
 			for (int i = 0; i < guids.Length; i++)
 			{
 				string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+				TAsset asset = AssetDatabase.LoadAssetAtPath<TAsset>(path);
 
-				FeedbackDefinition definition =
-					AssetDatabase.LoadAssetAtPath<FeedbackDefinition>(path);
-
-				if (definition != null)
+				if (asset != null)
 				{
-					definitions.Add(definition);
+					assets.Add(asset);
 				}
 			}
 
-			definitions.Sort(CompareDefinitions);
-
-			return definitions.ToArray();
+			return assets.ToArray();
 		}
 
-		private static FeedbackCatalog[] LoadAllCatalogs()
+		private static void ValidateDefinitions(FeedbackDefinition[] definitions)
 		{
-			string[] guids = AssetDatabase.FindAssets(
-				"t:FeedbackCatalog",
-				new[] { ProjectRoot }
-			);
+			Dictionary<FeedbackEventId, FeedbackDefinition> definitionsById = new();
 
-			List<FeedbackCatalog> catalogs = new List<FeedbackCatalog>();
-
-			for (int i = 0; i < guids.Length; i++)
+			for (int i = 0; i < definitions.Length; i++)
 			{
-				string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+				FeedbackDefinition definition = definitions[i];
 
-				FeedbackCatalog catalog =
-					AssetDatabase.LoadAssetAtPath<FeedbackCatalog>(path);
-
-				if (catalog != null)
+				if (definition.EventId == FeedbackEventId.None)
 				{
-					catalogs.Add(catalog);
+					Debug.LogWarning(
+						"FeedbackDefinition has None event id.",
+						definition
+					);
+
+					continue;
 				}
+
+				if (definitionsById.TryGetValue(definition.EventId, out FeedbackDefinition existingDefinition))
+				{
+					Debug.LogWarning(
+						$"Duplicate FeedbackEventId: {definition.EventId}. Existing: {existingDefinition.name}. Duplicate: {definition.name}.",
+						definition
+					);
+
+					continue;
+				}
+
+				definitionsById.Add(definition.EventId, definition);
 			}
-
-			return catalogs.ToArray();
-		}
-
-		private static int CompareDefinitions(
-			FeedbackDefinition left,
-			FeedbackDefinition right
-		)
-		{
-			if (left == null && right == null)
-			{
-				return 0;
-			}
-
-			if (left == null)
-			{
-				return 1;
-			}
-
-			if (right == null)
-			{
-				return -1;
-			}
-
-			return left.EventId.CompareTo(right.EventId);
 		}
 	}
 }

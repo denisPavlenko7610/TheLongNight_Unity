@@ -18,13 +18,11 @@ namespace TLN.UI.Inventory
 
 		[SerializeField] private VisualTreeAsset _itemRowTemplate;
 
-		private UIDocument _document;
-
 		private VisualElement _root;
 		private Label _weightLabel;
 		private ScrollView _scrollView;
 
-		private readonly List<InventoryItemRowView> _rowViews = new List<InventoryItemRowView>();
+		private readonly List<InventoryItemRowView> _rowViews = new();
 
 		private bool _isVisible;
 		private IAddressableAssetService _addressableAssetService;
@@ -51,9 +49,7 @@ namespace TLN.UI.Inventory
 
 		private void Awake()
 		{
-			_document = GetComponent<UIDocument>();
-
-			VisualElement documentRoot = _document.rootVisualElement;
+			VisualElement documentRoot = GetComponent<UIDocument>().rootVisualElement;
 
 			_root = documentRoot.RequiredQ<VisualElement>("inventory-window-root");
 			_weightLabel = documentRoot.RequiredQ<Label>("inventory-weight-label");

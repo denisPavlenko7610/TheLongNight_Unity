@@ -92,15 +92,7 @@ namespace TLN.Gameplay.Wildlife
 
             if (canPlayLeft && canPlayRight)
             {
-                if (Random.value < 0.5f)
-                {
-                    _animator.SetTrigger(_attackLeftHash);
-                }
-                else
-                {
-                    _animator.SetTrigger(_attackRightHash);
-                }
-
+                _animator.SetTrigger(Random.value < 0.5f ? _attackLeftHash : _attackRightHash);
                 return;
             }
 

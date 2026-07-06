@@ -9,12 +9,7 @@ namespace TLN.Gameplay.Campfire
 
 		public void Register(IWarmthProvider provider)
 		{
-			if (provider == null)
-			{
-				return;
-			}
-
-			if (_providers.Contains(provider))
+			if (provider == null || _providers.Contains(provider))
 			{
 				return;
 			}
@@ -57,8 +52,7 @@ namespace TLN.Gameplay.Campfire
 					continue;
 				}
 
-				Vector3 offset = position - provider.Position;
-				float sqrDistance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+				float sqrDistance = (position - provider.Position).sqrMagnitude;
 				float sqrRadius = radius * radius;
 
 				if (sqrDistance > sqrRadius)

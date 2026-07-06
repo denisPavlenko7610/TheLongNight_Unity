@@ -106,7 +106,7 @@ namespace TLN.Gameplay.DayNight
 				return;
 			}
 
-			if (_dayNightService == null)
+			if (_dayNightService == null || _config == null)
 			{
 				return;
 			}
@@ -222,21 +222,11 @@ namespace TLN.Gameplay.DayNight
 
 		private PhaseSettings GetCurrentPhaseSettings()
 		{
-			if (_dayNightService == null || _config == null)
-			{
-				return _config.Day;
-			}
-
 			return _config.GetPhaseSettings(_dayNightService.CurrentPhase);
 		}
 
 		private PhaseSettings GetNextPhaseSettings()
 		{
-			if (_dayNightService == null || _config == null)
-			{
-				return _config.Day;
-			}
-
 			DayNightPhase nextPhase = _config.GetNextPhase(_dayNightService.CurrentPhase);
 			return _config.GetPhaseSettings(nextPhase);
 		}

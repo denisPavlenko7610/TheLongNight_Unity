@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using TLN.Application.Localization;
 using TLN.Application.Saves;
+using TLN.Gameplay.Time;
 using TLN.UI.Common;
 using UnityEngine.UIElements;
 
@@ -11,9 +12,6 @@ namespace TLN.UI.Saves
 	{
 		private const string EmptySlotClassName = "save-slot-button-empty";
 		private const string OccupiedSlotClassName = "save-slot-button-occupied";
-		private const int MinutesPerHour = 60;
-		private const int HoursPerDay = 24;
-		private const int MinutesPerDay = MinutesPerHour * HoursPerDay;
 
 		private readonly VisualElement _panelRoot;
 		private readonly Label _titleLabel;
@@ -165,14 +163,9 @@ namespace TLN.UI.Saves
 
 		private string CreateGameTimeText(int totalMinutes)
 		{
-			int safeTotalMinutes = Math.Max(0, totalMinutes);
+			GameTime time = GameTime.FromTotalMinutes(totalMinutes);
 
-			int day = safeTotalMinutes / MinutesPerDay + 1;
-			int minutesInDay = safeTotalMinutes % MinutesPerDay;
-			int hour = minutesInDay / MinutesPerHour;
-			int minute = minutesInDay % MinutesPerHour;
-
-			return Loc.DayTimeFormat(day, hour.ToString("00"), minute.ToString("00"));
+			return Loc.DayTimeFormat(time.Day, time.Hour.ToString("00"), time.Minute.ToString("00"));
 		}
 
 		private static string CreateSavedAtText(string savedAtUtc)

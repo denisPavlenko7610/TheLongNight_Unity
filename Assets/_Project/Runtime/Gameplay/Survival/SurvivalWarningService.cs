@@ -8,7 +8,6 @@ namespace TLN.Gameplay.Survival
 		private const float DefaultWarningThreshold = 80f;
 		private const float ConditionCriticalThreshold = 25f;
 
-		private readonly ISurvivalService _survivalService;
 		private readonly INotificationService _notificationService;
 
 		private readonly float _warningCooldownSeconds;
@@ -19,17 +18,10 @@ namespace TLN.Gameplay.Survival
 		private float _nextColdWarningTime;
 		private float _nextConditionWarningTime;
 
-		public SurvivalWarningService(ISurvivalService survivalService, INotificationService notificationService,
-			float warningCooldownSeconds)
+		public SurvivalWarningService(INotificationService notificationService, float warningCooldownSeconds)
 		{
-			_survivalService = survivalService;
 			_notificationService = notificationService;
 			_warningCooldownSeconds = warningCooldownSeconds;
-		}
-
-		public void Tick(float unscaledTime)
-		{
-			Tick(_survivalService, unscaledTime);
 		}
 
 		public void Tick(ISurvivalService survivalService, float unscaledTime)

@@ -19,9 +19,7 @@ namespace TLN.Infrastructure.Feedback
 
 		public PooledVfxPlayer(Transform root)
 		{
-			_root = root != null
-				? root
-				: throw new ArgumentNullException(nameof(root));
+			_root = root != null ? root : throw new ArgumentNullException(nameof(root));
 		}
 
 		public void Play(FeedbackDefinition definition, Vector3 position)
@@ -37,11 +35,6 @@ namespace TLN.Infrastructure.Feedback
 			}
 
 			GameObject prefab = definition.EffectPrefab;
-			if (prefab == null)
-			{
-				return;
-			}
-
 			ObjectPool<PooledVfxInstance> pool = GetPool(prefab);
 			PooledVfxInstance instance = pool.Get();
 
@@ -50,8 +43,6 @@ namespace TLN.Infrastructure.Feedback
 			Transform instanceTransform = instance.transform;
 			instanceTransform.SetParent(_root, false);
 			instanceTransform.SetPositionAndRotation(position, Quaternion.identity);
-
-			instance.MarkSpawned();
 
 			ParticleSystem[] particleSystems = instance.ParticleSystems;
 			RestartParticleSystems(particleSystems);
@@ -152,22 +143,10 @@ namespace TLN.Infrastructure.Feedback
 				await Awaitable.NextFrameAsync();
 			}
 
-			if (_isDisposed)
+			if (!_isDisposed && instance != null && instance.Version == expectedVersion)
 			{
-				return;
+				instance.Release();
 			}
-
-			if (instance == null)
-			{
-				return;
-			}
-
-			if (instance.Version != expectedVersion)
-			{
-				return;
-			}
-
-			instance.Release();
 		}
 
 		private static bool IsAnyParticleSystemAlive(ParticleSystem[] particleSystems)

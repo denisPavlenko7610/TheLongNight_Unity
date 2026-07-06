@@ -23,11 +23,16 @@ namespace TLN.Gameplay.Survival
 		{
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
-			Hunger = new SurvivalStat(SurvivalStatId.Hunger, _config.InitialHunger, MinStat, MaxStat);
-			Thirst = new SurvivalStat(SurvivalStatId.Thirst, _config.InitialThirst, MinStat, MaxStat);
-			Fatigue = new SurvivalStat(SurvivalStatId.Fatigue, _config.InitialFatigue, MinStat, MaxStat);
-			Cold = new SurvivalStat(SurvivalStatId.Cold, _config.InitialCold, MinStat, MaxStat);
-			Condition = new SurvivalStat(SurvivalStatId.Condition, _config.InitialCondition, MinStat, MaxStat);
+			Hunger = CreateStat(SurvivalStatId.Hunger, _config.InitialHunger);
+			Thirst = CreateStat(SurvivalStatId.Thirst, _config.InitialThirst);
+			Fatigue = CreateStat(SurvivalStatId.Fatigue, _config.InitialFatigue);
+			Cold = CreateStat(SurvivalStatId.Cold, _config.InitialCold);
+			Condition = CreateStat(SurvivalStatId.Condition, _config.InitialCondition);
+		}
+
+		private static SurvivalStat CreateStat(SurvivalStatId id, float value)
+		{
+			return new SurvivalStat(id, value, MinStat, MaxStat);
 		}
 
 		public void Tick(float deltaTime)

@@ -42,18 +42,20 @@ namespace TLN.Gameplay.Player.Input
 
 		private void TogglePause()
 		{
-			switch (_gameStateMachine.CurrentState)
+			GameStateId nextState = _gameStateMachine.CurrentState switch
 			{
-				case GameStateId.Playing:
-					_inputReader.ClearGameplayInput();
-					_gameStateMachine.Enter(GameStateId.Paused);
-					break;
+				GameStateId.Playing => GameStateId.Paused,
+				GameStateId.Paused => GameStateId.Playing,
+				_ => GameStateId.None
+			};
 
-				case GameStateId.Paused:
-					_inputReader.ClearGameplayInput();
-					_gameStateMachine.Enter(GameStateId.Playing);
-					break;
+			if (nextState == GameStateId.None)
+			{
+				return;
 			}
+
+			_inputReader.ClearGameplayInput();
+			_gameStateMachine.Enter(nextState);
 		}
 	}
 }

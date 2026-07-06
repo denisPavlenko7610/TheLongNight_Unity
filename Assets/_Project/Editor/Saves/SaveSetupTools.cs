@@ -39,8 +39,7 @@ namespace TLN.Editor.Saves
 		private static void AddMissingPersistentEntitiesToSceneSaveables()
 		{
 			MonoBehaviour[] behaviours = UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None
+				FindObjectsInactive.Include
 			);
 
 			int addedCount = 0;
@@ -81,8 +80,7 @@ namespace TLN.Editor.Saves
 		private static void FixScenePersistentIds()
 		{
 			PersistentWorldEntity[] entities = UnityEngine.Object.FindObjectsByType<PersistentWorldEntity>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None
+				FindObjectsInactive.Include
 			);
 
 			HashSet<string> usedIds = new();
@@ -219,11 +217,11 @@ namespace TLN.Editor.Saves
 		{
 			WorldPrefabCatalog catalog = FindOrCreateAsset<WorldPrefabCatalog>(WorldPrefabCatalogPath);
 
-			List<WorldPrefabCatalog.EntryDraft> entries = new List<WorldPrefabCatalog.EntryDraft>();
+			List<WorldPrefabCatalog.EntryDraft> entries = new();
 
 			string[] prefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] { SearchRoot });
 
-			HashSet<string> usedIds = new HashSet<string>();
+			HashSet<string> usedIds = new();
 
 			for (int i = 0; i < prefabGuids.Length; i++)
 			{
@@ -268,8 +266,7 @@ namespace TLN.Editor.Saves
 		private static void ValidateCurrentSceneSaveSetup()
 		{
 			PersistentWorldEntity[] entities = UnityEngine.Object.FindObjectsByType<PersistentWorldEntity>(
-				FindObjectsInactive.Include,
-				FindObjectsSortMode.None
+				FindObjectsInactive.Include
 			);
 
 			Dictionary<string, PersistentWorldEntity> ids = new();

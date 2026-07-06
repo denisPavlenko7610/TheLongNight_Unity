@@ -252,9 +252,8 @@ namespace TLN.UI.Campfire
 			int itemIndex
 		)
 		{
-			if (inventoryService is not NetworkPlayerInventory networkInventory)
+			if (!TryGetNetworkInventory(inventoryService, out NetworkPlayerInventory networkInventory))
 			{
-				_notificationService?.Show(Loc.CannotUse);
 				return;
 			}
 
@@ -266,9 +265,8 @@ namespace TLN.UI.Campfire
 
 		private void RequestIgniteMultiplayer()
 		{
-			if (GetActiveInventoryService() is not NetworkPlayerInventory networkInventory)
+			if (!TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
 			{
-				_notificationService?.Show(Loc.CannotUse);
 				return;
 			}
 
@@ -277,13 +275,28 @@ namespace TLN.UI.Campfire
 
 		private void RequestExtinguishMultiplayer()
 		{
-			if (GetActiveInventoryService() is not NetworkPlayerInventory networkInventory)
+			if (!TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
 			{
-				_notificationService?.Show(Loc.CannotUse);
 				return;
 			}
 
 			networkInventory.RequestExtinguishCampfire(_currentCampfire);
+		}
+
+		private bool TryGetNetworkInventory(
+			IInventoryService inventoryService,
+			out NetworkPlayerInventory networkInventory
+		)
+		{
+			if (inventoryService is NetworkPlayerInventory activeNetworkInventory)
+			{
+				networkInventory = activeNetworkInventory;
+				return true;
+			}
+
+			networkInventory = null;
+			_notificationService?.Show(Loc.CannotUse);
+			return false;
 		}
 
 		private IInventoryService GetActiveInventoryService()

@@ -36,7 +36,7 @@ namespace TLN.UI.LoadingScreen
 			UnityEngine.Object.DontDestroyOnLoad(_documentGameObject);
 
 			_gameStateMachine.StateChanged += OnGameStateChanged;
-			OnGameStateChanged(GameStateId.None, _gameStateMachine.CurrentState);
+			ApplyState(_gameStateMachine.CurrentState);
 		}
 
 		public void Dispose()
@@ -52,14 +52,19 @@ namespace TLN.UI.LoadingScreen
 			}
 		}
 
-		private void OnGameStateChanged(GameStateId previousState, GameStateId nextState)
+		private void OnGameStateChanged(GameStateId _, GameStateId nextState)
+		{
+			ApplyState(nextState);
+		}
+
+		private void ApplyState(GameStateId state)
 		{
 			if (_documentGameObject == null)
 			{
 				return;
 			}
 
-			bool isLoading = nextState == GameStateId.Loading;
+			bool isLoading = state == GameStateId.Loading;
 
 			if (!isLoading)
 			{

@@ -10,13 +10,5 @@ namespace TLN.Gameplay.Wildlife
 		{
 			PlayerRoot = playerRoot;
 		}
-
-		public void ClearPlayerRoot(PlayerRoot playerRoot)
-		{
-			if (PlayerRoot == playerRoot)
-			{
-				PlayerRoot = null;
-			}
-		}
 	}
 }

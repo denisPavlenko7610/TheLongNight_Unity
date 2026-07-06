@@ -146,9 +146,7 @@ namespace TLN.Gameplay.Saves
 				return;
 			}
 
-			Transform playerTransform = _placementService.PlayerRoot == null
-					? null
-					: _placementService.PlayerRoot.transform;
+			Transform playerTransform = _placementService.PlayerRoot?.transform;
 
 			if (playerTransform == null)
 			{
@@ -294,7 +292,7 @@ namespace TLN.Gameplay.Saves
 
 		private void ApplyInventory(InventorySaveData data)
 		{
-			List<ItemStack> restoredItems = new List<ItemStack>();
+			List<ItemStack> restoredItems = new();
 
 			if (data != null && data.items != null)
 			{

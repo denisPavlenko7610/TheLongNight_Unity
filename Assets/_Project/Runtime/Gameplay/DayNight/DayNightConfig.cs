@@ -119,13 +119,6 @@ namespace TLN.Gameplay.DayNight
 		public AnimationCurve SunElevationCurve => _sunElevationCurve;
 		public float NorthAngle => _northAngle;
 
-		public PhaseSettings Dawn => _dawn;
-		public PhaseSettings Morning => _morning;
-		public PhaseSettings Day => _day;
-		public PhaseSettings Afternoon => _afternoon;
-		public PhaseSettings Dusk => _dusk;
-		public PhaseSettings Night => _night;
-
 		public PhaseSettings GetPhaseSettings(DayNightPhase phase)
 		{
 			return phase switch

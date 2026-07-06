@@ -28,12 +28,6 @@ namespace TLN.Infrastructure.Audio
 		private float _lastAmbientVolume = UnappliedVolume;
 		private float _lastSfxVolume = UnappliedVolume;
 
-		public AudioMixer Mixer => _mixer;
-		public AudioMixerGroup MasterGroup => _masterGroup;
-		public AudioMixerGroup MusicGroup => _musicGroup;
-		public AudioMixerGroup AmbientGroup => _ambientGroup;
-		public AudioMixerGroup SfxGroup => _sfxGroup;
-
 		public AudioMixerGroup GetGroup(AudioBusId busId)
 		{
 			return busId switch
