@@ -6,6 +6,7 @@
 		Idle = 10,
 		Wander = 20,
 		Flee = 30,
+		Stalk = 35,
 		Chase = 40,
 		Attack = 50
 	}

@@ -18,8 +18,8 @@ namespace TLN.Gameplay.Wildlife
     public sealed class AnimalActor : MonoBehaviour
     {
         private const float RemainingDistanceThreshold = 0.5f;
-        private const float DirectionEpsilon = 0.001f;
-        private const float MovingVelocityThreshold = 0.02f;
+        private const float DirectionSqrEpsilon = 0.001f;
+        private const float MovingVelocitySqrThreshold = 0.02f;
         private const float AnimationRefreshInterval = 0.1f;
         private const float FleeRepathInterval = 0.3f;
         private const float ChaseRepathInterval = 0.2f;
@@ -61,6 +61,7 @@ namespace TLN.Gameplay.Wildlife
 		private Transform _playerTransform;
 		private float _sqrFleeRadius;
 		private float _sqrDetectionRadius;
+		private float _sqrChargeRadius;
 		private float _sqrAttackDistance;
 
         public AnimalDefinition Definition => _definition;
@@ -90,6 +91,7 @@ namespace TLN.Gameplay.Wildlife
             {
                 _sqrFleeRadius = _definition.FleeRadius * _definition.FleeRadius;
                 _sqrDetectionRadius = _definition.DetectionRadius * _definition.DetectionRadius;
+                _sqrChargeRadius = _definition.ChargeRadius * _definition.ChargeRadius;
                 _sqrAttackDistance = _definition.AttackDistance * _definition.AttackDistance;
 
                 if (_definition.Species == AnimalSpeciesId.Wolf)
@@ -167,15 +169,11 @@ namespace TLN.Gameplay.Wildlife
 
         private void TickRabbit(PlayerRoot player)
         {
-            if (player != null && _playerTransform != null)
+            if (TryGetPlayerDistanceSqr(player, out float sqrDist) &&
+                ShouldRabbitFlee(sqrDist))
             {
-                float sqrDist = (transform.position - _playerTransform.position).sqrMagnitude;
-
-                if (sqrDist <= _sqrFleeRadius)
-                {
-                    FleeFrom(_playerTransform.position);
-                    return;
-                }
+                FleeFrom(_playerTransform.position);
+                return;
             }
 
             Wander();
@@ -183,13 +181,11 @@ namespace TLN.Gameplay.Wildlife
 
         private void TickWolf(PlayerRoot player)
         {
-            if (player == null || _playerTransform == null)
+            if (!TryGetPlayerDistanceSqr(player, out float sqrDist))
             {
                 Wander();
                 return;
             }
-
-            float sqrDist = (transform.position - _playerTransform.position).sqrMagnitude;
 
             if (sqrDist <= _sqrAttackDistance)
             {
@@ -199,15 +195,45 @@ namespace TLN.Gameplay.Wildlife
 
             if (sqrDist <= _sqrDetectionRadius)
             {
-                Chase(_playerTransform.position);
+                ApproachPlayer(_playerTransform.position, sqrDist);
                 return;
             }
 
             Wander();
         }
 
+        private bool TryGetPlayerDistanceSqr(
+            PlayerRoot player,
+            out float sqrDistance)
+        {
+            if (player == null)
+            {
+                _playerTransform = null;
+                sqrDistance = float.MaxValue;
+                return false;
+            }
+
+            _playerTransform = player.transform;
+            sqrDistance = (transform.position - _playerTransform.position).sqrMagnitude;
+            return true;
+        }
+
+        private bool ShouldRabbitFlee(float sqrDistance)
+        {
+            float sqrRadius = _state == AnimalStateId.Flee
+                ? _sqrDetectionRadius
+                : _sqrFleeRadius;
+
+            return sqrDistance <= sqrRadius;
+        }
+
         private void Wander()
         {
+            if (!CanRunBehavior())
+            {
+                return;
+            }
+
             float currentTime = UnityEngine.Time.time;
 
             if (IsAttackAnimationLocked(currentTime))
@@ -248,6 +274,11 @@ namespace TLN.Gameplay.Wildlife
 
         private void FleeFrom(Vector3 threatPosition)
         {
+            if (!CanRunBehavior())
+            {
+                return;
+            }
+
             float currentTime = UnityEngine.Time.time;
 
             if (IsAttackAnimationLocked(currentTime))
@@ -278,7 +309,7 @@ namespace TLN.Gameplay.Wildlife
 
             direction.y = 0f;
 
-            if (direction.sqrMagnitude <= DirectionEpsilon)
+            if (direction.sqrMagnitude <= DirectionSqrEpsilon)
             {
                 direction = -transform.forward;
             }
@@ -292,7 +323,27 @@ namespace TLN.Gameplay.Wildlife
             _agent.SetDestination(targetPosition);
         }
 
-        private void Chase(Vector3 targetPosition)
+        private void ApproachPlayer(
+            Vector3 targetPosition,
+            float sqrDistance)
+        {
+            if (!CanRunBehavior())
+            {
+                return;
+            }
+
+            bool shouldCharge = sqrDistance <= _sqrChargeRadius;
+
+            MoveToTarget(
+                targetPosition,
+                shouldCharge ? AnimalStateId.Chase : AnimalStateId.Stalk,
+                shouldCharge ? _definition.RunSpeed : _definition.WalkSpeed);
+        }
+
+        private void MoveToTarget(
+            Vector3 targetPosition,
+            AnimalStateId state,
+            float speed)
         {
             float currentTime = UnityEngine.Time.time;
 
@@ -307,9 +358,9 @@ namespace TLN.Gameplay.Wildlife
                 return;
             }
 
-            ApplyState(AnimalStateId.Chase);
+            ApplyState(state);
 
-            _agent.speed = _definition.RunSpeed;
+            _agent.speed = speed;
 
             if (currentTime < _nextChaseTime &&
                 _agent.hasPath &&
@@ -345,7 +396,7 @@ namespace TLN.Gameplay.Wildlife
 
         public void AttackPlayer()
         {
-            if (_isDead || _definition == null)
+            if (!CanRunBehavior())
             {
                 return;
             }
@@ -381,6 +432,23 @@ namespace TLN.Gameplay.Wildlife
             targetSurvivalService.DamageCondition(_definition.ConditionDamage);
 
             _notificationService?.Show(Loc.WolfAttack(_definition.ConditionDamage));
+        }
+
+        private bool CanRunBehavior()
+        {
+            if (_isDead || _definition == null)
+            {
+                return false;
+            }
+
+            if (_gameStateMachine != null &&
+                _gameStateMachine.CurrentState != GameStateId.Playing)
+            {
+                StopMovement();
+                return false;
+            }
+
+            return true;
         }
 
 		private ISurvivalService GetTargetSurvivalService()
@@ -493,7 +561,7 @@ namespace TLN.Gameplay.Wildlife
             Vector3 direction = playerTransform.position - transform.position;
             direction.y = 0f;
 
-            if (direction.sqrMagnitude <= DirectionEpsilon)
+            if (direction.sqrMagnitude <= DirectionSqrEpsilon)
             {
                 return;
             }
@@ -524,8 +592,8 @@ namespace TLN.Gameplay.Wildlife
                 _agent != null &&
                 _agent.enabled &&
                 (
-                    _agent.velocity.sqrMagnitude > MovingVelocityThreshold ||
-                    _agent.desiredVelocity.sqrMagnitude > MovingVelocityThreshold
+                    _agent.velocity.sqrMagnitude > MovingVelocitySqrThreshold ||
+                    _agent.desiredVelocity.sqrMagnitude > MovingVelocitySqrThreshold
                 );
 
             _animationController.ApplyMovementState(_state, isMoving);
@@ -567,16 +635,12 @@ namespace TLN.Gameplay.Wildlife
                    objectName.IndexOf(HairNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private float GetDistanceToPlayer()
+        private bool IsPlayerInsideRadius(float sqrRadius)
         {
-            Transform playerTransform = GetPlayerTransform();
+            PlayerRoot player = GetPlayer();
 
-            if (playerTransform == null || _definition == null)
-            {
-                return float.MaxValue;
-            }
-
-            return Vector3.Distance(transform.position, playerTransform.position);
+            return TryGetPlayerDistanceSqr(player, out float sqrDistance) &&
+                   sqrDistance <= sqrRadius;
         }
 
         private Transform GetPlayerTransform()
@@ -600,7 +664,7 @@ namespace TLN.Gameplay.Wildlife
                 return false;
             }
 
-            return GetDistanceToPlayer() <= _definition.DetectionRadius;
+            return IsPlayerInsideRadius(_sqrDetectionRadius);
         }
 
         public bool IsPlayerInsideFleeRadius()
@@ -610,7 +674,10 @@ namespace TLN.Gameplay.Wildlife
                 return false;
             }
 
-            return GetDistanceToPlayer() <= _definition.FleeRadius;
+            return IsPlayerInsideRadius(
+                _state == AnimalStateId.Flee
+                    ? _sqrDetectionRadius
+                    : _sqrFleeRadius);
         }
 
         public bool IsPlayerInsideAttackDistance()
@@ -620,7 +687,7 @@ namespace TLN.Gameplay.Wildlife
                 return false;
             }
 
-            return GetDistanceToPlayer() <= _definition.AttackDistance;
+            return IsPlayerInsideRadius(_sqrAttackDistance);
         }
 
         public void WanderAroundHome()
@@ -651,7 +718,13 @@ namespace TLN.Gameplay.Wildlife
                 return;
             }
 
-            Chase(player.transform.position);
+            if (!TryGetPlayerDistanceSqr(player, out float sqrDistance))
+            {
+                Wander();
+                return;
+            }
+
+            ApproachPlayer(player.transform.position, sqrDistance);
         }
 
         public void SetDead()

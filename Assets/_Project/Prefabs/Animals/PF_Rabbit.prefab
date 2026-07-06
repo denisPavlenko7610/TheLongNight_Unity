@@ -118,6 +118,10 @@ PrefabInstance:
       propertyPath: _definition
       value: 
       objectReference: {fileID: 11400000, guid: b486db31c67a25d4ca33bd5fb8633d08, type: 2}
+    - target: {fileID: 2847971442182646969, guid: a1cf745ef22565742822f540e54594f6, type: 3}
+      propertyPath: _useInternalDecisionLogic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4393631025080226516, guid: a1cf745ef22565742822f540e54594f6, type: 3}
       propertyPath: m_Controller
       value: 

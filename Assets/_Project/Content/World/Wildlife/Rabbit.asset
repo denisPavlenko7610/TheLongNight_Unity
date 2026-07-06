@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: Rabbit
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Wildlife.AnimalDefinition
   _species: 10
-  _walkSpeed: 0.9
-  _runSpeed: 3.2
-  _wanderRadius: 10
-  _decisionInterval: 8
-  _detectionRadius: 8
-  _fleeRadius: 7
-  _attackDistance: 1.5
-  _attackCooldownSeconds: 2
-  _conditionDamage: 15
-  _maxHealth: 100
+  _walkSpeed: 0.8
+  _runSpeed: 3.8
+  _wanderRadius: 12
+  _decisionInterval: 5
+  _detectionRadius: 14
+  _fleeRadius: 9
+  _chargeRadius: 0
+  _attackDistance: 0
+  _attackCooldownSeconds: 0
+  _conditionDamage: 0
+  _maxHealth: 20

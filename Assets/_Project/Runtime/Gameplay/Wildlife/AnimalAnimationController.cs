@@ -52,7 +52,10 @@ namespace TLN.Gameplay.Wildlife
 
             bool shouldWalk =
                 isMoving &&
-                state == AnimalStateId.Wander &&
+                (
+                    state == AnimalStateId.Wander ||
+                    state == AnimalStateId.Stalk
+                ) &&
                 hasWalk;
 
             bool shouldRun =
@@ -60,7 +63,13 @@ namespace TLN.Gameplay.Wildlife
                 (
                     state == AnimalStateId.Flee ||
                     state == AnimalStateId.Chase ||
-                    (state == AnimalStateId.Wander && !hasWalk)
+                    (
+                        (
+                            state == AnimalStateId.Wander ||
+                            state == AnimalStateId.Stalk
+                        ) &&
+                        !hasWalk
+                    )
                 );
 
             if (hasWalk)

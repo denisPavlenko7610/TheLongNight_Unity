@@ -14,14 +14,13 @@ namespace TLN.Gameplay.Feedback
 
 		public bool TryGet(FeedbackEventId eventId, out FeedbackDefinition definition)
 		{
-			EnsureCache();
-
 			if (eventId == FeedbackEventId.None)
 			{
 				definition = null;
 				return false;
 			}
 
+			EnsureCache();
 			return _definitionsById.TryGetValue(eventId, out definition);
 		}
 
@@ -32,7 +31,9 @@ namespace TLN.Gameplay.Feedback
 				return;
 			}
 
-			_definitionsById = new Dictionary<FeedbackEventId, FeedbackDefinition>();
+			int capacity = _definitions?.Length ?? 0;
+
+			_definitionsById = new Dictionary<FeedbackEventId, FeedbackDefinition>(capacity);
 
 			if (_definitions == null)
 			{

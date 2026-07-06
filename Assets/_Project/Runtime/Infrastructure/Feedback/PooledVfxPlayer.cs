@@ -141,15 +141,13 @@ namespace TLN.Infrastructure.Feedback
 			}
 		}
 
-		private async Awaitable ReleaseWhenFinished(
-			PooledVfxInstance instance,
-			uint expectedVersion,
+		private async Awaitable ReleaseWhenFinished(PooledVfxInstance instance, uint expectedVersion,
 			ParticleSystem[] particleSystems)
 		{
-			while (!_isDisposed &&
-			       instance != null &&
-			       instance.Version == expectedVersion &&
-			       IsAnyParticleSystemAlive(particleSystems))
+			while (!_isDisposed
+				&& instance != null
+				&& instance.Version == expectedVersion
+				&& IsAnyParticleSystemAlive(particleSystems))
 			{
 				await Awaitable.NextFrameAsync();
 			}

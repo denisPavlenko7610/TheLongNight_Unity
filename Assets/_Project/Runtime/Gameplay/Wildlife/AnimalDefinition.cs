@@ -20,6 +20,9 @@ namespace TLN.Gameplay.Wildlife
 		[SerializeField] private float _detectionRadius = 10f;
 		[SerializeField] private float _fleeRadius = 8f;
 
+		[Header("Predator")]
+		[SerializeField] private float _chargeRadius = 6f;
+
 		[Header("Combat")]
 		[SerializeField] private float _attackDistance = 1.5f;
 		[SerializeField] private float _attackCooldownSeconds = 2f;
@@ -37,6 +40,8 @@ namespace TLN.Gameplay.Wildlife
 
 		public float DetectionRadius => _detectionRadius;
 		public float FleeRadius => _fleeRadius;
+
+		public float ChargeRadius => Mathf.Max(_attackDistance, _chargeRadius);
 
 		public float AttackDistance => _attackDistance;
 		public float AttackCooldownSeconds => _attackCooldownSeconds;

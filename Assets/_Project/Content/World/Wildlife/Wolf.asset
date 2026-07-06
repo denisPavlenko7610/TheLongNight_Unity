@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: Wolf
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Wildlife.AnimalDefinition
   _species: 20
-  _walkSpeed: 1.8
-  _runSpeed: 4.2
-  _wanderRadius: 18
-  _decisionInterval: 16
-  _detectionRadius: 10
+  _walkSpeed: 1.5
+  _runSpeed: 5
+  _wanderRadius: 22
+  _decisionInterval: 8
+  _detectionRadius: 24
   _fleeRadius: 8
-  _attackDistance: 1.7
-  _attackCooldownSeconds: 2.5
-  _conditionDamage: 12
+  _chargeRadius: 8
+  _attackDistance: 1.8
+  _attackCooldownSeconds: 3
+  _conditionDamage: 18
   _maxHealth: 100
