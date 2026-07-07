@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace TLN.Infrastructure.Scenes
 {
-	public sealed class SceneLoaderService : ISceneLoader
+	public sealed class SceneLoaderService : ISceneLoader, IDisposable
 	{
 		private readonly IGameStateMachine _gameStateMachine;
 		private readonly IMultiplayerSessionService _multiplayerSessionService;
@@ -18,8 +18,7 @@ namespace TLN.Infrastructure.Scenes
 		private bool _isLoading;
 		private bool _isSubscribedToNetworkSceneEvents;
 
-		private string _pendingNetworkSceneName;
-		private GameStateId _pendingNetworkStateAfterLoading;
+		private PendingNetworkSceneLoad _pendingNetworkSceneLoad;
 		private AwaitableCompletionSource<bool> _networkSceneCompletion;
 
 		public bool IsLoading => _isLoading;
@@ -33,6 +32,12 @@ namespace TLN.Infrastructure.Scenes
 			_gameStateMachine = gameStateMachine ?? throw new ArgumentNullException(nameof(gameStateMachine));
 			_multiplayerSessionService = multiplayerSessionService;
 			_networkManager = networkManager;
+		}
+
+		public void Dispose()
+		{
+			UnsubscribeFromNetworkSceneEvents();
+			ClearPendingNetworkSceneLoad();
 		}
 
 		public async Awaitable LoadMainMenu()
@@ -94,8 +99,7 @@ namespace TLN.Infrastructure.Scenes
 			{
 				EnsureNetworkSceneEventsSubscribed();
 
-				_pendingNetworkSceneName = sceneName;
-				_pendingNetworkStateAfterLoading = stateAfterLoading;
+				_pendingNetworkSceneLoad = new PendingNetworkSceneLoad(sceneName, stateAfterLoading);
 				_networkSceneCompletion = new AwaitableCompletionSource<bool>();
 
 				SceneEventProgressStatus status =
@@ -128,8 +132,7 @@ namespace TLN.Infrastructure.Scenes
 
 			EnsureNetworkSceneEventsSubscribed();
 
-			_pendingNetworkSceneName = sceneName;
-			_pendingNetworkStateAfterLoading = stateAfterLoading;
+			_pendingNetworkSceneLoad = new PendingNetworkSceneLoad(sceneName, stateAfterLoading);
 
 			if (SceneManager.GetActiveScene().name == sceneName)
 			{
@@ -159,9 +162,7 @@ namespace TLN.Infrastructure.Scenes
 			ShaderPreloader.PrewarmSnowShaders();
 
 			_isLoading = false;
-			_pendingNetworkSceneName = string.Empty;
-			_pendingNetworkStateAfterLoading = GameStateId.None;
-			_networkSceneCompletion = null;
+			ClearPendingNetworkSceneLoad();
 
 			_gameStateMachine.Enter(stateAfterLoading);
 		}
@@ -171,9 +172,7 @@ namespace TLN.Infrastructure.Scenes
 			TLNLogger.LogError($"Failed to load {sceneName}: {exception}");
 
 			_isLoading = false;
-			_pendingNetworkSceneName = string.Empty;
-			_pendingNetworkStateAfterLoading = GameStateId.None;
-			_networkSceneCompletion = null;
+			ClearPendingNetworkSceneLoad();
 		}
 
 		private bool ShouldUseNetworkSceneLoading(string sceneName)
@@ -211,28 +210,45 @@ namespace TLN.Infrastructure.Scenes
 			_isSubscribedToNetworkSceneEvents = true;
 		}
 
-		private void OnNetworkSceneEvent(SceneEvent sceneEvent)
+		private void UnsubscribeFromNetworkSceneEvents()
 		{
-			if (string.IsNullOrWhiteSpace(_pendingNetworkSceneName))
+			if (!_isSubscribedToNetworkSceneEvents)
 			{
 				return;
 			}
 
-			if (sceneEvent.SceneName != _pendingNetworkSceneName)
+			if (_networkManager != null && _networkManager.SceneManager != null)
+			{
+				_networkManager.SceneManager.OnSceneEvent -= OnNetworkSceneEvent;
+			}
+
+			_isSubscribedToNetworkSceneEvents = false;
+		}
+
+		private void OnNetworkSceneEvent(SceneEvent sceneEvent)
+		{
+			PendingNetworkSceneLoad pendingLoad = _pendingNetworkSceneLoad;
+
+			if (pendingLoad == null)
+			{
+				return;
+			}
+
+			if (sceneEvent.SceneName != pendingLoad.SceneName)
 			{
 				return;
 			}
 
 			if (_networkManager != null && _networkManager.IsServer)
 			{
-				HandleServerNetworkSceneEvent(sceneEvent);
+				HandleServerNetworkSceneEvent(sceneEvent, pendingLoad);
 				return;
 			}
 
-			HandleClientNetworkSceneEvent(sceneEvent);
+			HandleClientNetworkSceneEvent(sceneEvent, pendingLoad);
 		}
 
-		private void HandleServerNetworkSceneEvent(SceneEvent sceneEvent)
+		private void HandleServerNetworkSceneEvent(SceneEvent sceneEvent, PendingNetworkSceneLoad pendingLoad)
 		{
 			if (sceneEvent.SceneEventType != SceneEventType.LoadEventCompleted)
 			{
@@ -240,10 +256,10 @@ namespace TLN.Infrastructure.Scenes
 			}
 
 			_networkSceneCompletion?.SetResult(true);
-			CompleteLoading(_pendingNetworkStateAfterLoading);
+			CompleteLoading(pendingLoad.StateAfterLoading);
 		}
 
-		private void HandleClientNetworkSceneEvent(SceneEvent sceneEvent)
+		private void HandleClientNetworkSceneEvent(SceneEvent sceneEvent, PendingNetworkSceneLoad pendingLoad)
 		{
 			if (sceneEvent.SceneEventType != SceneEventType.LoadComplete &&
 			    sceneEvent.SceneEventType != SceneEventType.SynchronizeComplete)
@@ -251,7 +267,13 @@ namespace TLN.Infrastructure.Scenes
 				return;
 			}
 
-			CompleteLoading(_pendingNetworkStateAfterLoading);
+			CompleteLoading(pendingLoad.StateAfterLoading);
+		}
+
+		private void ClearPendingNetworkSceneLoad()
+		{
+			_pendingNetworkSceneLoad = null;
+			_networkSceneCompletion = null;
 		}
 
 		private async Awaitable ShutdownNetworkIfNeeded()
@@ -286,6 +308,18 @@ namespace TLN.Infrastructure.Scenes
 			for (int i = 0; i < 120 && _networkManager.IsListening; i++)
 			{
 				await Awaitable.NextFrameAsync();
+			}
+		}
+
+		private sealed class PendingNetworkSceneLoad
+		{
+			public string SceneName { get; }
+			public GameStateId StateAfterLoading { get; }
+
+			public PendingNetworkSceneLoad(string sceneName, GameStateId stateAfterLoading)
+			{
+				SceneName = sceneName;
+				StateAfterLoading = stateAfterLoading;
 			}
 		}
 	}

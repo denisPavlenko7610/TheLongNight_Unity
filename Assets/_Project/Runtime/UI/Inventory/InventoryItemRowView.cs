@@ -19,7 +19,6 @@ namespace TLN.UI.Inventory
 
 		private int _itemIndex;
 		private int _iconRequestVersion;
-		private bool _isDisposed;
 		private Action<int> _useClicked;
 
 		public InventoryItemRowView(VisualElement root, IAddressableAssetService addressableAssetService)
@@ -38,7 +37,6 @@ namespace TLN.UI.Inventory
 		{
 			_itemIndex = itemIndex;
 			_useClicked = useClicked;
-			_isDisposed = false;
 
 			_nameLabel.text = stack.Definition.DisplayName;
 			_metaLabel.text = CreateMetaText(stack);
@@ -49,7 +47,6 @@ namespace TLN.UI.Inventory
 
 		public void Dispose()
 		{
-			_isDisposed = true;
 			_iconRequestVersion++;
 
 			_useButton.clicked -= OnUseClicked;
@@ -88,11 +85,6 @@ namespace TLN.UI.Inventory
 				definition.IconReference,
 				sprite =>
 				{
-					if (_isDisposed)
-					{
-						return;
-					}
-
 					if (requestVersion != _iconRequestVersion)
 					{
 						return;

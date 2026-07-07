@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TLN.Application.Assets;
 using TLN.Application.Input;
@@ -54,6 +55,7 @@ namespace TLN.UI.SurvivalMenu
 		private bool _isVisible;
 		private SurvivalMenuTabId _currentTab = SurvivalMenuTabId.Inventory;
 		private object _selectedItem;
+		private IDisposable _inputModeScope;
 		private int _iconRequestVersion;
 		private ItemCategory? _currentInventoryCategoryFilter;
 
@@ -157,6 +159,7 @@ namespace TLN.UI.SurvivalMenu
 				_clothesCategoryButton.clicked -= OnClothesCategoryClicked;
 			}
 
+			ReleaseInputMode();
 		}
 
 		public void BindInventory(IInventoryService inventoryService, IItemUseService itemUseService)
@@ -222,7 +225,7 @@ namespace TLN.UI.SurvivalMenu
 				_root.SetVisible(false);
 			}
 
-			_inputModeService?.SetGameplayMode();
+			ReleaseInputMode();
 		}
 
 		private void Toggle(SurvivalMenuTabId tab)
@@ -246,7 +249,18 @@ namespace TLN.UI.SurvivalMenu
 			Refresh();
 			_root.AddToClassList(VisibleClassName);
 			_root.SetVisible(true);
-			_inputModeService?.SetUIMode();
+			AcquireInputMode();
+		}
+
+		private void AcquireInputMode()
+		{
+			_inputModeScope ??= _inputModeService?.AcquireUIMode();
+		}
+
+		private void ReleaseInputMode()
+		{
+			_inputModeScope?.Dispose();
+			_inputModeScope = null;
 		}
 
 		private void EnsureInitialized()
@@ -437,20 +451,18 @@ namespace TLN.UI.SurvivalMenu
 				return;
 			}
 
-			string expectedItemId = definition.Id;
-			icon.userData = expectedItemId;
+			ItemDefinition expectedDefinition = definition;
+			icon.userData = expectedDefinition;
 
 			_addressableAssetService?.LoadSprite(definition.IconReference,
 				sprite =>
 				{
-					if (!Equals(icon.userData, expectedItemId))
+					if (!ReferenceEquals(icon.userData, expectedDefinition))
 					{
 						return;
 					}
 
-					icon.style.backgroundImage = sprite == null
-						? StyleKeyword.None
-						: new StyleBackground(sprite);
+					SetSpriteBackground(icon, sprite);
 				}
 			);
 		}
@@ -646,7 +658,7 @@ namespace TLN.UI.SurvivalMenu
 
 		private void AddRecipeItems()
 		{
-			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
+			if (_recipeCatalog == null)
 			{
 				return;
 			}
@@ -800,7 +812,7 @@ namespace TLN.UI.SurvivalMenu
 
 		private string CreateRecipeRequirementsText(BuildRecipeDefinition recipe)
 		{
-			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
+			if (recipe.Ingredients.Count == 0)
 			{
 				return Loc.RequirementsNone;
 			}
@@ -865,11 +877,16 @@ namespace TLN.UI.SurvivalMenu
 						return;
 					}
 
-					_detailsIcon.style.backgroundImage = sprite == null
-						? StyleKeyword.None
-						: new StyleBackground(sprite);
+					SetSpriteBackground(_detailsIcon, sprite);
 				}
 			);
+		}
+
+		private static void SetSpriteBackground(VisualElement icon, Sprite sprite)
+		{
+			icon.style.backgroundImage = sprite == null
+				? StyleKeyword.None
+				: new StyleBackground(sprite);
 		}
 
 		private void OnActionClicked()

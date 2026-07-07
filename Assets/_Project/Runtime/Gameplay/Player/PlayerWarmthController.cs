@@ -62,7 +62,7 @@ namespace TLN.Gameplay.Player
 			}
 
 			if (_gameStateMachine != null &&
-			    _gameStateMachine.CurrentState != GameStateId.Playing)
+			    !_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

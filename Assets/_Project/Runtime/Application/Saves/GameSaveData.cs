@@ -7,7 +7,9 @@ namespace TLN.Application.Saves
 	[Serializable]
 	public sealed class GameSaveData
 	{
-		public int version = 1;
+		public const int CurrentVersion = 1;
+
+		public int version = CurrentVersion;
 		public int slotId;
 		public string savedAtUtc;
 		public string sceneName;
@@ -18,6 +20,27 @@ namespace TLN.Application.Saves
 		public GameTimeSaveData time = new GameTimeSaveData();
 		public SurvivalSaveData survival = new SurvivalSaveData();
 		public InventorySaveData inventory = new InventorySaveData();
+
+		public void NormalizeAfterLoad()
+		{
+			if (version <= 0)
+			{
+				version = CurrentVersion;
+			}
+
+			savedAtUtc ??= string.Empty;
+			sceneName ??= string.Empty;
+			saveReason ??= string.Empty;
+
+			world ??= new WorldSaveData();
+			player ??= new PlayerSaveData();
+			time ??= new GameTimeSaveData();
+			survival ??= new SurvivalSaveData();
+			inventory ??= new InventorySaveData();
+
+			world.NormalizeAfterLoad();
+			inventory.NormalizeAfterLoad();
+		}
 	}
 
 	[Serializable]
@@ -99,6 +122,16 @@ namespace TLN.Application.Saves
 	public sealed class InventorySaveData
 	{
 		public List<InventoryItemSaveData> items = new();
+
+		public void NormalizeAfterLoad()
+		{
+			items ??= new List<InventoryItemSaveData>();
+
+			for (int i = 0; i < items.Count; i++)
+			{
+				items[i]?.NormalizeAfterLoad();
+			}
+		}
 	}
 
 	[Serializable]
@@ -106,6 +139,12 @@ namespace TLN.Application.Saves
 	{
 		public string itemId;
 		public int amount;
+
+		public void NormalizeAfterLoad()
+		{
+			itemId ??= string.Empty;
+			amount = Math.Max(0, amount);
+		}
 	}
 
 	[Serializable]
@@ -113,6 +152,17 @@ namespace TLN.Application.Saves
 	{
 		public List<string> destroyedSceneEntityIds = new();
 		public List<WorldEntitySaveData> entities = new();
+
+		public void NormalizeAfterLoad()
+		{
+			destroyedSceneEntityIds ??= new List<string>();
+			entities ??= new List<WorldEntitySaveData>();
+
+			for (int i = 0; i < entities.Count; i++)
+			{
+				entities[i]?.NormalizeAfterLoad();
+			}
+		}
 	}
 
 	[Serializable]
@@ -126,6 +176,18 @@ namespace TLN.Application.Saves
 		public QuaternionSaveData rotation;
 
 		public List<WorldComponentSaveData> components = new();
+
+		public void NormalizeAfterLoad()
+		{
+			id ??= string.Empty;
+			prefabId ??= string.Empty;
+			components ??= new List<WorldComponentSaveData>();
+
+			for (int i = 0; i < components.Count; i++)
+			{
+				components[i]?.NormalizeAfterLoad();
+			}
+		}
 	}
 
 	[Serializable]
@@ -133,5 +195,11 @@ namespace TLN.Application.Saves
 	{
 		public string typeId;
 		public string json;
+
+		public void NormalizeAfterLoad()
+		{
+			typeId ??= string.Empty;
+			json ??= string.Empty;
+		}
 	}
 }

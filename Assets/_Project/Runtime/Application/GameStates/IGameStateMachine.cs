@@ -9,6 +9,7 @@ namespace TLN.Application.GameStates
 
 		event Action<GameStateId, GameStateId> StateChanged;
 
+		bool IsCurrent(GameStateId state);
 		void Enter(GameStateId nextState);
 	}
 }

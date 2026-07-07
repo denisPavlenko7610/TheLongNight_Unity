@@ -21,7 +21,6 @@ namespace TLN.Infrastructure.Multiplayer
 		private const string CompatibilityPropertyValue = "the-long-night-v1";
 
 		private readonly NetworkManager _networkManager;
-		private readonly UnityTransport _transport;
 
 		private ISession _session;
 		private bool _isSessionOperationInProgress;
@@ -32,17 +31,12 @@ namespace TLN.Infrastructure.Multiplayer
 			(_networkManager.IsServer || _networkManager.IsClient);
 
 		public bool IsServer => _networkManager != null && _networkManager.IsServer;
-		public bool IsClient => _networkManager != null && _networkManager.IsClient;
-		public bool IsHost => _networkManager != null && _networkManager.IsHost;
-
-		public string JoinCode { get; private set; } = string.Empty;
 
 		public NgoMultiplayerSessionService(NetworkManager networkManager)
 		{
 			_networkManager = networkManager ?? throw new ArgumentNullException(nameof(networkManager));
 
-			_transport = _networkManager.GetComponent<UnityTransport>();
-			if (_transport == null)
+			if (_networkManager.GetComponent<UnityTransport>() == null)
 			{
 				throw new InvalidOperationException("UnityTransport is required on the same GameObject as NetworkManager.");
 			}
@@ -50,17 +44,10 @@ namespace TLN.Infrastructure.Multiplayer
 
 		public async Awaitable<OperationResult<string>> CreateHostSession()
 		{
-			if (_isSessionOperationInProgress)
+			if (!TryBeginSessionOperation(true, out string failureMessage))
 			{
-				return OperationResult<string>.Failure("Multiplayer session operation is already in progress.");
+				return OperationResult<string>.Failure(failureMessage);
 			}
-
-			if (IsMultiplayer)
-			{
-				return OperationResult<string>.Failure("Multiplayer session is already running.");
-			}
-
-			_isSessionOperationInProgress = true;
 
 			try
 			{
@@ -70,9 +57,9 @@ namespace TLN.Infrastructure.Multiplayer
 
 				_session = await MultiplayerService.Instance.CreateSessionAsync(options);
 
-				JoinCode = _session.Code ?? string.Empty;
+				string joinCode = _session.Code ?? string.Empty;
 
-				return OperationResult<string>.Success(JoinCode);
+				return OperationResult<string>.Success(joinCode);
 			}
 			catch (Exception exception)
 			{
@@ -81,16 +68,16 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 			finally
 			{
-				_isSessionOperationInProgress = false;
+				EndSessionOperation();
 			}
 		}
 
 		public async Awaitable<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions()
 		{
-			if (_isSessionOperationInProgress)
+			if (!TryBeginSessionOperation(false, out string failureMessage))
 			{
 				return OperationResult<IReadOnlyList<MultiplayerSessionInfo>>.Failure(
-					"Multiplayer session operation is already in progress."
+					failureMessage
 				);
 			}
 
@@ -110,9 +97,7 @@ namespace TLN.Infrastructure.Multiplayer
 					{
 						ISessionInfo session = results.Sessions[i];
 
-						if (session == null ||
-						    session.IsLocked ||
-						    session.AvailableSlots <= 0)
+						if (!IsJoinableSession(session))
 						{
 							continue;
 						}
@@ -129,37 +114,33 @@ namespace TLN.Infrastructure.Multiplayer
 					$"Failed to browse multiplayer sessions. {exception.Message}"
 				);
 			}
+			finally
+			{
+				EndSessionOperation();
+			}
 		}
 
 		public async Awaitable<OperationResult> JoinSessionById(string sessionId)
 		{
-			if (_isSessionOperationInProgress)
+			if (!TryBeginSessionOperation(true, out string failureMessage))
 			{
-				return OperationResult.Failure("Multiplayer session operation is already in progress.");
+				return OperationResult.Failure(failureMessage);
 			}
-
-			if (IsMultiplayer)
-			{
-				return OperationResult.Failure("Multiplayer session is already running.");
-			}
-
-			if (string.IsNullOrWhiteSpace(sessionId))
-			{
-				return OperationResult.Failure("Session id is empty.");
-			}
-
-			_isSessionOperationInProgress = true;
 
 			try
 			{
+				string trimmedSessionId = sessionId?.Trim();
+				if (string.IsNullOrWhiteSpace(trimmedSessionId))
+				{
+					return OperationResult.Failure("Session id is empty.");
+				}
+
 				await EnsureUnityServicesReady();
 
 				_session = await MultiplayerService.Instance.JoinSessionByIdAsync(
-					sessionId.Trim(),
+					trimmedSessionId,
 					CreateJoinSessionOptions()
 				);
-
-				JoinCode = _session.Code ?? string.Empty;
 
 				return OperationResult.Success();
 			}
@@ -170,39 +151,31 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 			finally
 			{
-				_isSessionOperationInProgress = false;
+				EndSessionOperation();
 			}
 		}
 
 		public async Awaitable<OperationResult> JoinSessionByCode(string joinCode)
 		{
-			if (_isSessionOperationInProgress)
+			if (!TryBeginSessionOperation(true, out string failureMessage))
 			{
-				return OperationResult.Failure("Multiplayer session operation is already in progress.");
+				return OperationResult.Failure(failureMessage);
 			}
-
-			if (IsMultiplayer)
-			{
-				return OperationResult.Failure("Multiplayer session is already running.");
-			}
-
-			if (string.IsNullOrWhiteSpace(joinCode))
-			{
-				return OperationResult.Failure("Join code is empty.");
-			}
-
-			_isSessionOperationInProgress = true;
 
 			try
 			{
+				string trimmedJoinCode = joinCode?.Trim();
+				if (string.IsNullOrWhiteSpace(trimmedJoinCode))
+				{
+					return OperationResult.Failure("Join code is empty.");
+				}
+
 				await EnsureUnityServicesReady();
 
 				_session = await MultiplayerService.Instance.JoinSessionByCodeAsync(
-					joinCode.Trim(),
+					trimmedJoinCode,
 					CreateJoinSessionOptions()
 				);
-
-				JoinCode = joinCode.Trim();
 
 				return OperationResult.Success();
 			}
@@ -213,19 +186,12 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 			finally
 			{
-				_isSessionOperationInProgress = false;
+				EndSessionOperation();
 			}
-		}
-
-		public void Shutdown()
-		{
-			_ = ShutdownWithoutThrowing();
 		}
 
 		public async Awaitable ShutdownAsync()
 		{
-			JoinCode = string.Empty;
-
 			ISession session = _session;
 			_session = null;
 
@@ -246,6 +212,30 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 
 			await WaitForNetworkManagerShutdown();
+		}
+
+		private bool TryBeginSessionOperation(bool requireNoActiveSession, out string failureMessage)
+		{
+			if (_isSessionOperationInProgress)
+			{
+				failureMessage = "Multiplayer session operation is already in progress.";
+				return false;
+			}
+
+			if (requireNoActiveSession && IsMultiplayer)
+			{
+				failureMessage = "Multiplayer session is already running.";
+				return false;
+			}
+
+			_isSessionOperationInProgress = true;
+			failureMessage = string.Empty;
+			return true;
+		}
+
+		private void EndSessionOperation()
+		{
+			_isSessionOperationInProgress = false;
 		}
 
 		private static SessionOptions CreateHostSessionOptions()
@@ -289,6 +279,13 @@ namespace TLN.Infrastructure.Multiplayer
 			{
 				Type = SessionType
 			};
+		}
+
+		private static bool IsJoinableSession(ISessionInfo session)
+		{
+			return session != null &&
+			       !session.IsLocked &&
+			       session.AvailableSlots > 0;
 		}
 
 		private static MultiplayerSessionInfo CreateSessionInfo(ISessionInfo session)
@@ -373,15 +370,5 @@ namespace TLN.Infrastructure.Multiplayer
 			}
 		}
 
-		private async Awaitable ShutdownWithoutThrowing()
-		{
-			try
-			{
-				await ShutdownAsync();
-			}
-			catch
-			{
-			}
-		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using TLN.Application.Input;
+using System;
+using TLN.Application.Input;
 using TLN.Application.Localization;
 using TLN.Gameplay.Sleep;
 using TLN.UI.Common;
@@ -26,6 +27,7 @@ namespace TLN.UI.Sleep
 		private Button _pickUpButton;
 
 		private BedrollActor _currentBedroll;
+		private IDisposable _inputModeScope;
 
 		private SleepService _sleepService;
 		private IInputModeService _inputModeService;
@@ -79,6 +81,7 @@ namespace TLN.UI.Sleep
 			_cancelButton.clicked -= Hide;
 
 			_pickUpButton.clicked -= OnPickUpClicked;
+			ReleaseInputMode();
 		}
 
 		private void RefreshLocalizedText()
@@ -102,7 +105,7 @@ namespace TLN.UI.Sleep
 
 			RefreshPickUpButton();
 
-			_inputModeService?.SetUIMode();
+			AcquireInputMode();
 		}
 
 		public void Hide()
@@ -115,7 +118,7 @@ namespace TLN.UI.Sleep
 				_root.RemoveFromClassList(VisibleClassName);
 			}
 
-			_inputModeService?.SetGameplayMode();
+			ReleaseInputMode();
 		}
 
 		private void RefreshPickUpButton()
@@ -161,5 +164,16 @@ namespace TLN.UI.Sleep
 		private void OnSleep4Clicked() => SleepAndClose(4);
 
 		private void OnSleep8Clicked() => SleepAndClose(8);
+
+		private void AcquireInputMode()
+		{
+			_inputModeScope ??= _inputModeService?.AcquireUIMode();
+		}
+
+		private void ReleaseInputMode()
+		{
+			_inputModeScope?.Dispose();
+			_inputModeScope = null;
+		}
 	}
 }

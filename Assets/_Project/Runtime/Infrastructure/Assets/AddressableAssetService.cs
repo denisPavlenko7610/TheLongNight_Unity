@@ -10,7 +10,8 @@ namespace TLN.Infrastructure.Assets
 {
 	public sealed class AddressableAssetService : IAddressableAssetService, IDisposable
 	{
-		private readonly Dictionary<string, CachedOperation> _cachedOperations = new();
+		private readonly Dictionary<AssetCacheKey, CachedOperation> _cachedOperations = new();
+		private bool _isDisposed;
 
 		public void LoadSprite(AssetReferenceSprite spriteReference, Action<Sprite> completed)
 		{
@@ -22,11 +23,29 @@ namespace TLN.Infrastructure.Assets
 			LoadAsset(prefabReference, completed);
 		}
 
-		public void LoadAsset<TAsset>(AssetReference assetReference, Action<TAsset> completed)
+		public void Dispose()
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_isDisposed = true;
+			ReleaseAll();
+		}
+
+		private void LoadAsset<TAsset>(AssetReference assetReference, Action<TAsset> completed)
 			where TAsset : UnityEngine.Object
 		{
 			if (completed == null)
 			{
+				return;
+			}
+
+			if (_isDisposed)
+			{
+				TLNLogger.LogWarning($"Addressables: cannot load {typeof(TAsset).Name}. Service is disposed.");
+				completed.Invoke(null);
 				return;
 			}
 
@@ -44,19 +63,26 @@ namespace TLN.Infrastructure.Assets
 				return;
 			}
 
-			string key = CreateKey<TAsset>(assetReference);
+			AssetCacheKey key = CreateKey<TAsset>(assetReference);
 
 			if (_cachedOperations.TryGetValue(key, out CachedOperation cachedOperation))
 			{
-				if (cachedOperation.Handle.IsValid() && cachedOperation.Handle.IsDone)
+				if (!cachedOperation.IsValid)
+				{
+					_cachedOperations.Remove(key);
+					cachedOperation.Release();
+				}
+				else if (cachedOperation.IsDone)
 				{
 					TAsset loadedAsset = cachedOperation.Handle.Result as TAsset;
 					completed.Invoke(loadedAsset);
 					return;
 				}
-
-				cachedOperation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
-				return;
+				else
+				{
+					cachedOperation.AddCompletedCallback(asset => completed.Invoke(asset as TAsset));
+					return;
+				}
 			}
 
 			AsyncOperationHandle<TAsset> handle = Addressables.LoadAssetAsync<TAsset>(assetReference);
@@ -72,11 +98,6 @@ namespace TLN.Infrastructure.Assets
 			};
 		}
 
-		public void Dispose()
-		{
-			ReleaseAll();
-		}
-
 		private void ReleaseAll()
 		{
 			foreach (CachedOperation operation in _cachedOperations.Values)
@@ -87,7 +108,7 @@ namespace TLN.Infrastructure.Assets
 			_cachedOperations.Clear();
 		}
 
-		private void OnAssetLoaded<TAsset>(string key, AsyncOperationHandle<TAsset> handle)
+		private void OnAssetLoaded<TAsset>(AssetCacheKey key, AsyncOperationHandle<TAsset> handle)
 			where TAsset : UnityEngine.Object
 		{
 			if (!_cachedOperations.TryGetValue(key, out CachedOperation operation))
@@ -122,9 +143,41 @@ namespace TLN.Infrastructure.Assets
 			}
 		}
 
-		private static string CreateKey<TAsset>(AssetReference assetReference) where TAsset : UnityEngine.Object
+		private static AssetCacheKey CreateKey<TAsset>(AssetReference assetReference) where TAsset : UnityEngine.Object
 		{
-			return $"{typeof(TAsset).FullName}:{assetReference.RuntimeKey}";
+			return new AssetCacheKey(typeof(TAsset), assetReference.RuntimeKey);
+		}
+
+		private readonly struct AssetCacheKey : IEquatable<AssetCacheKey>
+		{
+			private readonly Type _assetType;
+			private readonly object _runtimeKey;
+
+			public AssetCacheKey(Type assetType, object runtimeKey)
+			{
+				_assetType = assetType;
+				_runtimeKey = runtimeKey;
+			}
+
+			public bool Equals(AssetCacheKey other)
+			{
+				return _assetType == other._assetType && Equals(_runtimeKey, other._runtimeKey);
+			}
+
+			public override bool Equals(object obj)
+			{
+				return obj is AssetCacheKey other && Equals(other);
+			}
+
+			public override int GetHashCode()
+			{
+				return HashCode.Combine(_assetType, _runtimeKey);
+			}
+
+			public override string ToString()
+			{
+				return $"{_assetType.Name}:{_runtimeKey}";
+			}
 		}
 
 		private sealed class CachedOperation
@@ -132,6 +185,8 @@ namespace TLN.Infrastructure.Assets
 			private readonly List<Action<UnityEngine.Object>> _completedCallbacks = new();
 
 			public AsyncOperationHandle Handle { get; }
+			public bool IsValid => Handle.IsValid();
+			public bool IsDone => Handle.IsDone;
 
 			public CachedOperation(AsyncOperationHandle handle)
 			{

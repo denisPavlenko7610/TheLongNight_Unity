@@ -408,7 +408,7 @@ namespace TLN.UI.MainMenu
 			finally
 			{
 				if (_gameStateMachine != null &&
-				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				    _gameStateMachine.IsCurrent(GameStateId.MainMenu))
 				{
 					SetMultiplayerOperationInProgress(false);
 				}
@@ -466,7 +466,7 @@ namespace TLN.UI.MainMenu
 			finally
 			{
 				if (_gameStateMachine != null &&
-				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				    _gameStateMachine.IsCurrent(GameStateId.MainMenu))
 				{
 					SetMultiplayerOperationInProgress(false);
 				}
@@ -505,7 +505,7 @@ namespace TLN.UI.MainMenu
 			finally
 			{
 				if (_gameStateMachine != null &&
-				    _gameStateMachine.CurrentState == GameStateId.MainMenu)
+				    _gameStateMachine.IsCurrent(GameStateId.MainMenu))
 				{
 					SetMultiplayerOperationInProgress(false);
 				}

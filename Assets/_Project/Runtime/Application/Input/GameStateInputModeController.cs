@@ -19,7 +19,7 @@ namespace TLN.Application.Input
 		{
 			_gameStateMachine.StateChanged += OnGameStateChanged;
 
-			if (_gameStateMachine.CurrentState != GameStateId.None)
+			if (!_gameStateMachine.IsCurrent(GameStateId.None))
 			{
 				ApplyState(_gameStateMachine.CurrentState);
 			}

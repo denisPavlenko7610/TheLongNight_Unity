@@ -162,7 +162,7 @@ namespace TLN.Gameplay.Survival.Networking
 				return;
 			}
 
-			if (_gameStateMachine.CurrentState != GameStateId.Playing)
+			if (!_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}
@@ -426,7 +426,7 @@ namespace TLN.Gameplay.Survival.Networking
 		{
 			return _isConstructed &&
 			       IsServer &&
-			       _gameStateMachine.CurrentState == GameStateId.Playing;
+			       _gameStateMachine.IsCurrent(GameStateId.Playing);
 		}
 
 		private void ApplyConsumableLocally(ConsumableItemDefinition consumable)
@@ -455,7 +455,7 @@ namespace TLN.Gameplay.Survival.Networking
 				return false;
 			}
 
-			if (_gameStateMachine.CurrentState != GameStateId.Playing)
+			if (!_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return false;
 			}

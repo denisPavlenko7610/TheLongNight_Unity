@@ -11,6 +11,6 @@ namespace TLN.Gameplay.Items
 		[SerializeField] private float _placeDistance = 1.6f;
 
 		public AssetReferenceGameObject PlacedPrefabReference => _placedPrefabReference;
-		public float PlaceDistance => _placeDistance;
+		public float PlaceDistance => Mathf.Max(0f, _placeDistance);
 	}
 }

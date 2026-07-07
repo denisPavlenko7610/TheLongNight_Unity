@@ -75,7 +75,7 @@ namespace TLN.Gameplay.Time.Networking
 			}
 
 			if (_gameStateMachine != null &&
-			    _gameStateMachine.CurrentState != GameStateId.Playing)
+			    !_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

@@ -38,7 +38,7 @@ namespace TLN.Gameplay.Building
 				return false;
 			}
 
-			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
+			if (recipe.Ingredients.Count == 0)
 			{
 				failureReason = Loc.NoIngredients;
 				return false;

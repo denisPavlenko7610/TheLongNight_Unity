@@ -58,7 +58,7 @@ namespace TLN.Bootstrap
 			);
 			builder.Register<ICursorService, CursorService>(Lifetime.Singleton);
 			builder.Register<IInputModeService, InputModeService>(Lifetime.Singleton);
-			builder.Register<IGameTimeScaleService, GameTimeScaleService>(Lifetime.Singleton);
+			builder.Register<IGamePauseService, UnityGamePauseService>(Lifetime.Singleton);
 
 			builder.Register<NotificationService>(Lifetime.Singleton).As<INotificationService>();
 			builder.Register<AddressableAssetService>(Lifetime.Singleton).As<IAddressableAssetService>();
@@ -74,8 +74,8 @@ namespace TLN.Bootstrap
 			);
 			builder.RegisterEntryPoint<ProjectStartupEntryPoint>();
 
-			builder.Register<SaveSessionService>(Lifetime.Singleton);
 			builder.Register<JsonSaveRepository>(Lifetime.Singleton).As<ISaveRepository>();
+			builder.Register<SaveSessionService>(Lifetime.Singleton);
 			builder.Register<GameSettingsService>(Lifetime.Singleton).As<IGameSettingsService>();
 		}
 	}

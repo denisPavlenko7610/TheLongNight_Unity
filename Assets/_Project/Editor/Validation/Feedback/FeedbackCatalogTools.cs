@@ -27,17 +27,17 @@ namespace TLN.Editor.Feedback
 				return;
 			}
 
-			ValidateDefinitions(definitions);
+			FeedbackDefinition[] catalogDefinitions = BuildCatalogDefinitions(definitions);
 
 			for (int i = 0; i < catalogs.Length; i++)
 			{
-				catalogs[i].EditorSetDefinitions(definitions);
+				catalogs[i].EditorSetDefinitions(catalogDefinitions);
 			}
 
 			AssetDatabase.SaveAssets();
 
 			Debug.Log(
-				$"Feedback catalogs rebuilt. Catalogs: {catalogs.Length}. Definitions: {definitions.Length}."
+				$"Feedback catalogs rebuilt. Catalogs: {catalogs.Length}. Definitions: {catalogDefinitions.Length}."
 			);
 		}
 
@@ -69,9 +69,10 @@ namespace TLN.Editor.Feedback
 			return assets.ToArray();
 		}
 
-		private static void ValidateDefinitions(FeedbackDefinition[] definitions)
+		private static FeedbackDefinition[] BuildCatalogDefinitions(FeedbackDefinition[] definitions)
 		{
 			Dictionary<FeedbackEventId, FeedbackDefinition> definitionsById = new();
+			List<FeedbackDefinition> catalogDefinitions = new();
 
 			for (int i = 0; i < definitions.Length; i++)
 			{
@@ -98,7 +99,10 @@ namespace TLN.Editor.Feedback
 				}
 
 				definitionsById.Add(definition.EventId, definition);
+				catalogDefinitions.Add(definition);
 			}
+
+			return catalogDefinitions.ToArray();
 		}
 	}
 }

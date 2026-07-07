@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TLN.Application.Input;
 using TLN.Application.Localization;
@@ -30,6 +31,7 @@ namespace TLN.UI.Campfire
 		private Button _closeButton;
 
 		private CampfireActor _currentCampfire;
+		private IDisposable _inputModeScope;
 
 		private IInventoryService _inventoryService;
 		private IInputModeService _inputModeService;
@@ -84,6 +86,7 @@ namespace TLN.UI.Campfire
 			_extinguishButton.clicked -= OnExtinguishClicked;
 			_closeButton.clicked -= Hide;
 
+			ReleaseInputMode();
 			UnsubscribeFromCurrentCampfire();
 		}
 
@@ -101,7 +104,7 @@ namespace TLN.UI.Campfire
 			Refresh();
 
 			_root.AddToClassList(VisibleClassName);
-			_inputModeService?.SetUIMode();
+			AcquireInputMode();
 		}
 
 		public void Hide()
@@ -109,7 +112,7 @@ namespace TLN.UI.Campfire
 			UnsubscribeFromCurrentCampfire();
 
 			_root?.RemoveFromClassList(VisibleClassName);
-			_inputModeService?.SetGameplayMode();
+			ReleaseInputMode();
 		}
 
 		private void Refresh()
@@ -356,6 +359,17 @@ namespace TLN.UI.Campfire
 			}
 
 			_currentCampfire = null;
+		}
+
+		private void AcquireInputMode()
+		{
+			_inputModeScope ??= _inputModeService?.AcquireUIMode();
+		}
+
+		private void ReleaseInputMode()
+		{
+			_inputModeScope?.Dispose();
+			_inputModeScope = null;
 		}
 	}
 }

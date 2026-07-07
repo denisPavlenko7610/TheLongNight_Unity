@@ -81,7 +81,7 @@ namespace TLN.Gameplay.World
 			}
 
 			if (_gameStateMachine != null &&
-			    _gameStateMachine.CurrentState == GameStateId.Loading)
+			    _gameStateMachine.IsCurrent(GameStateId.Loading))
 			{
 				return;
 			}

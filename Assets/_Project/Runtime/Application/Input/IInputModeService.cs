@@ -6,14 +6,12 @@ namespace TLN.Application.Input
 {
 	public interface IInputModeService : IGameService
 	{
-		InputModeId CurrentMode { get; }
-
 		bool CanUseGameplayInput { get; }
 		bool CanUseMovementInput { get; }
 		bool CanUseLookInput { get; }
 
-		event Action<InputModeId, InputModeId> ModeChanged;
-
+		bool IsCurrent(InputModeId mode);
+		IDisposable AcquireUIMode();
 		void SetGameplayMode();
 		void SetUIMode();
 		void SetBlockedMode();

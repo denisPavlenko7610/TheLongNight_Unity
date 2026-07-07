@@ -244,7 +244,7 @@ namespace TLN.Gameplay.Weather
 				return;
 			}
 
-			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
+			if (_gameStateMachine != null && !_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

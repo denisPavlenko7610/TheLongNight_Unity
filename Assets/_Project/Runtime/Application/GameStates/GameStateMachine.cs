@@ -8,6 +8,11 @@ namespace TLN.Application.GameStates
 
 		public event Action<GameStateId, GameStateId> StateChanged;
 
+		public bool IsCurrent(GameStateId state)
+		{
+			return CurrentState == state;
+		}
+
 		public void Enter(GameStateId nextState)
 		{
 			if (nextState == GameStateId.None)

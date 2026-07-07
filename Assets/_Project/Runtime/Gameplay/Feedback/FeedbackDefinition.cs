@@ -36,14 +36,32 @@ namespace TLN.Gameplay.Feedback
 		public UnityAudioPriority Priority => _priority;
 		public AudioBusId AudioBusId => _audioBusId;
 		public AudioClip[] AudioClips => _audioClips;
-		public float Volume => _volume;
-		public float MinPitch => _minPitch;
-		public float MaxPitch => _maxPitch;
-		public float SpatialBlend => _spatialBlend;
-		public float MinDistance => _minDistance;
-		public float MaxDistance => _maxDistance;
+		public float Volume => Mathf.Clamp01(_volume);
+		public float MinPitch => Mathf.Min(_minPitch, _maxPitch);
+		public float MaxPitch => Mathf.Max(_minPitch, _maxPitch);
+		public float SpatialBlend => Mathf.Clamp01(_spatialBlend);
+		public float MinDistance => Mathf.Max(0f, Mathf.Min(_minDistance, _maxDistance));
+		public float MaxDistance => Mathf.Max(MinDistance, Mathf.Max(_minDistance, _maxDistance));
 		public GameObject EffectPrefab => _effectPrefab;
-		public bool HasAudio => _audioClips != null && _audioClips.Length > 0;
+		public bool HasAudio => HasAnyAudioClip();
 		public bool HasEffect => _effectPrefab != null;
+
+		private bool HasAnyAudioClip()
+		{
+			if (_audioClips == null)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < _audioClips.Length; i++)
+			{
+				if (_audioClips[i] != null)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 }

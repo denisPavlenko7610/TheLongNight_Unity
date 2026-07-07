@@ -43,7 +43,7 @@ namespace TLN.UI.Building
 
 			builder.Append(recipe.DisplayName);
 
-			if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
+			if (recipe.Ingredients.Count == 0)
 			{
 				return builder.ToString();
 			}

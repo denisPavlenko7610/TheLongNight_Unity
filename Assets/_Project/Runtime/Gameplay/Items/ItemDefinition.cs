@@ -28,9 +28,9 @@ namespace TLN.Gameplay.Items
 		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
 		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
 		public ItemCategory Category => _category;
-		public float Weight => _weight;
+		public float Weight => Mathf.Max(0f, _weight);
 		public bool IsStackable => _isStackable;
-		public int MaxStackSize => _maxStackSize;
+		public int MaxStackSize => _isStackable ? Mathf.Max(1, _maxStackSize) : 1;
 		public AssetReferenceSprite IconReference => _iconReference;
 		public ItemUseKind UseKind => _useKind;
 

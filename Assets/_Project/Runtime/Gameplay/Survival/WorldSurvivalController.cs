@@ -39,7 +39,7 @@ namespace TLN.Gameplay.Survival
 		private void Update()
 		{
 			if (_gameStateMachine != null &&
-			    _gameStateMachine.CurrentState != GameStateId.Playing)
+			    !_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

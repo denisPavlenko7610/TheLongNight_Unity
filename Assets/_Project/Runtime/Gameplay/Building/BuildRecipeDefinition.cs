@@ -23,8 +23,8 @@ namespace TLN.Gameplay.Building
 		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
 		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
 		public GameObject PlacedPrefab => _placedPrefab;
-		public float PlaceDistance => _placeDistance;
-		public IReadOnlyList<BuildRecipeIngredient> Ingredients => _ingredients;
+		public float PlaceDistance => Mathf.Max(0f, _placeDistance);
+		public IReadOnlyList<BuildRecipeIngredient> Ingredients => _ingredients ?? System.Array.Empty<BuildRecipeIngredient>();
 
 		private static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
 		{

@@ -149,7 +149,7 @@ namespace TLN.Gameplay.World
 				return;
 			}
 
-			if (_gameStateMachine.CurrentState == GameStateId.Playing)
+			if (_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

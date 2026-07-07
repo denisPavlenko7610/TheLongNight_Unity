@@ -25,41 +25,29 @@ namespace TLN.Infrastructure.Feedback
 		{
 			_catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
 			_audioMixerService = audioMixerService;
-
-			CreatePlayers();
 		}
 
 		public void Play(FeedbackEventId eventId)
 		{
-			if (!_catalog.TryGet(eventId, out FeedbackDefinition definition))
-			{
-				return;
-			}
-
-			if (!EnsurePlayers())
+			if (!TryPrepareFeedback(eventId, out FeedbackDefinition definition))
 			{
 				return;
 			}
 
 			Vector3 position = _root.transform.position;
 
-			_audioPlayer.Play(definition, position, false);
+			_audioPlayer.Play2D(definition, position);
 			_vfxPlayer.Play(definition, position);
 		}
 
 		public void PlayAt(FeedbackEventId eventId, Vector3 position)
 		{
-			if (!_catalog.TryGet(eventId, out FeedbackDefinition definition))
+			if (!TryPrepareFeedback(eventId, out FeedbackDefinition definition))
 			{
 				return;
 			}
 
-			if (!EnsurePlayers())
-			{
-				return;
-			}
-
-			_audioPlayer.Play(definition, position, true);
+			_audioPlayer.PlaySpatial(definition, position);
 			_vfxPlayer.Play(definition, position);
 		}
 
@@ -107,7 +95,22 @@ namespace TLN.Infrastructure.Feedback
 
 			DisposePlayers();
 			CreatePlayers();
-			return true;
+			return _root != null && _audioPlayer != null && _vfxPlayer != null;
+		}
+
+		private bool TryPrepareFeedback(
+			FeedbackEventId eventId,
+			out FeedbackDefinition definition
+		)
+		{
+			definition = null;
+
+			if (!_catalog.TryGet(eventId, out definition))
+			{
+				return false;
+			}
+
+			return EnsurePlayers();
 		}
 
 		private void CreatePlayers()

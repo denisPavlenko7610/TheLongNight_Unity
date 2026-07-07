@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
+using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
@@ -15,8 +16,6 @@ namespace TLN.Gameplay.Saves
 {
 	public sealed class GameSaveService : IGameSaveService
 	{
-		private const string WorldSceneName = "World";
-
 		private readonly ISaveRepository _saveRepository;
 		private readonly SaveSessionService _saveSessionService;
 		private readonly IInventoryService _inventoryService;
@@ -118,10 +117,10 @@ namespace TLN.Gameplay.Saves
 		{
 			GameSaveData data = new GameSaveData
 			{
-				version = 1,
+				version = GameSaveData.CurrentVersion,
 				slotId = _saveSessionService.ActiveSlotId,
 				savedAtUtc = DateTime.UtcNow.ToString("O"),
-				sceneName = WorldSceneName,
+				sceneName = SceneNames.World,
 				saveReason = trigger.ToString()
 			};
 

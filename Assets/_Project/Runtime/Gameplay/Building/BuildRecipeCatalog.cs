@@ -8,6 +8,6 @@ namespace TLN.Gameplay.Building
 	{
 		[SerializeField] private BuildRecipeDefinition[] _recipes;
 
-		public IReadOnlyList<BuildRecipeDefinition> Recipes => _recipes;
+		public IReadOnlyList<BuildRecipeDefinition> Recipes => _recipes ?? System.Array.Empty<BuildRecipeDefinition>();
 	}
 }

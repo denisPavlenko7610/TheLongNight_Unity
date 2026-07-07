@@ -1,3 +1,5 @@
+using System;
+
 namespace TLN.Application.Multiplayer
 {
 	public readonly struct MultiplayerSessionInfo
@@ -12,8 +14,8 @@ namespace TLN.Application.Multiplayer
 		{
 			Id = id ?? string.Empty;
 			Name = name ?? string.Empty;
-			AvailableSlots = availableSlots;
-			MaxPlayers = maxPlayers;
+			MaxPlayers = Math.Max(0, maxPlayers);
+			AvailableSlots = Math.Max(0, Math.Min(MaxPlayers, availableSlots));
 			HasPassword = hasPassword;
 		}
 
@@ -22,6 +24,6 @@ namespace TLN.Application.Multiplayer
 		public int AvailableSlots { get; }
 		public int MaxPlayers { get; }
 		public bool HasPassword { get; }
-		public int PlayerCount => MaxPlayers - AvailableSlots;
+		public int PlayerCount => Math.Max(0, MaxPlayers - AvailableSlots);
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TLN.Application.Audio;
 using TLN.Gameplay.Feedback;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace TLN.Infrastructure.Feedback
@@ -15,6 +16,7 @@ namespace TLN.Infrastructure.Feedback
 		private readonly Transform _root;
 		private readonly IAudioMixerService _audioMixerService;
 		private readonly List<AudioSource> _sources = new();
+		private bool _isDisposed;
 
 		public PooledAudioPlayer(Transform root, IAudioMixerService audioMixerService = null)
 		{
@@ -27,8 +29,23 @@ namespace TLN.Infrastructure.Feedback
 			}
 		}
 
-		public void Play(FeedbackDefinition definition, Vector3 position, bool spatial)
+		public void Play2D(FeedbackDefinition definition, Vector3 position)
 		{
+			Play(definition, position, 0f);
+		}
+
+		public void PlaySpatial(FeedbackDefinition definition, Vector3 position)
+		{
+			Play(definition, position, definition?.SpatialBlend ?? 0f);
+		}
+
+		private void Play(FeedbackDefinition definition, Vector3 position, float spatialBlend)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
 			if (definition == null || !definition.HasAudio)
 			{
 				return;
@@ -51,7 +68,7 @@ namespace TLN.Infrastructure.Feedback
 			source.clip = clip;
 			source.volume = definition.Volume;
 			source.pitch = Random.Range(definition.MinPitch, definition.MaxPitch);
-			source.spatialBlend = spatial ? definition.SpatialBlend : 0f;
+			source.spatialBlend = spatialBlend;
 			source.minDistance = definition.MinDistance;
 			source.maxDistance = definition.MaxDistance;
 			source.priority = (int)definition.Priority;
@@ -62,6 +79,22 @@ namespace TLN.Infrastructure.Feedback
 
 		public void Dispose()
 		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_isDisposed = true;
+
+			for (int i = 0; i < _sources.Count; i++)
+			{
+				AudioSource source = _sources[i];
+				if (source != null)
+				{
+					Object.Destroy(source.gameObject);
+				}
+			}
+
 			_sources.Clear();
 		}
 
@@ -88,7 +121,8 @@ namespace TLN.Infrastructure.Feedback
 		private AudioSource FindReplacementSource(FeedbackDefinition.UnityAudioPriority incomingPriority)
 		{
 			AudioSource bestSource = null;
-			FeedbackDefinition.UnityAudioPriority bestPriority = FeedbackDefinition.UnityAudioPriority.Critical;
+			FeedbackDefinition.UnityAudioPriority bestReplacementPriority =
+				FeedbackDefinition.UnityAudioPriority.Critical;
 			float bestProgress = -1f;
 
 			for (int i = 0; i < _sources.Count; i++)
@@ -99,26 +133,54 @@ namespace TLN.Infrastructure.Feedback
 					continue;
 				}
 
-				FeedbackDefinition.UnityAudioPriority sourcePriority = (FeedbackDefinition.UnityAudioPriority)source.priority;
-				if (sourcePriority < incomingPriority)
+				FeedbackDefinition.UnityAudioPriority playingPriority =
+					(FeedbackDefinition.UnityAudioPriority)source.priority;
+
+				if (!CanInterruptPlayingSource(playingPriority, incomingPriority))
 				{
 					continue;
 				}
 
 				float progress = GetPlaybackProgress(source);
-				if (
-					bestSource == null
-					|| sourcePriority > bestPriority
-					|| sourcePriority == bestPriority && progress > bestProgress
-				)
+				if (IsBetterReplacementCandidate(
+					    bestSource,
+					    playingPriority,
+					    bestReplacementPriority,
+					    progress,
+					    bestProgress
+				    ))
 				{
 					bestProgress = progress;
-					bestPriority = sourcePriority;
+					bestReplacementPriority = playingPriority;
 					bestSource = source;
 				}
 			}
 
 			return bestSource;
+		}
+
+		private static bool CanInterruptPlayingSource(
+			FeedbackDefinition.UnityAudioPriority playingPriority,
+			FeedbackDefinition.UnityAudioPriority incomingPriority
+		)
+		{
+			return playingPriority >= incomingPriority;
+		}
+
+		private static bool IsBetterReplacementCandidate(
+			AudioSource currentBestSource,
+			FeedbackDefinition.UnityAudioPriority candidatePriority,
+			FeedbackDefinition.UnityAudioPriority currentBestPriority,
+			float candidateProgress,
+			float currentBestProgress
+		)
+		{
+			return currentBestSource == null
+			       || candidatePriority > currentBestPriority
+			       || (
+				       candidatePriority == currentBestPriority &&
+				       candidateProgress > currentBestProgress
+			       );
 		}
 
 		private static float GetPlaybackProgress(AudioSource source)
@@ -157,8 +219,38 @@ namespace TLN.Infrastructure.Feedback
 				return null;
 			}
 
-			int index = Random.Range(0, clips.Length);
-			return clips[index];
+			int validClipCount = 0;
+			for (int i = 0; i < clips.Length; i++)
+			{
+				if (clips[i] != null)
+				{
+					validClipCount++;
+				}
+			}
+
+			if (validClipCount == 0)
+			{
+				return null;
+			}
+
+			int selectedClipIndex = Random.Range(0, validClipCount);
+			for (int i = 0; i < clips.Length; i++)
+			{
+				AudioClip clip = clips[i];
+				if (clip == null)
+				{
+					continue;
+				}
+
+				if (selectedClipIndex == 0)
+				{
+					return clip;
+				}
+
+				selectedClipIndex--;
+			}
+
+			return null;
 		}
 	}
 }

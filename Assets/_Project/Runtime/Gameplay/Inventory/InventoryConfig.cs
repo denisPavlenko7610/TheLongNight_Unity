@@ -7,6 +7,6 @@ namespace TLN.Gameplay.Inventory
 	{
 		[SerializeField] private float _maxCarryWeight = 30f;
 
-		public float MaxCarryWeight => _maxCarryWeight;
+		public float MaxCarryWeight => Mathf.Max(0f, _maxCarryWeight);
 	}
 }

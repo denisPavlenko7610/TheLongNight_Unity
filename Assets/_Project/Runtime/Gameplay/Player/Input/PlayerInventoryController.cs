@@ -28,7 +28,7 @@ namespace TLN.Gameplay.Player.Input
 				return;
 			}
 
-			if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
+			if (_gameStateMachine != null && !_gameStateMachine.IsCurrent(GameStateId.Playing))
 			{
 				return;
 			}

@@ -62,9 +62,15 @@ namespace TLN.Infrastructure.Saves
 				try
 				{
 					string json = File.ReadAllText(path);
-					return string.IsNullOrWhiteSpace(json)
-						? null
-						: JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
+					if (string.IsNullOrWhiteSpace(json))
+					{
+						return null;
+					}
+
+					GameSaveData data = JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
+					data?.NormalizeAfterLoad();
+
+					return data;
 				}
 				catch (Exception exception)
 				{
@@ -88,6 +94,8 @@ namespace TLN.Infrastructure.Saves
 				{
 					throw new ArgumentOutOfRangeException(nameof(data.slotId), data.slotId, "Invalid save slot.");
 				}
+
+				data.NormalizeAfterLoad();
 
 				Directory.CreateDirectory(EnsureSaveDirectoryPath());
 

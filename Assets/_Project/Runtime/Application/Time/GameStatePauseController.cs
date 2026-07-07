@@ -1,6 +1,5 @@
 using System;
 using TLN.Application.GameStates;
-using UnityEngine;
 using VContainer.Unity;
 
 namespace TLN.Application.Time
@@ -8,30 +7,24 @@ namespace TLN.Application.Time
 	public sealed class GameStatePauseController : IInitializable, IDisposable
 	{
 		private readonly IGameStateMachine _gameStateMachine;
-		private readonly IGameTimeScaleService _timeScaleService;
+		private readonly IGamePauseService _pauseService;
 
-		public GameStatePauseController(IGameStateMachine gameStateMachine, IGameTimeScaleService timeScaleService)
+		public GameStatePauseController(IGameStateMachine gameStateMachine, IGamePauseService pauseService)
 		{
-			_gameStateMachine = gameStateMachine;
-			_timeScaleService = timeScaleService;
+			_gameStateMachine = gameStateMachine ?? throw new ArgumentNullException(nameof(gameStateMachine));
+			_pauseService = pauseService ?? throw new ArgumentNullException(nameof(pauseService));
 		}
 
 		public void Initialize()
 		{
 			_gameStateMachine.StateChanged += OnGameStateChanged;
-
-			if (_gameStateMachine.CurrentState != GameStateId.None)
-			{
-				ApplyState(_gameStateMachine.CurrentState);
-			}
+			ApplyState(_gameStateMachine.CurrentState);
 		}
 
 		public void Dispose()
 		{
 			_gameStateMachine.StateChanged -= OnGameStateChanged;
-
-			_timeScaleService.SetNormal();
-			AudioListener.pause = false;
+			_pauseService.Reset();
 		}
 
 		private void OnGameStateChanged(GameStateId _, GameStateId nextState)
@@ -41,18 +34,18 @@ namespace TLN.Application.Time
 
 		private void ApplyState(GameStateId state)
 		{
-			bool shouldStopSimulation = state is GameStateId.Paused or GameStateId.Loading;
+			_pauseService.SetSimulationPaused(ShouldPauseSimulation(state));
+			_pauseService.SetAudioPaused(ShouldPauseAudio(state));
+		}
 
-			if (shouldStopSimulation)
-			{
-				_timeScaleService.SetPaused();
-			}
-			else
-			{
-				_timeScaleService.SetNormal();
-			}
+		private static bool ShouldPauseSimulation(GameStateId state)
+		{
+			return state is GameStateId.Paused or GameStateId.Loading;
+		}
 
-			AudioListener.pause = state == GameStateId.Paused;
+		private static bool ShouldPauseAudio(GameStateId state)
+		{
+			return state == GameStateId.Paused;
 		}
 	}
 }

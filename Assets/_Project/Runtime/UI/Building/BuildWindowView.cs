@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TLN.Application.Input;
 using TLN.Application.Localization;
@@ -26,6 +27,7 @@ namespace TLN.UI.Building
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
 
+		private IDisposable _inputModeScope;
 		private bool _isVisible;
 
 		[Inject]
@@ -67,6 +69,7 @@ namespace TLN.UI.Building
 			}
 
 			ClearRecipes();
+			ReleaseInputMode();
 		}
 
 		public void Toggle()
@@ -87,7 +90,7 @@ namespace TLN.UI.Building
 			_root?.RemoveFromClassList(VisibleClassName);
 			_root?.SetVisible(false);
 
-			_inputModeService?.SetGameplayMode();
+			ReleaseInputMode();
 		}
 
 		private void Show()
@@ -98,14 +101,14 @@ namespace TLN.UI.Building
 			_root?.SetVisible(true);
 			_root?.AddToClassList(VisibleClassName);
 
-			_inputModeService?.SetUIMode();
+			AcquireInputMode();
 		}
 
 		private void RefreshRecipes()
 		{
 			ClearRecipes();
 
-			if (_recipeCatalog == null || _recipeCatalog.Recipes == null)
+			if (_recipeCatalog == null)
 			{
 				_notificationService?.Show(Loc.BuildRecipesMissing);
 				return;
@@ -159,6 +162,17 @@ namespace TLN.UI.Building
 			{
 				_recipesScrollView.Clear();
 			}
+		}
+
+		private void AcquireInputMode()
+		{
+			_inputModeScope ??= _inputModeService?.AcquireUIMode();
+		}
+
+		private void ReleaseInputMode()
+		{
+			_inputModeScope?.Dispose();
+			_inputModeScope = null;
 		}
 	}
 }

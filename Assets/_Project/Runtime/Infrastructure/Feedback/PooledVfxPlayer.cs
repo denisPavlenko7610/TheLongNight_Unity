@@ -14,6 +14,7 @@ namespace TLN.Infrastructure.Feedback
 
 		private readonly Transform _root;
 		private readonly Dictionary<GameObject, ObjectPool<PooledVfxInstance>> _poolsByPrefab = new();
+		private readonly HashSet<PooledVfxInstance> _activeInstances = new();
 
 		private bool _isDisposed;
 
@@ -39,6 +40,7 @@ namespace TLN.Infrastructure.Feedback
 			PooledVfxInstance instance = pool.Get();
 
 			instance.Initialize(pool);
+			_activeInstances.Add(instance);
 
 			Transform instanceTransform = instance.transform;
 			instanceTransform.SetParent(_root, false);
@@ -52,7 +54,22 @@ namespace TLN.Infrastructure.Feedback
 
 		public void Dispose()
 		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
 			_isDisposed = true;
+
+			foreach (PooledVfxInstance instance in _activeInstances)
+			{
+				if (instance != null)
+				{
+					Object.Destroy(instance.gameObject);
+				}
+			}
+
+			_activeInstances.Clear();
 
 			foreach (ObjectPool<PooledVfxInstance> pool in _poolsByPrefab.Values)
 			{
@@ -113,21 +130,23 @@ namespace TLN.Infrastructure.Feedback
 			}
 		}
 
-		private static void OnReleaseInstance(PooledVfxInstance instance)
+		private void OnReleaseInstance(PooledVfxInstance instance)
 		{
 			if (instance == null)
 			{
 				return;
 			}
 
+			_activeInstances.Remove(instance);
 			StopParticleSystems(instance.ParticleSystems);
 			instance.gameObject.SetActive(false);
 		}
 
-		private static void OnDestroyInstance(PooledVfxInstance instance)
+		private void OnDestroyInstance(PooledVfxInstance instance)
 		{
 			if (instance != null)
 			{
+				_activeInstances.Remove(instance);
 				Object.Destroy(instance.gameObject);
 			}
 		}

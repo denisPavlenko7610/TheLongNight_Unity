@@ -9,17 +9,12 @@ namespace TLN.Application.Multiplayer
 	{
 		bool IsMultiplayer { get; }
 		bool IsServer { get; }
-		bool IsClient { get; }
-		bool IsHost { get; }
-
-		string JoinCode { get; }
 
 		Awaitable<OperationResult<string>> CreateHostSession();
 		Awaitable<OperationResult<IReadOnlyList<MultiplayerSessionInfo>>> BrowseSessions();
 		Awaitable<OperationResult> JoinSessionById(string sessionId);
 		Awaitable<OperationResult> JoinSessionByCode(string joinCode);
 
-		void Shutdown();
 		Awaitable ShutdownAsync();
 	}
 }

@@ -115,7 +115,7 @@ namespace TLN.Gameplay.Wildlife
                 return;
             }
 
-            if (_gameStateMachine != null && _gameStateMachine.CurrentState != GameStateId.Playing)
+            if (_gameStateMachine != null && !_gameStateMachine.IsCurrent(GameStateId.Playing))
             {
                 StopMovement();
                 return;
@@ -442,7 +442,7 @@ namespace TLN.Gameplay.Wildlife
             }
 
             if (_gameStateMachine != null &&
-                _gameStateMachine.CurrentState != GameStateId.Playing)
+                !_gameStateMachine.IsCurrent(GameStateId.Playing))
             {
                 StopMovement();
                 return false;
