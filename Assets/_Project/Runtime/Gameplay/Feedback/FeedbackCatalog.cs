@@ -1,4 +1,6 @@
-﻿using TLN.Application.Feedback;
+﻿using System.Collections.Generic;
+using TLN.Application.Feedback;
+using TLN.Core.Validation;
 using UnityEngine;
 
 namespace TLN.Gameplay.Feedback
@@ -8,44 +10,52 @@ namespace TLN.Gameplay.Feedback
 	{
 		[SerializeField] private FeedbackDefinition[] _definitions;
 
-		public bool TryGet(FeedbackEventId eventId, out FeedbackDefinition definition)
-		{
-			definition = null;
+		private Dictionary<FeedbackEventId, FeedbackDefinition> _lookup;
 
-			if (eventId == FeedbackEventId.None)
-			{
-				return false;
-			}
+		[Button]
+		private void RebuildLookup()
+		{
+			_lookup = new Dictionary<FeedbackEventId, FeedbackDefinition>();
 
 			if (_definitions == null)
 			{
-				return false;
+				return;
 			}
 
 			for (int i = 0; i < _definitions.Length; i++)
 			{
-				FeedbackDefinition currentDefinition = _definitions[i];
+				FeedbackDefinition definition = _definitions[i];
 
-				if (currentDefinition == null)
+				if (definition == null || definition.EventId == FeedbackEventId.None)
 				{
 					continue;
 				}
 
-				if (currentDefinition.EventId == eventId)
-				{
-					definition = currentDefinition;
-					return true;
-				}
+				_lookup[definition.EventId] = definition;
+			}
+		}
+
+		public bool TryGet(FeedbackEventId eventId, out FeedbackDefinition definition)
+		{
+			if (_lookup == null)
+			{
+				RebuildLookup();
 			}
 
-			return false;
+			if (_lookup.Count == 0 || eventId == FeedbackEventId.None)
+			{
+				definition = null;
+				return false;
+			}
+
+			return _lookup.TryGetValue(eventId, out definition);
 		}
 
 		#if UNITY_EDITOR
 		public void EditorSetDefinitions(FeedbackDefinition[] definitions)
 		{
 			_definitions = (FeedbackDefinition[])definitions?.Clone();
-
+			RebuildLookup();
 			UnityEditor.EditorUtility.SetDirty(this);
 		}
 		#endif

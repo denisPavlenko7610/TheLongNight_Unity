@@ -1,14 +1,17 @@
 ﻿using System;
-using UnityEngine;
 
 namespace TLN.Core.Validation
 {
 	[AttributeUsage(AttributeTargets.Method)]
-	public sealed class ButtonAttribute : PropertyAttribute
+	public sealed class ButtonAttribute : Attribute
 	{
 		public string Label { get; }
 
-		public ButtonAttribute(string label = null)
+		public ButtonAttribute()
+		{
+		}
+
+		public ButtonAttribute(string label)
 		{
 			Label = label;
 		}
