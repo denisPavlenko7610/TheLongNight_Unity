@@ -5,6 +5,7 @@ using TLN.Core.Logging;
 using TLN.Core.Validation;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Campfire;
+using TLN.Gameplay.Cheats;
 using TLN.Gameplay.DayNight;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
@@ -101,6 +102,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.Register<WarmthService>(Lifetime.Scoped).As<IWarmthService>();
 		builder.Register<WildlifeTargetService>(Lifetime.Scoped);
+		builder.RegisterEntryPoint<RuntimeCheatOverlayController>(Lifetime.Scoped);
 
 		builder.Register(
 			container => new SurvivalWarningService(

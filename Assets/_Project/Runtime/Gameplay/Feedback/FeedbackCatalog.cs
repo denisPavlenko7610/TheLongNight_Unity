@@ -13,19 +13,18 @@ namespace TLN.Gameplay.Feedback
 
 		private Dictionary<FeedbackEventId, FeedbackDefinition> _lookup;
 
+		public IReadOnlyList<FeedbackDefinition> Definitions =>
+			_definitions ?? System.Array.Empty<FeedbackDefinition>();
+
 		[Button]
 		private void RebuildLookup()
 		{
 			_lookup = new Dictionary<FeedbackEventId, FeedbackDefinition>();
 
-			if (_definitions == null)
+			IReadOnlyList<FeedbackDefinition> definitions = Definitions;
+			for (int i = 0; i < definitions.Count; i++)
 			{
-				return;
-			}
-
-			for (int i = 0; i < _definitions.Length; i++)
-			{
-				FeedbackDefinition definition = _definitions[i];
+				FeedbackDefinition definition = definitions[i];
 
 				if (definition == null || definition.EventId == FeedbackEventId.None)
 				{
@@ -58,7 +57,9 @@ namespace TLN.Gameplay.Feedback
 		#if UNITY_EDITOR
 		public void EditorSetDefinitions(FeedbackDefinition[] definitions)
 		{
-			_definitions = (FeedbackDefinition[])definitions?.Clone();
+			_definitions = definitions == null
+				? System.Array.Empty<FeedbackDefinition>()
+				: (FeedbackDefinition[])definitions.Clone();
 			RebuildLookup();
 			UnityEditor.EditorUtility.SetDirty(this);
 		}
