@@ -472,20 +472,13 @@ namespace TLN.Gameplay.Campfire
 
 			if (nextState == CampfireState.Burning)
 			{
-				_feedbackService.PlayAt(
-					FeedbackEventId.CampfireIgnited,
-					transform.position
-				);
-
+				_feedbackService.PlayAt(FeedbackEventId.CampfireIgnited, transform.position);
 				return;
 			}
 
 			if (previousState == CampfireState.Burning)
 			{
-				_feedbackService.PlayAt(
-					FeedbackEventId.CampfireExtinguished,
-					transform.position
-				);
+				_feedbackService.PlayAt(FeedbackEventId.CampfireExtinguished, transform.position);
 			}
 		}
 

@@ -69,6 +69,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -3523067750709203284, guid: 03a01cb8ddb9e774dab2465f3f60de1e, type: 2}
     - target: {fileID: 4910461976938125682, guid: a1cf745ef22565742822f540e54594f6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910461976938125682, guid: a1cf745ef22565742822f540e54594f6, type: 3}
       propertyPath: 'managedReferences[846414486546153966]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[UnityEngine.GameObject,
         UnityEngine.CoreModule]]'

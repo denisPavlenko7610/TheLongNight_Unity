@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TLN.Application.Feedback;
+using TLN.Core.Logging;
 using TLN.Core.Validation;
 using UnityEngine;
 
@@ -31,7 +32,10 @@ namespace TLN.Gameplay.Feedback
 					continue;
 				}
 
-				_lookup[definition.EventId] = definition;
+				if (!_lookup.TryAdd(definition.EventId, definition))
+				{
+					TLNLogger.LogWarning("Duplicate event: " + definition.EventId);
+				}
 			}
 		}
 
