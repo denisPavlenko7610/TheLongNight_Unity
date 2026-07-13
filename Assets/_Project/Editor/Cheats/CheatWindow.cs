@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using TLN.Application.Feedback;
+using TLN.Application.Multiplayer;
 using TLN.Editor.Feedback;
 using TLN.Gameplay.Cheats;
 using TLN.Gameplay.Feedback;
@@ -128,9 +129,13 @@ namespace TLN.Editor.Cheats
 
 			DrawHeader();
 			DrawSettings();
-			EditorGUILayout.HelpBox(_status, _statusType);
+			EditorGUILayout.HelpBox(
+				_context.IsClientOnlyMultiplayer
+					? "Multiplayer client: authoritative cheats must be run on host/server."
+					: _status,
+				_context.IsClientOnlyMultiplayer ? MessageType.Warning : _statusType);
 
-			using (new EditorGUI.DisabledScope(!CheatActions.CanRun(_settings)))
+			using (new EditorGUI.DisabledScope(!CheatActions.CanRun(_settings) || _context.IsClientOnlyMultiplayer))
 			{
 				DrawPlayerCheats();
 				DrawTimeCheats();
@@ -292,7 +297,8 @@ namespace TLN.Editor.Cheats
 			DrawSectionTitle("Inventory");
 			EditorGUILayout.LabelField(_context.Inventory == null
 				? $"Inventory: not found | catalog items {_items.Count}"
-				: $"Stacks {_context.Inventory.Items.Count} | weight {_context.Inventory.CurrentWeight:0.##}/{_context.Inventory.MaxCarryWeight:0.##} | catalog items {_items.Count}");
+				: $"Stacks {_context.Inventory.Items.Count} | weight {_context.Inventory.CurrentWeight:0.##}/{_context.Inventory.MaxCarryWeight:0.##}" +
+				$" | catalog items {_items.Count}");
 
 			EditorGUI.BeginChangeCheck();
 			_itemFilter = EditorGUILayout.TextField("Filter", _itemFilter);
@@ -712,6 +718,9 @@ namespace TLN.Editor.Cheats
 			public ItemCatalog ItemCatalog { get; private set; }
 			public IFeedbackService Feedback { get; private set; }
 			public FeedbackCatalog FeedbackCatalog { get; private set; }
+			public IMultiplayerSessionService MultiplayerSession { get; private set; }
+			public bool IsMultiplayer => MultiplayerSession is { IsMultiplayer: true };
+			public bool IsClientOnlyMultiplayer => MultiplayerSession is { IsMultiplayer: true, IsServer: false };
 
 			public static CheatContext Find()
 			{
@@ -722,11 +731,14 @@ namespace TLN.Editor.Cheats
 					FillFromLifetimeScopes(context);
 				}
 
-				context.PlayerRoot ??= Object.FindAnyObjectByType<PlayerRoot>(FindObjectsInactive.Exclude);
-				if (context.PlayerRoot != null)
+				if (!context.IsMultiplayer)
 				{
-					context.Survival ??= context.PlayerRoot.GetComponent<ISurvivalService>();
-					context.Inventory ??= context.PlayerRoot.GetComponent<IInventoryService>();
+					context.PlayerRoot ??= Object.FindAnyObjectByType<PlayerRoot>(FindObjectsInactive.Exclude);
+					if (context.PlayerRoot != null)
+					{
+						context.Survival ??= context.PlayerRoot.GetComponent<ISurvivalService>();
+						context.Inventory ??= context.PlayerRoot.GetComponent<IInventoryService>();
+					}
 				}
 
 				context.ItemCatalog ??= LoadFirstAsset<ItemCatalog>();
@@ -763,6 +775,7 @@ namespace TLN.Editor.Cheats
 					context.ItemCatalog ??= ResolveOrNull<ItemCatalog>(container);
 					context.Feedback ??= ResolveOrNull<IFeedbackService>(container);
 					context.FeedbackCatalog ??= ResolveOrNull<FeedbackCatalog>(container);
+					context.MultiplayerSession ??= ResolveOrNull<IMultiplayerSessionService>(container);
 
 					LocalPlayerService localPlayer = ResolveOrNull<LocalPlayerService>(container);
 					if (localPlayer is not { HasLocalPlayer: true })

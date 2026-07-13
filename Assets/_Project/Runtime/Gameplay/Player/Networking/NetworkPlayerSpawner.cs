@@ -116,6 +116,7 @@ namespace TLN.Gameplay.Player.Networking
 
 			networkObject.SpawnAsPlayerObject(clientId, true);
 			_spawnedClientIds.Add(clientId);
+			_wildlifeTargetService.RegisterPlayer(player);
 
 			if (clientId == networkManager.LocalClientId)
 			{

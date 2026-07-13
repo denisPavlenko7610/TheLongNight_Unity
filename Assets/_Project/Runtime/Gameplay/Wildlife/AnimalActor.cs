@@ -164,7 +164,7 @@ namespace TLN.Gameplay.Wildlife
 
         private PlayerRoot GetPlayer()
         {
-			return _targetService?.PlayerRoot;
+			return _targetService?.GetClosestPlayer(transform.position);
         }
 
         private void TickRabbit(PlayerRoot player)

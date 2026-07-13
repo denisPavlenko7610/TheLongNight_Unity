@@ -293,6 +293,7 @@ MonoBehaviour:
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
   m_IsStarted: 0
+  NetcodeRunOnlyOnOwner: 1
   references:
     version: 2
     RefIds: []
