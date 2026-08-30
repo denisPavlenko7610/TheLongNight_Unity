@@ -1,0 +1,34 @@
+Photon Fusion Physics Addon - Release History
+
+## 2.1.2
+
+**Changes**
+
+- Set the default execution order of Runner.SimulatePhysics to run after the user logic. Default execution order: (1000). 
+
+**Bug fixes**
+
+- Improvements and fixes to the NetworkRigidbody teleport feature. Local predicted teleports now render instantly, while non-predicted teleports wait the correct interpolation time.
+- Fixed a bug where the local prediction of the physics body sleeping state would persist longer when the tick and send rates were at a 1:1 ratio.
+
+## 2.1.1
+
+**Changes**
+
+- Changed obsolete usages of Physics.autoSimulation.
+
+## 2.1.0
+
+**What's New**
+
+- Expose PhysicsBody in NetworkRigidbody that allows unified interactions for both Rigidbody and Rigidbody2D.
+
+**Changes**
+
+- NetworkRigidbody now warns and self-despawns if no Rigidbody or Rigidbody2D component is found on the object.
+
+**Bug Fixes**
+
+- Teleport handling now discards the correct snapshot and snaps to the teleport location.
+- Forcing awake of NetworkRigidbodies on spawned for initial sync.
+- Spawn position of NetworkRigidbody on clients has been fixed.

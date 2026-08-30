@@ -1,0 +1,20 @@
+{
+  "name": "Learning.GameServicesNetcode",
+  "rootNamespace": "TLN.Learning.GameServicesNetcode",
+  "references": [
+    "Unity.Netcode.Runtime",
+    "Unity.Services.Authentication",
+    "Unity.Services.Core",
+    "Unity.Services.Core.Environments",
+    "Unity.Services.Multiplayer"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

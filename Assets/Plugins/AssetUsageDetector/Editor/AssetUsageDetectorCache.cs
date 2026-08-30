@@ -103,7 +103,7 @@ namespace AssetUsageDetectorNamespace
 				{
 					writer.Write( assetDependencyCache.Count );
 
-					foreach( var keyValuePair in assetDependencyCache )
+					foreach( KeyValuePair<string, CacheEntry> keyValuePair in assetDependencyCache )
 					{
 						CacheEntry cacheEntry = keyValuePair.Value;
 						string[] dependencies = cacheEntry.dependencies;

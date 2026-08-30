@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Photon/FusionDemos/IntroSample/Sample/Scenes/FusionDemoGameplayHost.unity
+    guid: fbd15a0cc3b2cee488ce7272d2f4f146
+  - enabled: 1
     path: Assets/_Project/Scenes/Boot.unity
     guid: c59585f7e3f51bd44a4dfb7ec66e6d63
   - enabled: 1
@@ -17,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/World/World_FrozenLake.unity
     guid: 007924e550e8633408bedb3c67171199
+  - enabled: 1
+    path: Assets/_Project/Learning/Netcode/Scenes/NetcodeLearning.unity
+    guid: 6697daed9750ad74ea6dba5e0187a374
+  - enabled: 1
+    path: Assets/_Project/Learning/Netcode/Scenes/NetcodeLearningRoom.unity
+    guid: 6088a56e1a57deb49bef9577ddb79c15
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 4ad4180dd7499244db565085d07e5955, type: 2}
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
