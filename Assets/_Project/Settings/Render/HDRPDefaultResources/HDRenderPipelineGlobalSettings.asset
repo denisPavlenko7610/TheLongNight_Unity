@@ -199,29 +199,7 @@ MonoBehaviour:
       - rid: 5163169332931067905
       - rid: 846414498723004418
     m_RuntimeSettings:
-      m_List:
-      - rid: 8556427327610290176
-      - rid: 8556427327610290180
-      - rid: 8556427327610290182
-      - rid: 5651530769614503936
-      - rid: 5651530769614503937
-      - rid: 5651530769614503938
-      - rid: 5651530769614503939
-      - rid: 5651530769614503941
-      - rid: 5651530769614503943
-      - rid: 5651530769614503946
-      - rid: 5651530769614503947
-      - rid: 5651530769614503948
-      - rid: 5651530769614503950
-      - rid: 5651530769614503953
-      - rid: 5651530769614503954
-      - rid: 5651530769614503956
-      - rid: 5651530769614503957
-      - rid: 5651530769614503958
-      - rid: 5651530769614503959
-      - rid: 1143070318379925504
-      - rid: 1143070318379925505
-      - rid: 1143070318379925506
+      m_List: []
   renderingLayerNames:
   - Light Layer default
   - Light Layer 1
@@ -276,6 +254,7 @@ MonoBehaviour:
         _skyBoxMesh: {fileID: 4300000, guid: 0529e6c5f6dea8c4a8c2835ed7de57cb, type: 2}
         _sixFaceSkyBoxMesh: {fileID: 4300000, guid: a80925ceebd011741b42509226cefc74, type: 2}
         _buildLightGridShader: {fileID: 7200000, guid: 16e47c1641bd0104e92b624601457bb0, type: 3}
+        _solidColorShader: {fileID: 4800000, guid: 3765a7ac691541038de4d587b94ae768, type: 3}
     - rid: 1143070318379925504
       type: {class: RenderingDebuggerRuntimeResources, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}
       data:
