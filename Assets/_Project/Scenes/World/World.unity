@@ -2847,6 +2847,46 @@ MonoBehaviour:
     _requireNavMesh: 0
     _navMeshSearchRadius: 3
     _debugColor: {r: 1, g: 0.33689928, b: 0, a: 1}
+  - _prefab: {fileID: 7194434326370485006, guid: 68cae7a9e3c54402975a112062f6d4a5, type: 3}
+    _minCount: 2
+    _maxCount: 3
+    _spawnRadius: 25
+    _minDistanceBetweenInstances: 3
+    _alignToGroundNormal: 1
+    _spawnYOffset: 0
+    _requireNavMesh: 0
+    _navMeshSearchRadius: 3
+    _debugColor: {r: 1, g: 0.33689928, b: 0, a: 1}
+  - _prefab: {fileID: 7194434326370485006, guid: bb6fc442d9f84b71967b6ddc43cd0573, type: 3}
+    _minCount: 1
+    _maxCount: 1
+    _spawnRadius: 25
+    _minDistanceBetweenInstances: 3
+    _alignToGroundNormal: 1
+    _spawnYOffset: 0
+    _requireNavMesh: 0
+    _navMeshSearchRadius: 3
+    _debugColor: {r: 1, g: 0.33689928, b: 0, a: 1}
+  - _prefab: {fileID: 7194434326370485006, guid: bc3c996f9b7d4a6d85fec3217b501ffe, type: 3}
+    _minCount: 1
+    _maxCount: 1
+    _spawnRadius: 25
+    _minDistanceBetweenInstances: 3
+    _alignToGroundNormal: 1
+    _spawnYOffset: 0
+    _requireNavMesh: 0
+    _navMeshSearchRadius: 3
+    _debugColor: {r: 1, g: 0.33689928, b: 0, a: 1}
+  - _prefab: {fileID: 7194434326370485006, guid: 1ea69376538e46a496fb70b6ed02312b, type: 3}
+    _minCount: 1
+    _maxCount: 2
+    _spawnRadius: 25
+    _minDistanceBetweenInstances: 3
+    _alignToGroundNormal: 1
+    _spawnYOffset: 0
+    _requireNavMesh: 0
+    _navMeshSearchRadius: 3
+    _debugColor: {r: 1, g: 0.33689928, b: 0, a: 1}
   _spawnOnStart: 0
   _spawnOnLoadedGame: 0
   _groundMask:

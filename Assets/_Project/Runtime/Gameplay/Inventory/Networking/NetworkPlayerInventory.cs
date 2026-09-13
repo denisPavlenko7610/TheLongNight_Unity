@@ -17,6 +17,7 @@ namespace TLN.Gameplay.Inventory.Networking
 	public sealed class NetworkPlayerInventory : NetworkBehaviour, IInventoryService, IItemUseService
 	{
 		private const int SingleItemAmount = 1;
+		private const string WaterItemId = "water_purified";
 
 		private readonly List<ItemStack> _items = new();
 
@@ -695,6 +696,69 @@ namespace TLN.Gameplay.Inventory.Networking
 			}
 
 			TryExtinguishCampfireServer(campfire);
+		}
+
+		public bool RequestMeltSnowAtCampfire(CampfireActor campfire)
+		{
+			if (campfire == null)
+			{
+				return false;
+			}
+
+			if (!IsSpawned || IsServer)
+			{
+				return TryMeltSnowAtCampfireServer(campfire);
+			}
+
+			if (!TryGetCampfireRequestReference(campfire, out NetworkObjectReference campfireReference))
+			{
+				return false;
+			}
+
+			RequestMeltSnowAtCampfireServerRpc(campfireReference);
+
+			return true;
+		}
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+		private void RequestMeltSnowAtCampfireServerRpc(NetworkObjectReference campfireReference)
+		{
+			if (!TryGetRequestedCampfire(campfireReference, out CampfireActor campfire))
+			{
+				return;
+			}
+
+			TryMeltSnowAtCampfireServer(campfire);
+		}
+
+		private bool TryMeltSnowAtCampfireServer(CampfireActor campfire)
+		{
+			if (!CanMutateInventory())
+			{
+				return false;
+			}
+
+			if (!CanUseCampfire(campfire))
+			{
+				return false;
+			}
+
+			if (!campfire.IsBurning)
+			{
+				NotifyOwner(Loc.SnowNotBurning);
+				return false;
+			}
+
+			if (_itemCatalog == null ||
+			    !_itemCatalog.TryGetItem(WaterItemId, out ItemDefinition water) ||
+			    water == null)
+			{
+				return false;
+			}
+
+			AddItemServer(water, 1);
+			NotifyOwner(Loc.SnowMelted);
+			return true;
 		}
 
 		private bool TryAddFuelToCampfireServer(

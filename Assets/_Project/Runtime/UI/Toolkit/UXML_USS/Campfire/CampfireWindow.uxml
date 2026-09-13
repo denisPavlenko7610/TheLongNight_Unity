@@ -33,6 +33,7 @@
                                                                   entry="Id(30511017242496)"/>
                     </Bindings>
                 </ui:Button>
+                <ui:Button name="campfire-melt-snow-button" text="MELT SNOW" class="campfire-button"/>
                 <ui:Button name="campfire-ignite-button" text="IGNITE" class="campfire-button">
                     <Bindings>
                         <UnityEngine.Localization.LocalizedString property="text"

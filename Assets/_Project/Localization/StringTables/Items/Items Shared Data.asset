@@ -71,6 +71,38 @@ MonoBehaviour:
     m_Key: item.soda.description
     m_Metadata:
       m_Items: []
+  - m_Id: 32305363175604224
+    m_Key: item_water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130176
+    m_Key: item_water_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130177
+    m_Key: item_wool_hat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130178
+    m_Key: item_wool_hat_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130179
+    m_Key: item_parka
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130180
+    m_Key: item_parka_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130181
+    m_Key: item_mittens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130182
+    m_Key: item_mittens_desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

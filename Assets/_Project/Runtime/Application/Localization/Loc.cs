@@ -107,6 +107,9 @@ namespace TLN.Application.Localization
 		public static string CampfireStateLabel(params object[] args) => ui("campfire.state_label", args);
 		public static string CampfireFuelLabel(params object[] args) => ui("campfire.fuel_label", args);
 		public static string FuelAdded(params object[] args) => gameplay("campfire.fuel_added", args);
+		public static string CampfireMeltSnow => gameplay("campfire.melt_snow");
+		public static string SnowMelted => gameplay("campfire.snow_melted");
+		public static string SnowNotBurning => gameplay("campfire.snow_not_burning");
 		public static string SlotFormat(params object[] args) => ui("save.slot_format", args);
 		public static string SlotEmpty(params object[] args) => ui("save.slot_empty", args);
 		public static string OverwriteLabel(params object[] args) => ui("save.overwrite_label", args);

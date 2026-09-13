@@ -21,11 +21,13 @@ namespace TLN.UI.Campfire
 	public sealed class CampfireWindowView : MonoBehaviour, ICampfireWindow
 	{
 		private const string VisibleClassName = "campfire-window-root-visible";
+		private const string WaterItemId = "water_purified";
 
 		private VisualElement _root;
 		private Label _stateLabel;
 		private Label _fuelLabel;
 		private Button _addFuelButton;
+		private Button _meltSnowButton;
 		private Button _igniteButton;
 		private Button _extinguishButton;
 		private Button _closeButton;
@@ -39,6 +41,7 @@ namespace TLN.UI.Campfire
 		private IGameSaveService _gameSaveService;
 		private IMultiplayerSessionService _multiplayerSessionService;
 		private LocalPlayerService _localPlayerService;
+		private ItemCatalog _itemCatalog;
 
 		[Inject]
 		public void Construct(
@@ -47,7 +50,8 @@ namespace TLN.UI.Campfire
 			INotificationService notificationService,
 			IGameSaveService gameSaveService,
 			IMultiplayerSessionService multiplayerSessionService,
-			LocalPlayerService localPlayerService
+			LocalPlayerService localPlayerService,
+			ItemCatalog itemCatalog
 		)
 		{
 			_inventoryService = inventoryService;
@@ -56,6 +60,7 @@ namespace TLN.UI.Campfire
 			_gameSaveService = gameSaveService;
 			_multiplayerSessionService = multiplayerSessionService;
 			_localPlayerService = localPlayerService;
+			_itemCatalog = itemCatalog;
 
 			Hide();
 		}
@@ -69,11 +74,14 @@ namespace TLN.UI.Campfire
 			_stateLabel = documentRoot.RequiredQ<Label>("campfire-state-label");
 			_fuelLabel = documentRoot.RequiredQ<Label>("campfire-fuel-label");
 			_addFuelButton = documentRoot.RequiredQ<Button>("campfire-add-fuel-button");
+			_meltSnowButton = documentRoot.RequiredQ<Button>("campfire-melt-snow-button");
 			_igniteButton = documentRoot.RequiredQ<Button>("campfire-ignite-button");
 			_extinguishButton = documentRoot.RequiredQ<Button>("campfire-extinguish-button");
 			_closeButton = documentRoot.RequiredQ<Button>("campfire-close-button");
 
+			_meltSnowButton.text = Loc.CampfireMeltSnow;
 			_addFuelButton.clicked += OnAddFuelClicked;
+			_meltSnowButton.clicked += OnMeltSnowClicked;
 			_igniteButton.clicked += OnIgniteClicked;
 			_extinguishButton.clicked += OnExtinguishClicked;
 			_closeButton.clicked += Hide;
@@ -82,6 +90,7 @@ namespace TLN.UI.Campfire
 		private void OnDestroy()
 		{
 			_addFuelButton.clicked -= OnAddFuelClicked;
+			_meltSnowButton.clicked -= OnMeltSnowClicked;
 			_igniteButton.clicked -= OnIgniteClicked;
 			_extinguishButton.clicked -= OnExtinguishClicked;
 			_closeButton.clicked -= Hide;
@@ -130,6 +139,7 @@ namespace TLN.UI.Campfire
 
 			_igniteButton.SetEnabled(!_currentCampfire.IsBurning);
 			_extinguishButton.SetEnabled(_currentCampfire.IsBurning);
+			_meltSnowButton.SetEnabled(_currentCampfire.IsBurning);
 		}
 
 		private void OnAddFuelClicked()
@@ -163,6 +173,61 @@ namespace TLN.UI.Campfire
 			}
 
 			AddFuelOffline(inventoryService, itemIndex, fuel);
+		}
+
+		private void OnMeltSnowClicked()
+		{
+			if (_currentCampfire == null)
+			{
+				return;
+			}
+
+			if (!_currentCampfire.IsBurning)
+			{
+				_notificationService?.Show(Loc.SnowNotBurning);
+				return;
+			}
+
+			if (IsMultiplayer())
+			{
+				if (TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
+				{
+					networkInventory.RequestMeltSnowAtCampfire(_currentCampfire);
+				}
+
+				return;
+			}
+
+			MeltSnowOffline();
+		}
+
+		private void MeltSnowOffline()
+		{
+			IInventoryService inventoryService = GetActiveInventoryService();
+
+			if (inventoryService == null)
+			{
+				_notificationService?.Show(Loc.BedrollInventoryMissing);
+				return;
+			}
+
+			if (_itemCatalog == null ||
+			    !_itemCatalog.TryGetItem(WaterItemId, out ItemDefinition water) ||
+			    water == null)
+			{
+				return;
+			}
+
+			InventoryAddResult result = inventoryService.AddItem(water, 1);
+
+			if (!result.IsSuccess)
+			{
+				_notificationService?.Show(result.FailureReason);
+				return;
+			}
+
+			_notificationService?.Show(Loc.SnowMelted);
+			Refresh();
 		}
 
 		private void OnIgniteClicked()

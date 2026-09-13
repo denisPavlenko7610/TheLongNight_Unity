@@ -239,15 +239,26 @@ MonoBehaviour:
     m_Key: inventory.not_enough_item
     m_Metadata:
       m_Items: []
-
+  - m_Id: 6178661466112
+    m_Key: campfire.melt_snow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6178695020544
+    m_Key: campfire.snow_melted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6178695020545
+    m_Key: campfire.snow_not_burning
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
-    rid: 846414318321271112
+    rid: 2420238702665269466
   references:
     version: 2
     RefIds:
-    - rid: 846414318321271112
+    - rid: 2420238702665269466
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
-        m_CustomEpoch: 1781603956268
+        m_CustomEpoch: 1789304699644

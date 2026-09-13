@@ -74,6 +74,38 @@ MonoBehaviour:
     m_Localized: It allows you to feel less thursty
     m_Metadata:
       m_Items: []
+  - m_Id: 32305363175604224
+    m_Localized: Purified Water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130176
+    m_Localized: Melted snow, safe to drink.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130177
+    m_Localized: Wool Hat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130178
+    m_Localized: Keeps your head warm.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130179
+    m_Localized: Winter Parka
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130180
+    m_Localized: Heavy coat. Excellent warmth.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130181
+    m_Localized: Wool Mittens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32305363230130182
+    m_Localized: Protects your hands from cold.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

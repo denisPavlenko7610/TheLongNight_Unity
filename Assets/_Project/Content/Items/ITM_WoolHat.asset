@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88136cc6d134461e96a207f1985ed7b7, type: 3}
+  m_Name: ITM_WoolHat
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Equipment.ClothingItemDefinition
+  _id: wool_hat
+  _displayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 32305363230130177
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _description:
+    m_TableReference:
+      m_TableCollectionName: GUID:2416266bd80875740a2140f13ef9f520
+    m_TableEntryReference:
+      m_KeyId: 32305363230130178
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _category: 60
+  _weight: 0.4
+  _isStackable: 1
+  _maxStackSize: 6
+  _iconReference:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  _useKind: 30
+  _hungerRestore: 0
+  _thirstRestore: 0
+  _fatigueRestore: 0
+  _coldRestore: 0
+  _conditionRestore: 0
+  _conditionDamage: 0
+  _slot: 10
+  _warmthBonus: 2
+  references:
+    version: 2
+    RefIds: []
