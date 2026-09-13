@@ -1,8 +1,10 @@
-﻿using TLN.Application.GameStates;
+using TLN.Application.GameStates;
 using TLN.Application.Multiplayer;
 using TLN.Gameplay.Campfire;
+using TLN.Gameplay.DayNight;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Survival;
+using TLN.Gameplay.Weather;
 using UnityEngine;
 using VContainer;
 
@@ -20,10 +22,12 @@ namespace TLN.Gameplay.Player
 		private SurvivalConfig _survivalConfig;
 		private IGameStateMachine _gameStateMachine;
 		private IMultiplayerSessionService _multiplayerSessionService;
+		private IDayNightService _dayNightService;
+		private IWeatherService _weatherService;
 
 		private float _nextWarmthRefreshTime;
-		private float _cachedFireWarmth;
 		private Vector3 _lastWarmthPosition;
+		private float _cachedFireWarmth;
 		private float _coldExposureAccumulator;
 
 		[Inject]
@@ -33,7 +37,9 @@ namespace TLN.Gameplay.Player
 			ISurvivalService survivalService,
 			SurvivalConfig survivalConfig,
 			IGameStateMachine gameStateMachine,
-			IMultiplayerSessionService multiplayerSessionService
+			IMultiplayerSessionService multiplayerSessionService,
+			IDayNightService dayNightService,
+			IWeatherService weatherService
 		)
 		{
 			_warmthService = warmthService;
@@ -42,6 +48,8 @@ namespace TLN.Gameplay.Player
 			_survivalConfig = survivalConfig;
 			_gameStateMachine = gameStateMachine;
 			_multiplayerSessionService = multiplayerSessionService;
+			_dayNightService = dayNightService;
+			_weatherService = weatherService;
 		}
 
 		private void Update()
@@ -108,10 +116,16 @@ namespace TLN.Gameplay.Player
 		private float CalculateColdChangePerGameHour()
 		{
 			float baseColdPerGameHour = Mathf.Max(0f, _survivalConfig.ColdPerHour);
+			float temperatureModifier = _dayNightService?.TemperatureModifier ?? 0f;
+			float weatherMultiplier = _weatherService?.ColdRateMultiplier ?? 1f;
+
+			float environmentColdPerGameHour =
+				(baseColdPerGameHour - temperatureModifier) * weatherMultiplier;
+
 			float fireWarmthPerGameHour = GetFireWarmthPerGameHour();
 			float clothingWarmthPerGameHour = GetClothingWarmthPerGameHour();
 
-			return baseColdPerGameHour - fireWarmthPerGameHour - clothingWarmthPerGameHour;
+			return environmentColdPerGameHour - fireWarmthPerGameHour - clothingWarmthPerGameHour;
 		}
 
 		private float GetFireWarmthPerGameHour()

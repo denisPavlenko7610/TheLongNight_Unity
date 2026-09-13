@@ -87,6 +87,12 @@ namespace TLN.Gameplay.Weather
 		private float _nextFollowSearchTime;
 		private PlayerRoot _playerRoot;
 		private IGameStateMachine _gameStateMachine;
+		private IWeatherService _weatherService;
+		private float _targetIntensity;
+		private float _targetWindStrength;
+		private float _weatherLerpT = 1f;
+
+		private const float WeatherLerpSpeedPerSecond = 0.25f;
 		private readonly uint[] _argsData = new uint[5];
 
 		private Vector3 _cachedWindForce;
@@ -141,10 +147,40 @@ namespace TLN.Gameplay.Weather
 		}
 
 		[Inject]
-		public void Construct(PlayerRoot playerRoot, IGameStateMachine gameStateMachine)
+		public void Construct(IGameStateMachine gameStateMachine, IWeatherService weatherService)
 		{
-			_playerRoot = playerRoot;
 			_gameStateMachine = gameStateMachine;
+			_weatherService = weatherService;
+
+			if (_weatherService != null)
+			{
+				_weatherService.WeatherChanged += OnWeatherChanged;
+				OnWeatherChanged(_weatherService.CurrentState);
+			}
+		}
+
+		private void OnWeatherChanged(WeatherStateId state)
+		{
+			if (_weatherService == null)
+			{
+				return;
+			}
+
+			_targetIntensity = _weatherService.SnowIntensity;
+			_targetWindStrength = _weatherService.WindIntensity;
+			_weatherLerpT = 0f;
+		}
+
+		private void ApplyWeatherLerp()
+		{
+			if (_weatherLerpT >= 1f)
+			{
+				return;
+			}
+
+			_weatherLerpT = Mathf.Min(1f, _weatherLerpT + UnityEngine.Time.deltaTime * WeatherLerpSpeedPerSecond);
+			_intensity = Mathf.Lerp(_intensity, _targetIntensity, _weatherLerpT);
+			_windStrength = Mathf.Lerp(_windStrength, _targetWindStrength, _weatherLerpT);
 		}
 
 		private void Start()
@@ -224,6 +260,11 @@ namespace TLN.Gameplay.Weather
 
 		private void OnDestroy()
 		{
+			if (_weatherService != null)
+			{
+				_weatherService.WeatherChanged -= OnWeatherChanged;
+			}
+
 			_particleBuffer?.Release();
 			_argsBuffer?.Release();
 			if (_material)
@@ -250,6 +291,7 @@ namespace TLN.Gameplay.Weather
 			}
 
 			float deltaTime = Mathf.Min(UnityEngine.Time.deltaTime, MaxDeltaTime);
+			ApplyWeatherLerp();
 			if (!_followTarget)
 			{
 				TryResolveFollowTarget(false);
@@ -320,6 +362,14 @@ namespace TLN.Gameplay.Weather
 			if (_playerRoot != null && _playerRoot.Camera != null)
 			{
 				AssignFollowTarget(_playerRoot.Camera.transform, true);
+				return true;
+			}
+
+			UnityEngine.Camera mainCamera = UnityEngine.Camera.main;
+
+			if (mainCamera != null)
+			{
+				AssignFollowTarget(mainCamera.transform, true);
 				return true;
 			}
 

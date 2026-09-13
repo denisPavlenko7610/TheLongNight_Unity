@@ -3,6 +3,7 @@ using TLN.Application.GameStates;
 using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
+using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
@@ -34,6 +35,7 @@ namespace TLN.Gameplay.World
 		private NetworkPlayerSpawner _networkPlayerSpawner;
 
 		private IMultiplayerSessionService _multiplayerSessionService;
+		private ISceneLoader _sceneLoader;
 		private bool _isConstructed;
 
 		[Inject]
@@ -48,7 +50,8 @@ namespace TLN.Gameplay.World
 			WildlifeTargetService wildlifeTargetService,
 			RandomWorldSpawnerSet randomWorldSpawnerSet,
 			IMultiplayerSessionService multiplayerSessionService,
-			NetworkPlayerSpawner networkPlayerSpawner
+			NetworkPlayerSpawner networkPlayerSpawner,
+			ISceneLoader sceneLoader
 		)
 		{
 			_gameStateMachine = gameStateMachine;
@@ -62,6 +65,7 @@ namespace TLN.Gameplay.World
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
 			_multiplayerSessionService = multiplayerSessionService;
 			_networkPlayerSpawner = networkPlayerSpawner;
+			_sceneLoader = sceneLoader;
 			_isConstructed = true;
 		}
 
@@ -74,6 +78,7 @@ namespace TLN.Gameplay.World
 			}
 
 			ConstructHUD();
+			ConstructGameOverView();
 
 			if (IsMultiplayer())
 			{
@@ -122,6 +127,14 @@ namespace TLN.Gameplay.World
 			}
 
 			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
+		}
+
+		private void ConstructGameOverView()
+		{
+			TLN.UI.GameOver.GameOverView gameOverView =
+				_uiRoot.HUD.GetComponent<TLN.UI.GameOver.GameOverView>();
+
+			gameOverView?.Construct(_gameStateMachine, _sceneLoader, _gameTimeService);
 		}
 
 		private bool LoadRequestedSaveIfNeeded()

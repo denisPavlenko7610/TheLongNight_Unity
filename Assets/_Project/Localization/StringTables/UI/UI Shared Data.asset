@@ -519,6 +519,18 @@ MonoBehaviour:
     m_Key: loading.title
     m_Metadata:
       m_Items: []
+  - m_Id: 28603789462994944
+    m_Key: game_over.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28603789551075328
+    m_Key: game_over.return_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28603789551075329
+    m_Key: game_over.days_survived
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

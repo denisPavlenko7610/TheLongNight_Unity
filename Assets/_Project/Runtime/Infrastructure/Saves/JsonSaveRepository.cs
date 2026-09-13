@@ -14,6 +14,7 @@ namespace TLN.Infrastructure.Saves
 		private const string SaveFileFormat = "slot_{0}.json";
 
 		private readonly object _ioLock = new();
+		private readonly string _injectedSaveDirectory;
 		private string _saveDirectory;
 
 		private static readonly JsonSerializerSettings SerializerSettings =
@@ -24,6 +25,16 @@ namespace TLN.Infrastructure.Saves
 				NullValueHandling = NullValueHandling.Include,
 				DateParseHandling = DateParseHandling.None
 			};
+
+		[VContainer.Inject]
+		public JsonSaveRepository()
+		{
+		}
+
+		public JsonSaveRepository(string saveDirectory)
+		{
+			_injectedSaveDirectory = saveDirectory;
+		}
 
 		public int SlotCount => DefaultSlotCount;
 
@@ -211,7 +222,17 @@ namespace TLN.Infrastructure.Saves
 				return _saveDirectory;
 			}
 
-			_saveDirectory = Path.Combine(UnityEngine.Application.persistentDataPath, SaveFolderName);
+			if (!string.IsNullOrWhiteSpace(_injectedSaveDirectory))
+			{
+				_saveDirectory = _injectedSaveDirectory;
+			}
+			else
+			{
+				_saveDirectory = Path.Combine(
+					UnityEngine.Application.persistentDataPath,
+					SaveFolderName
+				);
+			}
 
 			return _saveDirectory;
 		}

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744bddc93bd2d6d4ea73af43e6f0aa4a, type: 3}
+  m_Name: CFG_Weather_Default
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Weather.WeatherConfig
+  _clearGameHoursMin: 2
+  _clearGameHoursMax: 6
+  _clearWeight: 5
+  _snowfallGameHoursMin: 1
+  _snowfallGameHoursMax: 4
+  _snowfallWeight: 3
+  _snowfallIntensity: 0.5
+  _snowfallWindMultiplier: 1
+  _blizzardGameHoursMin: 0.5
+  _blizzardGameHoursMax: 2
+  _blizzardWeight: 1
+  _blizzardIntensity: 1
+  _blizzardWindMultiplier: 2.5
+  _snowfallColdMultiplier: 1.25
+  _blizzardColdMultiplier: 2
+  _intensityLerpPerGameMinute: 0.15

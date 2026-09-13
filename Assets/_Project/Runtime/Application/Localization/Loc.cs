@@ -95,6 +95,9 @@ namespace TLN.Application.Localization
 		public static string SettingsQualityUltra => ui("settings.quality.ultra");
 		public static string SettingsDefaults => ui("settings.defaults");
 		public static string SettingsBack => ui("settings.back");
+		public static string GameOverTitle => ui("game_over.title");
+		public static string GameOverReturnMenu => ui("game_over.return_menu");
+		public static string GameOverDaysSurvived(params object[] args) => ui("game_over.days_survived", args);
 		public static string InteractionPickup => ui("item.interaction_pickup");
 		public static string BuildRecipesMissing => ui("build.recipes_missing");
 		public static string BuildServiceMissing => ui("build.service_missing");

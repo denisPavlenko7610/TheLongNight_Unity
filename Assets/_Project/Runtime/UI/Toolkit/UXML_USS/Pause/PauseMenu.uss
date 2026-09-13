@@ -22,7 +22,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("project://database/Assets/_Project/Art/UI/Pause/BG_Pause_SnowForest.jpg");
+    background-image: url("project://database/Assets/_Project/Art/UI/Pause/BG_Pause_SnowForest.jpg?fileID=2800000&guid=ec4b489b957c06b42bfb9ba7de02d3ef");
     -unity-background-image-tint-color: rgba(195, 220, 225, 0.82);
 }
 

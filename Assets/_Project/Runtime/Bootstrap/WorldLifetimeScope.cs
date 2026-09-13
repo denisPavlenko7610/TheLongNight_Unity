@@ -18,6 +18,7 @@ using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 using TLN.Gameplay.Time.Networking;
+using TLN.Gameplay.Weather;
 using TLN.Gameplay.Wildlife;
 using TLN.Gameplay.World;
 using TLN.Infrastructure.World;
@@ -38,6 +39,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField] [Required] private DayNightConfig _dayNightConfig;
 	[SerializeField] [Required] private SurvivalConfig _survivalConfig;
 	[SerializeField] [Required] private SleepConfig _sleepConfig;
+	[SerializeField] [Required] private WeatherConfig _weatherConfig;
 	[SerializeField] [Required] private BuildRecipeCatalog _buildRecipeCatalog;
 	[SerializeField] [Required] private ItemCatalog _itemCatalog;
 	[SerializeField] [Required] private WorldPrefabCatalog _worldPrefabCatalog;
@@ -47,6 +49,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldTimeController _worldTimeController;
 	[SerializeField] [Assign(Mode.Scene)] [Required] private DayNightController _dayNightController;
 	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldSurvivalController _worldSurvivalController;
+	[SerializeField] [Assign(Mode.Scene)] private SnowService _snowService;
 
 	[Header("Multiplayer")]
 	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkPlayerSpawner _networkPlayerSpawner;
@@ -75,6 +78,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterInstance(_dayNightConfig);
 		builder.RegisterInstance(_survivalConfig);
 		builder.RegisterInstance(_sleepConfig);
+		builder.RegisterInstance(_weatherConfig);
 		builder.RegisterInstance(_buildRecipeCatalog);
 		builder.RegisterInstance(_itemCatalog);
 		builder.RegisterInstance(_worldPrefabCatalog);
@@ -87,6 +91,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 		builder.Register<GameTimeService>(Lifetime.Scoped).As<IGameTimeService>();
 		builder.Register<DayNightService>(Lifetime.Scoped).As<IDayNightService>();
+		builder.Register<WeatherService>(Lifetime.Scoped).As<IWeatherService>();
 		builder.Register<SurvivalService>(Lifetime.Scoped).As<ISurvivalService>();
 		builder.Register<SleepService>(Lifetime.Scoped);
 
@@ -123,6 +128,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_worldTimeController);
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
+		builder.RegisterComponent(_snowService);
 	}
 
 	private void RegisterRandomSpawners(IContainerBuilder builder)

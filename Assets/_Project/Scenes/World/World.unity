@@ -2964,6 +2964,7 @@ GameObject:
   - component: {fileID: 1560037665}
   - component: {fileID: 1560037667}
   - component: {fileID: 1560037668}
+  - component: {fileID: 1560037669}
   m_Layer: 5
   m_Name: WorldHUD
   m_TagString: Untagged
@@ -3037,6 +3038,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: TLN.UI::TLN.UI.Common.UIDocumentOrder
   _layer: 0
   _offset: 0
+--- !u!114 &1560037669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560037664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4602c2f72b4dc024abec4214e1fa4c97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLN.UI::TLN.UI.GameOver.GameOverView
 --- !u!1 &1575770750
 GameObject:
   m_ObjectHideFlags: 0
@@ -3261,11 +3274,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
   GlobalObjectIdHash: 3403881251
   InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  <InScenePlaced>k__BackingField: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -3425,6 +3439,7 @@ MonoBehaviour:
   _dayNightConfig: {fileID: 11400000, guid: 7b7c5a31e33ee4e438eb3f9925fdff4d, type: 2}
   _survivalConfig: {fileID: 11400000, guid: e75e1c68ce6d7f2478261c579ef67def, type: 2}
   _sleepConfig: {fileID: 11400000, guid: 01e992ef9797941489bde255b0c6baf1, type: 2}
+  _weatherConfig: {fileID: 11400000, guid: 3730c61f452f877469a63a3ea7f53ae8, type: 2}
   _buildRecipeCatalog: {fileID: 11400000, guid: cf9a9eb367dbb1548873eeed83dbbfba, type: 2}
   _itemCatalog: {fileID: 11400000, guid: 119adcfa19b2cab448ba503058239f74, type: 2}
   _worldPrefabCatalog: {fileID: 11400000, guid: e095adcbc7fd7154394d10a9ca980eb7, type: 2}
@@ -3432,6 +3447,7 @@ MonoBehaviour:
   _worldTimeController: {fileID: 577968086}
   _dayNightController: {fileID: 565384057}
   _worldSurvivalController: {fileID: 577968084}
+  _snowService: {fileID: 1030735244}
   _networkPlayerSpawner: {fileID: 510768211}
   _networkLocalPlayerBinder: {fileID: 316315965}
   _networkWorldTimeSynchronizer: {fileID: 1933714692}

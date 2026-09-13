@@ -32,6 +32,7 @@ namespace TLN.Gameplay.Interaction
 		private PlayerInteractionRaycaster _raycaster;
 
 		private InteractionHit? _currentHit;
+		private IInteractable _shownInteractable;
 
 		[Inject]
 		public void Construct(IInputModeService inputModeService, IInteractionPromptView promptView)
@@ -85,7 +86,13 @@ namespace TLN.Gameplay.Interaction
 				if (hit.Interactable.CanInteract(context))
 				{
 					_currentHit = hit;
-					_promptView?.Show(hit.Interactable.InteractionText);
+
+					if (!ReferenceEquals(hit.Interactable, _shownInteractable))
+					{
+						_shownInteractable = hit.Interactable;
+						_promptView?.Show(hit.Interactable.InteractionText);
+					}
+
 					return;
 				}
 			}
@@ -149,7 +156,12 @@ namespace TLN.Gameplay.Interaction
 		private void ClearCurrentTarget()
 		{
 			_currentHit = null;
-			_promptView?.Hide();
+
+			if (_shownInteractable != null)
+			{
+				_shownInteractable = null;
+				_promptView?.Hide();
+			}
 		}
 	}
 }

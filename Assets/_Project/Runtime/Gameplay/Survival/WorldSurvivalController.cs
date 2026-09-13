@@ -50,6 +50,7 @@ namespace TLN.Gameplay.Survival
 			}
 
 			TickWarnings();
+			CheckDeath();
 		}
 
 		private void TickSurvival()
@@ -86,6 +87,27 @@ namespace TLN.Gameplay.Survival
 		private bool ShouldSimulateOfflineSurvival()
 		{
 			return _multiplayerSessionService is not { IsMultiplayer: true };
+		}
+
+		private void CheckDeath()
+		{
+			if (_gameStateMachine == null ||
+			    !_gameStateMachine.IsCurrent(GameStateId.Playing))
+			{
+				return;
+			}
+
+			ISurvivalService survival = GetWarningSurvivalService();
+
+			if (survival == null)
+			{
+				return;
+			}
+
+			if (survival.Condition.Value <= 0f)
+			{
+				_gameStateMachine.Enter(GameStateId.GameOver);
+			}
 		}
 
 		private ISurvivalService GetWarningSurvivalService()

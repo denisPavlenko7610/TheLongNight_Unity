@@ -133,31 +133,31 @@
 }
 
 .survival-category-icon-all {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_all.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_all.png?fileID=2800000&guid=c63259cb9a38d174c9ccc285d64f5825");
 }
 
 .survival-category-icon-food {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_food.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_food.png?fileID=2800000&guid=d65185ec628eccf47afb05467f392ff3");
 }
 
 .survival-category-icon-fire {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_fire.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_fire.png?fileID=2800000&guid=4f6b107bee9368242a4278d4d6d06017");
 }
 
 .survival-category-icon-medicine {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_medicine.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_medicine.png?fileID=2800000&guid=d8d89d0b44b6c9347b59adc63d378e76");
 }
 
 .survival-category-icon-tools {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_tools.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_tools.png?fileID=2800000&guid=1d3cd0c91368591459c00a5e4a47fd14");
 }
 
 .survival-category-icon-clothing {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_clothing.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_clothing.png?fileID=2800000&guid=f6454b20cf5af4e4e832a6a9c34e1c67");
 }
 
 .survival-category-icon-craft {
-    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_craft.png");
+    background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_craft.png?fileID=2800000&guid=bace838790122dd4eb5ac06779ef4450");
 }
 
 .survival-category-button:hover {

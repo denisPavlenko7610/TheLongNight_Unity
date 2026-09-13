@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TLN.Core.Logging;
 using TLN.Gameplay.Feedback;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -11,9 +12,11 @@ namespace TLN.Infrastructure.Feedback
 	{
 		private const int DefaultCapacity = 4;
 		private const int MaxInstancesPerPrefab = 32;
+		private const int WarnInstancesThreshold = 12;
 
 		private readonly Transform _root;
 		private readonly Dictionary<GameObject, ObjectPool<PooledVfxInstance>> _poolsByPrefab = new();
+		private readonly Dictionary<GameObject, int> _createdCountByPrefab = new();
 		private readonly HashSet<PooledVfxInstance> _activeInstances = new();
 
 		private bool _isDisposed;
@@ -91,11 +94,11 @@ namespace TLN.Infrastructure.Feedback
 				actionOnGet: OnGetInstance,
 				actionOnRelease: OnReleaseInstance,
 				actionOnDestroy: OnDestroyInstance,
-#if UNITY_EDITOR
+	#if UNITY_EDITOR
 				collectionCheck: true,
-#else
+	#else
 				collectionCheck: false,
-#endif
+	#endif
 				defaultCapacity: DefaultCapacity,
 				maxSize: MaxInstancesPerPrefab
 			);
@@ -119,6 +122,20 @@ namespace TLN.Infrastructure.Feedback
 			}
 
 			instance.CacheParticleSystems();
+
+			_createdCountByPrefab.TryGetValue(prefab, out int createdCount);
+			createdCount++;
+			_createdCountByPrefab[prefab] = createdCount;
+
+			if (createdCount == WarnInstancesThreshold)
+			{
+				TLNLogger.LogWarning(
+					$"VFX pool created {createdCount} instances of '{prefab.name}'. " +
+					"Effects are probably not being released (e.g. looping particles).",
+					prefab
+				);
+			}
+
 			return instance;
 		}
 

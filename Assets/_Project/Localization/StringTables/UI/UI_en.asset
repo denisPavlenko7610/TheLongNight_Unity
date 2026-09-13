@@ -529,6 +529,18 @@ MonoBehaviour:
     m_Localized: Loading...
     m_Metadata:
       m_Items: []
+  - m_Id: 28603789462994944
+    m_Localized: You Did Not Survive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28603789551075328
+    m_Localized: Return to Main Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28603789551075329
+    m_Localized: You survived {0} days
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
