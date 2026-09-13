@@ -24,6 +24,10 @@ namespace TLN.Gameplay.Survival
 		[SerializeField] private float _fatigueConditionDamagePerHour = 3f;
 		[SerializeField] private float _coldConditionDamagePerHour = 15f;
 
+		[Header("Condition Recovery Per Game Hour")]
+		[SerializeField] private float _conditionRecoveryPerHour = 10f;
+		[SerializeField, Range(0f, 1f)] private float _conditionRecoveryStatThreshold01 = 0.9f;
+
 		[Header("Simulation")]
 		[SerializeField] private float _gameHoursPerRealMinute = 1f;
 		[SerializeField] private float _survivalTickIntervalSeconds = 0.25f;
@@ -47,6 +51,9 @@ namespace TLN.Gameplay.Survival
 		public float ThirstConditionDamagePerHour => _thirstConditionDamagePerHour;
 		public float FatigueConditionDamagePerHour => _fatigueConditionDamagePerHour;
 		public float ColdConditionDamagePerHour => _coldConditionDamagePerHour;
+
+		public float ConditionRecoveryPerHour => Mathf.Max(0f, _conditionRecoveryPerHour);
+		public float ConditionRecoveryStatThreshold01 => Mathf.Clamp01(_conditionRecoveryStatThreshold01);
 
 		public float GameHoursPerRealMinute => _gameHoursPerRealMinute;
 

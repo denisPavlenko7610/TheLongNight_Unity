@@ -49,6 +49,7 @@ namespace TLN.Gameplay.Survival
 			Fatigue = AddToStat(Fatigue, _config.FatiguePerHour * gameHours);
 
 			ApplyConditionDamage(gameHours);
+			ApplyConditionRecovery(gameHours);
 
 			Changed?.Invoke();
 		}
@@ -104,6 +105,28 @@ namespace TLN.Gameplay.Survival
 			{
 				Condition = SubtractFromStat(Condition, damage);
 			}
+		}
+
+		private void ApplyConditionRecovery(float gameHours)
+		{
+			float recoveryPerHour = _config.ConditionRecoveryPerHour;
+
+			if (recoveryPerHour <= 0f)
+			{
+				return;
+			}
+
+			float comfortThreshold = _config.ConditionRecoveryStatThreshold01 * MaxStat;
+
+			if (Hunger.Value >= comfortThreshold ||
+			    Thirst.Value >= comfortThreshold ||
+			    Fatigue.Value >= comfortThreshold ||
+			    Cold.Value >= comfortThreshold)
+			{
+				return;
+			}
+
+			Condition = AddToStat(Condition, recoveryPerHour * gameHours);
 		}
 
 		public void ApplyConsumable(ConsumableItemDefinition consumable)

@@ -200,6 +200,7 @@ namespace TLN.Gameplay.Survival.Networking
 
 			ApplyColdExposure(gameHours);
 			ApplyConditionDamage(gameHours);
+			ApplyConditionRecovery(gameHours);
 
 			PublishServerChange();
 		}
@@ -532,6 +533,28 @@ namespace TLN.Gameplay.Survival.Networking
 			{
 				SubtractFromStat(ref _condition, damage);
 			}
+		}
+
+		private void ApplyConditionRecovery(float gameHours)
+		{
+			float recoveryPerHour = _config.ConditionRecoveryPerHour;
+
+			if (recoveryPerHour <= 0f)
+			{
+				return;
+			}
+
+			float comfortThreshold = _config.ConditionRecoveryStatThreshold01 * SurvivalService.MaxStat;
+
+			if (_hunger.Value >= comfortThreshold ||
+			    _thirst.Value >= comfortThreshold ||
+			    _fatigue.Value >= comfortThreshold ||
+			    _cold.Value >= comfortThreshold)
+			{
+				return;
+			}
+
+			AddToStat(ref _condition, recoveryPerHour * gameHours);
 		}
 
 		private void PublishServerChange()

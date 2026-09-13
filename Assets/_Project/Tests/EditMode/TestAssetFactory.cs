@@ -28,7 +28,9 @@ namespace TLN.Tests.EditMode
 			float thirstPerHour = 12f,
 			float fatiguePerHour = 6f,
 			float coldPerHour = 4f,
-			float gameHoursPerRealMinute = 1f
+			float gameHoursPerRealMinute = 1f,
+			float conditionRecoveryPerHour = 10f,
+			float conditionRecoveryStatThreshold01 = 0.9f
 		)
 		{
 			SurvivalConfig config = ScriptableObject.CreateInstance<SurvivalConfig>();
@@ -45,6 +47,12 @@ namespace TLN.Tests.EditMode
 			SetPrivateField(config, "_coldPerHour", coldPerHour);
 
 			SetPrivateField(config, "_gameHoursPerRealMinute", gameHoursPerRealMinute);
+			SetPrivateField(config, "_conditionRecoveryPerHour", conditionRecoveryPerHour);
+			SetPrivateField(
+				config,
+				"_conditionRecoveryStatThreshold01",
+				conditionRecoveryStatThreshold01
+			);
 
 			return config;
 		}

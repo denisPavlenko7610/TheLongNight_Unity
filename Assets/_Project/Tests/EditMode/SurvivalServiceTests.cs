@@ -9,6 +9,64 @@ namespace TLN.Tests.EditMode
 		private const float FloatTolerance = 0.001f;
 
 		[Test]
+		public void Tick_WhenAllNeedsAreComfortable_RecoversCondition()
+		{
+			SurvivalConfig config =
+				TestAssetFactory.CreateSurvivalConfig(
+					initialCondition: 50f,
+					gameHoursPerRealMinute: 1f,
+					conditionRecoveryPerHour: 10f
+				);
+
+			SurvivalService survival = new SurvivalService(config);
+
+			survival.Tick(60f);
+
+			// One game hour passes: hunger 8 / thirst 12 / fatigue 6 stay below the
+			// comfort threshold, so condition recovers by the configured 10 per hour.
+			Assert.That(survival.Condition.Value, Is.EqualTo(60f).Within(FloatTolerance));
+		}
+
+		[Test]
+		public void Tick_WhenNeedExceedsComfortThreshold_DoesNotRecoverCondition()
+		{
+			SurvivalConfig config =
+				TestAssetFactory.CreateSurvivalConfig(
+					initialThirst: 95f,
+					initialCondition: 50f,
+					thirstPerHour: 0f,
+					hungerPerHour: 0f,
+					fatiguePerHour: 0f,
+					gameHoursPerRealMinute: 1f,
+					conditionRecoveryPerHour: 10f
+				);
+
+			SurvivalService survival = new SurvivalService(config);
+
+			survival.Tick(60f);
+
+			Assert.That(survival.Thirst.Value, Is.EqualTo(95f).Within(FloatTolerance));
+			Assert.That(survival.Condition.Value, Is.EqualTo(50f).Within(FloatTolerance));
+		}
+
+		[Test]
+		public void Tick_WhenConditionIsFull_DoesNotExceedMaxStat()
+		{
+			SurvivalConfig config =
+				TestAssetFactory.CreateSurvivalConfig(
+					initialCondition: 100f,
+					gameHoursPerRealMinute: 1f,
+					conditionRecoveryPerHour: 10f
+				);
+
+			SurvivalService survival = new SurvivalService(config);
+
+			survival.Tick(60f);
+
+			Assert.That(survival.Condition.Value, Is.EqualTo(100f).Within(FloatTolerance));
+		}
+
+		[Test]
 		public void Tick_WhenOneRealMinutePasses_IncreasesHungerThirstAndFatigue()
 		{
 			SurvivalConfig config =
