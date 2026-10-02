@@ -1,5 +1,4 @@
 using TLN.Application.GameStates;
-using TLN.Application.Multiplayer;
 using TLN.Gameplay.Campfire;
 using TLN.Gameplay.DayNight;
 using TLN.Gameplay.Equipment;
@@ -21,7 +20,6 @@ namespace TLN.Gameplay.Player
 		private ISurvivalService _survivalService;
 		private SurvivalConfig _survivalConfig;
 		private IGameStateMachine _gameStateMachine;
-		private IMultiplayerSessionService _multiplayerSessionService;
 		private IDayNightService _dayNightService;
 		private IWeatherService _weatherService;
 
@@ -37,7 +35,6 @@ namespace TLN.Gameplay.Player
 			ISurvivalService survivalService,
 			SurvivalConfig survivalConfig,
 			IGameStateMachine gameStateMachine,
-			IMultiplayerSessionService multiplayerSessionService,
 			IDayNightService dayNightService,
 			IWeatherService weatherService
 		)
@@ -47,18 +44,12 @@ namespace TLN.Gameplay.Player
 			_survivalService = survivalService;
 			_survivalConfig = survivalConfig;
 			_gameStateMachine = gameStateMachine;
-			_multiplayerSessionService = multiplayerSessionService;
 			_dayNightService = dayNightService;
 			_weatherService = weatherService;
 		}
 
 		private void Update()
 		{
-			if (!ShouldSimulateOfflineWarmth())
-			{
-				return;
-			}
-
 			if (_survivalService == null)
 			{
 				return;
@@ -84,11 +75,6 @@ namespace TLN.Gameplay.Player
 
 			ApplyColdExposure(_coldExposureAccumulator);
 			_coldExposureAccumulator = 0f;
-		}
-
-		private bool ShouldSimulateOfflineWarmth()
-		{
-			return _multiplayerSessionService is not { IsMultiplayer: true };
 		}
 
 		private void ApplyColdExposure(float deltaTime)

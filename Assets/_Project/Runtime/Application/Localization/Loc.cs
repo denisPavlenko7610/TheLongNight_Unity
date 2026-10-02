@@ -178,5 +178,26 @@ namespace TLN.Application.Localization
 		public static string TooHeavy => gameplay("inventory.too_heavy");
 		public static string InventoryInvalidSlot => gameplay("inventory.invalid_slot");
 		public static string NotEnough => gameplay("inventory.not_enough");
+
+		public static string ActionUse => ui("inventory.action.use");
+		public static string ActionEat => ui("inventory.action.eat");
+		public static string ActionDrink => ui("inventory.action.drink");
+		public static string ActionEquip => ui("inventory.action.equip");
+		public static string ActionUnequip => ui("inventory.action.unequip");
+		public static string ActionPlace => ui("inventory.action.place");
+		public static string ActionDrop => ui("inventory.action.drop");
+		public static string EquipmentHeader => ui("inventory.equipment.title");
+		public static string EquipmentTotalWarmth(params object[] args) => ui("inventory.equipment.warmth_total", args);
+		public static string ContainerTitle => ui("inventory.container.title");
+		public static string ContainerBackpack => ui("inventory.container.backpack");
+		public static string ContainerTakeAll => ui("inventory.container.take_all");
+		public static string ContainerEmpty => ui("inventory.container.empty");
+		public static string ContainerInteract => ui("container.interact");
+		public static string ContainerTaken(params object[] args) => gameplay("container.taken", args);
+		public static string ContainerStored(params object[] args) => gameplay("container.stored", args);
+		public static string ContainerNothingTaken => gameplay("container.nothing_taken");
+		public static string ItemDropped(params object[] args) => gameplay("item.dropped", args);
+		public static string DropPrefabMissing(params object[] args) => gameplay("item.drop_prefab_missing", args);
+		public static string LocationTitle(string key) => ui(key);
 	}
 }

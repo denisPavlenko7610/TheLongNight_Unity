@@ -17,28 +17,25 @@ namespace TLN.Gameplay.Cheats
 		private const string OverlayName = "[TLN Runtime Cheat Overlay]";
 
 		private readonly IGameTimeService _timeService;
-		private readonly ISurvivalService _fallbackSurvivalService;
-		private readonly IInventoryService _fallbackInventoryService;
+		private readonly ISurvivalService _survivalService;
+		private readonly IInventoryService _inventoryService;
 		private readonly ItemCatalog _itemCatalog;
-		private readonly LocalPlayerService _localPlayerService;
 		private readonly IFeedbackService _feedbackService;
 
 		private RuntimeCheatOverlay _overlay;
 
 		public RuntimeCheatOverlayController(
 			IGameTimeService timeService,
-			ISurvivalService fallbackSurvivalService,
-			IInventoryService fallbackInventoryService,
+			ISurvivalService survivalService,
+			IInventoryService inventoryService,
 			ItemCatalog itemCatalog,
-			LocalPlayerService localPlayerService,
 			IFeedbackService feedbackService
 		)
 		{
 			_timeService = timeService;
-			_fallbackSurvivalService = fallbackSurvivalService;
-			_fallbackInventoryService = fallbackInventoryService;
+			_survivalService = survivalService;
+			_inventoryService = inventoryService;
 			_itemCatalog = itemCatalog;
-			_localPlayerService = localPlayerService;
 			_feedbackService = feedbackService;
 		}
 
@@ -55,10 +52,9 @@ namespace TLN.Gameplay.Cheats
 			_overlay.Initialize(
 				settings,
 				_timeService,
-				_fallbackSurvivalService,
-				_fallbackInventoryService,
+				_survivalService,
+				_inventoryService,
 				_itemCatalog,
-				_localPlayerService,
 				_feedbackService
 			);
 		}

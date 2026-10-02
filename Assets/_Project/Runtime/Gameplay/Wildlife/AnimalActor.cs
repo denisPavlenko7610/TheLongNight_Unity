@@ -7,7 +7,6 @@ using TLN.Core.Logging;
 using TLN.Core.Validation;
 using TLN.Gameplay.Player;
 using TLN.Gameplay.Survival;
-using TLN.Gameplay.Survival.Networking;
 using UnityEngine;
 using UnityEngine.AI;
 using VContainer;
@@ -453,14 +452,6 @@ namespace TLN.Gameplay.Wildlife
 
 		private ISurvivalService GetTargetSurvivalService()
 		{
-			PlayerRoot player = GetPlayer();
-
-			if (player != null &&
-			    player.TryGetComponent(out NetworkPlayerSurvival networkSurvival))
-			{
-				return networkSurvival;
-			}
-
 			return _survivalService;
 		}
 

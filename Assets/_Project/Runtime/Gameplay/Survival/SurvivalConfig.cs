@@ -33,6 +33,11 @@ namespace TLN.Gameplay.Survival
 		[SerializeField] private float _survivalTickIntervalSeconds = 0.25f;
 		[SerializeField] private float _warningTickIntervalSeconds = 0.5f;
 
+		[Header("Sprint Exertion (per real minute of sprinting)")]
+		[SerializeField, Range(0f, 30f)] private float _sprintFatiguePerMinute = 6f;
+		[SerializeField, Range(0f, 10f)] private float _sprintHungerPerMinute = 1.5f;
+		[SerializeField, Range(0f, 10f)] private float _sprintThirstPerMinute = 2f;
+
 		[Header("Networking")]
 		[SerializeField] private float _networkSyncEpsilon = 0.001f;
 
@@ -56,6 +61,10 @@ namespace TLN.Gameplay.Survival
 		public float ConditionRecoveryStatThreshold01 => Mathf.Clamp01(_conditionRecoveryStatThreshold01);
 
 		public float GameHoursPerRealMinute => _gameHoursPerRealMinute;
+
+		public float SprintFatiguePerMinute => Mathf.Max(0f, _sprintFatiguePerMinute);
+		public float SprintHungerPerMinute => Mathf.Max(0f, _sprintHungerPerMinute);
+		public float SprintThirstPerMinute => Mathf.Max(0f, _sprintThirstPerMinute);
 
 		public float WarningTickIntervalSeconds => Mathf.Max(0.01f, _warningTickIntervalSeconds);
 

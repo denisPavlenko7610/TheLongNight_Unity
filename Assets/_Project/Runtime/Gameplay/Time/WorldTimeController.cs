@@ -1,5 +1,4 @@
 using TLN.Application.GameStates;
-using TLN.Application.Multiplayer;
 using UnityEngine;
 using VContainer;
 
@@ -9,18 +8,15 @@ namespace TLN.Gameplay.Time
 	{
 		private IGameTimeService _gameTimeService;
 		private IGameStateMachine _gameStateMachine;
-		private IMultiplayerSessionService _multiplayerSessionService;
 
 		[Inject]
 		public void Construct(
 			IGameTimeService gameTimeService,
-			IGameStateMachine gameStateMachine,
-			IMultiplayerSessionService multiplayerSessionService
+			IGameStateMachine gameStateMachine
 		)
 		{
 			_gameTimeService = gameTimeService;
 			_gameStateMachine = gameStateMachine;
-			_multiplayerSessionService = multiplayerSessionService;
 		}
 
 		private void Update()
@@ -36,22 +32,11 @@ namespace TLN.Gameplay.Time
 				return;
 			}
 
-			if (!ShouldSimulateWorld())
-			{
-				return;
-			}
-
 			#if UNITY_EDITOR
 			HandleEditorCheats();
 			#endif
 
 			_gameTimeService.Tick(UnityEngine.Time.deltaTime);
-		}
-
-		private bool ShouldSimulateWorld()
-		{
-			return _multiplayerSessionService is not { IsMultiplayer: true } ||
-			       _multiplayerSessionService.IsServer;
 		}
 
 		#if UNITY_EDITOR

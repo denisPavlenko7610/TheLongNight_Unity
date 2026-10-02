@@ -1,6 +1,4 @@
 using TLN.Application.GameStates;
-using TLN.Application.Multiplayer;
-using TLN.Gameplay.Player;
 using UnityEngine;
 using VContainer;
 
@@ -10,8 +8,6 @@ namespace TLN.Gameplay.Survival
 	{
 		private ISurvivalService _survivalService;
 		private IGameStateMachine _gameStateMachine;
-		private IMultiplayerSessionService _multiplayerSessionService;
-		private LocalPlayerService _localPlayerService;
 		private SurvivalWarningService _warningService;
 		private SurvivalConfig _survivalConfig;
 
@@ -23,15 +19,11 @@ namespace TLN.Gameplay.Survival
 			ISurvivalService survivalService,
 			SurvivalWarningService survivalWarningService,
 			IGameStateMachine gameStateMachine,
-			IMultiplayerSessionService multiplayerSessionService,
-			LocalPlayerService localPlayerService,
 			SurvivalConfig survivalConfig
 		)
 		{
 			_survivalService = survivalService;
 			_gameStateMachine = gameStateMachine;
-			_multiplayerSessionService = multiplayerSessionService;
-			_localPlayerService = localPlayerService;
 			_warningService = survivalWarningService;
 			_survivalConfig = survivalConfig;
 		}
@@ -44,11 +36,7 @@ namespace TLN.Gameplay.Survival
 				return;
 			}
 
-			if (ShouldSimulateOfflineSurvival())
-			{
-				TickSurvival();
-			}
-
+			TickSurvival();
 			TickWarnings();
 			CheckDeath();
 		}
@@ -80,13 +68,8 @@ namespace TLN.Gameplay.Survival
 				return;
 			}
 
-			_warningService?.Tick(GetWarningSurvivalService(), unscaledTime);
+			_warningService?.Tick(_survivalService, unscaledTime);
 			_nextWarningTickTime = unscaledTime + _survivalConfig.WarningTickIntervalSeconds;
-		}
-
-		private bool ShouldSimulateOfflineSurvival()
-		{
-			return _multiplayerSessionService is not { IsMultiplayer: true };
 		}
 
 		private void CheckDeath()
@@ -97,27 +80,15 @@ namespace TLN.Gameplay.Survival
 				return;
 			}
 
-			ISurvivalService survival = GetWarningSurvivalService();
-
-			if (survival == null)
+			if (_survivalService == null)
 			{
 				return;
 			}
 
-			if (survival.Condition.Value <= 0f)
+			if (_survivalService.Condition.Value <= 0f)
 			{
 				_gameStateMachine.Enter(GameStateId.GameOver);
 			}
-		}
-
-		private ISurvivalService GetWarningSurvivalService()
-		{
-			if (_multiplayerSessionService is { IsMultiplayer: true })
-			{
-				return _localPlayerService?.SurvivalService;
-			}
-
-			return _survivalService;
 		}
 	}
 }

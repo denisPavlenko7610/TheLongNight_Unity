@@ -12,6 +12,9 @@
                     <ui:Label name="survival-header-title-label" text="BACKPACK" class="survival-menu-title"/>
                     <ui:VisualElement class="survival-title-underline"/>
                     <ui:Label name="survival-weight-label" text="0.00 / 0.00 KG" class="survival-menu-weight"/>
+                    <ui:VisualElement name="survival-weight-bar" class="survival-weight-bar">
+                        <ui:VisualElement name="survival-weight-bar-fill" class="survival-weight-bar-fill"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
 
                 <ui:Button name="survival-close-button" text="BACK" class="survival-close-button">
@@ -60,6 +63,10 @@
                                                                       entry="Id(3409808850944)"/>
                         </Bindings>
                         <ui:VisualElement class="survival-category-icon survival-category-icon-clothing"/>
+                    </ui:Button>
+
+                    <ui:Button name="survival-equipment-category-button" text="" class="survival-category-button">
+                        <ui:VisualElement class="survival-category-icon survival-category-icon-clothing survival-category-icon-equipment"/>
                     </ui:Button>
 
                     <ui:Button name="survival-tools-category-button" text="" class="survival-category-button">
@@ -134,13 +141,9 @@
                         <ui:Label name="survival-details-meta-label" text="-" class="survival-details-meta"/>
                     </ui:VisualElement>
 
-                    <ui:Button name="survival-use-action-button" text="USE" class="survival-action-button">
-                        <Bindings>
-                            <UnityEngine.Localization.LocalizedString property="text"
-                                                                      table="GUID:36ca90a2a14945edb280e31cf2cafcfc"
-                                                                      entry="Id(2523640496128)"/>
-                        </Bindings>
-                    </ui:Button>
+                    <ui:Button name="survival-use-action-button" text="USE" class="survival-action-button"/>
+
+                    <ui:Button name="survival-drop-action-button" text="DROP" class="survival-action-button"/>
 
                     <ui:Button name="survival-build-action-button" text="BUILD" class="survival-action-button">
                         <Bindings>

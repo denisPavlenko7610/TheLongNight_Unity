@@ -57,6 +57,33 @@
     letter-spacing: 1px;
 }
 
+/* Weight bar — fills white, amber when heavy, red near the carry limit. */
+
+.survival-weight-bar {
+    width: 260px;
+    height: 9px;
+    margin-top: 7px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 228, 232, 0.22);
+    border-right-color: rgba(210, 228, 232, 0.22);
+    border-top-color: rgba(210, 228, 232, 0.22);
+    border-bottom-color: rgba(210, 228, 232, 0.22);
+}
+
+.survival-weight-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: rgba(235, 242, 244, 0.85);
+    border-right-width: 2px;
+    border-right-color: rgba(255, 255, 255, 0.6);
+    transition-property: width, background-color;
+    transition-duration: 0.12s;
+}
+
 .survival-close-button {
     width: 116px;
     height: 38px;
@@ -154,6 +181,10 @@
 
 .survival-category-icon-clothing {
     background-image: url("project://database/Assets/_Project/Art/UI/Textures/Icons/SurvivalMenu/Categories/icon_category_clothing.png?fileID=2800000&guid=f6454b20cf5af4e4e832a6a9c34e1c67");
+}
+
+.survival-category-icon-equipment {
+    -unity-background-image-tint-color: rgba(226, 174, 91, 0.85);
 }
 
 .survival-category-icon-craft {
@@ -361,6 +392,15 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 28px;
+    background-color: rgba(0, 0, 0, 0.34);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(220, 235, 235, 0.16);
+    border-right-color: rgba(220, 235, 235, 0.1);
+    border-top-color: rgba(220, 235, 235, 0.1);
+    border-bottom-color: rgba(220, 235, 235, 0.1);
 }
 
 .survival-details-icon {
@@ -395,6 +435,7 @@
 .survival-action-button {
     width: 180px;
     height: 42px;
+    margin-bottom: 8px;
     color: rgba(235, 240, 240, 0.88);
     background-color: rgba(255, 255, 255, 0.06);
     border-left-width: 1px;
@@ -411,4 +452,15 @@
 
 .survival-action-button:hover {
     background-color: rgba(255, 255, 255, 0.14);
+    border-left-width: 2px;
+    border-left-color: rgba(226, 174, 91, 0.85);
+    color: rgb(255, 255, 255);
+}
+
+.survival-action-button:active {
+    background-color: rgba(226, 174, 91, 0.22);
+}
+
+.survival-details-actions {
+    align-items: center;
 }

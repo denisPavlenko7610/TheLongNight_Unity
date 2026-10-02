@@ -12,15 +12,14 @@ using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
-using TLN.Gameplay.Player.Networking;
 using TLN.Gameplay.Saves;
 using TLN.Gameplay.Sleep;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
-using TLN.Gameplay.Time.Networking;
 using TLN.Gameplay.Weather;
 using TLN.Gameplay.Wildlife;
 using TLN.Gameplay.World;
+using TLN.Gameplay.World.Streaming;
 using TLN.Infrastructure.World;
 using TLN.UI;
 using UnityEngine;
@@ -31,7 +30,6 @@ public sealed class WorldLifetimeScope : LifetimeScope
 {
 	[Header("UI")]
 	[SerializeField] [Required] private WorldUIRoot _uiRoot;
-	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldLocalPlayerUiBinder _worldLocalPlayerUiBinder;
 
 	[Header("Configs")]
 	[SerializeField] [Required] private InventoryConfig _inventoryConfig;
@@ -43,6 +41,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField] [Required] private BuildRecipeCatalog _buildRecipeCatalog;
 	[SerializeField] [Required] private ItemCatalog _itemCatalog;
 	[SerializeField] [Required] private WorldPrefabCatalog _worldPrefabCatalog;
+	[SerializeField] [Required] private WorldItemPrefabCatalog _worldItemPrefabCatalog;
 
 	[Header("World Controllers")]
 	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldEntryPoint _worldEntryPoint;
@@ -50,11 +49,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 	[SerializeField] [Assign(Mode.Scene)] [Required] private DayNightController _dayNightController;
 	[SerializeField] [Assign(Mode.Scene)] [Required] private WorldSurvivalController _worldSurvivalController;
 	[SerializeField] [Assign(Mode.Scene)] private SnowService _snowService;
-
-	[Header("Multiplayer")]
-	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkPlayerSpawner _networkPlayerSpawner;
-	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkLocalPlayerBinder _networkLocalPlayerBinder;
-	[SerializeField] [Assign(Mode.Scene)] [Required] private NetworkWorldTimeSynchronizer _networkWorldTimeSynchronizer;
+	[SerializeField] [Assign(Mode.Scene)] private WorldStreamingController _worldStreamingController;
 
 	[Header("Spawning")]
 	[SerializeField] [Assign(Mode.Scene)] private RandomWorldSpawner[] _randomWorldSpawners;
@@ -82,6 +77,7 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterInstance(_buildRecipeCatalog);
 		builder.RegisterInstance(_itemCatalog);
 		builder.RegisterInstance(_worldPrefabCatalog);
+		builder.RegisterInstance(_worldItemPrefabCatalog);
 	}
 
 	private void RegisterGameplayServices(IContainerBuilder builder)
@@ -98,12 +94,13 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.Register<InventoryService>(Lifetime.Scoped).As<IInventoryService>();
 		builder.Register<PlayerEquipmentService>(Lifetime.Scoped).As<IPlayerEquipmentService>();
 		builder.Register<ItemUseService>(Lifetime.Scoped).As<IItemUseService>();
+		builder.Register<ItemDropService>(Lifetime.Scoped).As<IItemDropService>();
+		builder.Register<LocationTitleService>(Lifetime.Scoped).As<ILocationTitleService>();
 
 		builder.Register<IWorldObjectFactory, VContainerWorldObjectFactory>(Lifetime.Scoped);
 		builder.Register<PlacementService>(Lifetime.Scoped);
 		builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Scoped);
 		builder.Register<IBuildService, BuildService>(Lifetime.Scoped);
-		builder.Register<LocalPlayerService>(Lifetime.Scoped);
 
 		builder.Register<WarmthService>(Lifetime.Scoped).As<IWarmthService>();
 		builder.Register<WildlifeTargetService>(Lifetime.Scoped);
@@ -120,15 +117,12 @@ public sealed class WorldLifetimeScope : LifetimeScope
 
 	private void RegisterWorldComponents(IContainerBuilder builder)
 	{
-		RegisterSceneComponentIfPresent(builder, _networkPlayerSpawner, nameof(_networkPlayerSpawner));
-		RegisterSceneComponentIfPresent(builder, _networkLocalPlayerBinder, nameof(_networkLocalPlayerBinder));
-		RegisterSceneComponentIfPresent(builder, _networkWorldTimeSynchronizer, nameof(_networkWorldTimeSynchronizer));
-
 		builder.RegisterComponent(_worldEntryPoint);
 		builder.RegisterComponent(_worldTimeController);
 		builder.RegisterComponent(_dayNightController);
 		builder.RegisterComponent(_worldSurvivalController);
 		builder.RegisterComponent(_snowService);
+		builder.RegisterComponent(_worldStreamingController);
 	}
 
 	private void RegisterRandomSpawners(IContainerBuilder builder)
@@ -162,9 +156,9 @@ public sealed class WorldLifetimeScope : LifetimeScope
 		builder.RegisterComponent(_uiRoot.SurvivalMenu).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.SleepWindow).AsImplementedInterfaces();
 		builder.RegisterComponent(_uiRoot.CampfireWindow).AsImplementedInterfaces();
+		builder.RegisterComponent(_uiRoot.ContainerWindow).AsImplementedInterfaces();
 
 		builder.RegisterComponent(_uiRoot.PauseMenu);
-		RegisterSceneComponentIfPresent(builder, _worldLocalPlayerUiBinder, nameof(_worldLocalPlayerUiBinder));
 	}
 
 	private static void RegisterSceneComponentIfPresent<T>(

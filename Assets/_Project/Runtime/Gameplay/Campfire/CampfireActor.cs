@@ -7,15 +7,13 @@ using TLN.Core.Logging;
 using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Saves;
 using TLN.Gameplay.Time;
-using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
 namespace TLN.Gameplay.Campfire
 {
 	[RequireComponent(typeof(PersistentWorldEntity))]
-	[RequireComponent(typeof(NetworkObject))]
-	public sealed class CampfireActor : NetworkBehaviour, IInteractable, IWarmthProvider, IWorldSaveable
+	public sealed class CampfireActor : MonoBehaviour, IInteractable, IWarmthProvider, IWorldSaveable
 	{
 		private const string SaveType = "campfire";
 
@@ -37,18 +35,6 @@ namespace TLN.Gameplay.Campfire
 		[SerializeField] private Light _fireLight;
 		[SerializeField] private ParticleSystem _fireParticles;
 		[SerializeField] private AudioSource _fireLoopAudio;
-
-		private readonly NetworkVariable<int> _networkRemainingBurnMinutes = new(
-			0,
-			NetworkVariableReadPermission.Everyone,
-			NetworkVariableWritePermission.Server
-		);
-
-		private readonly NetworkVariable<CampfireState> _networkState = new(
-			CampfireState.Unlit,
-			NetworkVariableReadPermission.Everyone,
-			NetworkVariableWritePermission.Server
-		);
 
 		private ICampfireWindow _campfireWindow;
 		private IGameTimeService _gameTimeService;
@@ -123,27 +109,7 @@ namespace TLN.Gameplay.Campfire
 			_audioMixerService?.AssignMixerGroup(_fireLoopAudio, AudioBusId.Ambient);
 		}
 
-		public override void OnNetworkSpawn()
-		{
-			_networkRemainingBurnMinutes.OnValueChanged += OnNetworkRemainingBurnMinutesChanged;
-			_networkState.OnValueChanged += OnNetworkStateChanged;
-
-			if (IsServer)
-			{
-				WriteNetworkValues(true);
-				return;
-			}
-
-			ApplyNetworkValues();
-		}
-
-		public override void OnNetworkDespawn()
-		{
-			_networkRemainingBurnMinutes.OnValueChanged -= OnNetworkRemainingBurnMinutesChanged;
-			_networkState.OnValueChanged -= OnNetworkStateChanged;
-		}
-
-		public override void OnDestroy()
+		private void OnDestroy()
 		{
 			if (_gameTimeService != null)
 			{
@@ -151,7 +117,6 @@ namespace TLN.Gameplay.Campfire
 			}
 
 			_warmthService?.Unregister(this);
-			base.OnDestroy();
 		}
 
 #if UNITY_EDITOR
@@ -243,12 +208,6 @@ namespace TLN.Gameplay.Campfire
 			out string failureReason
 		)
 		{
-			if (!CanMutateCampfire())
-			{
-				failureReason = Loc.CannotUse;
-				return false;
-			}
-
 			if (!CanAddFuel(fuelDefinition, amount, out failureReason))
 			{
 				return false;
@@ -270,12 +229,6 @@ namespace TLN.Gameplay.Campfire
 
 		public bool Ignite(out string failureReason)
 		{
-			if (!CanMutateCampfire())
-			{
-				failureReason = Loc.CannotUse;
-				return false;
-			}
-
 			if (IsBurning)
 			{
 				failureReason = Loc.AlreadyBurning;
@@ -296,12 +249,6 @@ namespace TLN.Gameplay.Campfire
 
 		public bool Extinguish(out string failureReason)
 		{
-			if (!CanMutateCampfire())
-			{
-				failureReason = Loc.CannotUse;
-				return false;
-			}
-
 			if (!IsBurning)
 			{
 				failureReason = Loc.NotBurning;
@@ -317,11 +264,6 @@ namespace TLN.Gameplay.Campfire
 		private void OnGameTimeChanged()
 		{
 			if (_gameTimeService == null)
-			{
-				return;
-			}
-
-			if (IsNetworkWorld() && !IsServer)
 			{
 				return;
 			}
@@ -395,66 +337,6 @@ namespace TLN.Gameplay.Campfire
 
 		private void PublishChanged()
 		{
-			WriteNetworkValues(false);
-			Changed?.Invoke();
-		}
-
-		private void WriteNetworkValues(bool force)
-		{
-			if (!IsServer)
-			{
-				return;
-			}
-
-			if (force || _networkRemainingBurnMinutes.Value != _remainingBurnMinutes)
-			{
-				_networkRemainingBurnMinutes.Value = _remainingBurnMinutes;
-			}
-
-			if (force || _networkState.Value != _state)
-			{
-				_networkState.Value = _state;
-			}
-		}
-
-		private void OnNetworkRemainingBurnMinutesChanged(
-			int previousValue,
-			int nextValue
-		)
-		{
-			if (IsServer)
-			{
-				return;
-			}
-
-			SetRemainingBurnMinutes(nextValue);
-			Changed?.Invoke();
-		}
-
-		private void OnNetworkStateChanged(
-			CampfireState previousValue,
-			CampfireState nextValue
-		)
-		{
-			if (IsServer)
-			{
-				return;
-			}
-
-			_state = nextValue;
-
-			ApplyVisualState();
-			PlayStateFeedback(previousValue, nextValue);
-
-			Changed?.Invoke();
-		}
-
-		private void ApplyNetworkValues()
-		{
-			SetRemainingBurnMinutes(_networkRemainingBurnMinutes.Value);
-			_state = _networkState.Value;
-
-			ApplyVisualState();
 			Changed?.Invoke();
 		}
 
@@ -480,34 +362,6 @@ namespace TLN.Gameplay.Campfire
 			{
 				_feedbackService.PlayAt(FeedbackEventId.CampfireExtinguished, transform.position);
 			}
-		}
-
-		private bool CanMutateCampfire()
-		{
-			return !IsSpawned || IsServer;
-		}
-
-		private static bool IsNetworkWorld()
-		{
-			NetworkManager networkManager = NetworkManager.Singleton;
-
-			return networkManager != null &&
-			       networkManager.IsListening;
-		}
-
-		private CampfireState ResolveStateForFuel(CampfireState state)
-		{
-			if (state == CampfireState.Burning && _remainingBurnMinutes <= 0)
-			{
-				return CampfireState.BurnedOut;
-			}
-
-			if (state == CampfireState.BurnedOut && _remainingBurnMinutes > 0)
-			{
-				return CampfireState.Unlit;
-			}
-
-			return state;
 		}
 
 		private void ApplyVisualState()
@@ -591,6 +445,21 @@ namespace TLN.Gameplay.Campfire
 
 			ApplyVisualState();
 			PublishChanged();
+		}
+
+		private CampfireState ResolveStateForFuel(CampfireState state)
+		{
+			if (state == CampfireState.Burning && _remainingBurnMinutes <= 0)
+			{
+				return CampfireState.BurnedOut;
+			}
+
+			if (state == CampfireState.BurnedOut && _remainingBurnMinutes > 0)
+			{
+				return CampfireState.Unlit;
+			}
+
+			return state;
 		}
 
 		private sealed class CampfireSaveData

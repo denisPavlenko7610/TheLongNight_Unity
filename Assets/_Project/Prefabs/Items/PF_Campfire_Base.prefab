@@ -93,7 +93,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShapeRadius: 0
+  m_ShapeRadius: 0.025
   m_ShadowAngle: 0
   m_LightUnit: 0
   m_LuxAtDistance: 1
@@ -121,8 +121,8 @@ MonoBehaviour:
   m_ShapeWidth: -1
   m_ShapeHeight: -1
   m_AspectRatio: -1
-  m_ShapeRadius: 0.025
-  m_Version: 14
+  m_ShapeRadius: -1
+  m_Version: 15
   m_ObsoleteShadowResolutionTier: 1
   m_ObsoleteUseShadowQualitySettings: 0
   m_ObsoleteCustomShadowResolution: 512
@@ -665,6 +665,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2695528187752430520, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
+    - {fileID: 882572884242975756, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5560414482050531315, guid: fb34099346a811f428a907e1e3470f7a, type: 3}
@@ -708,7 +709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34355a05f96f4aeaa7efd33db211d31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Campfire.CampfireActor
-  ShowTopMostFoldoutHeaderGroup: 1
   _interactionText: Use campfire
   _maxInteractionDistance: 3.5
   _startBurnMinutes: 7

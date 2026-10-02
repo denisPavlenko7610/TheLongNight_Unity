@@ -1,7 +1,6 @@
 using TLN.Application.Assets;
 using TLN.Application.Feedback;
 using TLN.Application.Localization;
-using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Core.Results;
 using TLN.Gameplay.Equipment;
@@ -16,7 +15,6 @@ namespace TLN.Gameplay.Items
 	{
 		private readonly IInventoryService _inventoryService;
 		private readonly ISurvivalService _survivalService;
-		private readonly IMultiplayerSessionService _multiplayerSessionService;
 		private readonly INotificationService _notificationService;
 		private readonly PlacementService _placementService;
 		private readonly IPlayerEquipmentService _equipmentService;
@@ -26,7 +24,6 @@ namespace TLN.Gameplay.Items
 		public ItemUseService(
 			IInventoryService inventoryService,
 			ISurvivalService survivalService,
-			IMultiplayerSessionService multiplayerSessionService,
 			INotificationService notificationService,
 			PlacementService placementService,
 			IPlayerEquipmentService equipmentService,
@@ -36,7 +33,6 @@ namespace TLN.Gameplay.Items
 		{
 			_inventoryService = inventoryService;
 			_survivalService = survivalService;
-			_multiplayerSessionService = multiplayerSessionService;
 			_notificationService = notificationService;
 			_placementService = placementService;
 			_equipmentService = equipmentService;
@@ -46,11 +42,6 @@ namespace TLN.Gameplay.Items
 
 		public ItemUseResult UseItemAt(int index)
 		{
-			if (_multiplayerSessionService is { IsMultiplayer: true })
-			{
-				return Fail(Loc.CannotUse);
-			}
-
 			if (index < 0 || index >= _inventoryService.Items.Count)
 			{
 				return Fail(Loc.ItemsInvalidSlot);

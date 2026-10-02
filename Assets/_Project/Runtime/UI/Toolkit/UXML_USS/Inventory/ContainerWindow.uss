@@ -1,0 +1,298 @@
+/* Container transfer window — The Long Dark visual language:
+   deep desaturated slate, dense opaque panels, thin cold borders,
+   amber accents on primary actions, weight bar with state colors. */
+
+.container-window-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-window-root-visible {
+    display: flex;
+}
+
+.container-backdrop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(2, 6, 8, 0.82);
+}
+
+.container-frame {
+    width: 960px;
+    height: 640px;
+    background-color: rgb(11, 17, 20);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(226, 174, 91, 0.75);
+    border-right-color: rgba(200, 220, 224, 0.16);
+    border-top-color: rgba(200, 220, 224, 0.16);
+    border-bottom-color: rgba(200, 220, 224, 0.16);
+    padding: 26px 30px 24px 30px;
+}
+
+/* ---------- Header ---------- */
+
+.container-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(200, 220, 224, 0.14);
+}
+
+.container-title {
+    color: rgb(238, 242, 240);
+    font-size: 27px;
+    letter-spacing: 4px;
+    unity-font-style: bold;
+}
+
+.container-title-underline {
+    width: 132px;
+    height: 5px;
+    margin-top: 8px;
+    background-color: rgba(226, 174, 91, 0.85);
+}
+
+.container-header-actions {
+    flex-direction: row;
+    align-items: center;
+}
+
+.container-button {
+    min-width: 118px;
+    height: 38px;
+    margin-left: 10px;
+    color: rgba(232, 240, 242, 0.88);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 228, 232, 0.22);
+    border-right-color: rgba(210, 228, 232, 0.12);
+    border-top-color: rgba(210, 228, 232, 0.12);
+    border-bottom-color: rgba(210, 228, 232, 0.12);
+    font-size: 14px;
+    unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+.container-button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-left-color: rgba(255, 255, 255, 0.4);
+    color: rgb(255, 255, 255);
+}
+
+.container-button-primary {
+    background-color: rgba(226, 174, 91, 0.14);
+    border-left-color: rgba(226, 174, 91, 0.55);
+    border-right-color: rgba(226, 174, 91, 0.25);
+    border-top-color: rgba(226, 174, 91, 0.25);
+    border-bottom-color: rgba(226, 174, 91, 0.25);
+    color: rgba(240, 220, 186, 0.95);
+}
+
+.container-button-primary:hover {
+    background-color: rgba(226, 174, 91, 0.28);
+    border-left-color: rgba(226, 174, 91, 0.9);
+}
+
+/* ---------- Columns ---------- */
+
+.container-columns {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.container-column {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.container-column:first-child {
+    margin-right: 20px;
+}
+
+.container-divider {
+    width: 1px;
+    background-color: rgba(200, 220, 224, 0.12);
+    margin-right: 20px;
+}
+
+.container-column-header {
+    height: 34px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.container-side-title {
+    color: rgba(226, 232, 232, 0.8);
+    font-size: 16px;
+    letter-spacing: 3px;
+    unity-font-style: bold;
+}
+
+.container-weight-label {
+    color: rgba(200, 216, 218, 0.72);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+/* ---------- Weight bar ---------- */
+
+.container-weight-bar {
+    height: 10px;
+    margin-bottom: 12px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 228, 232, 0.2);
+    border-right-color: rgba(210, 228, 232, 0.2);
+    border-top-color: rgba(210, 228, 232, 0.2);
+    border-bottom-color: rgba(210, 228, 232, 0.2);
+}
+
+.container-weight-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: rgba(235, 242, 244, 0.85);
+    border-right-width: 2px;
+    border-right-color: rgba(255, 255, 255, 0.6);
+    transition-property: width, background-color;
+    transition-duration: 0.12s;
+}
+
+/* ---------- Lists ---------- */
+
+.container-list-view {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 230, 230, 0.12);
+    border-right-color: rgba(210, 230, 230, 0.12);
+    border-top-color: rgba(210, 230, 230, 0.12);
+    border-bottom-color: rgba(210, 230, 230, 0.12);
+    padding: 8px;
+}
+
+.container-list-view .unity-scroll-view {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.container-list-view .unity-scroll-view__content-container {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.container-list-view .unity-list-view__item,
+.container-list-view .unity-collection-view__item {
+    height: 58px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.container-empty-label {
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: rgba(200, 216, 218, 0.45);
+    -unity-text-align: middle-center;
+}
+
+/* ---------- Rows ---------- */
+
+.container-row {
+    height: 50px;
+    padding-left: 8px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(210, 228, 232, 0.08);
+    border-right-color: rgba(210, 228, 232, 0.08);
+    border-top-color: rgba(210, 228, 232, 0.08);
+    border-bottom-color: rgba(210, 228, 232, 0.08);
+}
+
+.container-row:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.35);
+    border-right-color: rgba(210, 228, 232, 0.2);
+    border-top-color: rgba(210, 228, 232, 0.2);
+    border-bottom-color: rgba(210, 228, 232, 0.2);
+}
+
+.container-row:active {
+    background-color: rgba(226, 174, 91, 0.16);
+    border-left-color: rgba(226, 174, 91, 0.7);
+}
+
+.container-row-icon-frame {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.38);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.1);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.container-row-icon {
+    width: 32px;
+    height: 32px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.container-row-text-column {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.container-row-title {
+    color: rgba(238, 244, 244, 0.92);
+    font-size: 15px;
+    unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: upper-left;
+}
+
+.container-row-meta {
+    margin-top: 2px;
+    color: rgba(190, 205, 205, 0.62);
+    font-size: 12px;
+    letter-spacing: 1px;
+    -unity-text-align: lower-left;
+}

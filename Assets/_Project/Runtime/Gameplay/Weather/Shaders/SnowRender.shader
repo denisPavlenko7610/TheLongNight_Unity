@@ -73,14 +73,15 @@ Shader "TLN/VFX/SnowParticle"
             float SnowflakeShape(float2 uv)
             {
                 float dist = length(uv);
-                float circle = 1.0 - smoothstep(0.6, 1.0, dist);
+                // Soft round core dominates; a hint of structure on larger flakes.
+                float circle = 1.0 - smoothstep(0.35, 1.0, dist);
 
                 float angle = atan2(uv.y, uv.x);
                 float armPattern = cos(angle * 6.0);
-                float armRadial = 1.0 - smoothstep(0.0, 0.7, dist);
+                float armRadial = 1.0 - smoothstep(0.0, 0.55, dist);
                 float arms = max(0, armPattern) * armRadial;
 
-                return saturate(circle * 0.5 + arms * 0.5);
+                return saturate(circle * 0.85 + arms * 0.15);
             }
 
             Varyings Vertex(Attributes input)

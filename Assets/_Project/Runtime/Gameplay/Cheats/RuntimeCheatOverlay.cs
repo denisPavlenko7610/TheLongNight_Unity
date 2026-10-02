@@ -21,10 +21,9 @@ namespace TLN.Gameplay.Cheats
 
 		private CheatSettings _settings;
 		private IGameTimeService _timeService;
-		private ISurvivalService _fallbackSurvivalService;
-		private IInventoryService _fallbackInventoryService;
+		private ISurvivalService _survivalService;
+		private IInventoryService _inventoryService;
 		private ItemCatalog _itemCatalog;
-		private LocalPlayerService _localPlayerService;
 		private IFeedbackService _feedbackService;
 
 		private readonly List<ItemDefinition> _filteredItems = new();
@@ -41,19 +40,17 @@ namespace TLN.Gameplay.Cheats
 		public void Initialize(
 			CheatSettings settings,
 			IGameTimeService timeService,
-			ISurvivalService fallbackSurvivalService,
-			IInventoryService fallbackInventoryService,
+			ISurvivalService survivalService,
+			IInventoryService inventoryService,
 			ItemCatalog itemCatalog,
-			LocalPlayerService localPlayerService,
 			IFeedbackService feedbackService
 		)
 		{
 			_settings = settings;
 			_timeService = timeService;
-			_fallbackSurvivalService = fallbackSurvivalService;
-			_fallbackInventoryService = fallbackInventoryService;
+			_survivalService = survivalService;
+			_inventoryService = inventoryService;
 			_itemCatalog = itemCatalog;
-			_localPlayerService = localPlayerService;
 			_feedbackService = feedbackService;
 			_cheatsEnabled = settings.CanUseCheats;
 
@@ -288,16 +285,12 @@ namespace TLN.Gameplay.Cheats
 
 		private ISurvivalService GetSurvivalService()
 		{
-			return _localPlayerService is { HasLocalPlayer: true }
-				? _localPlayerService.SurvivalService
-				: _fallbackSurvivalService;
+			return _survivalService;
 		}
 
 		private IInventoryService GetInventoryService()
 		{
-			return _localPlayerService is { HasLocalPlayer: true }
-				? _localPlayerService.InventoryService
-				: _fallbackInventoryService;
+			return _inventoryService;
 		}
 
 		private static string GetSurvivalText(ISurvivalService survival)

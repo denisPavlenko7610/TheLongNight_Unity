@@ -13,11 +13,18 @@ namespace TLN.Gameplay.Weather
 		[SerializeField] [Range(0f, 1f)] private float _windInfluence = 0.6f;
 		[SerializeField] [Range(0f, 2f)] private float _turbulence = 0.7f;
 		[SerializeField] private Color _snowColor = new Color(0.92f, 0.94f, 1f, 1f);
-		[SerializeField] [Range(0.005f, 0.1f)] private float _minSize = 0.01f;
+		[SerializeField] [Range(0.004f, 0.1f)] private float _minSize = 0.01f;
 		[SerializeField] [Range(0.01f, 0.15f)] private float _maxSize = 0.083f;
 		[SerializeField] [Range(0f, 1f)] private float _softness = 0.6f;
 		[SerializeField] [Range(0f, 1f)] private float _sparkleIntensity = 0.25f;
 		[SerializeField] [Range(10f, 100f)] private float _fadeDistance = 45f;
+
+		[Header("Fall Behaviour (The Long Dark style)")]
+		[SerializeField] [Range(0.2f, 2f)] private float _fallSpeedMin = 0.6f;
+		[SerializeField] [Range(0.5f, 4f)] private float _fallSpeedMax = 1.6f;
+		[SerializeField] [Range(0f, 1f)] private float _swayAmplitude = 0.3f;
+		[SerializeField] [Range(0.1f, 3f)] private float _swayFrequency = 0.8f;
+		[SerializeField] [Range(0f, 6f)] private float _windSpeedMax = 2.4f;
 
 		public int MaxParticles => _maxParticles;
 		public float Radius => _radius;
@@ -32,5 +39,10 @@ namespace TLN.Gameplay.Weather
 		public float Softness => _softness;
 		public float SparkleIntensity => _sparkleIntensity;
 		public float FadeDistance => _fadeDistance;
+		public float FallSpeedMin => _fallSpeedMin;
+		public float FallSpeedMax => _fallSpeedMax;
+		public float SwayAmplitude => _swayAmplitude;
+		public float SwayFrequency => _swayFrequency;
+		public float WindSpeedMax => _windSpeedMax;
 	}
 }

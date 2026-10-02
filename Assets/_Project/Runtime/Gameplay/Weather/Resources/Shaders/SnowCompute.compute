@@ -13,18 +13,25 @@ RWStructuredBuffer<SnowParticle> _SnowParticles;
 float3 _VolumeCenter;
 float3 _VolumeHalfExtents;
 float3 _Wind;
-float _Gravity;
-float _Turbulence;
 float _DeltaTime;
 uint _ParticleCount;
 float _Time;
 float _SeedOffset;
 float _MinSize;
 float _MaxSize;
+float _FallSpeedMin;
+float _FallSpeedMax;
+float _SwayAmplitude;
+float _SwayFrequency;
 
 float Hash(float s)
 {
 	return frac(sin(s) * 43758.5453);
+}
+
+float WrapEdge()
+{
+	return 0.5;
 }
 
 float SnowflakeSizeT(float seed)
@@ -38,41 +45,21 @@ float SnowflakeSizeT(float seed)
 	return saturate(sizeT);
 }
 
-float Turbulence3D(float3 pos, float seed, float strength)
-{
-	float3 a = pos * 0.4 + float3(seed * 10, 0, seed * 7);
-	float3 b = pos * 0.9 + float3(0, seed * 3, seed * 5);
-	float3 c = pos * 2.1 + float3(seed * 2, seed * 8, 0);
-
-	float n = 0;
-	n += (frac(sin(dot(a, float3(127.1, 311.7, 74.7))) * 43758.5453)) * 1.0;
-	n += (frac(sin(dot(b, float3(269.5, 183.3, 421.1))) * 43758.5453)) * 0.66;
-	n += (frac(sin(dot(c, float3(53.2, 197.8, 312.6))) * 43758.5453)) * 0.43;
-	return (n / 2.09 - 0.5) * 2.0 * strength;
-}
-
-void RespawnParticle(inout SnowParticle p, float seed, bool topSpawn)
+// The Long Dark style: every flake falls at its own constant terminal speed and
+// sways gently on a per-flake sinusoid. Velocity is derived, never integrated,
+// so flakes can never accelerate or spiral out of control.
+void RespawnAtTop(inout SnowParticle p, float seed)
 {
 	float3 he = _VolumeHalfExtents;
 	float3 ct = _VolumeCenter;
 
-	float verticalPosition = topSpawn
-		? he.y - Hash(seed + 0.13) * min(4.0, he.y * 0.25)
-		: (Hash(seed + 0.13) - 0.5) * he.y * 2.0;
-
 	p.position = ct + float3(
 		(Hash(seed) - 0.5) * he.x * 2.0,
-		verticalPosition,
+		he.y - Hash(seed + 0.13) * min(4.0, he.y * 0.25),
 		(Hash(seed + 0.27) - 0.5) * he.z * 2.0
 	);
 
-	p.velocity = float3(
-		Hash(seed + 0.4) * 0.7 - 0.35,
-		-Hash(seed + 0.5) * 1.8 - 0.45,
-		Hash(seed + 0.6) * 0.7 - 0.35
-	);
-
-	float sizeT = SnowflakeSizeT(seed);
+	float sizeT = SnowflakeSizeT(seed + 3.1);
 	p.size = lerp(_MinSize, _MaxSize, sizeT);
 	p.seed = seed + _SeedOffset;
 }
@@ -88,33 +75,32 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 
 	SnowParticle p = _SnowParticles[index];
 
-	float3 turb = float3(
-		Turbulence3D(p.position, p.seed, _Turbulence),
-		Turbulence3D(p.position + float3(43, 17, 0), p.seed + 1, _Turbulence * 0.5),
-		Turbulence3D(p.position + float3(0, 29, 61), p.seed + 2, _Turbulence)
-	);
+	float fallSpeed = lerp(_FallSpeedMin, _FallSpeedMax, Hash(p.seed + 2.2));
 
-	p.velocity += (float3(0, -_Gravity, 0) + _Wind + turb) * _DeltaTime;
+	float phase = p.seed * 0.37 + _Time * _SwayFrequency;
+	float swayX = sin(phase) * _SwayAmplitude;
+	float swayZ = sin(phase * 0.83 + 1.7) * _SwayAmplitude * 0.8;
 
-	float spd = length(p.velocity);
-	if (spd > 5.0)
-	{
-		p.velocity = (p.velocity / spd) * 5.0;
-	}
+	float3 velocity = float3(swayX, -fallSpeed, swayZ) + _Wind;
+	p.velocity = velocity;
+	p.position += velocity * _DeltaTime;
 
-	p.position += p.velocity * _DeltaTime;
-
+	// Wrap horizontally so wind streams stay dense instead of thinning out.
 	float3 rel = p.position - _VolumeCenter;
-	bool outsideVolume =
-		abs(rel.x) > _VolumeHalfExtents.x ||
-		abs(rel.z) > _VolumeHalfExtents.z ||
-		rel.y < -_VolumeHalfExtents.y ||
-		rel.y > _VolumeHalfExtents.y;
+	float edgeX = _VolumeHalfExtents.x - WrapEdge();
+	float edgeZ = _VolumeHalfExtents.z - WrapEdge();
 
-	if (outsideVolume)
+	if (rel.x > edgeX) p.position.x -= edgeX * 2.0;
+	else if (rel.x < -edgeX) p.position.x += edgeX * 2.0;
+
+	if (rel.z > edgeZ) p.position.z -= edgeZ * 2.0;
+	else if (rel.z < -edgeZ) p.position.z += edgeZ * 2.0;
+
+	// Fallen below the volume: re-emerge near the top.
+	if (p.position.y - _VolumeCenter.y < -_VolumeHalfExtents.y)
 	{
 		float seed = p.seed + _Time * 73.7 + index * 0.137 + _SeedOffset;
-		RespawnParticle(p, seed, true);
+		RespawnAtTop(p, seed);
 	}
 
 	_SnowParticles[index] = p;

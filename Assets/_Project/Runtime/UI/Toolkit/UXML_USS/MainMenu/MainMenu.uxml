@@ -42,7 +42,6 @@
             <ui:VisualElement name="main-menu-navigation-panel" class="main-menu-list">
                 <ui:Label name="main-menu-mode-label" text="CHOOSE MODE" class="main-menu-section-label"/>
                 <ui:Button name="single-player-button" text="SINGLE PLAYER" class="main-menu-button tln-menu-button"/>
-                <ui:Button name="multiplayer-button" text="MULTIPLAYER" class="main-menu-button tln-menu-button"/>
                 <ui:Button name="options-button" text="OPTIONS" class="main-menu-button tln-menu-button">
                     <Bindings>
                         <UnityEngine.Localization.LocalizedString property="text"
@@ -76,21 +75,6 @@
                     </Bindings>
                 </ui:Button>
                 <ui:Button name="single-player-back-button" text="BACK" class="main-menu-button main-menu-back-button tln-menu-button"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="main-menu-multiplayer-panel" class="main-menu-list main-menu-submenu">
-                <ui:Label name="multiplayer-title-label" text="MULTIPLAYER" class="main-menu-section-title"/>
-                <ui:Label name="multiplayer-description-label" text="Host a run or join by code." class="main-menu-section-description"/>
-                <ui:Button name="host-game-button" text="HOST GAME" class="main-menu-button tln-menu-button"/>
-                <ui:Button name="refresh-games-button" text="REFRESH GAMES" class="main-menu-button tln-menu-button"/>
-                <ui:Label name="sessions-title-label" text="AVAILABLE GAMES" class="main-menu-field-label"/>
-                <ui:ScrollView name="sessions-scroll-view" class="main-menu-sessions-scroll">
-                    <ui:VisualElement name="sessions-list" class="main-menu-sessions-list"/>
-                </ui:ScrollView>
-                <ui:Label name="sessions-status-label" text="Refresh to search public games." class="main-menu-session-status"/>
-                <ui:Label name="join-code-label" text="JOIN CODE" class="main-menu-field-label"/>
-                <ui:TextField name="join-code-field" class="main-menu-code-field"/>
-                <ui:Button name="join-game-button" text="JOIN GAME" class="main-menu-button tln-menu-button"/>
-                <ui:Button name="multiplayer-back-button" text="BACK" class="main-menu-button main-menu-back-button tln-menu-button"/>
             </ui:VisualElement>
             <ui:VisualElement name="main-menu-settings-panel" class="main-menu-settings-panel tln-settings-panel options-panel">
                 <ui:Label name="options-title" text="OPTIONS" class="options-title"/>

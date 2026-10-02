@@ -4,6 +4,7 @@ using TLN.Gameplay.Interaction;
 using TLN.Gameplay.Player.Input;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
+using TLN.Gameplay.World.Streaming;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -19,6 +20,8 @@ namespace TLN.UI.HUD
 
 		private const string HiddenClassName = "runtime-hidden";
 		private const string VisibleClassName = "inventory-window-root-visible";
+
+		private const string PoiTitleVisibleClassName = "poi-title-visible";
 
 		private const float SurvivalIconSize = 42f;
 
@@ -45,11 +48,14 @@ namespace TLN.UI.HUD
 
 		private Label _interactionPromptLabel;
 		private Label _notificationLabel;
+		private Label _poiTitleLabel;
 		private string _currentInteractionPromptText;
 		private bool _isInteractionPromptVisible;
 
 		private ISurvivalService _survivalService;
 		private IGameTimeService _gameTimeService;
+		private ILocationTitleService _locationTitleService;
+		private string _lastPoiTitle;
 
 		private float _notificationHideTime;
 		private bool _isInitialized;
@@ -91,6 +97,7 @@ namespace TLN.UI.HUD
 
 			_interactionPromptLabel = root.Q<Label>("interaction-prompt-label");
 			_notificationLabel = root.Q<Label>("notification-label");
+			_poiTitleLabel = root.Q<Label>("poi-title-label");
 
 			HideInteractionPrompt();
 			HideNotification();
@@ -103,17 +110,51 @@ namespace TLN.UI.HUD
 			RefreshIfNeeded();
 			UpdateNotificationLifetime();
 			UpdateTimeOverlayLifetime();
+			UpdatePoiTitle();
 		}
 
-		public void Construct(ISurvivalService survivalService, IGameTimeService gameTimeService)
+		public void Construct(
+			ISurvivalService survivalService,
+			IGameTimeService gameTimeService,
+			ILocationTitleService locationTitleService = null
+		)
 		{
 			EnsureInitialized();
 
 			_survivalService = survivalService;
 			_gameTimeService = gameTimeService;
+			_locationTitleService = locationTitleService;
 
 			RefreshAll();
 			_nextRefreshTime = UnityTime.unscaledTime + _refreshInterval;
+		}
+
+		private void UpdatePoiTitle()
+		{
+			if (_poiTitleLabel == null || _locationTitleService == null)
+			{
+				return;
+			}
+
+			string title = _locationTitleService.IsVisible
+				? _locationTitleService.CurrentTitle
+				: null;
+
+			if (title == _lastPoiTitle)
+			{
+				return;
+			}
+
+			_lastPoiTitle = title;
+
+			if (title == null)
+			{
+				_poiTitleLabel.RemoveFromClassList(PoiTitleVisibleClassName);
+				return;
+			}
+
+			_poiTitleLabel.text = title;
+			_poiTitleLabel.AddToClassList(PoiTitleVisibleClassName);
 		}
 
 		public void ShowTimeOverlay()

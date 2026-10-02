@@ -4,6 +4,7 @@ using TLN.Application.Assets;
 using TLN.Application.Input;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
+using TLN.Core.Results;
 using TLN.Gameplay.Building;
 using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Inventory;
@@ -31,6 +32,7 @@ namespace TLN.UI.SurvivalMenu
 		private Button _medicineCategoryButton;
 		private Button _toolsCategoryButton;
 		private Button _clothesCategoryButton;
+		private Button _equipmentCategoryButton;
 		private Button _fireCategoryButton;
 		private Button _closeButton;
 		private ListView _listView;
@@ -39,9 +41,11 @@ namespace TLN.UI.SurvivalMenu
 		private Label _detailsMetaLabel;
 		private Label _detailsDescriptionLabel;
 		private Button _useActionButton;
+		private Button _dropActionButton;
 		private Button _buildActionButton;
 		private Label _headerTitleLabel;
 		private Label _weightLabel;
+		private VisualElement _weightBarFill;
 
 		private IInventoryService _inventoryService;
 		private IItemUseService _itemUseService;
@@ -50,6 +54,8 @@ namespace TLN.UI.SurvivalMenu
 		private IBuildService _buildService;
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
+		private IPlayerEquipmentService _equipmentService;
+		private IItemDropService _itemDropService;
 
 		private bool _isInitialized;
 		private bool _isVisible;
@@ -58,6 +64,7 @@ namespace TLN.UI.SurvivalMenu
 		private IDisposable _inputModeScope;
 		private int _iconRequestVersion;
 		private ItemCategory? _currentInventoryCategoryFilter;
+		private bool _isEquipmentView;
 
 		[Inject]
 		public void Construct(
@@ -67,7 +74,9 @@ namespace TLN.UI.SurvivalMenu
 			BuildRecipeCatalog recipeCatalog,
 			IBuildService buildService,
 			IInputModeService inputModeService,
-			INotificationService notificationService
+			INotificationService notificationService,
+			IPlayerEquipmentService equipmentService,
+			IItemDropService itemDropService
 		)
 		{
 			_inventoryService = inventoryService;
@@ -77,6 +86,8 @@ namespace TLN.UI.SurvivalMenu
 			_buildService = buildService;
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
+			_equipmentService = equipmentService;
+			_itemDropService = itemDropService;
 
 			EnsureInitialized();
 
@@ -85,6 +96,11 @@ namespace TLN.UI.SurvivalMenu
 			if (_inventoryService != null)
 			{
 				_inventoryService.Changed += OnInventoryChanged;
+			}
+
+			if (_equipmentService != null)
+			{
+				_equipmentService.Changed += OnEquipmentChanged;
 			}
 
 			Hide();
@@ -102,6 +118,11 @@ namespace TLN.UI.SurvivalMenu
 			if (_inventoryService != null)
 			{
 				_inventoryService.Changed -= OnInventoryChanged;
+			}
+
+			if (_equipmentService != null)
+			{
+				_equipmentService.Changed -= OnEquipmentChanged;
 			}
 
 			if (_inventoryTabButton != null)
@@ -122,6 +143,11 @@ namespace TLN.UI.SurvivalMenu
 			if (_useActionButton != null)
 			{
 				_useActionButton.clicked -= OnActionClicked;
+			}
+
+			if (_dropActionButton != null)
+			{
+				_dropActionButton.clicked -= OnDropClicked;
 			}
 
 			if (_buildActionButton != null)
@@ -157,6 +183,11 @@ namespace TLN.UI.SurvivalMenu
 			if (_clothesCategoryButton != null)
 			{
 				_clothesCategoryButton.clicked -= OnClothesCategoryClicked;
+			}
+
+			if (_equipmentCategoryButton != null)
+			{
+				_equipmentCategoryButton.clicked -= OnEquipmentCategoryClicked;
 			}
 
 			ReleaseInputMode();
@@ -276,11 +307,13 @@ namespace TLN.UI.SurvivalMenu
 			_root.SetVisible(false);
 			_headerTitleLabel = documentRoot.Q<Label>("survival-header-title-label");
 			_weightLabel = documentRoot.Q<Label>("survival-weight-label");
+			_weightBarFill = documentRoot.Q<VisualElement>("survival-weight-bar-fill");
 			_inventoryTabButton = documentRoot.RequiredQ<Button>("survival-inventory-tab-button");
 			_foodCategoryButton = documentRoot.RequiredQ<Button>("survival-food-category-button");
 			_medicineCategoryButton = documentRoot.RequiredQ<Button>("survival-medicine-category-button");
 			_toolsCategoryButton = documentRoot.RequiredQ<Button>("survival-tools-category-button");
 			_clothesCategoryButton = documentRoot.RequiredQ<Button>("survival-clothes-category-button");
+			_equipmentCategoryButton = documentRoot.RequiredQ<Button>("survival-equipment-category-button");
 			_craftingTabButton = documentRoot.RequiredQ<Button>("survival-crafting-tab-button");
 			_closeButton = documentRoot.RequiredQ<Button>("survival-close-button");
 			_listView = documentRoot.RequiredQ<ListView>("survival-list-view");
@@ -289,6 +322,7 @@ namespace TLN.UI.SurvivalMenu
 			_detailsMetaLabel = documentRoot.RequiredQ<Label>("survival-details-meta-label");
 			_detailsDescriptionLabel = documentRoot.RequiredQ<Label>("survival-details-description-label");
 			_useActionButton = documentRoot.RequiredQ<Button>("survival-use-action-button");
+			_dropActionButton = documentRoot.RequiredQ<Button>("survival-drop-action-button");
 			_buildActionButton = documentRoot.RequiredQ<Button>("survival-build-action-button");
 			_fireCategoryButton = documentRoot.RequiredQ<Button>("survival-fire-category-button");
 			_inventoryTabButton.clicked += OnInventoryTabClicked;
@@ -297,9 +331,11 @@ namespace TLN.UI.SurvivalMenu
 			_medicineCategoryButton.clicked += OnMedicineCategoryClicked;
 			_toolsCategoryButton.clicked += OnToolsCategoryClicked;
 			_clothesCategoryButton.clicked += OnClothesCategoryClicked;
+			_equipmentCategoryButton.clicked += OnEquipmentCategoryClicked;
 			_craftingTabButton.clicked += OnCraftingTabClicked;
 			_closeButton.clicked += Hide;
 			_useActionButton.clicked += OnActionClicked;
+			_dropActionButton.clicked += OnDropClicked;
 			_buildActionButton.clicked += OnActionClicked;
 
 			SetupListView();
@@ -380,6 +416,10 @@ namespace TLN.UI.SurvivalMenu
 					BindInventoryListItem(titleLabel, metaLabel, icon, inventoryItem);
 					break;
 
+				case EquipmentRowData equipmentItem:
+					BindEquipmentListItem(titleLabel, metaLabel, icon, equipmentItem);
+					break;
+
 				case RecipeRowData recipeItem:
 					BindRecipeListItem(titleLabel, metaLabel, icon, recipeItem);
 					break;
@@ -389,6 +429,19 @@ namespace TLN.UI.SurvivalMenu
 					metaLabel.text = string.Empty;
 					break;
 			}
+		}
+
+		private void BindEquipmentListItem(
+			Label titleLabel,
+			Label metaLabel,
+			VisualElement icon,
+			EquipmentRowData item
+		)
+		{
+			titleLabel.text = item.Name;
+			metaLabel.text = CreateEquipmentMetaText(item.Clothing);
+
+			LoadRowIcon(icon, item.Clothing);
 		}
 
 		private void BindInventoryListItem(
@@ -497,6 +550,28 @@ namespace TLN.UI.SurvivalMenu
 			ShowInventoryCategory(ItemCategory.Clothing);
 		}
 
+		private void OnEquipmentCategoryClicked()
+		{
+			ShowEquipment();
+		}
+
+		private void ShowEquipment()
+		{
+			_currentInventoryCategoryFilter = null;
+			_isEquipmentView = true;
+			Show(SurvivalMenuTabId.Inventory);
+		}
+
+		private void OnEquipmentChanged()
+		{
+			if (!_isVisible)
+			{
+				return;
+			}
+
+			Refresh();
+		}
+
 		private void OnCraftingTabClicked()
 		{
 			_currentInventoryCategoryFilter = null;
@@ -506,6 +581,7 @@ namespace TLN.UI.SurvivalMenu
 		private void ShowInventoryCategory(ItemCategory? categoryFilter)
 		{
 			_currentInventoryCategoryFilter = categoryFilter;
+			_isEquipmentView = false;
 			Show(SurvivalMenuTabId.Inventory);
 		}
 
@@ -533,9 +609,11 @@ namespace TLN.UI.SurvivalMenu
 		{
 			if (_headerTitleLabel != null)
 			{
-				_headerTitleLabel.text = _currentTab == SurvivalMenuTabId.Inventory
-					? GetInventoryHeaderTitle()
-					: Loc.HeaderCrafting;
+				_headerTitleLabel.text = _currentTab == SurvivalMenuTabId.Crafting
+					? Loc.HeaderCrafting
+					: _isEquipmentView
+						? Loc.EquipmentHeader
+						: GetInventoryHeaderTitle();
 			}
 
 			if (_weightLabel == null || _inventoryService == null)
@@ -544,7 +622,36 @@ namespace TLN.UI.SurvivalMenu
 			}
 
 			_weightLabel.text = Loc.WeightFormat(_inventoryService.CurrentWeight, _inventoryService.MaxCarryWeight);
+
+			RefreshWeightBar();
 		}
+
+		private void RefreshWeightBar()
+		{
+			if (_weightBarFill == null || _inventoryService == null)
+			{
+				return;
+			}
+
+			float maxWeight = Mathf.Max(0.01f, _inventoryService.MaxCarryWeight);
+			float ratio = Mathf.Clamp01(_inventoryService.CurrentWeight / maxWeight);
+
+			_weightBarFill.style.width = Length.Percent(ratio * 100f);
+
+			Color fillColor = ratio >= OverweightRatio
+				? OverweightFillColor
+				: ratio >= HeavyRatio
+					? HeavyFillColor
+					: NormalFillColor;
+
+			_weightBarFill.style.backgroundColor = new StyleColor(fillColor);
+		}
+
+		private const float HeavyRatio = 0.75f;
+		private const float OverweightRatio = 0.95f;
+		private static readonly Color NormalFillColor = new Color(0.92f, 0.95f, 0.96f, 0.85f);
+		private static readonly Color HeavyFillColor = new Color(0.9f, 0.76f, 0.47f, 0.95f);
+		private static readonly Color OverweightFillColor = new Color(0.83f, 0.37f, 0.33f, 0.95f);
 
 		private string GetInventoryHeaderTitle()
 		{
@@ -568,7 +675,7 @@ namespace TLN.UI.SurvivalMenu
 		{
 			bool isInventoryTab = _currentTab == SurvivalMenuTabId.Inventory;
 
-			SetTabSelected(_inventoryTabButton, isInventoryTab && !_currentInventoryCategoryFilter.HasValue);
+			SetTabSelected(_inventoryTabButton, isInventoryTab && !_currentInventoryCategoryFilter.HasValue && !_isEquipmentView);
 			SetTabSelected(_foodCategoryButton, isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Food);
 			SetTabSelected(_fireCategoryButton, isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Fuel);
 			SetTabSelected(_medicineCategoryButton,
@@ -577,6 +684,7 @@ namespace TLN.UI.SurvivalMenu
 				isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Tool);
 			SetTabSelected(_clothesCategoryButton,
 				isInventoryTab && _currentInventoryCategoryFilter == ItemCategory.Clothing);
+			SetTabSelected(_equipmentCategoryButton, isInventoryTab && _isEquipmentView);
 			SetTabSelected(_craftingTabButton, _currentTab == SurvivalMenuTabId.Crafting);
 		}
 
@@ -603,12 +711,42 @@ namespace TLN.UI.SurvivalMenu
 			switch (_currentTab)
 			{
 				case SurvivalMenuTabId.Inventory:
-					AddInventoryItems();
+					if (_isEquipmentView)
+					{
+						AddEquippedItems();
+					}
+					else
+					{
+						AddInventoryItems();
+					}
+
 					break;
 
 				case SurvivalMenuTabId.Crafting:
 					AddRecipeItems();
 					break;
+			}
+		}
+
+		private void AddEquippedItems()
+		{
+			if (_equipmentService == null)
+			{
+				return;
+			}
+
+			IReadOnlyList<ClothingItemDefinition> equippedItems = _equipmentService.EquippedItems;
+
+			for (int i = 0; i < equippedItems.Count; i++)
+			{
+				ClothingItemDefinition clothing = equippedItems[i];
+
+				if (clothing == null)
+				{
+					continue;
+				}
+
+				_listItems.Add(new EquipmentRowData(clothing));
 			}
 		}
 
@@ -718,12 +856,17 @@ namespace TLN.UI.SurvivalMenu
 			_detailsIcon.style.backgroundImage = StyleKeyword.None;
 
 			SetActionButtonState(_useActionButton, false, false);
+			SetActionButtonState(_dropActionButton, false, false);
 			SetActionButtonState(_buildActionButton, false, false);
 
 			switch (_selectedItem)
 			{
 				case InventoryRowData inventoryItem:
 					ShowInventoryDetails(inventoryItem);
+					break;
+
+				case EquipmentRowData equipmentItem:
+					ShowEquipmentDetails(equipmentItem);
 					break;
 
 				case RecipeRowData recipeItem:
@@ -750,7 +893,55 @@ namespace TLN.UI.SurvivalMenu
 
 			LoadIcon(item.Definition);
 
-			SetActionButtonState(_useActionButton, true, item.Definition.UseKind != ItemUseKind.None);
+			SetActionButtonState(
+				_useActionButton,
+				item.Definition.UseKind != ItemUseKind.None,
+				item.Definition.UseKind != ItemUseKind.None
+			);
+			_useActionButton.text = GetUseActionLabel(item.Definition);
+
+			bool canDrop = _itemDropService != null;
+			SetActionButtonState(_dropActionButton, canDrop, canDrop);
+		}
+
+		private void ShowEquipmentDetails(EquipmentRowData item)
+		{
+			ClothingItemDefinition clothing = item.Clothing;
+
+			if (clothing == null)
+			{
+				ShowEmptyDetails();
+				return;
+			}
+
+			_detailsTitleLabel.text = item.Name;
+			_detailsMetaLabel.text = CreateEquipmentMetaText(clothing);
+			_detailsDescriptionLabel.text = Loc.DescriptionClothing;
+
+			LoadIcon(clothing);
+
+			bool canUnequip = _equipmentService != null;
+			SetActionButtonState(_useActionButton, canUnequip, canUnequip);
+			_useActionButton.text = Loc.ActionUnequip;
+
+			SetActionButtonState(_dropActionButton, false, false);
+		}
+
+		private string GetUseActionLabel(ItemDefinition definition)
+		{
+			if (definition is ConsumableItemDefinition)
+			{
+				return definition.Category == ItemCategory.Water
+					? Loc.ActionDrink
+					: Loc.ActionEat;
+			}
+
+			return definition.UseKind switch
+			{
+				ItemUseKind.Clothing => Loc.ActionEquip,
+				ItemUseKind.Placeable => Loc.ActionPlace,
+				_ => Loc.ActionUse
+			};
 		}
 
 		private void ShowRecipeDetails(RecipeRowData item)
@@ -778,6 +969,16 @@ namespace TLN.UI.SurvivalMenu
 
 		private void ShowEmptyDetails()
 		{
+			if (_currentTab == SurvivalMenuTabId.Inventory && _isEquipmentView)
+			{
+				_detailsTitleLabel.text = Loc.EquipmentHeader;
+				_detailsMetaLabel.text = Loc.EquipmentTotalWarmth(
+					_equipmentService != null ? _equipmentService.WarmthBonus : 0f
+				);
+				_detailsDescriptionLabel.text = Loc.NothingSelected;
+				return;
+			}
+
 			if (_currentTab == SurvivalMenuTabId.Inventory)
 			{
 				_detailsTitleLabel.text = GetInventoryHeaderTitle();
@@ -808,6 +1009,16 @@ namespace TLN.UI.SurvivalMenu
 			}
 
 			return $"{definition.Category} / {weightText}";
+		}
+
+		private static string CreateEquipmentMetaText(ClothingItemDefinition clothing)
+		{
+			if (clothing == null)
+			{
+				return string.Empty;
+			}
+
+			return $"{clothing.Slot} / +{clothing.WarmthBonus:0.#} warmth";
 		}
 
 		private string CreateRecipeRequirementsText(BuildRecipeDefinition recipe)
@@ -897,10 +1108,54 @@ namespace TLN.UI.SurvivalMenu
 					UseInventoryItem(inventoryItem);
 					break;
 
+				case EquipmentRowData equipmentItem:
+					UnequipItem(equipmentItem);
+					break;
+
 				case RecipeRowData recipeItem:
 					BuildRecipe(recipeItem);
 					break;
 			}
+		}
+
+		private void UnequipItem(EquipmentRowData item)
+		{
+			if (_equipmentService == null)
+			{
+				_notificationService?.Show(Loc.EquipmentServiceMissing);
+				return;
+			}
+
+			OperationResult result = _equipmentService.ToggleEquip(item.Clothing);
+			_notificationService?.Show(result.Message);
+			Refresh();
+		}
+
+		private void OnDropClicked()
+		{
+			if (_selectedItem is not InventoryRowData inventoryItem)
+			{
+				return;
+			}
+
+			if (_itemDropService == null)
+			{
+				_notificationService?.Show(Loc.ServiceMissingItemUse);
+				return;
+			}
+
+			int amount = inventoryItem.Amount;
+
+			if (_itemDropService.DropItemAt(inventoryItem.InventoryIndex, amount, out string failureReason))
+			{
+				_notificationService?.Show(Loc.ItemDropped(inventoryItem.Name, amount));
+			}
+			else
+			{
+				_notificationService?.Show(failureReason);
+			}
+
+			Refresh();
 		}
 
 		private void UseInventoryItem(InventoryRowData item)
@@ -949,6 +1204,20 @@ namespace TLN.UI.SurvivalMenu
 				InventoryIndex = inventoryIndex;
 				Definition = definition;
 				Amount = amount;
+			}
+		}
+
+		private sealed class EquipmentRowData
+		{
+			public ClothingItemDefinition Clothing { get; }
+
+			public string Name => Clothing == null
+				? "Missing item"
+				: Clothing.DisplayName;
+
+			public EquipmentRowData(ClothingItemDefinition clothing)
+			{
+				Clothing = clothing;
 			}
 		}
 

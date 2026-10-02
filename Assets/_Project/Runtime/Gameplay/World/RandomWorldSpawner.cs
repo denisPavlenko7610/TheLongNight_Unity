@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using TLN.Application.GameStates;
-using TLN.Application.Multiplayer;
 using TLN.Application.Saves;
 using TLN.Core.Logging;
 using TLN.Core.Validation;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using VContainer;
@@ -42,7 +40,6 @@ namespace TLN.Gameplay.World
 		private IWorldObjectFactory _worldObjectFactory;
 		private IGameStateMachine _gameStateMachine;
 		private SaveSessionService _saveSessionService;
-		private IMultiplayerSessionService _multiplayerSessionService;
 
 		private bool _hasSpawned;
 
@@ -50,14 +47,12 @@ namespace TLN.Gameplay.World
 		public void Construct(
 			IWorldObjectFactory worldObjectFactory,
 			IGameStateMachine gameStateMachine,
-			SaveSessionService saveSessionService,
-			IMultiplayerSessionService multiplayerSessionService
+			SaveSessionService saveSessionService
 		)
 		{
 			_worldObjectFactory = worldObjectFactory;
 			_gameStateMachine = gameStateMachine;
 			_saveSessionService = saveSessionService;
-			_multiplayerSessionService = multiplayerSessionService;
 		}
 
 		private void Start()
@@ -70,11 +65,6 @@ namespace TLN.Gameplay.World
 
 		public void TrySpawn()
 		{
-			if (IsMultiplayerClientOnly())
-			{
-				return;
-			}
-
 			if (_hasSpawned)
 			{
 				return;
@@ -96,8 +86,7 @@ namespace TLN.Gameplay.World
 				return;
 			}
 
-			if (!IsMultiplayer() &&
-			    _saveSessionService != null &&
+			if (_saveSessionService != null &&
 			    _saveSessionService.ShouldLoadActiveSlot)
 			{
 				return;
@@ -128,8 +117,7 @@ namespace TLN.Gameplay.World
 
 		public void TrySpawnForWorldStart(bool wasSaveLoaded)
 		{
-			if (!IsMultiplayer() &&
-			    wasSaveLoaded &&
+			if (wasSaveLoaded &&
 			    !_spawnOnLoadedGame)
 			{
 				return;
@@ -191,12 +179,6 @@ namespace TLN.Gameplay.World
 
 				ParentSpawnedInstance(instance, entry);
 
-				if (!TrySpawnNetworkObjectIfNeeded(instance))
-				{
-					Destroy(instance);
-					continue;
-				}
-
 				_spawnedPositions.Add(position);
 			}
 		}
@@ -248,36 +230,6 @@ namespace TLN.Gameplay.World
 		private static string CreateSpawnParentName(GameObject prefab)
 		{
 			return $"{prefab.name} Spawns";
-		}
-
-		private bool TrySpawnNetworkObjectIfNeeded(GameObject instance)
-		{
-			if (!IsMultiplayer())
-			{
-				return true;
-			}
-
-			if (_multiplayerSessionService is not { IsServer: true })
-			{
-				return false;
-			}
-
-			if (!instance.TryGetComponent(out NetworkObject networkObject))
-			{
-				TLNLogger.LogError(
-					$"Multiplayer spawned prefab must have NetworkObject: {instance.name}",
-					instance
-				);
-
-				return false;
-			}
-
-			if (!networkObject.IsSpawned)
-			{
-				networkObject.Spawn(true);
-			}
-
-			return true;
 		}
 
 		private bool TryFindSpawnPose(
@@ -420,20 +372,6 @@ namespace TLN.Gameplay.World
 				Quaternion.FromToRotation(Vector3.up, groundNormal);
 
 			return groundAlignment * yaw;
-		}
-
-		private bool IsMultiplayer()
-		{
-			return _multiplayerSessionService is { IsMultiplayer: true };
-		}
-
-		private bool IsMultiplayerClientOnly()
-		{
-			return _multiplayerSessionService is
-			{
-				IsMultiplayer: true,
-				IsServer: false
-			};
 		}
 
 #if UNITY_EDITOR

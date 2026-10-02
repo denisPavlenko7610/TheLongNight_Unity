@@ -1,5 +1,7 @@
 ﻿using TLN.Application.Input;
+using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Player.Input;
+using TLN.Gameplay.Survival;
 using UnityEngine;
 using VContainer;
 
@@ -18,10 +20,22 @@ namespace TLN.Gameplay.Player.Movement
 		[SerializeField] private float _sprintSpeed = 5.5f;
 		[SerializeField] private float _gravity = -20f;
 
+		[Header("Carry Weight (The Long Dark style)")]
+		[SerializeField]
+		[Range(0f, 0.7f)]
+		private float _maxWeightSlowdown = 0.4f;
+
+		[Header("Endurance")]
+		[SerializeField]
+		[Range(0f, 100f)]
+		private float _sprintBlockedFatigue = 95f;
+
 		private CharacterController _characterController;
 		private float _verticalVelocity;
 
 		private IInputModeService _inputModeService;
+		private IInventoryService _inventoryService;
+		private ISurvivalService _survivalService;
 
 		private void Awake()
 		{
@@ -42,9 +56,15 @@ namespace TLN.Gameplay.Player.Movement
 		}
 
 		[Inject]
-		public void Construct(IInputModeService inputModeService)
+		public void Construct(
+			IInputModeService inputModeService,
+			IInventoryService inventoryService,
+			ISurvivalService survivalService
+		)
 		{
 			_inputModeService = inputModeService;
+			_inventoryService = inventoryService;
+			_survivalService = survivalService;
 		}
 
 		private void Move(float deltaTime)
@@ -57,9 +77,11 @@ namespace TLN.Gameplay.Player.Movement
 
 			Vector3 worldMoveDirection = transform.TransformDirection(localMoveDirection);
 
-			float speed = _inputReader.IsSprintHeld
+			float baseSpeed = _inputReader.IsSprintHeld && CanSprint()
 				? _sprintSpeed
 				: _walkSpeed;
+
+			float speed = baseSpeed * GetCarryWeightFactor();
 
 			Vector3 horizontalVelocity = worldMoveDirection * speed;
 
@@ -69,6 +91,28 @@ namespace TLN.Gameplay.Player.Movement
 			velocity.y = _verticalVelocity;
 
 			_characterController.Move(velocity * deltaTime);
+		}
+
+		/// <summary>
+		/// A heavy backpack slows the player down — up to _maxWeightSlowdown at the carry limit.
+		/// </summary>
+		private float GetCarryWeightFactor()
+		{
+			if (_inventoryService == null)
+			{
+				return 1f;
+			}
+
+			float maxWeight = Mathf.Max(0.01f, _inventoryService.MaxCarryWeight);
+			float ratio = Mathf.Clamp01(_inventoryService.CurrentWeight / maxWeight);
+
+			return 1f - _maxWeightSlowdown * ratio;
+		}
+
+		private bool CanSprint()
+		{
+			return _survivalService == null ||
+			       _survivalService.Fatigue.Value < _sprintBlockedFatigue;
 		}
 
 		private void ApplyGravity(float deltaTime)

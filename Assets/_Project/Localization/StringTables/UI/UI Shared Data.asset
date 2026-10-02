@@ -531,6 +531,82 @@ MonoBehaviour:
     m_Key: game_over.days_survived
     m_Metadata:
       m_Items: []
+  - m_Id: 31583239317430272
+    m_Key: inventory.action.use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239388733440
+    m_Key: inventory.action.eat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927744
+    m_Key: inventory.action.drink
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927745
+    m_Key: inventory.action.equip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927746
+    m_Key: inventory.action.unequip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927747
+    m_Key: inventory.action.place
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927748
+    m_Key: inventory.action.drop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927749
+    m_Key: inventory.equipment.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927750
+    m_Key: inventory.equipment.warmth_total
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927751
+    m_Key: inventory.container.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927752
+    m_Key: inventory.container.backpack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927753
+    m_Key: inventory.container.take_all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927754
+    m_Key: inventory.container.empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927755
+    m_Key: container.interact
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687358879318016
+    m_Key: location.ranger_cabin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118656
+    m_Key: location.rail_depot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118657
+    m_Key: location.fisherman_camp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118658
+    m_Key: location.frozen_lake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118659
+    m_Key: location.spawn_camp
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -1,0 +1,48 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Common/TLNTheme.uss"/>
+    <Style src="ContainerWindow.uss"/>
+
+    <ui:VisualElement name="container-window-root" class="container-window-root">
+        <ui:VisualElement class="container-backdrop"/>
+
+        <ui:VisualElement class="container-frame">
+
+            <ui:VisualElement class="container-header">
+                <ui:VisualElement>
+                    <ui:Label name="container-title-label" text="CONTAINER" class="container-title"/>
+                    <ui:VisualElement class="container-title-underline"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="container-header-actions">
+                    <ui:Button name="container-take-all-button" text="TAKE ALL" class="container-button container-button-primary"/>
+                    <ui:Button name="container-close-button" text="BACK" class="container-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="container-columns">
+
+                <ui:VisualElement class="container-column">
+                    <ui:VisualElement class="container-column-header">
+                        <ui:Label name="container-side-title-label" text="CONTAINER" class="container-side-title"/>
+                    </ui:VisualElement>
+                    <ui:ListView name="container-list-view" class="container-list-view"/>
+                    <ui:Label name="container-empty-label" text="Container is empty." class="container-empty-label"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="container-divider"/>
+
+                <ui:VisualElement class="container-column">
+                    <ui:VisualElement class="container-column-header">
+                        <ui:Label name="container-backpack-title-label" text="BACKPACK" class="container-side-title"/>
+                        <ui:Label name="container-weight-label" text="0.00 / 30.00 KG" class="container-weight-label"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="container-weight-bar" class="container-weight-bar">
+                        <ui:VisualElement name="container-weight-bar-fill" class="container-weight-bar-fill"/>
+                    </ui:VisualElement>
+                    <ui:ListView name="container-backpack-list-view" class="container-list-view"/>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

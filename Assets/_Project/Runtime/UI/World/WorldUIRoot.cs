@@ -1,6 +1,7 @@
 ﻿using Assign;
 using TLN.UI.Campfire;
 using TLN.UI.HUD;
+using TLN.UI.Inventory;
 using TLN.UI.Pause;
 using TLN.UI.Sleep;
 using TLN.UI.SurvivalMenu;
@@ -26,11 +27,15 @@ namespace TLN.UI
 		[field: SerializeField] [field: Assign(Mode.Scene)]
 		public CampfireWindowView CampfireWindow { get; private set; }
 
+		[field: SerializeField] [field: Assign(Mode.Scene)]
+		public ContainerWindowView ContainerWindow { get; private set; }
+
 		public bool HasAllRequiredReferences()
 		{
 			return HUD != null &&
 				SurvivalMenu != null &&
 				CampfireWindow != null &&
+				ContainerWindow != null &&
 				SleepWindow != null &&
 				PauseMenu != null;
 		}

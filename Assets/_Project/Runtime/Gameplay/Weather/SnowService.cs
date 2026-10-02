@@ -13,21 +13,22 @@ namespace TLN.Gameplay.Weather
 		private const float DefaultRadius = 40f;
 		private const float DefaultHeight = 30f;
 		private const float DefaultFallDepth = 8f;
-		private const float DefaultGravity = 0.6f;
-		private const float DefaultWindInfluence = 0.7f;
-		private const float DefaultTurbulence = 1.2f;
-		private const float DefaultMinSize = 0.01f;
-		private const float DefaultMaxSize = 0.083f;
+		private const float DefaultFallSpeedMin = 0.6f;
+		private const float DefaultFallSpeedMax = 1.6f;
+		private const float DefaultSwayAmplitude = 0.3f;
+		private const float DefaultSwayFrequency = 0.8f;
+		private const float DefaultWindSpeedMax = 2.4f;
+		private const float DefaultMinSize = 0.008f;
+		private const float DefaultMaxSize = 0.03f;
 		private const float DefaultSoftness = 0.7f;
 		private const float DefaultSparkleIntensity = 0.15f;
-		private const float DefaultFadeDistance = 45f;
+		private const float DefaultFadeDistance = 35f;
 		private const float DefaultDepthFade = 0.5f;
 		private const int DefaultMaxParticles = 25000;
 		private static readonly Color DefaultSnowColor = new Color(0.88f, 0.91f, 0.98f);
 
 		private const float MaxDeltaTime = 0.1f;
 		private const int ComputeThreadGroupSize = 64;
-		private const float WindForceMultiplier = 2f;
 		private const float SparkleFrequency = 2f;
 		private const float DrawBoundsPadding = 2.2f;
 		private const float MaxSizePadding = 4f;
@@ -35,16 +36,13 @@ namespace TLN.Gameplay.Weather
 		private const float SeedOffsetMultiplier = 997.3f;
 		private const int FillSeed = 42;
 		private const float MaxRandomSeed = 10000f;
+		private const float WrapEdgeMargin = 0.5f;
 
 		private const float GustFrequency1 = 0.7f;
 		private const float GustAmplitude1 = 0.3f;
 		private const float GustFrequency2 = 1.3f;
 		private const float GustPhase2 = 1.5f;
 		private const float GustAmplitude2 = 0.2f;
-
-		private const float InitVelocityRangeXZ = 0.5f;
-		private const float InitVelocityMinY = -2f;
-		private const float InitVelocityMaxY = -0.2f;
 
 		private const float SnowflakeSizePow = 1.35f;
 		private const float SnowflakeLargeChanceThreshold = 0.92f;
@@ -79,7 +77,8 @@ namespace TLN.Gameplay.Weather
 		private int _maxParticles;
 		private bool _initialized;
 
-		private float _radius, _height, _fallDepth, _gravity, _windInfluence, _turbulence;
+		private float _radius, _height, _fallDepth, _fallSpeedMin, _fallSpeedMax;
+		private float _swayAmplitude, _swayFrequency, _windSpeedMax;
 		private float _minSize, _maxSize, _softness, _sparkleIntensity, _depthFade, _fadeDistance;
 		private Color _color;
 		private float _seedOffset;
@@ -107,14 +106,16 @@ namespace TLN.Gameplay.Weather
 		private static readonly int PropVolumeCenter = Shader.PropertyToID("_VolumeCenter");
 		private static readonly int PropVolumeHalfExtents = Shader.PropertyToID("_VolumeHalfExtents");
 		private static readonly int PropWind = Shader.PropertyToID("_Wind");
-		private static readonly int PropGravity = Shader.PropertyToID("_Gravity");
-		private static readonly int PropTurbulence = Shader.PropertyToID("_Turbulence");
 		private static readonly int PropDeltaTime = Shader.PropertyToID("_DeltaTime");
 		private static readonly int PropParticleCount = Shader.PropertyToID("_ParticleCount");
 		private static readonly int PropTime = Shader.PropertyToID("_Time");
 		private static readonly int PropSeedOffset = Shader.PropertyToID("_SeedOffset");
 		private static readonly int PropMinSize = Shader.PropertyToID("_MinSize");
 		private static readonly int PropMaxSize = Shader.PropertyToID("_MaxSize");
+		private static readonly int PropFallSpeedMin = Shader.PropertyToID("_FallSpeedMin");
+		private static readonly int PropFallSpeedMax = Shader.PropertyToID("_FallSpeedMax");
+		private static readonly int PropSwayAmplitude = Shader.PropertyToID("_SwayAmplitude");
+		private static readonly int PropSwayFrequency = Shader.PropertyToID("_SwayFrequency");
 		private static readonly int PropColor = Shader.PropertyToID("_Color");
 		private static readonly int PropSoftness = Shader.PropertyToID("_Softness");
 		private static readonly int PropSparkleIntensity = Shader.PropertyToID("_SparkleIntensity");
@@ -193,9 +194,11 @@ namespace TLN.Gameplay.Weather
 			_radius = _config ? _config.Radius : DefaultRadius;
 			_height = _config ? _config.Height : DefaultHeight;
 			_fallDepth = _config ? _config.FallDepth : DefaultFallDepth;
-			_gravity = _config ? _config.Gravity : DefaultGravity;
-			_windInfluence = _config ? _config.WindInfluence : DefaultWindInfluence;
-			_turbulence = _config ? _config.Turbulence : DefaultTurbulence;
+			_fallSpeedMin = _config ? _config.FallSpeedMin : DefaultFallSpeedMin;
+			_fallSpeedMax = _config ? _config.FallSpeedMax : DefaultFallSpeedMax;
+			_swayAmplitude = _config ? _config.SwayAmplitude : DefaultSwayAmplitude;
+			_swayFrequency = _config ? _config.SwayFrequency : DefaultSwayFrequency;
+			_windSpeedMax = _config ? _config.WindSpeedMax : DefaultWindSpeedMax;
 			_minSize = _config ? _config.MinSize : DefaultMinSize;
 			_maxSize = _config ? _config.MaxSize : DefaultMaxSize;
 			_softness = _config ? _config.Softness : DefaultSoftness;
@@ -237,8 +240,10 @@ namespace TLN.Gameplay.Weather
 
 		private void SetConstantShaderParameters()
 		{
-			_computeShader.SetFloat(PropGravity, _gravity);
-			_computeShader.SetFloat(PropTurbulence, _turbulence);
+			_computeShader.SetFloat(PropFallSpeedMin, _fallSpeedMin);
+			_computeShader.SetFloat(PropFallSpeedMax, _fallSpeedMax);
+			_computeShader.SetFloat(PropSwayAmplitude, _swayAmplitude);
+			_computeShader.SetFloat(PropSwayFrequency, _swayFrequency);
 			_computeShader.SetFloat(PropSeedOffset, _seedOffset);
 			_computeShader.SetFloat(PropMinSize, _minSize);
 			_computeShader.SetFloat(PropMaxSize, _maxSize);
@@ -319,7 +324,8 @@ namespace TLN.Gameplay.Weather
 			float currentTime = UnityEngine.Time.time;
 			float gust = Mathf.Sin(currentTime * GustFrequency1) * GustAmplitude1 +
 				Mathf.Sin(currentTime * GustFrequency2 + GustPhase2) * GustAmplitude2;
-			_cachedWindForce = _cachedWindDirectionNormalized * (Mathf.Max(0f, _windStrength + gust) * _windInfluence * WindForceMultiplier);
+			// Wind acts as a horizontal drift VELOCITY (m/s), not an acceleration.
+			_cachedWindForce = _cachedWindDirectionNormalized * (Mathf.Max(0f, _windStrength + gust) * _windSpeedMax);
 
 			_computeShader.SetVector(PropVolumeCenter, volumeCenter);
 			_computeShader.SetVector(PropVolumeHalfExtents, halfExtents);
@@ -393,10 +399,18 @@ namespace TLN.Gameplay.Weather
 		{
 			Vector3 halfExtents = new Vector3(_radius, _height * 0.5f, _radius);
 
+			// Only the currently active prefix of the buffer is simulated and drawn,
+			// so uploading just that slice avoids an 800 KB hitch on every recenter.
+			int activeCount = Mathf.Clamp(
+				Mathf.RoundToInt(_maxParticles * Mathf.Max(_intensity, 0.01f)),
+				1,
+				_maxParticles
+			);
+
 			Random.State state = Random.state;
 			Random.InitState(FillSeed ^ Mathf.RoundToInt(_seedOffset * SeedOffsetMultiplier));
 
-			for (int i = 0; i < _maxParticles; i++)
+			for (int i = 0; i < activeCount; i++)
 			{
 				_particles[i] = new Particle
 				{
@@ -407,17 +421,14 @@ namespace TLN.Gameplay.Weather
 							Random.Range(-halfExtents.z, halfExtents.z)
 						),
 					seed = Random.Range(0f, MaxRandomSeed),
-					velocity = new Vector3(
-						Random.Range(-InitVelocityRangeXZ, InitVelocityRangeXZ),
-						Random.Range(InitVelocityMinY, InitVelocityMaxY),
-						Random.Range(-InitVelocityRangeXZ, InitVelocityRangeXZ)
-					),
+					// Velocity is recomputed every frame by the compute shader.
+					velocity = Vector3.zero,
 					size = RandomSnowflakeSize()
 				};
 			}
 
 			Random.state = state;
-			_particleBuffer.SetData(_particles);
+			_particleBuffer.SetData(_particles, 0, 0, activeCount);
 		}
 
 		private float RandomSnowflakeSize()

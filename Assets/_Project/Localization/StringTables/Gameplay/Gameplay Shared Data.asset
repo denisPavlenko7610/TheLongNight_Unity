@@ -251,6 +251,26 @@ MonoBehaviour:
     m_Key: campfire.snow_not_burning
     m_Metadata:
       m_Items: []
+  - m_Id: 2974567599382528
+    m_Key: container.taken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131264
+    m_Key: container.stored
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131265
+    m_Key: container.nothing_taken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131266
+    m_Key: item.dropped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131267
+    m_Key: item.drop_prefab_missing
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

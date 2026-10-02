@@ -255,6 +255,26 @@ MonoBehaviour:
     m_Localized: The fire is not burning
     m_Metadata:
       m_Items: []
+  - m_Id: 2974567599382528
+    m_Localized: 'Taken: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131264
+    m_Localized: 'Stored: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131265
+    m_Localized: Nothing taken (backpack is full?).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131266
+    m_Localized: 'Dropped: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2974567637131267
+    m_Localized: Cannot drop {0}.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

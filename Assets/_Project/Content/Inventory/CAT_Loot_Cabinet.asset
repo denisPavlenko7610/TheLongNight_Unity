@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01c968a66ef46894d947c66d80d6562a, type: 3}
+  m_Name: CAT_Loot_Cabinet
+  m_EditorClassIdentifier: TLN.Gameplay::TLN.Gameplay.Inventory.ContainerLootTable
+  _entries:
+  - _item: {fileID: 11400000, guid: 04232d005e8421e46a3a52222ba310d5, type: 2}
+    _minAmount: 1
+    _maxAmount: 2
+    _dropChance: 0.7
+  - _item: {fileID: 11400000, guid: f424a3e802b018947af27d30f2f9f624, type: 2}
+    _minAmount: 1
+    _maxAmount: 1
+    _dropChance: 0.6
+  - _item: {fileID: 11400000, guid: f49c78bb88af443e8060d59c580aaefd, type: 2}
+    _minAmount: 1
+    _maxAmount: 1
+    _dropChance: 0.4
+  - _item: {fileID: 11400000, guid: e3c4111cf6d8afa4b816106f72f94c26, type: 2}
+    _minAmount: 1
+    _maxAmount: 1
+    _dropChance: 0.25

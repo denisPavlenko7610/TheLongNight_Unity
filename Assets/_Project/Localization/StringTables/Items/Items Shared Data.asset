@@ -103,6 +103,30 @@ MonoBehaviour:
     m_Key: item_mittens_desc
     m_Metadata:
       m_Items: []
+  - m_Id: 35273752214183936
+    m_Key: bandage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709888
+    m_Key: bandage_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709889
+    m_Key: chocolate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709890
+    m_Key: chocolate_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709891
+    m_Key: rope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709892
+    m_Key: rope_desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

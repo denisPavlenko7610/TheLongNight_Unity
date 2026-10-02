@@ -1,15 +1,11 @@
 using System;
-using System.Collections.Generic;
 using TLN.Application.Input;
 using TLN.Application.Localization;
-using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Gameplay.Campfire;
 using TLN.Gameplay.Inventory;
-using TLN.Gameplay.Inventory.Networking;
 using TLN.Gameplay.Items;
-using TLN.Gameplay.Player;
 using TLN.UI.Common;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -39,8 +35,6 @@ namespace TLN.UI.Campfire
 		private IInputModeService _inputModeService;
 		private INotificationService _notificationService;
 		private IGameSaveService _gameSaveService;
-		private IMultiplayerSessionService _multiplayerSessionService;
-		private LocalPlayerService _localPlayerService;
 		private ItemCatalog _itemCatalog;
 
 		[Inject]
@@ -49,8 +43,6 @@ namespace TLN.UI.Campfire
 			IInputModeService inputModeService,
 			INotificationService notificationService,
 			IGameSaveService gameSaveService,
-			IMultiplayerSessionService multiplayerSessionService,
-			LocalPlayerService localPlayerService,
 			ItemCatalog itemCatalog
 		)
 		{
@@ -58,8 +50,6 @@ namespace TLN.UI.Campfire
 			_inputModeService = inputModeService;
 			_notificationService = notificationService;
 			_gameSaveService = gameSaveService;
-			_multiplayerSessionService = multiplayerSessionService;
-			_localPlayerService = localPlayerService;
 			_itemCatalog = itemCatalog;
 
 			Hide();
@@ -149,16 +139,14 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			IInventoryService inventoryService = GetActiveInventoryService();
-
-			if (inventoryService == null)
+			if (_inventoryService == null)
 			{
 				_notificationService?.Show(Loc.BedrollInventoryMissing);
 				return;
 			}
 
 			if (!TryFindFuelItem(
-				    inventoryService,
+				    _inventoryService,
 				    out int itemIndex,
 				    out FuelItemDefinition fuel))
 			{
@@ -166,122 +154,6 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			if (IsMultiplayer())
-			{
-				AddFuelMultiplayer(inventoryService, itemIndex);
-				return;
-			}
-
-			AddFuelOffline(inventoryService, itemIndex, fuel);
-		}
-
-		private void OnMeltSnowClicked()
-		{
-			if (_currentCampfire == null)
-			{
-				return;
-			}
-
-			if (!_currentCampfire.IsBurning)
-			{
-				_notificationService?.Show(Loc.SnowNotBurning);
-				return;
-			}
-
-			if (IsMultiplayer())
-			{
-				if (TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
-				{
-					networkInventory.RequestMeltSnowAtCampfire(_currentCampfire);
-				}
-
-				return;
-			}
-
-			MeltSnowOffline();
-		}
-
-		private void MeltSnowOffline()
-		{
-			IInventoryService inventoryService = GetActiveInventoryService();
-
-			if (inventoryService == null)
-			{
-				_notificationService?.Show(Loc.BedrollInventoryMissing);
-				return;
-			}
-
-			if (_itemCatalog == null ||
-			    !_itemCatalog.TryGetItem(WaterItemId, out ItemDefinition water) ||
-			    water == null)
-			{
-				return;
-			}
-
-			InventoryAddResult result = inventoryService.AddItem(water, 1);
-
-			if (!result.IsSuccess)
-			{
-				_notificationService?.Show(result.FailureReason);
-				return;
-			}
-
-			_notificationService?.Show(Loc.SnowMelted);
-			Refresh();
-		}
-
-		private void OnIgniteClicked()
-		{
-			if (_currentCampfire == null)
-			{
-				return;
-			}
-
-			if (IsMultiplayer())
-			{
-				RequestIgniteMultiplayer();
-				return;
-			}
-
-			if (!_currentCampfire.Ignite(out string failureReason))
-			{
-				_notificationService?.Show(failureReason);
-				return;
-			}
-
-			_notificationService?.Show(Loc.FireStarted);
-			Refresh();
-		}
-
-		private void OnExtinguishClicked()
-		{
-			if (_currentCampfire == null)
-			{
-				return;
-			}
-
-			if (IsMultiplayer())
-			{
-				RequestExtinguishMultiplayer();
-				return;
-			}
-
-			if (!_currentCampfire.Extinguish(out string failureReason))
-			{
-				_notificationService?.Show(failureReason);
-				return;
-			}
-
-			_notificationService?.Show(Loc.FireExtinguished);
-			Refresh();
-		}
-
-		private void AddFuelOffline(
-			IInventoryService inventoryService,
-			int itemIndex,
-			FuelItemDefinition fuel
-		)
-		{
 			if (!_currentCampfire.CanAddFuel(
 				    fuel,
 				    1,
@@ -291,7 +163,7 @@ namespace TLN.UI.Campfire
 				return;
 			}
 
-			if (!inventoryService.TryRemoveItemAt(
+			if (!_inventoryService.TryRemoveItemAt(
 				    itemIndex,
 				    1,
 				    out string removeFailureReason))
@@ -315,71 +187,76 @@ namespace TLN.UI.Campfire
 			Refresh();
 		}
 
-		private void AddFuelMultiplayer(
-			IInventoryService inventoryService,
-			int itemIndex
-		)
+		private void OnMeltSnowClicked()
 		{
-			if (!TryGetNetworkInventory(inventoryService, out NetworkPlayerInventory networkInventory))
+			if (_currentCampfire == null)
 			{
 				return;
 			}
 
-			networkInventory.RequestAddFuelToCampfire(
-				_currentCampfire,
-				itemIndex
-			);
-		}
+			if (!_currentCampfire.IsBurning)
+			{
+				_notificationService?.Show(Loc.SnowNotBurning);
+				return;
+			}
 
-		private void RequestIgniteMultiplayer()
-		{
-			if (!TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
+			if (_inventoryService == null)
+			{
+				_notificationService?.Show(Loc.BedrollInventoryMissing);
+				return;
+			}
+
+			if (_itemCatalog == null ||
+			    !_itemCatalog.TryGetItem(WaterItemId, out ItemDefinition water) ||
+			    water == null)
 			{
 				return;
 			}
 
-			networkInventory.RequestIgniteCampfire(_currentCampfire);
+			InventoryAddResult result = _inventoryService.AddItem(water, 1);
+
+			if (!result.IsSuccess)
+			{
+				_notificationService?.Show(result.FailureReason);
+				return;
+			}
+
+			_notificationService?.Show(Loc.SnowMelted);
+			Refresh();
 		}
 
-		private void RequestExtinguishMultiplayer()
+		private void OnIgniteClicked()
 		{
-			if (!TryGetNetworkInventory(GetActiveInventoryService(), out NetworkPlayerInventory networkInventory))
+			if (_currentCampfire == null)
 			{
 				return;
 			}
 
-			networkInventory.RequestExtinguishCampfire(_currentCampfire);
-		}
-
-		private bool TryGetNetworkInventory(
-			IInventoryService inventoryService,
-			out NetworkPlayerInventory networkInventory
-		)
-		{
-			if (inventoryService is NetworkPlayerInventory activeNetworkInventory)
+			if (!_currentCampfire.Ignite(out string failureReason))
 			{
-				networkInventory = activeNetworkInventory;
-				return true;
+				_notificationService?.Show(failureReason);
+				return;
 			}
 
-			networkInventory = null;
-			_notificationService?.Show(Loc.CannotUse);
-			return false;
+			_notificationService?.Show(Loc.FireStarted);
+			Refresh();
 		}
 
-		private IInventoryService GetActiveInventoryService()
+		private void OnExtinguishClicked()
 		{
-			if (IsMultiplayer())
+			if (_currentCampfire == null)
 			{
-				return _localPlayerService?.InventoryService;
+				return;
 			}
 
-			return _inventoryService;
-		}
+			if (!_currentCampfire.Extinguish(out string failureReason))
+			{
+				_notificationService?.Show(failureReason);
+				return;
+			}
 
-		private bool IsMultiplayer()
-		{
-			return _multiplayerSessionService is { IsMultiplayer: true };
+			_notificationService?.Show(Loc.FireExtinguished);
+			Refresh();
 		}
 
 		private static bool TryFindFuelItem(
@@ -396,7 +273,7 @@ namespace TLN.UI.Campfire
 				return false;
 			}
 
-			IReadOnlyList<ItemStack> items = inventoryService.Items;
+			System.Collections.Generic.IReadOnlyList<ItemStack> items = inventoryService.Items;
 
 			for (int i = 0; i < items.Count; i++)
 			{

@@ -1,16 +1,15 @@
 using Assign;
 using TLN.Application.GameStates;
-using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Player;
-using TLN.Gameplay.Player.Networking;
 using TLN.Gameplay.Survival;
 using TLN.Gameplay.Time;
 using TLN.Gameplay.Wildlife;
+using TLN.Gameplay.World.Streaming;
 using TLN.UI;
 using UnityEngine;
 using VContainer;
@@ -32,11 +31,12 @@ namespace TLN.Gameplay.World
 		private IGameSaveService _gameSaveService;
 		private WildlifeTargetService _wildlifeTargetService;
 		private RandomWorldSpawnerSet _randomWorldSpawnerSet;
-		private NetworkPlayerSpawner _networkPlayerSpawner;
+		private ILocationTitleService _locationTitleService;
+		private WorldStreamingController _worldStreamingController;
 
-		private IMultiplayerSessionService _multiplayerSessionService;
 		private ISceneLoader _sceneLoader;
 		private bool _isConstructed;
+		private bool _saveFlowStarted;
 
 		[Inject]
 		public void Construct(
@@ -49,8 +49,8 @@ namespace TLN.Gameplay.World
 			IGameSaveService gameSaveService,
 			WildlifeTargetService wildlifeTargetService,
 			RandomWorldSpawnerSet randomWorldSpawnerSet,
-			IMultiplayerSessionService multiplayerSessionService,
-			NetworkPlayerSpawner networkPlayerSpawner,
+			ILocationTitleService locationTitleService,
+			WorldStreamingController worldStreamingController,
 			ISceneLoader sceneLoader
 		)
 		{
@@ -63,8 +63,8 @@ namespace TLN.Gameplay.World
 			_gameSaveService = gameSaveService;
 			_wildlifeTargetService = wildlifeTargetService;
 			_randomWorldSpawnerSet = randomWorldSpawnerSet;
-			_multiplayerSessionService = multiplayerSessionService;
-			_networkPlayerSpawner = networkPlayerSpawner;
+			_locationTitleService = locationTitleService;
+			_worldStreamingController = worldStreamingController;
 			_sceneLoader = sceneLoader;
 			_isConstructed = true;
 		}
@@ -80,53 +80,58 @@ namespace TLN.Gameplay.World
 			ConstructHUD();
 			ConstructGameOverView();
 
-			if (IsMultiplayer())
+			SpawnPlayer();
+			TryBeginSaveFlow();
+			EnsureGameplayState();
+		}
+
+		/// <summary>
+		/// Save restore must wait until every KeepLoaded streamed location exists,
+		/// otherwise saved sub-scene entities (containers, campfires) are missing.
+		/// </summary>
+		private void TryBeginSaveFlow()
+		{
+			if (_saveFlowStarted)
 			{
-				StartMultiplayerWorld();
 				return;
 			}
 
-			StartOfflineWorld();
+			if (_worldStreamingController == null || _worldStreamingController.AllKeepLoadedLoaded)
+			{
+				BeginSaveFlow();
+				return;
+			}
+
+			_worldStreamingController.KeepLoadedScenesReady += OnKeepLoadedScenesReady;
 		}
 
-		private void StartOfflineWorld()
+		private void OnKeepLoadedScenesReady()
 		{
-			SpawnPlayer();
+			if (_worldStreamingController != null)
+			{
+				_worldStreamingController.KeepLoadedScenesReady -= OnKeepLoadedScenesReady;
+			}
+
+			BeginSaveFlow();
+		}
+
+		private void BeginSaveFlow()
+		{
+			if (_saveFlowStarted)
+			{
+				return;
+			}
+
+			_saveFlowStarted = true;
 
 			bool wasSaveLoaded = LoadRequestedSaveIfNeeded();
 			SpawnRandomWorldObjects(wasSaveLoaded);
-
-			EnsureGameplayState();
-		}
-
-		private void StartMultiplayerWorld()
-		{
-			if (_multiplayerSessionService.IsServer)
-			{
-				if (_networkPlayerSpawner == null)
-				{
-					TLNLogger.LogError("Cannot start multiplayer world because NetworkPlayerSpawner is missing.", this);
-					return;
-				}
-
-				SpawnRandomWorldObjects(false);
-				_networkPlayerSpawner.StartServerSpawning();
-			}
-
-			EnsureGameplayState();
 		}
 
 		private void ConstructHUD()
 		{
 			_notificationService?.SetView(_uiRoot.HUD);
-
-			if (IsMultiplayer())
-			{
-				_uiRoot.HUD.Construct(null, _gameTimeService);
-				return;
-			}
-
-			_uiRoot.HUD.Construct(_survivalService, _gameTimeService);
+			_uiRoot.HUD.Construct(_survivalService, _gameTimeService, _locationTitleService);
 		}
 
 		private void ConstructGameOverView()
@@ -205,38 +210,27 @@ namespace TLN.Gameplay.World
 				return false;
 			}
 
-			if (IsMultiplayer())
-			{
-				if (_multiplayerSessionService.IsServer && _networkPlayerSpawner == null)
-				{
-					TLNLogger.LogError("NetworkPlayerSpawner is required for multiplayer host/server.", this);
-					return false;
-				}
-
-				return true;
-			}
-
 			if (_survivalService == null)
 			{
-				TLNLogger.LogError("SurvivalService is required for offline world.", this);
+				TLNLogger.LogError("SurvivalService is required.", this);
 				return false;
 			}
 
 			if (_playerFactory == null)
 			{
-				TLNLogger.LogError("PlayerFactory is required for offline world.", this);
+				TLNLogger.LogError("PlayerFactory is required.", this);
 				return false;
 			}
 
 			if (_placementService == null)
 			{
-				TLNLogger.LogError("PlacementService is required for offline world.", this);
+				TLNLogger.LogError("PlacementService is required.", this);
 				return false;
 			}
 
 			if (_wildlifeTargetService == null)
 			{
-				TLNLogger.LogError("WildlifeTargetService is required for offline world.", this);
+				TLNLogger.LogError("WildlifeTargetService is required.", this);
 				return false;
 			}
 
@@ -253,11 +247,6 @@ namespace TLN.Gameplay.World
 			}
 
 			return true;
-		}
-
-		private bool IsMultiplayer()
-		{
-			return _multiplayerSessionService is { IsMultiplayer: true };
 		}
 	}
 }

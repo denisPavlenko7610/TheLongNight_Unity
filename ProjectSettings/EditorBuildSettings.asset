@@ -17,6 +17,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/World/World_FrozenLake.unity
     guid: 007924e550e8633408bedb3c67171199
+  - enabled: 1
+    path: Assets/_Project/Scenes/World/World_RangerCabin.unity
+    guid: 7265ff5786063a54d80951dee5b45bf0
+  - enabled: 1
+    path: Assets/_Project/Scenes/World/World_RailDepot.unity
+    guid: b4a3cd2a39e3fbd458a7ea8e791509e7
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 4ad4180dd7499244db565085d07e5955, type: 2}
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}

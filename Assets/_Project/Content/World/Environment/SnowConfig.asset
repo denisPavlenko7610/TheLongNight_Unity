@@ -20,8 +20,13 @@ MonoBehaviour:
   _windInfluence: 0.75
   _turbulence: 1.05
   _snowColor: {r: 0.92, g: 0.94, b: 1, a: 1}
-  _minSize: 0.01
-  _maxSize: 0.083
+  _minSize: 0.006
+  _maxSize: 0.028
   _softness: 0.68
   _sparkleIntensity: 0.18
-  _fadeDistance: 45
+  _fadeDistance: 35
+  _fallSpeedMin: 0.55
+  _fallSpeedMax: 1.5
+  _swayAmplitude: 0.3
+  _swayFrequency: 0.8
+  _windSpeedMax: 2.4

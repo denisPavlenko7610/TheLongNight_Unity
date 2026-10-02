@@ -5,6 +5,8 @@ using TLN.Core.Logging;
 using TLN.Gameplay.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VContainer;
+using VContainer.Unity;
 
 namespace TLN.Gameplay.World.Streaming
 {
@@ -21,10 +23,27 @@ namespace TLN.Gameplay.World.Streaming
 
 		private Transform _player;
 		private float _nextEvaluationTime;
+		private IObjectResolver _objectResolver;
+		private bool _needsInitialInjection;
+		private bool _allKeepLoadedReady;
+
+		/// <summary>
+		/// Raised once every KeepLoaded location is loaded. World start logic
+		/// (save restore) must wait for this so sub-scene entities exist.
+		/// </summary>
+		public event Action KeepLoadedScenesReady;
+
+		public bool AllKeepLoadedLoaded => _allKeepLoadedReady;
 
 		private void Awake()
 		{
 			RebuildRuntimeStates();
+		}
+
+		[Inject]
+		public void Construct(IObjectResolver objectResolver)
+		{
+			_objectResolver = objectResolver;
 		}
 
 		private void OnEnable()
@@ -57,6 +76,14 @@ namespace TLN.Gameplay.World.Streaming
 
 		private void Update()
 		{
+			if (_needsInitialInjection && _objectResolver != null)
+			{
+				_needsInitialInjection = false;
+				InjectRegisteredLoadedScenes();
+			}
+
+			EvaluateKeepLoadedReadiness();
+
 			if (!TryGetPlayerPosition(out Vector3 playerPosition))
 			{
 				return;
@@ -118,10 +145,15 @@ namespace TLN.Gameplay.World.Streaming
 					continue;
 				}
 
-				_statesBySceneName.Add(
-					sceneName,
-					new StreamedSceneState(IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded)
-				);
+					_statesBySceneName.Add(
+						sceneName,
+						new StreamedSceneState(IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded)
+					);
+
+					if (IsSceneLoaded(sceneName))
+					{
+						_needsInitialInjection = true;
+					}
 			}
 		}
 
@@ -228,7 +260,92 @@ namespace TLN.Gameplay.World.Streaming
 			state.Operation = null;
 			state.Status = IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded;
 
+			InjectSceneObjects(sceneName);
+
 			LogTransition($"Loaded streamed scene '{sceneName}'.");
+		}
+
+		/// <summary>
+		/// Additive streamed scenes have no LifetimeScope, so their actors
+		/// (containers, campfires, zones) never receive constructor injection.
+		/// Walk the scene roots and inject them from the world container.
+		/// </summary>
+		private void InjectSceneObjects(string sceneName)
+		{
+			if (_objectResolver == null)
+			{
+				TLNLogger.LogWarning(
+					$"Cannot inject DI services into streamed scene '{sceneName}' because the resolver is missing.",
+					this
+				);
+				return;
+			}
+
+			if (!TryGetLoadedScene(sceneName, out Scene scene))
+			{
+				return;
+			}
+
+			GameObject[] roots = scene.GetRootGameObjects();
+
+			for (int i = 0; i < roots.Length; i++)
+			{
+				_objectResolver.InjectGameObject(roots[i]);
+			}
+
+			LogTransition($"Injected DI services into streamed scene '{sceneName}'.");
+		}
+
+		private void InjectRegisteredLoadedScenes()
+		{
+			if (_locations == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _locations.Length; i++)
+			{
+				WorldStreamedLocation location = _locations[i];
+
+				if (IsLocationConfigured(location) && IsSceneLoaded(location.SceneName))
+				{
+					InjectSceneObjects(location.SceneName);
+				}
+			}
+		}
+
+		private void EvaluateKeepLoadedReadiness()
+		{
+			if (_allKeepLoadedReady)
+			{
+				return;
+			}
+
+			if (_locations == null)
+			{
+				_allKeepLoadedReady = true;
+				KeepLoadedScenesReady?.Invoke();
+				return;
+			}
+
+			for (int i = 0; i < _locations.Length; i++)
+			{
+				WorldStreamedLocation location = _locations[i];
+
+				if (!IsLocationConfigured(location) || !location.KeepLoaded)
+				{
+					continue;
+				}
+
+				if (!IsSceneLoaded(location.SceneName))
+				{
+					return;
+				}
+			}
+
+			_allKeepLoadedReady = true;
+			LogTransition("All KeepLoaded streamed locations are ready.");
+			KeepLoadedScenesReady?.Invoke();
 		}
 
 		private void BeginUnload(WorldStreamedLocation location, StreamedSceneState state)

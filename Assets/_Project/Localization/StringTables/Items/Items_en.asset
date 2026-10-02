@@ -106,6 +106,30 @@ MonoBehaviour:
     m_Localized: Protects your hands from cold.
     m_Metadata:
       m_Items: []
+  - m_Id: 35273752214183936
+    m_Localized: Bandage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709888
+    m_Localized: Sterile bandage. Restores some health.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709889
+    m_Localized: Chocolate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709890
+    m_Localized: Sweet treat. Satisfies hunger and lifts spirits.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709891
+    m_Localized: Rope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35273752268709892
+    m_Localized: Sturdy rope. Useful for crafting and building.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

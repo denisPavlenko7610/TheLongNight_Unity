@@ -541,6 +541,82 @@ MonoBehaviour:
     m_Localized: You survived {0} days
     m_Metadata:
       m_Items: []
+  - m_Id: 31583239317430272
+    m_Localized: USE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239388733440
+    m_Localized: EAT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927744
+    m_Localized: DRINK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927745
+    m_Localized: EQUIP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927746
+    m_Localized: UNEQUIP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927747
+    m_Localized: PLACE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927748
+    m_Localized: DROP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927749
+    m_Localized: EQUIPMENT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927750
+    m_Localized: 'Warmth: +{0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927751
+    m_Localized: CONTAINER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927752
+    m_Localized: BACKPACK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927753
+    m_Localized: TAKE ALL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927754
+    m_Localized: Container is empty.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31583239392927755
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687358879318016
+    m_Localized: FORESTER'S HUT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118656
+    m_Localized: ABANDONED DEPOT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118657
+    m_Localized: ICE FISHING SPOT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118658
+    m_Localized: GOOSE LAKE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32687359026118659
+    m_Localized: ZERO POINT
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

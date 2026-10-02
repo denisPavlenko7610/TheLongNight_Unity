@@ -3,7 +3,6 @@ using TLN.Application.Audio;
 using TLN.Application.Feedback;
 using TLN.Application.GameStates;
 using TLN.Application.Input;
-using TLN.Application.Multiplayer;
 using TLN.Application.Notifications;
 using TLN.Application.Saves;
 using TLN.Application.Scenes;
@@ -15,13 +14,11 @@ using TLN.Infrastructure.Audio;
 using TLN.Infrastructure.Assets;
 using TLN.Infrastructure.Feedback;
 using TLN.Infrastructure.Input;
-using TLN.Infrastructure.Multiplayer;
 using TLN.Infrastructure.Saves;
 using TLN.Infrastructure.Scenes;
 using TLN.Infrastructure.Settings;
 using TLN.Infrastructure.Time;
 using TLN.UI.LoadingScreen;
-using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -31,7 +28,6 @@ namespace TLN.Bootstrap
 	public sealed class ProjectLifetimeScope : LifetimeScope
 	{
 		[SerializeField] private GameObject _loadingScreenPrefab;
-		[SerializeField, Required] private NetworkManager _networkManager;
 		[SerializeField, Required] private FeedbackCatalog _feedbackCatalog;
 		[SerializeField] private AudioMixerConfig _audioMixerConfig;
 
@@ -45,14 +41,10 @@ namespace TLN.Bootstrap
 			builder.RegisterInstance(_feedbackCatalog);
 			builder.Register<UnityFeedbackService>(Lifetime.Singleton).As<IFeedbackService>();
 			builder.Register<IGameStateMachine, GameStateMachine>(Lifetime.Singleton);
-			builder.RegisterInstance(_networkManager);
-			builder.Register<NgoMultiplayerSessionService>(Lifetime.Singleton).As<IMultiplayerSessionService>();
 			builder.Register<ISceneLoader>(
 				container =>
 					new SceneLoaderService(
-						container.Resolve<IGameStateMachine>(),
-						container.Resolve<IMultiplayerSessionService>(),
-						container.Resolve<NetworkManager>()
+						container.Resolve<IGameStateMachine>()
 					),
 				Lifetime.Singleton
 			);
