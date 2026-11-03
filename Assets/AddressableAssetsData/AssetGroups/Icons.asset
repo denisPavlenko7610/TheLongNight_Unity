@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Icons
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Icons
+  m_GUID: d7aa286623b4aa846b437e05c1c094cd
+  m_SerializeEntries:
+  - m_GUID: 3bfdaae619091944fbbe0348797a0b66
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Stick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48efb2fd8a980e94aaa6e32a99a63d88
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Chocolate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 666731ae69b977241a69db5b67b25cb7
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bedroll_roll.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b50c55b4320a8543bef534b140432de
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 851d8dd89f8ab22429503414b92ff37b
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Rope.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99da3987b6e17b44ea4d88650010b5a5
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Bandage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac09d942fa032eb40a8705f8f5035d55
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/bedroll.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc26019857f492418d4ef5753344c0f
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/Soda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf5807a80d325124bb76729628c43c51
+    m_Address: Assets/_Project/Art/UI/Textures/Icons/Items/apple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a6759f906fd3ba44c9dda44ff7e6ed60, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 92b93c0954536c9429f22fd252c503e1, type: 2}
+    - {fileID: 11400000, guid: 293cceaa56d35064081e81882f1b6e66, type: 2}

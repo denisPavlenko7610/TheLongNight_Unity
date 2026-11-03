@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_VFX_Stylized_Fire_Radial_02_Rainbow
+  m_Shader: {fileID: 4800000, guid: 8d8bf0810c20deb4f9d070a4c8f71f29, type: 3}
+  m_Parent: {fileID: 2100000, guid: 938877c8e223142489c1529d142ab82d, type: 2}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords:
+  - _ADD_PRECOMPUTED_VELOCITY
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    MotionVector: User
+    RenderType: Transparent
+  disabledShaderPasses:
+  - TransparentBackface
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _AlphaSrcBlend: 1
+    - _Emissive: 10
+    - _LUTAmplitude: 1
+    - _LUTSpeed: 1
+    - _MaskErosion: 0.8
+    - _MaskErosionSmoothness: 0.2
+    m_Colors: []
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
