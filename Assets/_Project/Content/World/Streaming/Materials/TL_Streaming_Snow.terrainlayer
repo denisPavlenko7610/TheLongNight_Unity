@@ -7,15 +7,15 @@ TerrainLayer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TL_Streaming_Snow
-  m_DiffuseTexture: {fileID: 2800000, guid: 9dc10263ed7674e4f81ce5aa86730e64, type: 3}
-  m_NormalMapTexture: {fileID: 2800000, guid: e67a45451e36c3a4f81ddcc65e4e53cc, type: 3}
+  m_DiffuseTexture: {fileID: 2800000, guid: dad53395cbef113478e9a62cb6884c00, type: 3}
+  m_NormalMapTexture: {fileID: 2800000, guid: a4e09d31a76d2074f959cee29c4aad5f, type: 3}
   m_MaskMapTexture: {fileID: 0}
-  m_TileSize: {x: 7, y: 7}
+  m_TileSize: {x: 8, y: 8}
   m_TileOffset: {x: 0, y: 0}
   m_Specular: {r: 0, g: 0, b: 0, a: 0}
   m_Metallic: 0
-  m_Smoothness: 0
-  m_NormalScale: 0.65
+  m_Smoothness: 0.12
+  m_NormalScale: 0.5
   m_DiffuseRemapMin: {x: 0, y: 0, z: 0, w: 0}
   m_DiffuseRemapMax: {x: 1, y: 1, z: 1, w: 1}
   m_MaskMapRemapMin: {x: 0, y: 0, z: 0, w: 0}

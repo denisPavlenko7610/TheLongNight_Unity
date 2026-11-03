@@ -21,7 +21,7 @@
     margin-bottom: 22px;
     color: rgb(238, 241, 234);
     font-size: 32px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
     letter-spacing: 0;
     -unity-text-outline-width: 0;
     -unity-text-outline-color: rgba(0, 0, 0, 0);
@@ -58,8 +58,8 @@
     border-bottom-width: 0;
     border-left-color: rgba(225, 237, 239, 0);
     font-size: 17px;
-    unity-font-style: bold;
-    unity-text-align: middle-left;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
     letter-spacing: 0;
     -unity-text-outline-width: 0;
 }
@@ -74,7 +74,7 @@
 }
 
 .options-panel .unity-button {
-    unity-font-style: bold;
+    -unity-font-style: bold;
 }
 
 .options-tab-btn:hover {
@@ -96,7 +96,6 @@
     flex-grow: 1;
     min-width: 0;
     min-height: 0;
-    overflow-y: auto;
     padding-left: 4px;
     padding-right: 6px;
     border-left-width: 1px;
@@ -116,7 +115,7 @@
     border-bottom-color: rgba(214, 224, 222, 0.08);
 }
 
-.options-setting-group:last-child {
+.options-setting-group.options-setting-group-last {
     border-bottom-width: 0;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -135,9 +134,7 @@
     border-bottom-color: rgba(214, 224, 222, 0.05);
 }
 
-.options-slider-row:last-child,
-.options-dropdown-row:last-of-type,
-.options-toggle-row:last-of-type {
+.options-row-last {
     border-bottom-width: 0;
     padding-bottom: 0;
 }
@@ -226,10 +223,10 @@
     margin-left: 16px;
     color: rgba(238, 241, 234, 0.9);
     font-size: 16px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
     letter-spacing: 0;
     -unity-text-outline-width: 0;
-    unity-text-align: middle-right;
+    -unity-text-align: middle-right;
 }
 
 .options-toggle {
@@ -332,7 +329,7 @@
     border-bottom-color: rgba(222, 232, 228, 0.1);
     font-size: 18px;
     letter-spacing: 0;
-    unity-text-align: middle-center;
+    -unity-text-align: middle-center;
     -unity-text-outline-width: 0;
 }
 

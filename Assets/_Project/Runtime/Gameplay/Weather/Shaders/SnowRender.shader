@@ -66,7 +66,7 @@ Shader "TLN/VFX/SnowParticle"
                 float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float alpha : TEXCOORD1;
-                float seed : TEXCOORD2;
+                float sparkle : TEXCOORD2;
                 float depth : TEXCOORD3;
             };
 
@@ -114,7 +114,14 @@ Shader "TLN/VFX/SnowParticle"
                     uvCentered.x * sr + uvCentered.y * cr
                 ) + 0.5;
 
-                output.seed = particle.seed;
+                float sparkle = 0.0;
+                if (_SparkleIntensity > 0) {
+                    float twinkle = sin(
+                        _TimeGlobal * (1.5 + Hash(particle.seed + 0.5) * 3.0) + Hash(particle.seed + 1.0) * 6.28
+                    ) * 0.5 + 0.5;
+                    sparkle = twinkle * Hash(particle.seed) * _SparkleIntensity;
+                }
+                output.sparkle = sparkle;
 
                 float distanceToCamera = sqrt(distanceSqr);
                 float distFade = saturate(1.0 - distanceToCamera / max(_FadeDistance, 1.0));
@@ -132,11 +139,9 @@ Shader "TLN/VFX/SnowParticle"
 
                 float3 color = _Color.rgb * (0.5 + 0.5 * softEdge);
 
-                if (_SparkleIntensity > 0)
-                {
-                    float twinkle = sin(_TimeGlobal * (1.5 + Hash(input.seed + 0.5) * 3.0) + Hash(input.seed + 1.0) * 6.28) * 0.5 + 0.5;
+                if (_SparkleIntensity > 0) {
                     float centerBright = 1.0 - length(uvCentered);
-                    float sparkle = twinkle * Hash(input.seed) * _SparkleIntensity * saturate(centerBright * 3.0);
+                    float sparkle = input.sparkle * saturate(centerBright * 3.0);
                     color += sparkle * 0.8;
                 }
 

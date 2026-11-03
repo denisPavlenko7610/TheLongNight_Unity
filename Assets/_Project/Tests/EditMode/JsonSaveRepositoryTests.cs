@@ -58,7 +58,10 @@ namespace TLN.Tests.EditMode
 			Assert.That(loaded.world.entities, Has.Count.EqualTo(1));
 			Assert.That(loaded.world.entities[0].id, Is.EqualTo("campfire_1"));
 			Assert.That(loaded.world.entities[0].prefabId, Is.EqualTo("campfire"));
-			Assert.That(loaded.world.entities[0].position.ToVector3(), Is.EqualTo(new UnityEngine.Vector3(10f, 0f, -5f)));
+			Assert.That(
+				loaded.world.entities[0].position.ToVector3(),
+				Is.EqualTo(new UnityEngine.Vector3(10f, 0f, -5f))
+			);
 			Assert.That(loaded.world.destroyedSceneEntityIds, Has.Count.EqualTo(1));
 		}
 
@@ -90,6 +93,42 @@ namespace TLN.Tests.EditMode
 			Assert.That(_repository.Delete(3), Is.True);
 			Assert.That(_repository.SaveExists(3), Is.False);
 			Assert.That(_repository.Load(3), Is.Null);
+		}
+
+		[Test]
+		public void Overwrite_PreservesPreviousSaveAsRecoverableBackup()
+		{
+			GameSaveData data = CreateFilledData(1);
+			data.equippedItemIds.Add("coat");
+			_repository.Save(data);
+			data.time.totalMinutes = 2880;
+			_repository.Save(data);
+			Assert.That(_repository.Load(1).time.totalMinutes, Is.EqualTo(2880));
+			Assert.That(_repository.Load(1).equippedItemIds, Does.Contain("coat"));
+			File.Delete(Path.Combine(_directory, "slot_1.json"));
+			Assert.That(_repository.SaveExists(1), Is.True);
+			Assert.That(_repository.Load(1).time.totalMinutes, Is.EqualTo(1440));
+			Assert.That(_repository.Delete(1), Is.True);
+			Assert.That(_repository.SaveExists(1), Is.False);
+		}
+
+		[Test]
+		public void FailedTemporaryWrite_PreservesExistingSlot()
+		{
+			_repository.Save(CreateFilledData(1));
+			using (FileStream blockedTemporaryFile = new FileStream(
+					Path.Combine(_directory, "slot_1.json.tmp"),
+					FileMode.Create,
+					FileAccess.Write,
+					FileShare.None
+				))
+			{
+				Assert.That(blockedTemporaryFile.CanWrite, Is.True);
+				GameSaveData next = CreateFilledData(1);
+				next.time.totalMinutes = 2880;
+				Assert.Throws<IOException>(() => _repository.Save(next));
+				Assert.That(_repository.Load(1).time.totalMinutes, Is.EqualTo(1440));
+			}
 		}
 
 		private static GameSaveData CreateFilledData(int slotId)

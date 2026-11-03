@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
 using TLN.Application.Localization;
 using TLN.Application.Notifications;
 using TLN.Gameplay.Inventory;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TLN.Gameplay.Building
 {
@@ -54,11 +57,13 @@ namespace TLN.Gameplay.Building
 					return false;
 				}
 
-				int availableAmount = CountItems(ingredient.Item);
+				long requiredAmount = CountRequiredAmount(recipe, ingredient.Item);
 
-				if (availableAmount < ingredient.Amount)
+				int availableAmount = _inventoryService.CountItems(ingredient.Item);
+
+				if (availableAmount < requiredAmount)
 				{
-					failureReason = Loc.NotEnoughItems(ingredient.Item.DisplayName, ingredient.Amount, availableAmount);
+					failureReason = Loc.NotEnoughItems(ingredient.Item.DisplayName, (int)Math.Min(requiredAmount, int.MaxValue), availableAmount);
 
 					return false;
 				}
@@ -94,45 +99,52 @@ namespace TLN.Gameplay.Building
 			return BuildResult.Success(message);
 		}
 
+		private static long CountRequiredAmount(BuildRecipeDefinition recipe, ItemDefinition item)
+		{
+			long amount = 0;
+			for (int i = 0; i < recipe.Ingredients.Count; i++)
+			{
+				BuildRecipeIngredient ingredient = recipe.Ingredients[i];
+				if (ingredient?.Item != null && ingredient.Item.Id == item.Id)
+					amount += ingredient.Amount;
+			}
+
+			return amount;
+		}
+
 		private BuildResult Fail(string message)
 		{
 			_notificationService.Show(message);
 			return BuildResult.Failure(message);
 		}
 
-		private int CountItems(ItemDefinition item)
-		{
-			int amount = 0;
-
-			for (int i = 0; i < _inventoryService.Items.Count; i++)
-			{
-				ItemStack stack = _inventoryService.Items[i];
-
-				if (stack.Definition.Id == item.Id)
-				{
-					amount += stack.Amount;
-				}
-			}
-
-			return amount;
-		}
-
 		private bool TryConsumeIngredients(BuildRecipeDefinition recipe, out string failureReason)
 		{
-			for (int i = 0; i < recipe.Ingredients.Count; i++)
-			{
-				BuildRecipeIngredient ingredient = recipe.Ingredients[i];
+			// Placement callbacks may have changed the inventory since the initial check.
+			if (!CanBuild(recipe, out failureReason))
+				return false;
 
-				if (!_inventoryService.TryRemoveItem(
-					ingredient.Item,
-					ingredient.Amount,
-					out failureReason
-				))
+			List<ItemStack> remaining = new(_inventoryService.Items);
+			foreach (BuildRecipeIngredient ingredient in recipe.Ingredients)
+			{
+				int amount = ingredient.Amount;
+				for (int i = remaining.Count - 1; i >= 0 && amount > 0; i--)
 				{
-					return false;
+					ItemStack stack = remaining[i];
+					if (stack.Definition.Id != ingredient.Item.Id)
+						continue;
+
+					int removed = Math.Min(amount, stack.Amount);
+					stack.RemoveAmount(removed);
+					amount -= removed;
+					if (stack.Amount == 0)
+						remaining.RemoveAt(i);
+					else
+						remaining[i] = stack;
 				}
 			}
 
+			_inventoryService.ReplaceItems(remaining);
 			failureReason = string.Empty;
 			return true;
 		}

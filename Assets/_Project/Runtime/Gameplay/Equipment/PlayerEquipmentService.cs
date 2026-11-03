@@ -2,14 +2,59 @@ using System;
 using System.Collections.Generic;
 using TLN.Application.Localization;
 using TLN.Core.Results;
+using TLN.Gameplay.Inventory;
+using TLN.Gameplay.Items;
 
 namespace TLN.Gameplay.Equipment
 {
-	public sealed class PlayerEquipmentService : IPlayerEquipmentService
+	public sealed class PlayerEquipmentService : IPlayerEquipmentService, IDisposable
 	{
 		private const int DefaultSlotCapacity = 2;
 
 		private readonly List<ClothingItemDefinition> _equippedItems = new();
+		private readonly IInventoryService _inventory;
+
+		public PlayerEquipmentService(IInventoryService inventory)
+		{
+			_inventory = inventory;
+			_inventory.Changed += OnInventoryChanged;
+		}
+
+		public void Dispose() => _inventory.Changed -= OnInventoryChanged;
+
+		private bool HasItem(ClothingItemDefinition item)
+		{
+			foreach (ItemStack stack in _inventory.Items)
+			{
+				if (stack.Definition.Id == item.Id && stack.Amount > 0)
+					return true;
+			}
+			return false;
+		}
+
+		private void OnInventoryChanged()
+		{
+			if (_equippedItems.RemoveAll(item => !HasItem(item)) > 0)
+				ApplyEquipmentChanged();
+		}
+
+		public void RestoreEquipment(IReadOnlyList<ClothingItemDefinition> items)
+		{
+			_equippedItems.Clear();
+			if (items != null)
+			{
+				foreach (ClothingItemDefinition item in items)
+				{
+					if (item != null &&
+						HasItem(item) &&
+						!IsEquipped(item) &&
+						GetEquippedCount(item.Slot) < GetSlotCapacity(item.Slot))
+						_equippedItems.Add(item);
+				}
+			}
+			ApplyEquipmentChanged();
+		}
+
 		public IReadOnlyList<ClothingItemDefinition> EquippedItems => _equippedItems;
 		public float WarmthBonus { get; private set; }
 
@@ -66,6 +111,9 @@ namespace TLN.Gameplay.Equipment
 			{
 				return OperationResult.Failure(Loc.NoFreeSlot(item.Slot));
 			}
+
+			if (!HasItem(item))
+				return OperationResult.Failure(Loc.EquipmentItemMissing);
 
 			_equippedItems.Add(item);
 			ApplyEquipmentChanged();

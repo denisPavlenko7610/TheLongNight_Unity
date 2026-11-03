@@ -1,4 +1,5 @@
 using TLN.Application.GameStates;
+using TLN.Gameplay.Weather;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -9,6 +10,10 @@ namespace TLN.Gameplay.DayNight
 	public sealed class DayNightController : MonoBehaviour
 	{
 		private const float ShadowThreshold = 0.01f;
+		private const float StormSunScale = 0.4f;
+		private const float StormShadowScale = 0.3f;
+		private const float StormDesaturation = 0.65f;
+		private const float StormFogScale = 0.18f;
 
 		[SerializeField] private Light _sunLight;
 		[SerializeField] private Volume _skyVolume;
@@ -16,6 +21,7 @@ namespace TLN.Gameplay.DayNight
 		private IDayNightService _dayNightService;
 		private DayNightConfig _config;
 		private IGameStateMachine _gameStateMachine;
+		private IWeatherService _weatherService;
 
 		private Exposure _exposure;
 		private ColorAdjustments _colorAdjustments;
@@ -27,11 +33,16 @@ namespace TLN.Gameplay.DayNight
 		private bool _lastShadowsEnabled;
 
 		[Inject]
-		public void Construct(IDayNightService dayNightService, DayNightConfig config, IGameStateMachine gameStateMachine)
+		public void Construct(
+			IDayNightService dayNightService,
+			DayNightConfig config,
+			IGameStateMachine gameStateMachine,
+			IWeatherService weatherService)
 		{
 			_dayNightService = dayNightService;
 			_config = config;
 			_gameStateMachine = gameStateMachine;
+			_weatherService = weatherService;
 		}
 
 		private void Start()
@@ -88,7 +99,10 @@ namespace TLN.Gameplay.DayNight
 
 			if (_fog != null)
 			{
+				_fog.enabled.overrideState = true;
+				_fog.enabled.value = true;
 				_fog.color.overrideState = true;
+				_fog.meanFreePath.overrideState = true;
 			}
 		}
 
@@ -118,20 +132,30 @@ namespace TLN.Gameplay.DayNight
 			PhaseSettings currentPhase = GetCurrentPhaseSettings();
 			PhaseSettings nextPhase = GetNextPhaseSettings();
 			float t = _dayNightService.PhaseBlend01;
+			float storm = _weatherService != null ? Mathf.Clamp01(_weatherService.SnowIntensity) : 0f;
 
 			ApplySun(
 				Color.Lerp(currentPhase.SunColor, nextPhase.SunColor, t),
-				Mathf.Lerp(currentPhase.SunIntensity, nextPhase.SunIntensity, t),
-				Mathf.Lerp(currentPhase.SunShadowStrength, nextPhase.SunShadowStrength, t)
+				Mathf.Lerp(currentPhase.SunIntensity, nextPhase.SunIntensity, t) * Mathf.Lerp(1f, StormSunScale, storm),
+				Mathf.Lerp(currentPhase.SunShadowStrength, nextPhase.SunShadowStrength, t) * Mathf.Lerp(1f, StormShadowScale, storm)
 			);
 
 			ApplyExposure(Mathf.Lerp(currentPhase.Exposure, nextPhase.Exposure, t));
 			ApplyColorFilter(Color.Lerp(currentPhase.ColorFilter, nextPhase.ColorFilter, t));
 			ApplySky(
-				Color.Lerp(currentPhase.SkyTint, nextPhase.SkyTint, t),
-				Color.Lerp(currentPhase.GroundTint, nextPhase.GroundTint, t)
+				Desaturate(Color.Lerp(currentPhase.SkyTint, nextPhase.SkyTint, t), storm * StormDesaturation),
+				Desaturate(Color.Lerp(currentPhase.GroundTint, nextPhase.GroundTint, t), storm * StormDesaturation)
 			);
-			ApplyFog(Color.Lerp(currentPhase.FogColor, nextPhase.FogColor, t));
+			ApplyFog(
+				Desaturate(Color.Lerp(currentPhase.FogColor, nextPhase.FogColor, t), storm * StormDesaturation),
+				Mathf.Lerp(currentPhase.FogMeanFreePath, nextPhase.FogMeanFreePath, t) * Mathf.Lerp(1f, StormFogScale, storm)
+			);
+		}
+
+		private static Color Desaturate(Color color, float amount)
+		{
+			float gray = color.grayscale;
+			return Color.Lerp(color, new Color(gray, gray, gray, color.a), amount);
 		}
 
 		private void ApplySun(Color color, float intensity, float shadowStrength)
@@ -202,7 +226,7 @@ namespace TLN.Gameplay.DayNight
 			_physicallyBasedSky.groundTint.value = groundTint;
 		}
 
-		private void ApplyFog(Color fogColor)
+		private void ApplyFog(Color fogColor, float meanFreePath)
 		{
 			if (_fog == null)
 			{
@@ -210,6 +234,7 @@ namespace TLN.Gameplay.DayNight
 			}
 
 			_fog.color.value = fogColor;
+			_fog.meanFreePath.value = meanFreePath;
 		}
 
 		private PhaseSettings GetCurrentPhaseSettings()

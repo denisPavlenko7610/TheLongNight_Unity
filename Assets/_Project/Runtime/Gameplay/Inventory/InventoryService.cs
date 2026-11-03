@@ -52,6 +52,11 @@ namespace TLN.Gameplay.Inventory
 
 		public void ReplaceItems(IReadOnlyList<ItemStack> items)
 		{
+			if (ReferenceEquals(items, _items))
+			{
+				items = new List<ItemStack>(items);
+			}
+
 			_items.Clear();
 
 			if (items != null)
@@ -127,16 +132,7 @@ namespace TLN.Gameplay.Inventory
 				return false;
 			}
 
-			stack.RemoveAmount(amount);
-
-			if (stack.Amount <= 0)
-			{
-				_items.RemoveAt(index);
-			}
-			else
-			{
-				_items[index] = stack;
-			}
+			RemoveFromStack(index, stack, amount);
 
 			RecalculateWeight();
 			Changed?.Invoke();
@@ -185,16 +181,7 @@ namespace TLN.Gameplay.Inventory
 
 				int amountToRemove = Math.Min(remainingAmount, stack.Amount);
 
-				stack.RemoveAmount(amountToRemove);
-
-				if (stack.Amount <= 0)
-				{
-					_items.RemoveAt(i);
-				}
-				else
-				{
-					_items[i] = stack;
-				}
+				RemoveFromStack(i, stack, amountToRemove);
 
 				remainingAmount -= amountToRemove;
 			}
@@ -206,7 +193,21 @@ namespace TLN.Gameplay.Inventory
 			return true;
 		}
 
-		private int CountItems(ItemDefinition definition)
+		private void RemoveFromStack(int index, ItemStack stack, int amount)
+		{
+			stack.RemoveAmount(amount);
+
+			if (stack.Amount <= 0)
+			{
+				_items.RemoveAt(index);
+			}
+			else
+			{
+				_items[index] = stack;
+			}
+		}
+
+		public int CountItems(ItemDefinition definition)
 		{
 			if (definition == null)
 			{

@@ -1,9 +1,19 @@
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 namespace TLN.Application.Localization
 {
 	public static class Loc
 	{
+		public static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
+		{
+			if (localizedString == null || localizedString.IsEmpty)
+				return fallback;
+
+			string value = localizedString.GetLocalizedString();
+			return string.IsNullOrWhiteSpace(value) ? fallback : value;
+		}
+
 		private static string ui(string key, params object[] args) =>
 			LocalizationSettings.StringDatabase.GetLocalizedString("UI", key, arguments: args);
 

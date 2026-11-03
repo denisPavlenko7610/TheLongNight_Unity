@@ -51,6 +51,7 @@ namespace TLN.Gameplay.Saves
 			WorldEntitySaveData data = new WorldEntitySaveData
 			{
 				id = _id,
+				sceneName = gameObject.scene.name,
 				prefabId = _prefabId,
 				isSceneObject = IsSceneObject,
 				position = Vector3SaveData.FromVector3(transform.position),

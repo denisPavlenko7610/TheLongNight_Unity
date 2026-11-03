@@ -16,5 +16,6 @@ namespace TLN.Gameplay.Equipment
 		int GetEquippedCount(ClothingSlotId slot);
 		int GetSlotCapacity(ClothingSlotId slot);
 		OperationResult ToggleEquip(ClothingItemDefinition item);
+		void RestoreEquipment(IReadOnlyList<ClothingItemDefinition> items);
 	}
 }

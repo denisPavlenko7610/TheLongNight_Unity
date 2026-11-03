@@ -86,67 +86,72 @@ MonoBehaviour:
   _northAngle: 0
   _dawn:
     StartHour: 4
-    SunColor: {r: 0.78, g: 0.86, b: 1, a: 1}
+    SunColor: {r: 1, g: 0.74, b: 0.58, a: 1}
     SunIntensity: 2500
     SunShadowStrength: 0.5
-    SkyTint: {r: 0.32, g: 0.42, b: 0.66, a: 1}
-    GroundTint: {r: 0.58, g: 0.68, b: 0.82, a: 1}
-    FogColor: {r: 0.5, g: 0.62, b: 0.78, a: 1}
+    SkyTint: {r: 0.6, g: 0.56, b: 0.68, a: 1}
+    GroundTint: {r: 0.7, g: 0.72, b: 0.82, a: 1}
+    FogColor: {r: 0.72, g: 0.64, b: 0.68, a: 1}
     FogDensity: 0.00015
+    FogMeanFreePath: 150
     Exposure: 8.2
-    ColorFilter: {r: 0.86, g: 0.93, b: 1, a: 1}
+    ColorFilter: {r: 0.96, g: 0.94, b: 1, a: 1}
     TemperatureModifier: -1.5
     StarVisibility: 0.45
   _morning:
     StartHour: 7
-    SunColor: {r: 0.82, g: 0.9, b: 1, a: 1}
+    SunColor: {r: 1, g: 0.88, b: 0.74, a: 1}
     SunIntensity: 5500
     SunShadowStrength: 0.75
-    SkyTint: {r: 0.42, g: 0.56, b: 0.82, a: 1}
-    GroundTint: {r: 0.78, g: 0.86, b: 0.96, a: 1}
-    FogColor: {r: 0.55, g: 0.68, b: 0.86, a: 1}
+    SkyTint: {r: 0.58, g: 0.66, b: 0.8, a: 1}
+    GroundTint: {r: 0.82, g: 0.86, b: 0.94, a: 1}
+    FogColor: {r: 0.7, g: 0.74, b: 0.8, a: 1}
     FogDensity: 0.00008
-    Exposure: 8.1
-    ColorFilter: {r: 0.9, g: 0.96, b: 1, a: 1}
+    FogMeanFreePath: 230
+    Exposure: 7.8
+    ColorFilter: {r: 0.98, g: 0.98, b: 1, a: 1}
     TemperatureModifier: -0.5
     StarVisibility: 0
   _day:
     StartHour: 11
-    SunColor: {r: 0.78, g: 0.88, b: 1, a: 1}
+    SunColor: {r: 1, g: 0.95, b: 0.86, a: 1}
     SunIntensity: 8000
     SunShadowStrength: 0.8
-    SkyTint: {r: 0.36, g: 0.5, b: 0.78, a: 1}
-    GroundTint: {r: 0.82, g: 0.9, b: 1, a: 1}
-    FogColor: {r: 0.5, g: 0.64, b: 0.84, a: 1}
+    SkyTint: {r: 0.62, g: 0.68, b: 0.78, a: 1}
+    GroundTint: {r: 0.86, g: 0.89, b: 0.95, a: 1}
+    FogColor: {r: 0.66, g: 0.72, b: 0.8, a: 1}
     FogDensity: 0.00006
-    Exposure: 8.6
-    ColorFilter: {r: 0.9, g: 0.96, b: 1, a: 1}
+    FogMeanFreePath: 280
+    Exposure: 8
+    ColorFilter: {r: 0.97, g: 0.98, b: 1, a: 1}
     TemperatureModifier: 0
     StarVisibility: 0
   _afternoon:
     StartHour: 16
-    SunColor: {r: 0.74, g: 0.84, b: 1, a: 1}
+    SunColor: {r: 1, g: 0.82, b: 0.62, a: 1}
     SunIntensity: 5500
     SunShadowStrength: 0.7
-    SkyTint: {r: 0.38, g: 0.5, b: 0.76, a: 1}
-    GroundTint: {r: 0.78, g: 0.86, b: 0.97, a: 1}
-    FogColor: {r: 0.52, g: 0.62, b: 0.8, a: 1}
+    SkyTint: {r: 0.66, g: 0.64, b: 0.74, a: 1}
+    GroundTint: {r: 0.84, g: 0.84, b: 0.9, a: 1}
+    FogColor: {r: 0.74, g: 0.7, b: 0.74, a: 1}
     FogDensity: 0.00008
-    Exposure: 8.2
-    ColorFilter: {r: 0.88, g: 0.94, b: 1, a: 1}
+    FogMeanFreePath: 220
+    Exposure: 7.9
+    ColorFilter: {r: 1, g: 0.97, b: 0.95, a: 1}
     TemperatureModifier: -0.3
     StarVisibility: 0
   _dusk:
     StartHour: 19
-    SunColor: {r: 0.58, g: 0.66, b: 0.95, a: 1}
+    SunColor: {r: 0.95, g: 0.52, b: 0.42, a: 1}
     SunIntensity: 2800
     SunShadowStrength: 0.3
-    SkyTint: {r: 0.24, g: 0.3, b: 0.54, a: 1}
-    GroundTint: {r: 0.36, g: 0.42, b: 0.62, a: 1}
-    FogColor: {r: 0.28, g: 0.34, b: 0.56, a: 1}
+    SkyTint: {r: 0.4, g: 0.36, b: 0.56, a: 1}
+    GroundTint: {r: 0.4, g: 0.4, b: 0.58, a: 1}
+    FogColor: {r: 0.38, g: 0.34, b: 0.52, a: 1}
     FogDensity: 0.0002
+    FogMeanFreePath: 140
     Exposure: 8
-    ColorFilter: {r: 0.78, g: 0.86, b: 1, a: 1}
+    ColorFilter: {r: 0.88, g: 0.9, b: 1, a: 1}
     TemperatureModifier: -2
     StarVisibility: 0.45
   _night:
@@ -158,7 +163,8 @@ MonoBehaviour:
     GroundTint: {r: 0.085, g: 0.105, b: 0.18, a: 1}
     FogColor: {r: 0.065, g: 0.085, b: 0.165, a: 1}
     FogDensity: 0.000035
+    FogMeanFreePath: 120
     Exposure: 6.6
-    ColorFilter: {r: 0.82, g: 0.9, b: 1, a: 1}
+    ColorFilter: {r: 0.85, g: 0.92, b: 1, a: 1}
     TemperatureModifier: -3.5
     StarVisibility: 1

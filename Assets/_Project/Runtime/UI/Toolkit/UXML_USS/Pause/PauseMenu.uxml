@@ -91,7 +91,7 @@
 
                     <ui:VisualElement name="options-content-area" class="options-content-area">
                         <ui:VisualElement name="options-audio-content" class="options-tab-content">
-                            <ui:VisualElement class="options-setting-group">
+                            <ui:VisualElement class="options-setting-group options-setting-group-last">
                                 <ui:VisualElement class="options-slider-row">
                                     <ui:Label text="MASTER VOLUME" class="tln-settings-label"/>
                                     <ui:VisualElement class="options-slider-container">
@@ -113,7 +113,7 @@
                                         <ui:Label name="options-music-volume-value" text="100%" class="options-slider-value"/>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
-                                <ui:VisualElement class="options-slider-row">
+                                <ui:VisualElement class="options-slider-row options-row-last">
                                     <ui:Label text="AMBIENT VOLUME" class="tln-settings-label"/>
                                     <ui:VisualElement class="options-slider-container">
                                         <ui:Slider name="options-ambient-volume" class="options-slider"/>
@@ -124,7 +124,7 @@
                         </ui:VisualElement>
 
                         <ui:VisualElement name="options-graphics-content" class="options-tab-content">
-                            <ui:VisualElement class="options-setting-group">
+                            <ui:VisualElement class="options-setting-group options-setting-group-last">
                                 <ui:VisualElement class="options-dropdown-row">
                                     <ui:Label text="DISPLAY MODE" class="tln-settings-label"/>
                                     <ui:DropdownField name="options-display-mode" class="tln-settings-dropdown"/>
@@ -155,7 +155,7 @@
                                         <ui:Label name="options-brightness-value" text="50%" class="options-slider-value"/>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
-                                <ui:VisualElement class="options-toggle-row">
+                                <ui:VisualElement class="options-toggle-row options-row-last">
                                     <ui:Label text="V-SYNC" class="tln-settings-label"/>
                                     <ui:Toggle name="options-vsync" class="options-toggle"/>
                                 </ui:VisualElement>
@@ -163,7 +163,7 @@
                         </ui:VisualElement>
 
                         <ui:VisualElement name="options-controls-content" class="options-tab-content">
-                            <ui:VisualElement class="options-setting-group">
+                            <ui:VisualElement class="options-setting-group options-setting-group-last">
                                 <ui:VisualElement class="options-slider-row">
                                     <ui:Label text="MOUSE SENSITIVITY" class="tln-settings-label"/>
                                     <ui:VisualElement class="options-slider-container">
@@ -178,7 +178,7 @@
                                         <ui:Label name="options-look-smoothing-value" text="30%" class="options-slider-value"/>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
-                                <ui:VisualElement class="options-toggle-row">
+                                <ui:VisualElement class="options-toggle-row options-row-last">
                                     <ui:Label text="INVERT MOUSE Y" class="tln-settings-label"/>
                                     <ui:Toggle name="options-invert-mouse" class="options-toggle"/>
                                 </ui:VisualElement>
@@ -186,7 +186,7 @@
                         </ui:VisualElement>
 
                         <ui:VisualElement name="options-gameplay-content" class="options-tab-content">
-                            <ui:VisualElement class="options-setting-group">
+                            <ui:VisualElement class="options-setting-group options-setting-group-last">
                                 <ui:VisualElement class="options-dropdown-row">
                                     <ui:Label text="LANGUAGE" class="tln-settings-label"/>
                                     <ui:DropdownField name="options-language-dropdown" class="tln-settings-dropdown"/>
@@ -195,7 +195,7 @@
                                     <ui:Label text="AUTO-WALK" class="tln-settings-label"/>
                                     <ui:Toggle name="options-auto-walk" class="options-toggle"/>
                                 </ui:VisualElement>
-                                <ui:VisualElement class="options-toggle-row">
+                                <ui:VisualElement class="options-toggle-row options-row-last">
                                     <ui:Label text="AUTO-HARVEST" class="tln-settings-label"/>
                                     <ui:Toggle name="options-auto-harvest" class="options-toggle"/>
                                 </ui:VisualElement>

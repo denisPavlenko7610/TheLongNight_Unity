@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TLN.Core.Lifetime;
 using TLN.Gameplay.Items;
@@ -14,6 +14,7 @@ namespace TLN.Gameplay.Inventory
 
 		event Action Changed;
 
+		int CountItems(ItemDefinition definition);
 		InventoryAddResult AddItem(ItemDefinition definition, int amount);
 		bool CanAddItem(ItemDefinition definition, int amount, out string reason);
 		bool TryRemoveItemAt(int index, int amount, out string reason);

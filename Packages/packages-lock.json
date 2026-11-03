@@ -15,7 +15,7 @@
         "com.unity.nuget.newtonsoft-json": "3.0.2",
         "com.unity.test-framework": "1.1.31"
       },
-      "hash": "30d22075093d1d35dfb0091c1c7550e9ad948577"
+      "hash": "81542a7e86292b5c4c21b1782c5af23b567f45ce"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -53,7 +53,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ai.navigation": {
-      "version": "2.0.14",
+      "version": "2.0.16",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -62,12 +62,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.behavior": {
-      "version": "1.0.16",
+      "version": "1.0.17",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.7.2",
-        "com.unity.dt.app-ui": "2.0.0",
+        "com.unity.dt.app-ui": "2.2.3",
         "com.unity.modules.ai": "1.0.0",
         "com.unity.collections": "2.1.4",
         "com.unity.modules.audio": "1.0.0",
@@ -112,7 +112,7 @@
       }
     },
     "com.unity.dt.app-ui": {
-      "version": "2.1.11",
+      "version": "2.2.3",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -141,7 +141,7 @@
       "source": "builtin",
       "dependencies": {
         "com.unity.ide.visualstudio": "2.0.27",
-        "com.unity.ide.rider": "3.0.40",
+        "com.unity.ide.rider": "3.1.0",
         "com.unity.editorcoroutines": "6.6.0",
         "com.unity.performance.profile-analyzer": "1.4.0",
         "com.unity.test-framework": "1.8.0",
@@ -155,12 +155,10 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
-      "version": "3.0.40",
+      "version": "3.1.0",
       "depth": 0,
       "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
@@ -173,7 +171,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.20.0",
+      "version": "1.20.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -182,7 +180,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.localization": {
-      "version": "1.5.12",
+      "version": "1.5.13",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -303,7 +301,7 @@
       }
     },
     "com.unity.splines": {
-      "version": "2.9.0",
+      "version": "2.9.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -314,7 +312,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.terrain-tools": {
-      "version": "5.3.2",
+      "version": "5.3.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {

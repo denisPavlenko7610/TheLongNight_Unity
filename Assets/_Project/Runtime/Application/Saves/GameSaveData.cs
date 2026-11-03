@@ -20,6 +20,7 @@ namespace TLN.Application.Saves
 		public GameTimeSaveData time = new GameTimeSaveData();
 		public SurvivalSaveData survival = new SurvivalSaveData();
 		public InventorySaveData inventory = new InventorySaveData();
+		public List<string> equippedItemIds = new();
 
 		public void NormalizeAfterLoad()
 		{
@@ -37,6 +38,7 @@ namespace TLN.Application.Saves
 			time ??= new GameTimeSaveData();
 			survival ??= new SurvivalSaveData();
 			inventory ??= new InventorySaveData();
+			equippedItemIds ??= new List<string>();
 
 			world.NormalizeAfterLoad();
 			inventory.NormalizeAfterLoad();
@@ -150,11 +152,13 @@ namespace TLN.Application.Saves
 	[Serializable]
 	public sealed class WorldSaveData
 	{
+		public List<string> capturedSceneNames = new();
 		public List<string> destroyedSceneEntityIds = new();
 		public List<WorldEntitySaveData> entities = new();
 
 		public void NormalizeAfterLoad()
 		{
+			capturedSceneNames ??= new List<string>();
 			destroyedSceneEntityIds ??= new List<string>();
 			entities ??= new List<WorldEntitySaveData>();
 
@@ -168,6 +172,7 @@ namespace TLN.Application.Saves
 	[Serializable]
 	public sealed class WorldEntitySaveData
 	{
+		public string sceneName;
 		public string id;
 		public string prefabId;
 		public bool isSceneObject;

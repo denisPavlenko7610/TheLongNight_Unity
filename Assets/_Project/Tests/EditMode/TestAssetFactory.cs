@@ -101,7 +101,7 @@ namespace TLN.Tests.EditMode
 			return item;
 		}
 
-		private static void SetPrivateField<TValue>(object target, string fieldName, TValue value)
+		internal static void SetPrivateField<TValue>(object target, string fieldName, TValue value)
 		{
 			FieldInfo field = FindField(target.GetType(), fieldName);
 

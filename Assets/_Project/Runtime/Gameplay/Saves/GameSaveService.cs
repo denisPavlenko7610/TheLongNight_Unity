@@ -6,6 +6,7 @@ using TLN.Application.Saves;
 using TLN.Application.Scenes;
 using TLN.Core.Logging;
 using TLN.Gameplay.Inventory;
+using TLN.Gameplay.Equipment;
 using TLN.Gameplay.Items;
 using TLN.Gameplay.Placement;
 using TLN.Gameplay.Survival;
@@ -25,6 +26,7 @@ namespace TLN.Gameplay.Saves
 		private readonly ItemCatalog _itemCatalog;
 		private readonly INotificationService _notificationService;
 		private readonly WorldSaveRegistry _worldSaveRegistry;
+		private readonly IPlayerEquipmentService _equipmentService;
 
 		public bool CanSaveManually => false;
 
@@ -37,7 +39,8 @@ namespace TLN.Gameplay.Saves
 			PlacementService placementService,
 			ItemCatalog itemCatalog,
 			INotificationService notificationService,
-			WorldSaveRegistry worldSaveRegistry
+			WorldSaveRegistry worldSaveRegistry,
+			IPlayerEquipmentService equipmentService
 		)
 		{
 			_saveRepository = saveRepository;
@@ -49,6 +52,7 @@ namespace TLN.Gameplay.Saves
 			_itemCatalog = itemCatalog;
 			_notificationService = notificationService;
 			_worldSaveRegistry = worldSaveRegistry;
+			_equipmentService = equipmentService;
 		}
 
 		public async Awaitable<bool> SaveManual()
@@ -128,14 +132,11 @@ namespace TLN.Gameplay.Saves
 			CaptureTime(data.time);
 			CaptureSurvival(data.survival);
 			CaptureInventory(data.inventory);
-			CaptureWorld(data.world);
+			foreach (ClothingItemDefinition item in _equipmentService.EquippedItems)
+				data.equippedItemIds.Add(item.Id);
+			_worldSaveRegistry?.Capture(data.world);
 
 			return data;
-		}
-
-		private void CaptureWorld(WorldSaveData data)
-		{
-			_worldSaveRegistry?.Capture(data);
 		}
 
 		private void CapturePlayer(PlayerSaveData data)
@@ -210,7 +211,8 @@ namespace TLN.Gameplay.Saves
 					continue;
 				}
 
-				data.items.Add(new InventoryItemSaveData
+				data.items.Add(
+					new InventoryItemSaveData
 					{
 						itemId = stack.Definition.Id,
 						amount = stack.Amount
@@ -230,12 +232,17 @@ namespace TLN.Gameplay.Saves
 			ApplyTime(data.time);
 			ApplySurvival(data.survival);
 			ApplyInventory(data.inventory);
-			ApplyWorld(data.world);
-		}
-
-		private void ApplyWorld(WorldSaveData data)
-		{
-			_worldSaveRegistry?.Restore(data);
+			List<ClothingItemDefinition> equipment = new();
+			if (data.equippedItemIds != null)
+			{
+				foreach (string id in data.equippedItemIds)
+				{
+					if (_itemCatalog.TryGetItem(id, out ItemDefinition item) && item is ClothingItemDefinition clothing)
+						equipment.Add(clothing);
+				}
+			}
+			_equipmentService.RestoreEquipment(equipment);
+			_worldSaveRegistry?.Restore(data.world);
 		}
 
 		private void ApplyPlayer(PlayerSaveData data)

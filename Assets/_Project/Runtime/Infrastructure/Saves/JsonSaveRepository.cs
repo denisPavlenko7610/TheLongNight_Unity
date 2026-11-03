@@ -27,9 +27,7 @@ namespace TLN.Infrastructure.Saves
 			};
 
 		[VContainer.Inject]
-		public JsonSaveRepository()
-		{
-		}
+		public JsonSaveRepository() { }
 
 		public JsonSaveRepository(string saveDirectory)
 		{
@@ -42,7 +40,8 @@ namespace TLN.Infrastructure.Saves
 		{
 			lock (_ioLock)
 			{
-				return IsValidSlot(slotId) && File.Exists(GetSlotPath(slotId));
+				return IsValidSlot(slotId) &&
+					(File.Exists(GetSlotPath(slotId)) || File.Exists(GetSlotPath(slotId) + ".bak"));
 			}
 		}
 
@@ -65,30 +64,33 @@ namespace TLN.Infrastructure.Saves
 
 				string path = GetSlotPath(slotId);
 
-				if (!File.Exists(path))
+				return LoadFile(path) ?? LoadFile(path + ".bak");
+			}
+		}
+
+		private static GameSaveData LoadFile(string path)
+		{
+			if (!File.Exists(path))
+				return null;
+
+			try
+			{
+				string json = File.ReadAllText(path);
+				if (string.IsNullOrWhiteSpace(json))
 				{
 					return null;
 				}
 
-				try
-				{
-					string json = File.ReadAllText(path);
-					if (string.IsNullOrWhiteSpace(json))
-					{
-						return null;
-					}
+				GameSaveData data = JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
+				data?.NormalizeAfterLoad();
 
-					GameSaveData data = JsonConvert.DeserializeObject<GameSaveData>(json, SerializerSettings);
-					data?.NormalizeAfterLoad();
+				return data;
+			}
+			catch (Exception exception)
+			{
+				TLNLogger.LogError($"Failed to load save file {path}. {exception}");
 
-					return data;
-				}
-				catch (Exception exception)
-				{
-					TLNLogger.LogError($"Failed to load save slot {slotId}. {exception}");
-
-					return null;
-				}
+				return null;
 			}
 		}
 
@@ -119,10 +121,12 @@ namespace TLN.Infrastructure.Saves
 
 				if (File.Exists(path))
 				{
-					File.Delete(path);
+					File.Replace(temporaryPath, path, path + ".bak");
 				}
-
-				File.Move(temporaryPath, path);
+				else
+				{
+					File.Move(temporaryPath, path);
+				}
 			}
 		}
 
@@ -174,8 +178,9 @@ namespace TLN.Infrastructure.Saves
 
 				bool deletedSlot = DeleteFileIfExists(GetSlotPath(slotId));
 				bool deletedTemporarySlot = DeleteFileIfExists(GetSlotPath(slotId) + ".tmp");
+				bool deletedBackupSlot = DeleteFileIfExists(GetSlotPath(slotId) + ".bak");
 
-				return deletedSlot || deletedTemporarySlot;
+				return deletedSlot || deletedTemporarySlot || deletedBackupSlot;
 			}
 		}
 

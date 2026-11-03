@@ -20,6 +20,11 @@ namespace TLN.Gameplay.Inventory
 
 		public void ReplaceItems(IReadOnlyList<ItemStack> items)
 		{
+			if (ReferenceEquals(items, _items))
+			{
+				items = new List<ItemStack>(items);
+			}
+
 			_items.Clear();
 
 			if (items != null)

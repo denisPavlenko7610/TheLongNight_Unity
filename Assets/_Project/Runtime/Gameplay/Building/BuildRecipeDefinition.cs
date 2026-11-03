@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 
@@ -20,21 +20,11 @@ namespace TLN.Gameplay.Building
 		[SerializeField] private BuildRecipeIngredient[] _ingredients;
 
 		public string Id => _id;
-		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
-		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
+		public string DisplayName => TLN.Application.Localization.Loc.GetLocalizedStringOrFallback(_displayName, Id);
+		public string Description => TLN.Application.Localization.Loc.GetLocalizedStringOrFallback(_description, string.Empty);
 		public GameObject PlacedPrefab => _placedPrefab;
 		public float PlaceDistance => Mathf.Max(0f, _placeDistance);
 		public IReadOnlyList<BuildRecipeIngredient> Ingredients => _ingredients ?? System.Array.Empty<BuildRecipeIngredient>();
 
-		private static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
-		{
-			if (localizedString == null || localizedString.IsEmpty)
-			{
-				return fallback;
-			}
-
-			string value = localizedString.GetLocalizedString();
-			return string.IsNullOrWhiteSpace(value) ? fallback : value;
-		}
 	}
 }

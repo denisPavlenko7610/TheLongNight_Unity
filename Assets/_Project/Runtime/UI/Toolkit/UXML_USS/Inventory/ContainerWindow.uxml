@@ -20,7 +20,7 @@
 
             <ui:VisualElement class="container-columns">
 
-                <ui:VisualElement class="container-column">
+                <ui:VisualElement class="container-column container-column-first">
                     <ui:VisualElement class="container-column-header">
                         <ui:Label name="container-side-title-label" text="CONTAINER" class="container-side-title"/>
                     </ui:VisualElement>

@@ -11,7 +11,6 @@ namespace TLN.Gameplay.Items
 	/// </summary>
 	public sealed class ItemDropService : IItemDropService
 	{
-		private const int SingleItemAmount = 1;
 
 		private readonly IInventoryService _inventoryService;
 		private readonly PlacementService _placementService;
@@ -62,7 +61,7 @@ namespace TLN.Gameplay.Items
 
 			if (_prefabCatalog == null ||
 			    !_prefabCatalog.TryGetPrefab(definition.Id, out GameObject prefab) ||
-			    prefab == null)
+			    prefab == null || prefab.GetComponent<WorldItemActor>() == null)
 			{
 				failureReason = Loc.DropPrefabMissing(definition.DisplayName);
 				return false;
@@ -74,7 +73,12 @@ namespace TLN.Gameplay.Items
 				return false;
 			}
 
-			ConfigureWorldItem(instance, definition, amount);
+			if (!ConfigureWorldItem(instance, definition, amount))
+			{
+				Object.Destroy(instance);
+				failureReason = Loc.DropPrefabMissing(definition.DisplayName);
+				return false;
+			}
 
 			if (!_inventoryService.TryRemoveItemAt(inventoryIndex, amount, out failureReason))
 			{
@@ -87,11 +91,11 @@ namespace TLN.Gameplay.Items
 
 		private float DropDistance => 1.2f;
 
-		private static void ConfigureWorldItem(GameObject instance, ItemDefinition definition, int amount)
+		private static bool ConfigureWorldItem(GameObject instance, ItemDefinition definition, int amount)
 		{
 			if (instance == null)
 			{
-				return;
+				return false;
 			}
 
 			WorldItemActor actor = instance.GetComponent<WorldItemActor>();
@@ -103,10 +107,11 @@ namespace TLN.Gameplay.Items
 					instance
 				);
 
-				return;
+				return false;
 			}
 
 			actor.SetDropContent(definition, amount);
+			return true;
 		}
 	}
 }

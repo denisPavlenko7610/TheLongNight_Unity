@@ -57,7 +57,7 @@
     color: rgb(238, 242, 240);
     font-size: 27px;
     letter-spacing: 4px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
 }
 
 .container-title-underline {
@@ -87,7 +87,7 @@
     border-top-color: rgba(210, 228, 232, 0.12);
     border-bottom-color: rgba(210, 228, 232, 0.12);
     font-size: 14px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
     letter-spacing: 2px;
 }
 
@@ -123,7 +123,7 @@
     flex-basis: 0;
 }
 
-.container-column:first-child {
+.container-column.container-column-first {
     margin-right: 20px;
 }
 
@@ -145,7 +145,7 @@
     color: rgba(226, 232, 232, 0.8);
     font-size: 16px;
     letter-spacing: 3px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
 }
 
 .container-weight-label {
@@ -284,7 +284,7 @@
 .container-row-title {
     color: rgba(238, 244, 244, 0.92);
     font-size: 15px;
-    unity-font-style: bold;
+    -unity-font-style: bold;
     letter-spacing: 1px;
     -unity-text-align: upper-left;
 }

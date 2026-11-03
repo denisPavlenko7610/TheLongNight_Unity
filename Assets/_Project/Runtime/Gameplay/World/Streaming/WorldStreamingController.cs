@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TLN.Core.Logging;
 using TLN.Gameplay.Player;
+using TLN.Gameplay.Saves;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -24,6 +25,7 @@ namespace TLN.Gameplay.World.Streaming
 		private Transform _player;
 		private float _nextEvaluationTime;
 		private IObjectResolver _objectResolver;
+		private WorldSaveRegistry _worldSaveRegistry;
 		private bool _needsInitialInjection;
 		private bool _allKeepLoadedReady;
 
@@ -41,9 +43,10 @@ namespace TLN.Gameplay.World.Streaming
 		}
 
 		[Inject]
-		public void Construct(IObjectResolver objectResolver)
+		public void Construct(IObjectResolver objectResolver, WorldSaveRegistry worldSaveRegistry)
 		{
 			_objectResolver = objectResolver;
+			_worldSaveRegistry = worldSaveRegistry;
 		}
 
 		private void OnEnable()
@@ -94,7 +97,8 @@ namespace TLN.Gameplay.World.Streaming
 				return;
 			}
 
-			_nextEvaluationTime = UnityEngine.Time.unscaledTime + Mathf.Max(MinCheckIntervalSeconds, _checkIntervalSeconds);
+			_nextEvaluationTime = UnityEngine.Time.unscaledTime +
+				Mathf.Max(MinCheckIntervalSeconds, _checkIntervalSeconds);
 			EvaluateLocations(playerPosition);
 		}
 
@@ -145,15 +149,17 @@ namespace TLN.Gameplay.World.Streaming
 					continue;
 				}
 
-					_statesBySceneName.Add(
-						sceneName,
-						new StreamedSceneState(IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded)
-					);
+				_statesBySceneName.Add(
+					sceneName,
+					new StreamedSceneState(
+						IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded
+					)
+				);
 
-					if (IsSceneLoaded(sceneName))
-					{
-						_needsInitialInjection = true;
-					}
+				if (IsSceneLoaded(sceneName))
+				{
+					_needsInitialInjection = true;
+				}
 			}
 		}
 
@@ -181,7 +187,7 @@ namespace TLN.Gameplay.World.Streaming
 			StreamedSceneState state = GetOrCreateState(location.SceneName);
 
 			if (state.Status == StreamedSceneStatus.Loading ||
-			    state.Status == StreamedSceneStatus.Unloading)
+				state.Status == StreamedSceneStatus.Unloading)
 			{
 				return;
 			}
@@ -227,7 +233,10 @@ namespace TLN.Gameplay.World.Streaming
 
 			if (!IsSceneInBuildSettings(sceneName))
 			{
-				TLNLogger.LogError($"Cannot stream scene '{sceneName}' because it is not enabled in Build Settings.", this);
+				TLNLogger.LogError(
+					$"Cannot stream scene '{sceneName}' because it is not enabled in Build Settings.",
+					this
+				);
 				return;
 			}
 
@@ -292,6 +301,7 @@ namespace TLN.Gameplay.World.Streaming
 			{
 				_objectResolver.InjectGameObject(roots[i]);
 			}
+			_worldSaveRegistry?.RestoreScene(scene);
 
 			LogTransition($"Injected DI services into streamed scene '{sceneName}'.");
 		}
@@ -359,6 +369,7 @@ namespace TLN.Gameplay.World.Streaming
 				return;
 			}
 
+			_worldSaveRegistry?.CaptureScene(scene);
 			AsyncOperation operation = SceneManager.UnloadSceneAsync(scene);
 			if (operation == null)
 			{
@@ -439,7 +450,9 @@ namespace TLN.Gameplay.World.Streaming
 				return state;
 			}
 
-			state = new StreamedSceneState(IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded);
+			state = new StreamedSceneState(
+				IsSceneLoaded(sceneName) ? StreamedSceneStatus.Loaded : StreamedSceneStatus.Unloaded
+			);
 			_statesBySceneName.Add(sceneName, state);
 			return state;
 		}
@@ -465,7 +478,7 @@ namespace TLN.Gameplay.World.Streaming
 				}
 
 				if (string.Equals(scene.name, sceneName, StringComparison.Ordinal) ||
-				    string.Equals(scene.path, sceneName, StringComparison.OrdinalIgnoreCase))
+					string.Equals(scene.path, sceneName, StringComparison.OrdinalIgnoreCase))
 				{
 					loadedScene = scene;
 					return true;
@@ -487,7 +500,7 @@ namespace TLN.Gameplay.World.Streaming
 				}
 
 				if (string.Equals(scenePath, sceneName, StringComparison.OrdinalIgnoreCase) ||
-				    string.Equals(Path.GetFileNameWithoutExtension(scenePath), sceneName, StringComparison.Ordinal))
+					string.Equals(Path.GetFileNameWithoutExtension(scenePath), sceneName, StringComparison.Ordinal))
 				{
 					return true;
 				}

@@ -230,6 +230,10 @@ namespace TLN.Gameplay.DayNight
 		[Range(0f, 0.001f)]
 		public float FogDensity = 0.0001f;
 
+		[Tooltip("Exponential fog mean free path in meters. Lower values give thicker fog.")]
+		[Range(20f, 2000f)]
+		public float FogMeanFreePath = 260f;
+
 		[Tooltip("HDRP fixed camera exposure in EV100. Higher values darken the camera exposure.")]
 		[Range(0f, 14f)]
 		public float Exposure = 8f;

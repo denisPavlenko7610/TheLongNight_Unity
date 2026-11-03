@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
@@ -25,8 +25,8 @@ namespace TLN.Gameplay.Items
 		[SerializeField] private ItemUseKind _useKind = ItemUseKind.None;
 
 		public string Id => _id;
-		public string DisplayName => GetLocalizedStringOrFallback(_displayName, Id);
-		public string Description => GetLocalizedStringOrFallback(_description, string.Empty);
+		public string DisplayName => TLN.Application.Localization.Loc.GetLocalizedStringOrFallback(_displayName, Id);
+		public string Description => TLN.Application.Localization.Loc.GetLocalizedStringOrFallback(_description, string.Empty);
 		public ItemCategory Category => _category;
 		public float Weight => Mathf.Max(0f, _weight);
 		public bool IsStackable => _isStackable;
@@ -34,15 +34,5 @@ namespace TLN.Gameplay.Items
 		public AssetReferenceSprite IconReference => _iconReference;
 		public ItemUseKind UseKind => _useKind;
 
-		private static string GetLocalizedStringOrFallback(LocalizedString localizedString, string fallback)
-		{
-			if (localizedString == null || localizedString.IsEmpty)
-			{
-				return fallback;
-			}
-
-			string value = localizedString.GetLocalizedString();
-			return string.IsNullOrWhiteSpace(value) ? fallback : value;
-		}
 	}
 }
